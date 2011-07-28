@@ -1,0 +1,2 @@
+** Implement a means of loading extensions to Wintermute after initialization
+	- Take a peek at src/plugins.cpp & include/wintermute/plugins.hpp for more information.

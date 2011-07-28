@@ -1,0 +1,26 @@
+Installation
+===========================
+
+0. Requirements.
+
+In order to install Wintermute on your system; it has to
+have a few things in check first.
+
+0.a Packages
+
+For Ubuntu-based (or Debian-based) systems, you'll need the following
+packages:
+
+	* Boost (serialization, program_options, signals2, timer, thread, filesystem, date_time) >= 1.40
+	* Qt (QtCore, QJson [ = 0.7 ], QtXml) >= 4
+	* Soprano >= 0.7
+	* pkg-config (to find Soprano via CMake)
+
+We're a group that loves toolkits that make life easier so you'll see us using Boost and Qt
+a lot.
+
+0.b Compiling
+
+We use the CMake build system for our compiling needs, so a quick:
+
+# apt-get install cmake
