@@ -1,0 +1,11 @@
+/**
+ * File providing compile-time data about runtime-configuration.
+ */
+
+#ifndef __CONFIG_HPP__
+#define __CONFIG_HPP__
+
+#cmakedefine DEBUG
+
+#endif // __CONFIG_HPP__
+
