@@ -1,16 +1,20 @@
-** Modifiy Wintermute::Initialize() to run and manage a subprocess that controls the networking
-	library of Wintermute, and another system that manages all of the loaded plugins to Wintermute.
-	Soon, when the more autonomous feature is implemented; we may need to branch that off into a
-	separate process (or have the master process become that) and let it manage IPC more transparently.
+** Modifiy Wintermute::Initialize() to run and manage a subprocess that controls
+the networking library of Wintermute, and another system that manages all of
+the loaded plugins to Wintermute. Soon, when the more autonomous feature
+is implemented; we may need to branch that off into a separate process (or have
+the master process become that) and let it manage IPC more transparently.
 
-	Current needed IPC modules:
-		> wintermute --ipc=network
-		  : Used to manage the broadcasting and AngelNet components of Wintermute.
+Current needed IPC modules:
+> wintermute --ipc=network
+  : Used to manage the broadcasting and AngelNet components of Wintermute.
 
-		> wintermute --ipc=extensions
-		  : Used to manage Wintermute's extensibility from a separate application.
-		  : NOTE) This might be broken down even more, similar to how Chromium does their project works.
-		  : "wintermute --ipc=extensions extension=330434-34324324-34342" could represent a Wintermute
-		  : process, a sandbox of sorts that gives one extension the ability to run as if it were a program,
-		  : but provide the require extensibility to Wintermute's core process.
+> wintermute --ipc=extensions
+  : Used to manage Wintermute's extensibility from a separate application.
+  : NOTE) This might be broken down even more, similar to how Chromium does
+their project works.
+  : "wintermute --ipc=extensions extension=330434-34324324-34342" could
+represent a Wintermute
+  : process, a sandbox of sorts that gives one extension the ability to run as
+if it were a program,
+  : but provide the require extensibility to Wintermute's core process.
 

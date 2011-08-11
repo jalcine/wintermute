@@ -1,17 +1,18 @@
 Wintermute Core Module
 ---------------------------
+
 1. Introduction
 
 This module represents the central application 
 that is the skeletal glue of Wintermute. It binds
-all of the subcomponents into one huge big blob of
+all of the sub-components into one huge big blob of
 awesome :). Please refer to INSTALL for more
 information about building and installing Wintermute.
 
 2. About Wintermute
 
 Wintermute, in short, is designed to a flexible,
-autonomous and adaptive application framework that'll
+autonomous and adaptive application framework that will
 learn about any and every aspects of your life on a
 computer. It's primary goal is to become your personal
 life assistant from responding to e-mails, checking social

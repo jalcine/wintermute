@@ -36,7 +36,8 @@ using Wintermute::Data::Ontology::Store;
 using Wintermute::Linguistics::Parser;
 
 /// @todo Add manipulation switches for IPC (via D-Bus/QtBus) here.
-/// @todo Add a hang here waiting for user input. But what should it be waiting for? Most likely for the linguistics module. For now, it'lll just do something similar to the WntrLing CLI.
+/// @todo Add a hang here waiting for user input. But what should it be waiting for? Most likely for the linguistics module. For now, it'll just do something similar to the WntrLing CLI.
+/// @bug Issue attempting to pass an argument 'parse' to Wintermute to have it interpret a sentence. The Boost command line interface may be haphazardly set up.
 int main (int argc, char** argv) {
 	string ontoName("COSMO"), ipcModule, preline;
 	variables_map vm;
@@ -54,10 +55,12 @@ int main (int argc, char** argv) {
 	if (vm.count ("ipc")){
 		if (vm["ipc"].as<string>() == "master" || vm["ipc"].as<int>() == 0) // master module
 			ipcModule = "master";
-		if (vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1) // networking module
+		else if (vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1) // networking module
 			ipcModule = "network";
-		if (vm["ipc"].as<string>() == "gui" || vm["ipc"].as<int>() == 2) // gui, front-end.
+		else if (vm["ipc"].as<string>() == "gui" || vm["ipc"].as<int>() == 2) // gui, front-end.
 			ipcModule = "gui";
+		else if (vm["ipc"].as<string>() == "plugin" || vm["ipc"].as<int>() == 3) // plugin system.
+			ipcModule = "plugin";
 	} else ipcModule = "master";
 
 	if (vm.count ("parse"))
@@ -84,8 +87,8 @@ int main (int argc, char** argv) {
 		cout << "** Statement: ?] ";
 		line = qin.readLine ();
 		aParser.process (line.toStdString ());
-		//cout << "** " << aParser.getLexicalCount () << " lexicons have been used in total." << endl;
 		cout.flush ();
 	}
+
 	return 0;
 }
