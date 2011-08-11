@@ -12,8 +12,13 @@ information about building and installing Wintermute.
 2. About Wintermute
 
 Wintermute, in short, is designed to a flexible,
+<<<<<<< HEAD
 autonomous and adaptive application framework that will
 learn about any and every aspects of your life on a
+=======
+autonomous and adaptive application framework that'll
+learn about any and every aspect of your life on a
+>>>>>>> b9de4bde2acafddc744b2cc01ace04cf92f9281b
 computer. It's primary goal is to become your personal
 life assistant from responding to e-mails, checking social
 networks to developing documents and rendering tasks on the
@@ -21,3 +26,15 @@ computer as if you've done it yourself. Wintermute, with
 the help of computer vision, voice recognition and other
 human interface utilities (HIUs), attempts to implement
 a superbly natural language interface (NLUI) to the end-user.
+
+3. Running Wintermute
+
+For those interested in running or just testing Wintermute,
+please refer to the INSTALL document for more information.
+
+4. Documentation
+
+Practically all of the documentation that's done for Wintermute
+is stored online at http://www.thesii.org/wiki. Feel free to not
+only search that site, but also enter our IRC channel (##sii-general
+or ##sii-dev) to ask questions about Wintermute and how you can assist.

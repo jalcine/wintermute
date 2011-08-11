@@ -28,76 +28,18 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-    namespace Plugins {
+     namespace Plugins {
         PluginVector Factory::m_allPlgns;
 
         /// @todo Load the plugins designated to be loaded.
-        void Factory::Startup (){
-            cout << "(core) [Factory] Starting up..." << endl;
-            const Plugin* l_plgn = Plugin::fromPath("/usr/lib/i386-linux-gnu/libstdc++.so.6");
+        void Factory::Startup () {
+           cout << "(core) [Factory] Starting up..." << endl;
+           const Plugin* l_plgn = Plugin::fromPath("/usr/lib/i386-linux-gnu/libstdc++.so.6");
         }
 
         /// @todo Unload every loaded plugin and free all resources.
-        void Factory::Shutdown (){
-            cout << "(core) [Factory] Shutting down..." << endl;
-        }
-
-        Plugin::Plugin() : _handle(NULL){}
-        Plugin::Plugin(const Plugin &copiedPlugin): _handle(copiedPlugin._handle), _path(copiedPlugin._path) { init(); }
-        Plugin::Plugin(const string &p_plgnPth) : _path(p_plgnPth), _handle(NULL) { init(); }
-        Plugin::~Plugin () { runCleanupMethod (); }
-
-        const string Plugin::getLibraryPath (){
-            return _path;
-        }
-
-        void Plugin::init(){
-            Factory::m_allPlgns.push_back (this);
-            if (!_handle){
-                _handle = dlopen(this->getLibraryPath().c_str (),RTLD_NOW);
-                const char* dler = dlerror ();
-                if (dler != NULL){
-                    cout << "(core) [Plugins] Error loading '" << this->getLibraryPath () << "'; " << dler << endl;
-                    return;
-                }
-            }
-            runEntryMethod();
-        }
-
-        void Plugin::runEntryMethod (){
-            void* entryMethod = dlsym(_handle,"init");
-            const char* dler = dlerror ();
-            if (dler != NULL)
-                cout << "(core) [Plugins] Error finding init() in '" << this->getLibraryPath () << "'; " << dler << endl;
-            /*else
-                (entryMethod)();*/
-        }
-
-        void Plugin::runCleanupMethod (){
-            void* cleanMethod = dlsym(_handle,"cleanup");
-            const char* dler = dlerror ();
-            if (dler != NULL)
-                cout << "(core) [Plugins] Error finding cleanup() in '" << this->getLibraryPath () << "'; " << dler << endl;
-            /*else
-                (cleanMethod)();*/
-        }
-
-        void Plugin::deinit (){
-            runCleanupMethod ();
-            if (_handle){
-                dlclose (_handle);
-                const char* dler = dlerror ();
-                if (dler != NULL){
-                    cout << "(core) [Plugins] Error releasing '" << this->getLibraryPath () << "'; " << dler << endl;
-                    return;
-                }
-            }
-
-            /// @todo Remove this plugin from the master factory plugin list.
-        }
-
-        const Plugin* Plugin::fromPath(const string& p_plgnPth){
-            return new Plugin(p_plgnPth);
+        void Factory::Shutdown () {
+           cout << "(core) [Factory] Shutting down..." << endl;
         }
     }
 }

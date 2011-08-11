@@ -24,36 +24,36 @@
 #include "wintermute.hpp"
 
 namespace Wintermute {
-	void Core::Initialize(){
-		// Wintermute::Network::Initialize();
-		Wintermute::Data::Configuration::Initialize();
-		Wintermute::Plugins::Factory::Startup ();
-	}
-
-	void Core::Deinitialize(){
-		// Wintermute::Network::Deinitialize();
-		Wintermute::Data::Configuration::Deinitialize();
-		Wintermute::Plugins::Factory::Shutdown ();
-	}
-
-	void Core::manageCmdLine(variables_map &vm, options_description &desc){
-		desc.add_options()
-			("help","show help screen")
-			("debug","run in debug mode");
-
-		boost::program_options::notify(vm);
-
-		if (!vm.empty ()){
-			if (vm.count("help")){
-				/// @todo Generate help screen text.
-				cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
-					 << desc << endl;
-			} else if (vm.count("debug")){
-				/// @todo Toggle a DEBUG flag within Wintermute. May need to implement a logging system of sorts.
-			}
-		}
-		else {
-			cout << " ** Run this application with '--help' to get help information." << endl;
-		}
-	}
+     void Core::Initialize() {
+	  // Wintermute::Network::Initialize();
+	  Wintermute::Data::Configuration::Initialize();
+	  Wintermute::Plugins::Factory::Startup ();
+     }
+     
+     void Core::Deinitialize() {
+	  // Wintermute::Network::Deinitialize();
+	  Wintermute::Data::Configuration::Deinitialize();
+	  Wintermute::Plugins::Factory::Shutdown ();
+     }
+     
+     void Core::manageCmdLine(variables_map &vm, options_description &desc) {
+	  desc.add_options()
+	  ("help","show help screen")
+	  ("debug","run in debug mode");
+	  
+	  boost::program_options::notify(vm);
+	  
+	  if (!vm.empty ()) {
+	       if (vm.count("help")) {
+		    /// @todo Generate help screen text.
+		    cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
+		    << desc << endl;
+	       } else if (vm.count("debug")) {
+		    /// @todo Toggle a DEBUG flag within Wintermute. May need to implement a logging system of sorts.
+	       }
+	  }
+	  else {
+	       cout << " ** Run this application with '--help' to get help information." << endl;
+	  }
+     }
 }
