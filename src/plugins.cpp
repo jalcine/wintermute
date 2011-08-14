@@ -33,13 +33,16 @@ namespace Wintermute {
 
         /// @todo Load the plugins designated to be loaded.
         void Factory::Startup () {
-           cout << "(core) [Factory] Starting up..." << endl;
-           const Plugin* l_plgn = Plugin::fromPath("/usr/lib/i386-linux-gnu/libstdc++.so.6");
+           //cout << "(core) [Factory] Starting up..." << endl;
         }
 
         /// @todo Unload every loaded plugin and free all resources.
         void Factory::Shutdown () {
-           cout << "(core) [Factory] Shutting down..." << endl;
+           //cout << "(core) [Factory] Shutting down..." << endl;
         }
+
+        Plugin::Plugin() { }
+
+        Plugin::Plugin(const Plugin &p_plgn) : _handle(p_plgn._handle) { }
     }
 }

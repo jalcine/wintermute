@@ -39,6 +39,7 @@ using Wintermute::Linguistics::Parser;
 /// @todo Add a hang here waiting for user input. But what should it be waiting for? Most likely for the linguistics module. For now, it'll just do something similar to the WntrLing CLI.
 /// @bug Issue attempting to pass an argument 'parse' to Wintermute to have it interpret a sentence. The Boost command line interface may be haphazardly set up.
 int main (int argc, char** argv) {
+    Core::Configure(argc,argv);
      string ontoName("COSMO"), ipcModule, preline;
      variables_map vm;
      options_description desc("Wintermute Options");
@@ -47,48 +48,42 @@ int main (int argc, char** argv) {
      ("locale"  ,"the initial locale to use (default: 'en')")
      ("parse"   ,"a sample sentence to analyze")
      ("ipc"     ,"the IPC module to run this process as. (default: 'master')");
-     Core::manageCmdLine(vm,desc);
+
+     //Core::manageCmdLine(vm,desc);
+
      boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
-     if (vm.count ("ontology") && !vm.empty ())
-	  ontoName = vm["ontology"].as<string>();
-     
-     if (vm.count ("ipc")) {
-	  if (vm["ipc"].as<string>() == "master" || vm["ipc"].as<int>() == 0) // master module
-            ipcModule = "master";
-	  else if (vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1) // networking module
-            ipcModule = "network";
-	  else if (vm["ipc"].as<string>() == "gui" || vm["ipc"].as<int>() == 2) // gui, front-end.
-            ipcModule = "gui";
-	  else if (vm["ipc"].as<string>() == "plugin" || vm["ipc"].as<int>() == 3) // plugin system.
-            ipcModule = "plugin";
-     } else ipcModule = "master";
-     
-     if (vm.count ("parse"))
-	  preline = vm["parse"].as<string>();
-     
-     IPC::Process(ipcModule);
-     
-     /// @note Method may be modified depending on what IPC module it's running.
-     Core::Initialize ();
-     
-     //Store* aNewStore = Store::obtain(ontoName);
-     
-     Linguistics::Parser aParser("en");
-     
-     if (!preline.empty ()) {
-	  cout << "(core) Parsing '" << preline << "'..." << endl;
-	  aParser.process (preline);
-     }
-     
+
+     if (vm.count ("ontology") && !vm.empty ()) ontoName = vm["ontology"].as<string>();
+
+	 if (vm.count ("ipc")) {
+		if (vm["ipc"].as<string>() == "master" || vm["ipc"].as<int>() == 0)		  ipcModule = "master";
+		else if (vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1) ipcModule = "network";
+		else if (vm["ipc"].as<string>() == "gui" || vm["ipc"].as<int>() == 2)	  ipcModule = "gui";
+		else if (vm["ipc"].as<string>() == "plugin" || vm["ipc"].as<int>() == 3)  ipcModule = "plugin";
+	 } else ipcModule = "master";
+
+	 if (vm.count ("parse")) preline = vm["parse"].as<string>();
+
+	 IPC::Process(ipcModule);
+
+	 Core::Initialize ();
+
+	 //Store* aNewStore = Store::obtain(ontoName);
+
+	 Linguistics::Parser aParser("en");
+
+	 if (!preline.empty ()) aParser.process (preline);
+
      QTextStream qin(stdin);
      QString line;
      cout << "** Enter '*quit*' to exit linguistics parsing. **" << endl;
+
      while (line != "*quit*") {
-	  cout << "** Statement: ?] ";
-	  line = qin.readLine ();
-	  aParser.process (line.toStdString ());
-	  cout.flush ();
+        cout << "** Statement: ?] ";
+        line = qin.readLine ();
+        aParser.process (line.toStdString ());
+        cout.flush ();
      }
-     
+
      return 0;
 }

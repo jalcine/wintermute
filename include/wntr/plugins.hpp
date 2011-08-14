@@ -23,6 +23,7 @@
 #include <map>
 #include <vector>
 #include <QFile>
+#include <QtPlugin>
 
 using namespace std;
 using std::vector;
@@ -73,6 +74,20 @@ namespace Wintermute {
              * @fn Shutdown
              */
             static void Shutdown();
+            /**
+             * @brief
+             *
+             * @fn loadPlugin
+             * @param
+             */
+            static const Plugin* loadPlugin(const string& );
+            /**
+             * @brief
+             *
+             * @fn loadPlugin
+             * @param
+             */
+            static const Plugin* loadPlugin(const QFile* );
         private:
             static PluginVector m_allPlgns;
         };
@@ -85,12 +100,27 @@ namespace Wintermute {
         class Plugin {
         private:
             void* _handle;
-            string _path;
             void init();
             void deinit();
             void runEntryMethod();
             void runCleanupMethod();
         public:
+            ~Plugin();
+            /**
+             * @brief
+             *
+             * @fn Plugin
+             * @param
+             */
+            Plugin(const Plugin& );
+            /**
+             * @brief
+             *
+             * @fn path
+             */
+            const string path() const;
+            const string name() const;
+        protected:
             /**
              * @brief
              *
@@ -103,28 +133,7 @@ namespace Wintermute {
              * @fn Plugin
              * @param
              */
-            Plugin(const Plugin& );
-            /**
-             * @brief
-             *
-             * @fn Plugin
-             * @param
-             */
             Plugin(const string& );
-            /**
-             * @brief
-             *
-             * @fn getLibraryPath
-             */
-            const string getLibraryPath();
-            /**
-             * @brief
-             *
-             * @fn formPath
-             * @param
-             */
-            static const Plugin* fromPath(const string& );
-            ~Plugin();
         };
     }
 }

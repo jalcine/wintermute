@@ -21,6 +21,7 @@
 #ifndef WINTERMUTE_HPP
 #define WINTERMUTE_HPP
 
+#include <QCoreApplication>
 #include <iostream>
 #include <csignal>
 #include <wntrntwk.hpp>
@@ -50,6 +51,7 @@ namespace Wintermute {
      */
     class Core {
     public:
+        static void Configure(int& , char **);
         /**
          * @brief
          *
@@ -69,6 +71,9 @@ namespace Wintermute {
          * @todo Allow an appending of command-line options on-the-fly; may need to create an abstract class for it.
          */
         static void manageCmdLine(variables_map& , options_description&);
+
+    protected:
+        static QCoreApplication* m_app;
     };
 }
 

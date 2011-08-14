@@ -22,7 +22,7 @@
 #include "ipc.hpp"
 
 namespace Wintermute {
-     void IPC::Process(const string& processLabel) {
-	  cout << "(core) [IPC] Running '" << processLabel << "'..." << endl;
-     }
+	 void IPC::Process(const string& processLabel) {
+	  //cout << "(core) [IPC] Running '" << processLabel << "'..." << endl;
+	 }
 }

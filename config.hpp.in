@@ -1,11 +1,14 @@
 /**
  * File providing compile-time data about runtime-configuration.
+ * Required for the core of Wintermute.
  */
 
 #ifndef __CONFIG_HPP__
 #define __CONFIG_HPP__
 
 #cmakedefine DEBUG
+
+#define WINTERMUTE_VERSION "@WINTERMUTE_VERSION@"
 
 #endif // __CONFIG_HPP__
 

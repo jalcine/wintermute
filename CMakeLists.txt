@@ -78,7 +78,7 @@ configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
    "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-    "${PROJECT_BINARY_DIR}/config.hpp")
+    "${PROJECT_SOURCE_DIR}/include/wntr/config.hpp")
 
 #
 # Targets
@@ -106,7 +106,7 @@ install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
 install(FILES ${CMAKE_MODULES}
     DESTINATION "${CMAKE_MODULE_DIR}")
 
-install(FILES ${WINTERMUTE_SHPP} "${PROJECT_BINARY_DIR}/config.hpp"
+install(FILES ${WINTERMUTE_SHPP}
     DESTINATION "${WINTERMUTE_INCLUDE_DIR}"
     COMPONENT dev)
 
