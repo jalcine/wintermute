@@ -8,7 +8,10 @@
 
 #cmakedefine DEBUG
 
-#define WINTERMUTE_VERSION "@WINTERMUTE_VERSION@"
+#include <string>
+
+#define WINTERMUTE_VERSION std::string("@WINTERMUTE_VERSION@")
 
 #endif // __CONFIG_HPP__
 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

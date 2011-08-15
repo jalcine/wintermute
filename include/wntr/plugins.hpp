@@ -24,6 +24,7 @@
 #include <vector>
 #include <QFile>
 #include <QtPlugin>
+#include <QPluginLoader>
 
 using namespace std;
 using std::vector;
@@ -57,85 +58,73 @@ namespace Wintermute {
          * This abstract class manages anything and everything to do with plugins; from
          * loading, unloading, obtaining information and more about plugins.
          * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
-         * @see Plugin;
+         * @see Plugin
          */
         class Factory {
-            friend class Plugin;
-        public:
-            /**
-             * @brief
-             *
-             * @fn Startup
-             */
-            static void Startup();
-            /**
-             * @brief
-             *
-             * @fn Shutdown
-             */
-            static void Shutdown();
-            /**
-             * @brief
-             *
-             * @fn loadPlugin
-             * @param
-             */
-            static const Plugin* loadPlugin(const string& );
-            /**
-             * @brief
-             *
-             * @fn loadPlugin
-             * @param
-             */
-            static const Plugin* loadPlugin(const QFile* );
-        private:
-            static PluginVector m_allPlgns;
+                friend class Plugin;
+            public:
+                /**
+                 * @brief
+                 *
+                 * @fn Startup
+                 */
+                static void Startup();
+                /**
+                 * @brief
+                 *
+                 * @fn Shutdown
+                 */
+                static void Shutdown();
+                /**
+                 * @brief
+                 * @fn loadPlugin
+                 * @param
+                 */
+                static const Plugin* loadPlugin ( const string& );
+                /**
+                 * @brief
+                 * @fn loadPlugin
+                 * @param
+                 */
+                static const Plugin* loadPlugin ( const QFile* );
+            private:
+                static PluginVector s_allPlgns;
         };
 
         /**
-         * @brief
-         *
+         * @brief Provides a wrapper class to QPluginLoader that allows us to manage plugins.
          * @class Plugin plugins.hpp "include/wintermute/plugins.hpp"
          */
         class Plugin {
-        private:
-            void* _handle;
-            void init();
-            void deinit();
-            void runEntryMethod();
-            void runCleanupMethod();
         public:
             ~Plugin();
-            /**
-             * @brief
-             *
-             * @fn Plugin
-             * @param
-             */
             Plugin(const Plugin& );
-            /**
-             * @brief
-             *
-             * @fn path
-             */
-            const string path() const;
-            const string name() const;
+            void setPath( const string& );
+            const string getPath() const;
+            void load();
+            void unload();
         protected:
-            /**
-             * @brief
-             *
-             * @fn Plugin
-             */
             Plugin();
-            /**
-             * @brief
-             *
-             * @fn Plugin
-             * @param
-             */
             Plugin(const string& );
+            Plugin(const QFile* );
+        private:
+            QPluginLoader* m_plgnLdr;
+
         };
+
+        /**
+         * @brief Provides a generic base hub for applications to build plugins from.
+         * @class Interface plugins.hpp "include/wntr/plugins.hpp"
+         */
+        class Interface {
+        public:
+            virtual ~Interface();
+        };
+
     }
 }
 
+Q_DECLARE_INTERFACE(Wintermute::Plugins::Interface, "thesii.Wntr.Interface");
+
 #endif /* PLUGINS_HPP */
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

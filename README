@@ -12,13 +12,8 @@ information about building and installing Wintermute.
 2. About Wintermute
 
 Wintermute, in short, is designed to a flexible,
-<<<<<<< HEAD
-autonomous and adaptive application framework that will
-learn about any and every aspects of your life on a
-=======
 autonomous and adaptive application framework that'll
 learn about any and every aspect of your life on a
->>>>>>> b9de4bde2acafddc744b2cc01ace04cf92f9281b
 computer. It's primary goal is to become your personal
 life assistant from responding to e-mails, checking social
 networks to developing documents and rendering tasks on the

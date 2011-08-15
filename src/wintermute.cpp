@@ -20,50 +20,83 @@
  * @todo Consider splitting up the master Wintermute process into a master process and multiple sub processes (one master process, one child process managing the network, one child managing the plugin system, etc).
  */
 
-#include <QCoreApplication>
-#include "wintermute.hpp"
+#include <sstream>
 #include "config.hpp"
+#include "wintermute.hpp"
+#include <QCoreApplication>
 
 namespace Wintermute {
-	QCoreApplication* Core::m_app = NULL;
-	void Core::Configure(int& argc, char** argv){
-		if (!m_app){
-			m_app = new QCoreApplication(argc,argv);
-			m_app->setApplicationName("Wintermute");
-			//m_app->setApplicationVersion(WINTERMUTE_VERSION);
-			m_app->setOrganizationDomain("thesii.org");
-			m_app->setOrganizationName("Synthetic Intellect Institute");
-		}
-	}
+    QCoreApplication* Core::m_app = NULL;
+    void Core::Configure ( int& argc, char** argv ) {
+        if ( !m_app ) {
+            ostringstream l_d;
+            l_d << WINTERMUTE_VERSION;
+            m_app = new QCoreApplication ( argc,argv );
+            m_app->setApplicationName ( "Wintermute" );
+            m_app->setApplicationVersion(QString(l_d.str ().c_str ()));
+            m_app->setOrganizationDomain ( "org.thesii.Wntr" );
+            m_app->setOrganizationName ( "Synthetic Intellect Institute" );
+        }
 
-	/// @note Method may be modified depending on what IPC module it's running.
-	void Core::Initialize() {
-		// Wintermute::Network::Initialize();
-		Wintermute::Data::Configuration::Initialize();
-		Wintermute::Plugins::Factory::Startup ();
-	}
+        cout << qPrintable(QCoreApplication::applicationName ()) << " " << qPrintable(QCoreApplication::applicationVersion ()) << " (pid " << QCoreApplication::applicationPid () << ") :: "
+             << "Artificial intelligence for common Man." << endl;
 
-	void Core::Deinitialize() {
-		// Wintermute::Network::Deinitialize();
-		Wintermute::Data::Configuration::Deinitialize();
-		Wintermute::Plugins::Factory::Shutdown ();
-	}
+        variables_map vm;
+        options_description desc ( "Options" );
 
-	void Core::manageCmdLine(variables_map &vm, options_description &desc) {
-		desc.add_options()
-		("help","show help screen");
+        desc.add_options ()
+        ( "locale"  ,"Defines the locale used by the system for parsing. (default: 'en')")
+        ( "ipc"     ,"Defines the IPC module to run this process as. (default: 'master')" );
+        Core::manageCmdLine(vm,desc);
+    }
 
-		boost::program_options::notify(vm);
+    void Core::Initialize() {
+        Wintermute::Plugins::Factory::Startup ();
+        if (IPC::currentModule() == "master")
+            Wintermute::Data::Configuration::Initialize();
+        else if (IPC::currentModule() == "network")
+            Wintermute::Network::Initialize ();
+    }
 
-		if (!vm.empty ()) {
-		   if (vm.count("help")) {
-			/// @todo Render a set of text to be used for the help screen.
-			cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
-			<< desc << endl;
-		   }
-		}
-		else
-		   cout << " ** Run this application with '--help' to get help information." << endl
-				<< desc << endl;
-	}
+    void Core::Deinitialize() {
+        Wintermute::Plugins::Factory::Shutdown ();
+        if (IPC::currentModule() == "master")
+            Wintermute::Data::Configuration::Deinitialize ();
+        else if (IPC::currentModule() == "network")
+            Wintermute::Network::Deinitialize ();
+    }
+
+    void Core::manageCmdLine ( variables_map &vm, options_description &desc ) {
+        string ipcModule("master");
+        desc.add_options()
+        ( "help","show help screen" );
+
+        boost::program_options::notify ( vm );
+        boost::program_options::store ( boost::program_options::parse_command_line ( QCoreApplication::argc (), QCoreApplication::argv () , desc ), vm );
+
+        if ( !vm.empty () ) {
+            if ( vm.count ( "help" ) ) {
+                /// @todo Render a set of text to be used for the help screen.
+                cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
+                     << desc << endl << endl
+                     << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
+                     << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
+
+                exit (0);
+            }
+
+            if ( vm.count ( "ipc" ) ) {
+                if ( vm["ipc"].as<string>() == "master" || vm["ipc"].as<int>() == 0 )		  ipcModule = "master";
+                else if ( vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1 )   ipcModule = "network";
+                else if ( vm["ipc"].as<string>() == "plugin" || vm["ipc"].as<int>() == 2 )    ipcModule = "plugin";
+            } else ipcModule = "master";
+
+            if ( vm.count ("locale") )
+                Wintermute::Data::Linguistics::Configuration::setLocale (vm["locale"].as<string>());
+        } else
+            cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
+
+        IPC::Initialize(ipcModule);
+    }
 }
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

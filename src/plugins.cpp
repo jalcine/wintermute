@@ -28,21 +28,35 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-     namespace Plugins {
-        PluginVector Factory::m_allPlgns;
+    namespace Plugins {
+        PluginVector Factory::s_allPlgns;
 
         /// @todo Load the plugins designated to be loaded.
         void Factory::Startup () {
-           //cout << "(core) [Factory] Starting up..." << endl;
+            //cout << "(core) [Factory] Starting up..." << endl;
+            QPluginLoader m("/usr/lib/libwntrdata.so");
+            m.load();
         }
 
         /// @todo Unload every loaded plugin and free all resources.
         void Factory::Shutdown () {
-           //cout << "(core) [Factory] Shutting down..." << endl;
+            //cout << "(core) [Factory] Shutting down..." << endl;
         }
 
-        Plugin::Plugin() { }
+        Plugin::Plugin() : m_plgnLdr((new QPluginLoader)) { }
+        Plugin::~Plugin() {
+            unload();
+        }
 
-        Plugin::Plugin(const Plugin &p_plgn) : _handle(p_plgn._handle) { }
+        Plugin::Plugin(const Plugin &p_plgn) : m_plgnLdr(p_plgn.m_plgnLdr) { }
+        Plugin::Plugin(const string &p_str) : m_plgnLdr((new QPluginLoader)) {
+            this->setPath(p_str);
+        }
+
+        void Plugin::setPath(const string& p_str){ m_plgnLdr->setFileName(p_str.c_str ()); }
+        const string Plugin::getPath() const { return m_plgnLdr->fileName().toStdString(); }
+        void Plugin::load() {}
+        void Plugin::unload() {}
     }
 }
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

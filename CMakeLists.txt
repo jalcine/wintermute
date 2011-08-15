@@ -12,6 +12,7 @@ list(APPEND CMAKE_MODULE_PATH "cmake/Modules")
 #
 # Packages
 #
+find_package(Doxygen)
 find_package(WntrData REQUIRED)
 find_package(WntrLing REQUIRED)
 find_package(WntrNtwk REQUIRED)
@@ -21,6 +22,7 @@ find_package(Boost 1.42 COMPONENTS
     REQUIRED)
 find_package(Qt4 COMPONENTS
     QtCore
+    QtDBus
     QT_DONT_USE_QTGUI
     REQUIRED)
 
@@ -40,24 +42,26 @@ file(GLOB WINTERMUTE_SCPP "src/*.cpp")
 #
 # Main variables
 #
+set(MOC_CODE )
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core Application")
 set(PROJECT_LABEL "Wintermute Core Application")
 set(WINTERMUTE_BIN_INSTALL_DIR "${WINTER_BIN_INSTALL_DIR}")
-set(WINTERMUTE_INCLUDE_DIRS "${WNTRDATA_INCLUDE_DIRS}"
-    ${WNTRLING_INCLUDE_DIRS}
+set(WINTERMUTE_INCLUDE_DIRS "${WNTRLING_INCLUDE_DIRS}"
+    ${WNTRDATA_INCLUDE_DIRS}
     ${WNTRNTWK_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
     )
-set(WINTERMUTE_LIBRARIES "${WNTRDATA_LIBRARIES}"
-    ${WNTRLING_LIBRARIES}
+set(WINTERMUTE_LIBRARIES "${WNTRLING_LIBRARIES}"
+    ${WNTRDATA_LIBRARIES}
     ${WNTRNTWK_LIBRARIES}
     ${QT_LIBRARIES}
     ${Boost_LIBRARIES}
     )
+
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}/wntr" CACHE PATH "Includes directory.")
 set(WINTERMUTE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
-# ^^ might be needed for plugin system.
+
 
 #
 # Include directories
@@ -68,6 +72,9 @@ include_directories(${WINTERMUTE_INCLUDE_DIRS}
 #
 # Configs
 #
+
+QT4_WRAP_CPP(MOC_CODE "${WINTERMUTE_SHPP}")
+
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
     "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
 
@@ -85,7 +92,8 @@ configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
 #
 add_executable(wintermute
     ${WINTERMUTE_SHPP}
-    ${WINTERMUTE_SCPP})
+    ${WINTERMUTE_SCPP}
+    ${MOC_CODE})
 
 target_link_libraries(wintermute
     ${WINTERMUTE_LIBRARIES})

@@ -21,7 +21,9 @@
 #ifndef IPC_HPP
 #define IPC_HPP
 
+#include <iostream>
 #include <string>
+#include <QtDBus>
 #include "wintermute.hpp"
 
 using namespace std;
@@ -29,23 +31,46 @@ using namespace Wintermute;
 
 namespace Wintermute {
     struct IPC;
+    struct DbusAdaptor;
 
     /**
-     * @brief
-     *
-     * @class IPC ipc.hpp "include/wintermute/ipc.hpp"
+     * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
+     * @class IPC ipc.hpp "include/wntr/ipc.hpp"
      */
     class IPC {
-    public:
+        friend class DbusAdaptor;
+        public:
+            static void Initialize (const string& = "master");
+            static const string currentModule() { return s_mod; }
+        private:
+            ~IPC();
+            IPC();
+            static string s_mod;
+            static DbusAdaptor* s_dbus;
+    };
 
-        /**
-         * @brief
-         *
-         * @fn Process
-         * @param
-         */
-        static void Process(const string& );
+    class DbusAdaptor : protected QDBusAbstractAdaptor {
+        Q_OBJECT
+        Q_CLASSINFO("D-Bus Interface","org.thesii.DBus.Wintermute")
+        Q_CLASSINFO("Author","Synthetic Intellect Institute")
+        Q_CLASSINFO("URL","http://www.thesii.org")
+
+        Q_PROPERTY(string module READ module)
+
+        public:
+            DbusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
+            ~DbusAdaptor() { emit destroyed (this); }
+
+            string module() { return IPC::s_mod; }
+
+        public slots:
+            Q_NOREPLY void quit(){
+                cout << "(core) [Dbus] Recieved quit signal. Quitting..." << endl;
+                QCoreApplication::instance ()->quit ();
+                exit(0);
+            }
     };
 }
 
 #endif /* IPC_HPP */
+// kate: indent-mode cstyle; space-indent on; indent-width 4;
