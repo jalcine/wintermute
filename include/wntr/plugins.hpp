@@ -23,8 +23,6 @@
 #include <map>
 #include <vector>
 #include <QFile>
-#include <QtPlugin>
-#include <QPluginLoader>
 
 using namespace std;
 using std::vector;
@@ -91,40 +89,10 @@ namespace Wintermute {
                 static PluginVector s_allPlgns;
         };
 
-        /**
-         * @brief Provides a wrapper class to QPluginLoader that allows us to manage plugins.
-         * @class Plugin plugins.hpp "include/wintermute/plugins.hpp"
-         */
-        class Plugin {
-        public:
-            ~Plugin();
-            Plugin(const Plugin& );
-            void setPath( const string& );
-            const string getPath() const;
-            void load();
-            void unload();
-        protected:
-            Plugin();
-            Plugin(const string& );
-            Plugin(const QFile* );
-        private:
-            QPluginLoader* m_plgnLdr;
-
-        };
-
-        /**
-         * @brief Provides a generic base hub for applications to build plugins from.
-         * @class Interface plugins.hpp "include/wntr/plugins.hpp"
-         */
-        class Interface {
-        public:
-            virtual ~Interface();
-        };
-
     }
 }
 
-Q_DECLARE_INTERFACE(Wintermute::Plugins::Interface, "thesii.Wntr.Interface");
+//Q_DECLARE_INTERFACE(Wintermute::Plugins::Interface, "thesii.Wntr.Interface");
 
 #endif /* PLUGINS_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
