@@ -31,9 +31,9 @@ namespace Wintermute {
         if ( !m_app ) {
             ostringstream l_d;
             l_d << WINTERMUTE_VERSION;
-            m_app = new QCoreApplication ( argc,argv );
+            m_app = new QCoreApplication ( argc , argv );
             m_app->setApplicationName ( "Wintermute" );
-            m_app->setApplicationVersion(QString(l_d.str ().c_str ()));
+            m_app->setApplicationVersion(QString::fromStdString (l_d.str ()));
             m_app->setOrganizationDomain ( "org.thesii.Wntr" );
             m_app->setOrganizationName ( "Synthetic Intellect Institute" );
         }
@@ -99,4 +99,11 @@ namespace Wintermute {
         IPC::Initialize(ipcModule);
     }
 }
+
+QDebug operator<<(QDebug dbg, const string &c)
+ {
+     dbg.nospace() << c.c_str ();
+     return dbg.nospace();
+ }
+
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

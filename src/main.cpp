@@ -53,7 +53,7 @@ int main ( int argc, char** argv ) {
         while ( line != "*quit*" ) {
             cout << "** Statement: ?] ";
             line = qin.readLine ();
-            aParser.process ( line.toStdString () );
+            aParser.parse( line.toStdString () );
             cout.flush ();
         }
     }
