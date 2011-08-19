@@ -22,6 +22,8 @@
 #include <string>
 #include <iostream>
 #include <QCoreApplication>
+#include <wntrdata.hpp>
+#include <wntrling.hpp>
 #include "wintermute.hpp"
 
 using namespace std;
@@ -33,12 +35,8 @@ using std::cin;
 using std::endl;
 using std::string;
 using Wintermute::Core;
-using Wintermute::Data::Ontology::Store;
 using Wintermute::Linguistics::Parser;
 
-/// @todo Add manipulation switches for IPC (via D-Bus/QtBus) here.
-/// @todo Add a hang here waiting for user input. But what should it be waiting for? Most likely for the linguistics module. For now, it'll just do something similar to the WntrLing CLI.
-/// @bug Issue attempting to pass an argument 'parse' to Wintermute to have it interpret a sentence. The Boost command line interface may be haphazardly set up.
 int main ( int argc, char** argv ) {
     Core::Configure ( argc , argv );
     Core::Initialize ();

@@ -21,61 +21,9 @@
 #ifndef WINTERMUTE_HPP
 #define WINTERMUTE_HPP
 
-#include <QCoreApplication>
-#include <iostream>
-#include <csignal>
-#include <wntrntwk.hpp>
-#include <wntrdata.hpp>
-#include <wntrling.hpp>
-#include <boost/program_options.hpp>
+#include "core.hpp"
 #include "ipc.hpp"
 #include "plugins.hpp"
 
-using namespace std;
-using namespace Wintermute;
-using namespace Wintermute::Linguistics;
-using namespace boost::program_options;
-
-using std::cout;
-using std::endl;
-using boost::program_options::variables_map;
-using boost::program_options::options_description;
-
-namespace Wintermute {
-    struct Core;
-
-    /**
-     * @brief
-     *
-     * @class Core wintermute.hpp "include/wintermute/wintermute.hpp"
-     */
-    class Core {
-        public:
-            static void Configure ( int& , char ** );
-            /**
-             * @brief
-             *
-             * @fn Initialize
-             */
-            static void Initialize();
-            /**
-             * @brief
-             *
-             * @fn Deinitialize
-             */
-            static void Deinitialize ();
-            /**
-             * @brief Manages command line.
-             * Mananges the command toggles and what-not of Wintermute.
-             * @fn manageCmdLine
-             * @todo Allow an appending of command-line options on-the-fly; may need to create an abstract class for it.
-             */
-            static void manageCmdLine ( variables_map& , options_description& );
-
-        protected:
-            static QCoreApplication* m_app;
-    };
-}
-
 #endif /* WINTERMUTE_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -10,7 +10,7 @@
 
 #include <string>
 
-#define WINTERMUTE_VERSION std::string("@WINTERMUTE_VERSION@")
+#define WINTERMUTE_VERSION @WINTERMUTE_VERSION@
 
 #endif // __CONFIG_HPP__
 

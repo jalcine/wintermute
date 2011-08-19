@@ -19,26 +19,69 @@
  * @endlegalese
  */
 
-#include <iostream>
-#include <dlfcn.h>
+#include <QtDebug>
 #include "plugins.hpp"
 
 using namespace std;
-using std::cout;
-using std::endl;
 
 namespace Wintermute {
     namespace Plugins {
         PluginVector Factory::s_allPlgns;
+        typedef void (*VoidFunction)(void);
 
         /// @todo Load the plugins designated to be loaded.
         void Factory::Startup () {
-            //cout << "(core) [Factory] Starting up..." << endl;
+            qDebug() << "(core) [Factory] Starting up...";
+            Factory::loadPlugin ("/usr/lib/libwntrgui.so");
         }
 
         /// @todo Unload every loaded plugin and free all resources.
         void Factory::Shutdown () {
-            //cout << "(core) [Factory] Shutting down..." << endl;
+            qDebug() << "(core) [Factory] Shutting down...";
+        }
+
+        const PluginBase* Factory::loadPlugin (const string &p_pth) {
+            return loadPlugin((new QFile(QString::fromStdString (p_pth))));
+        }
+
+        const PluginBase* Factory::loadPlugin (const QFile *p_fl){
+            if (!p_fl->exists ()){
+                qWarning() << "(core) [Factory] Failed to load " << p_fl->fileName () << p_fl->errorString ();
+                return NULL;
+            }
+
+            QPluginLoader* l_plgnLdr = new QPluginLoader(p_fl->fileName ());
+            l_plgnLdr->setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
+            if (l_plgnLdr->load ()){
+                PluginBase* l_plgnBase = qobject_cast<PluginBase*>(l_plgnLdr->instance ());
+                //l_plgnBase->m_plgnLdr = l_plgnLdr;
+                l_plgnBase->initialize ();
+                Factory::s_allPlgns.push_back (l_plgnBase);
+                return l_plgnBase;
+            } else {
+                qWarning() << "(core) [Factory] Err:" << l_plgnLdr->errorString ();
+                return NULL;
+            }
+        }
+
+        PluginBase::PluginBase() : m_plgnLdr(NULL) {
+
+        }
+
+        PluginBase::PluginBase(const PluginBase &p_1) : m_plgnLdr(p_1.m_plgnLdr) {
+
+        }
+
+        bool PluginBase::operator == (const PluginBase &p_1) {
+            return p_1.m_plgnLdr == m_plgnLdr;
+        }
+
+        const bool PluginBase::isSupported () const {
+            return version () >= WINTERMUTE_VERSION;
+        }
+
+        const QString PluginBase::path () const {
+            return QString::null;
         }
     }
 }

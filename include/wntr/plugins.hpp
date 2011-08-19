@@ -20,36 +20,31 @@
 
 #ifndef PLUGINS_HPP
 #define PLUGINS_HPP
-#include <map>
-#include <vector>
+#include <QMap>
 #include <QFile>
+#include <QVector>
+#include <QPluginLoader>
+#include "config.hpp"
 
 using namespace std;
 using std::vector;
 using std::map;
 
 namespace Wintermute {
-    /**
-      This namespace should contain all of the required classes and work needed to
-      properly load 'plugins' or libraries compiled against Wintermute's headers, but
-      are loaded dynamically to provide extra functionality to the system.
-    */
     namespace Plugins {
         struct Factory;
-        struct Plugin;
+        struct PluginBase;
 
         /**
-         * @brief
-         *
+         * @brief Represents a set of plugins.
          * @typedef PluginVector
          */
-        typedef vector<Plugin*> PluginVector;
+        typedef QVector<PluginBase*> PluginVector;
         /**
-         * @brief
-         *
+         * @brief Represents a named set of plugins.
          * @typedef PluginMap
          */
-        typedef map<const string, Plugin*> PluginMap;
+        typedef QMap<const string, PluginBase*> PluginMap;
 
         /**
          * @brief Factory management of plugins.
@@ -59,40 +54,71 @@ namespace Wintermute {
          * @see Plugin
          */
         class Factory {
-                friend class Plugin;
+            friend class Plugin;
             public:
                 /**
-                 * @brief
-                 *
+                 * @brief Starts the plug-in system.
                  * @fn Startup
                  */
                 static void Startup();
                 /**
-                 * @brief
-                 *
+                 * @brief Stops the plug-in system.
                  * @fn Shutdown
                  */
                 static void Shutdown();
                 /**
-                 * @brief
+                 * @brief Loads a plugin.
                  * @fn loadPlugin
                  * @param
                  */
-                static const Plugin* loadPlugin ( const string& );
+                static const PluginBase* loadPlugin ( const string& );
                 /**
-                 * @brief
+                 * @brief Loads a plugin.
                  * @fn loadPlugin
+                 * @overload
                  * @param
                  */
-                static const Plugin* loadPlugin ( const QFile* );
+                static const PluginBase* loadPlugin ( const QFile* );
             private:
                 static PluginVector s_allPlgns;
+        };
+
+        /**
+         * @brief Abstract class representing the outlining information of a plug-in.
+         * @todo Implement a means of updating plug-ins as well.
+         * @class Plugin plugins.hpp "include/wntr/plugins.hpp"
+         */
+        class PluginBase {
+            friend class Factory;
+
+            private:
+                QPluginLoader* m_plgnLdr;
+
+            public:
+                explicit PluginBase();
+                PluginBase(const PluginBase& );
+                virtual ~PluginBase() = 0;
+                virtual inline const string id () const { return ""; }
+                virtual inline const string name () const { return ""; }
+                virtual inline const string friendlyName () const { return ""; }
+                virtual inline const string vendorName () const{ return ""; }
+                virtual inline const string description () const { return ""; }
+                virtual inline const string webPage () const { return ""; }
+                virtual inline const double version() const { return -1.0; }
+                virtual void initialize() { }
+                virtual void deinitialize() { }
+                virtual QObject* instance() { }
+
+                const bool isSupported() const;
+                const QString path() const;
+
+                bool operator == (const PluginBase& );
         };
 
     }
 }
 
-//Q_DECLARE_INTERFACE(Wintermute::Plugins::Interface, "thesii.Wntr.Interface");
+Q_DECLARE_INTERFACE(Wintermute::Plugins::PluginBase, "thesii.Wntr.PluginBase");
 
 #endif /* PLUGINS_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
