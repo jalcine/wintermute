@@ -30,6 +30,7 @@
 #include <string>
 
 #define WINTERMUTE_VERSION @WINTERMUTE_VERSION@
+#define WINTER_PLUGINS_PATH "@WINTER_LIB_INSTALL_DIR@/wntr"
 
 #endif // __CONFIG_HPP__
 

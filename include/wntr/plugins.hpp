@@ -24,6 +24,9 @@
 #include <QFile>
 #include <QVector>
 #include <QPluginLoader>
+#include <QVariant>
+#include <QStringList>
+#include <wntr/config.hpp>
 
 using namespace std;
 using std::vector;
@@ -35,15 +38,10 @@ namespace Wintermute {
         struct PluginBase;
 
         /**
-         * @brief Represents a set of plugins.
-         * @typedef PluginVector
-         */
-        typedef QVector<PluginBase*> PluginVector;
-        /**
          * @brief Represents a named set of plugins.
          * @typedef PluginMap
          */
-        typedef QMap<const string, PluginBase*> PluginMap;
+        typedef QMap<QString, PluginBase*> PluginList;
 
         /**
          * @brief Factory management of plugins.
@@ -78,8 +76,10 @@ namespace Wintermute {
                  * @param
                  */
                 static const PluginBase* loadPlugin ( const QFile* );
+
+                PluginList const & loadedPlugins() { return s_allPlgns; }
             private:
-                static PluginVector s_allPlgns;
+                static PluginList s_allPlgns;
         };
 
         /**
@@ -90,22 +90,47 @@ namespace Wintermute {
         class PluginBase : public QObject {
             friend class Factory;
             Q_OBJECT
+            Q_PROPERTY(const double Version READ version)
+            Q_PROPERTY(const double CompatibleVersion READ compatVersion)
+            Q_PROPERTY(const QString UUID READ uuid)
+            Q_PROPERTY(const QString Name READ name)
+            Q_PROPERTY(const QString Author READ author)
+            Q_PROPERTY(const QString VendorName READ vendorName)
+            Q_PROPERTY(const QString Description READ description)
+            Q_PROPERTY(const QString WebPage READ webPage)
+            Q_PROPERTY(const QString Dependencies READ dependencies)
 
             private:
                 QPluginLoader* m_plgnLdr;
 
             public:
-                explicit PluginBase();
-                PluginBase(QPluginLoader* );
-                PluginBase(const PluginBase& );
-                ~PluginBase();
-                void initialize() { }
-                void deinitialize() { }
-                QObject* instance() { return NULL; }
+                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL) { }
+                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl) { }
+                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr){  }
+                void operator= (PluginBase const &p_plgn) {
+                    delete this->m_plgnLdr;
+                    this->m_plgnLdr = p_plgn.m_plgnLdr;
+                }
+                virtual ~PluginBase() {
+                    delete this->m_plgnLdr;
+                }
 
-                const bool isSupported() const;
+                virtual const double version() const = 0;
+                virtual const double compatVersion() const = 0;
+                virtual const QString uuid() const = 0;
+                virtual const QString name() const = 0;
+                virtual const QString author() const = 0;
+                virtual const QString vendorName() const = 0;
+                virtual const QString description() const = 0;
+                virtual const QString webPage() const = 0;
+                virtual const QString dependencies() const = 0;
+                virtual void initialize() = 0;
+                virtual void deinitialize() = 0;
+                virtual QObject* instance() = 0;
+
+                const bool isSupported() const { return compatVersion() >= WINTERMUTE_VERSION; }
                 const QString path() const { return QString::null; }
-                bool operator == (const PluginBase &p_1 ) { return p_1.m_plgnLdr == m_plgnLdr; }
+                //bool operator == (const PluginBase &p_1 ) { return p_1.m_plgnLdr == m_plgnLdr; }
         };
 
     }

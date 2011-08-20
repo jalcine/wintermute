@@ -57,8 +57,9 @@ namespace Wintermute {
         options_description desc ( "Options" );
 
         desc.add_options ()
-        ( "locale,lcl" , po::value<string>(), "Defines the locale used by the system for parsing. (default: 'en')")
-        ( "ipc,module" , po::value<string>(),"Defines the IPC module to run this process as. (default: 'master')" );
+        ( "locale" , po::value<string>(), "Defines the locale used by the system for parsing. (default: 'en')")
+        ( "plugin" , po::value< vector<string> >(),"Loads a list of plugins. (default: '')" );
+        ( "ipc" , po::value<string>(),"Defines the IPC module to run this process as. (default: 'master')" );
 
         string ipcModule("master");
         desc.add_options()
@@ -86,6 +87,12 @@ namespace Wintermute {
 
             if ( vm.count ("locale") )
                 Wintermute::Data::Linguistics::Configuration::setLocale (vm["locale"].as<string>());
+
+            if ( vm.count ("plugin") ){
+                vector<string> l_plgnLst = vm["plugin"].as< vector<string> >();
+                foreach(string l_k, l_plgnLst)
+                    Wintermute::Plugins::Factory::loadPlugin (l_k);
+            }
         } else
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
 
