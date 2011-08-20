@@ -23,12 +23,6 @@
 #define CORE_HPP
 
 #include <QCoreApplication>
-#include <boost/program_options.hpp>
-
-using namespace boost::program_options;
-
-using boost::program_options::variables_map;
-using boost::program_options::options_description;
 
 namespace Wintermute {
     struct Core;
@@ -54,13 +48,6 @@ namespace Wintermute {
              * @fn Deinitialize
              */
             static void Deinitialize ();
-            /**
-             * @brief Manages command line.
-             * Mananges the command toggles and what-not of Wintermute.
-             * @fn manageCmdLine
-             * @todo Allow an appending of command-line options on-the-fly; may need to create an abstract class for it.
-             */
-            static void manageCmdLine ( variables_map& , options_description& );
 
         signals:
             void initialized();

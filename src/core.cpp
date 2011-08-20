@@ -26,10 +26,15 @@
 #include <iostream>
 #include <wntrdata.hpp>
 #include <wntrntwk.hpp>
+#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace Wintermute;
+namespace po = boost::program_options;
 
+
+using boost::program_options::variables_map;
+using boost::program_options::options_description;
 using std::cout;
 using std::endl;
 
@@ -52,34 +57,15 @@ namespace Wintermute {
         options_description desc ( "Options" );
 
         desc.add_options ()
-        ( "locale"  ,"Defines the locale used by the system for parsing. (default: 'en')")
-        ( "ipc"     ,"Defines the IPC module to run this process as. (default: 'master')" );
-        Core::manageCmdLine(vm,desc);
-    }
+        ( "locale,lcl" , po::value<string>(), "Defines the locale used by the system for parsing. (default: 'en')")
+        ( "ipc,module" , po::value<string>(),"Defines the IPC module to run this process as. (default: 'master')" );
 
-    void Core::Initialize() {
-        if (IPC::currentModule() == "master")
-            Wintermute::Data::Configuration::Initialize();
-        else if (IPC::currentModule() == "network")
-            Wintermute::Network::Initialize ();
-        Wintermute::Plugins::Factory::Startup ();
-    }
-
-    void Core::Deinitialize() {
-        if (IPC::currentModule() == "master")
-            Wintermute::Data::Configuration::Deinitialize ();
-        else if (IPC::currentModule() == "network")
-            Wintermute::Network::Deinitialize ();
-        Wintermute::Plugins::Factory::Shutdown ();
-    }
-
-    void Core::manageCmdLine ( variables_map &vm, options_description &desc ) {
         string ipcModule("master");
         desc.add_options()
         ( "help","show help screen" );
 
-        boost::program_options::notify ( vm );
-        boost::program_options::store ( boost::program_options::parse_command_line ( QCoreApplication::argc (), QCoreApplication::argv () , desc ), vm );
+        po::notify ( vm );
+        po::store ( po::parse_command_line ( QCoreApplication::argc (), QCoreApplication::argv () , desc ), vm );
 
         if ( !vm.empty () ) {
             if ( vm.count ( "help" ) ) {
@@ -104,5 +90,21 @@ namespace Wintermute {
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
 
         IPC::Initialize(ipcModule);
+    }
+
+    void Core::Initialize() {
+        if (IPC::currentModule() == "master")
+            Wintermute::Data::Configuration::Initialize();
+        else if (IPC::currentModule() == "network")
+            Wintermute::Network::Initialize ();
+        Wintermute::Plugins::Factory::Startup ();
+    }
+
+    void Core::Deinitialize() {
+        if (IPC::currentModule() == "master")
+            Wintermute::Data::Configuration::Deinitialize ();
+        else if (IPC::currentModule() == "network")
+            Wintermute::Network::Deinitialize ();
+        Wintermute::Plugins::Factory::Shutdown ();
     }
 }

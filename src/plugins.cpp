@@ -20,6 +20,8 @@
  */
 
 #include <QtDebug>
+#include <QVariant>
+#include "config.hpp"
 #include "plugins.hpp"
 
 using namespace std;
@@ -27,7 +29,6 @@ using namespace std;
 namespace Wintermute {
     namespace Plugins {
         PluginVector Factory::s_allPlgns;
-        typedef void (*VoidFunction)(void);
 
         /// @todo Load the plugins designated to be loaded.
         void Factory::Startup () {
@@ -53,8 +54,8 @@ namespace Wintermute {
             QPluginLoader* l_plgnLdr = new QPluginLoader(p_fl->fileName ());
             l_plgnLdr->setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
             if (l_plgnLdr->load ()){
-                PluginBase* l_plgnBase = qobject_cast<PluginBase*>(l_plgnLdr->instance ());
-                //l_plgnBase->m_plgnLdr = l_plgnLdr;
+                PluginBase* l_plgnBase = dynamic_cast<PluginBase*>(l_plgnLdr->instance ());
+                l_plgnBase->m_plgnLdr = l_plgnLdr;
                 l_plgnBase->initialize ();
                 Factory::s_allPlgns.push_back (l_plgnBase);
                 return l_plgnBase;
@@ -64,24 +65,16 @@ namespace Wintermute {
             }
         }
 
-        PluginBase::PluginBase() : m_plgnLdr(NULL) {
+        PluginBase::PluginBase() : m_plgnLdr(NULL), QObject(NULL) { }
 
-        }
+        PluginBase::PluginBase(const PluginBase &p_base) : m_plgnLdr(p_base.m_plgnLdr), QObject(m_plgnLdr) { }
 
-        PluginBase::PluginBase(const PluginBase &p_1) : m_plgnLdr(p_1.m_plgnLdr) {
+        PluginBase::PluginBase(QPluginLoader *p_ldr) : m_plgnLdr(p_ldr), QObject(m_plgnLdr) { }
 
-        }
-
-        bool PluginBase::operator == (const PluginBase &p_1) {
-            return p_1.m_plgnLdr == m_plgnLdr;
-        }
+        PluginBase::~PluginBase () { }
 
         const bool PluginBase::isSupported () const {
-            return version () >= WINTERMUTE_VERSION;
-        }
-
-        const QString PluginBase::path () const {
-            return QString::null;
+            return this->property ("version").toDouble() >= WINTERMUTE_VERSION;
         }
     }
 }

@@ -24,7 +24,6 @@
 #include <QFile>
 #include <QVector>
 #include <QPluginLoader>
-#include "config.hpp"
 
 using namespace std;
 using std::vector;
@@ -88,31 +87,25 @@ namespace Wintermute {
          * @todo Implement a means of updating plug-ins as well.
          * @class Plugin plugins.hpp "include/wntr/plugins.hpp"
          */
-        class PluginBase {
+        class PluginBase : public QObject {
             friend class Factory;
+            Q_OBJECT
 
             private:
                 QPluginLoader* m_plgnLdr;
 
             public:
                 explicit PluginBase();
+                PluginBase(QPluginLoader* );
                 PluginBase(const PluginBase& );
-                virtual ~PluginBase() = 0;
-                virtual inline const string id () const { return ""; }
-                virtual inline const string name () const { return ""; }
-                virtual inline const string friendlyName () const { return ""; }
-                virtual inline const string vendorName () const{ return ""; }
-                virtual inline const string description () const { return ""; }
-                virtual inline const string webPage () const { return ""; }
-                virtual inline const double version() const { return -1.0; }
-                virtual void initialize() { }
-                virtual void deinitialize() { }
-                virtual QObject* instance() { }
+                ~PluginBase();
+                void initialize() { }
+                void deinitialize() { }
+                QObject* instance() { return NULL; }
 
                 const bool isSupported() const;
-                const QString path() const;
-
-                bool operator == (const PluginBase& );
+                const QString path() const { return QString::null; }
+                bool operator == (const PluginBase &p_1 ) { return p_1.m_plgnLdr == m_plgnLdr; }
         };
 
     }
