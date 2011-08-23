@@ -31,25 +31,47 @@ using namespace Wintermute;
 
 namespace Wintermute {
     struct IPC;
-    struct DbusAdaptor;
+    struct DBusAdaptor;
 
     /**
      * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
      * @class IPC ipc.hpp "include/wntr/ipc.hpp"
      */
     class IPC {
-        friend class DbusAdaptor;
+        friend class DBusAdaptor;
         public:
+            /**
+             * @brief
+             * @fn Initialize
+             * @param
+             */
             static void Initialize (const string& = "master");
+            /**
+             * @brief
+             * @fn currentModule
+             * @return const string
+             */
             static const string currentModule() { return s_mod; }
         private:
-            ~IPC();
+            /**
+             * @brief
+             * @fn IPC
+             */
             IPC();
+            /**
+             * @brief
+             * @fn ~IPC
+             */
+            ~IPC();
             static string s_mod;
-            static DbusAdaptor* s_dbus;
+            static DBusAdaptor* s_dbus;
     };
 
-    class DbusAdaptor : protected QDBusAbstractAdaptor {
+    /**
+     * @brief
+     * @class DbusAdaptor ipc.hpp "include/wntr/ipc.hpp"
+     */
+    class DBusAdaptor : protected QDBusAbstractAdaptor {
         Q_OBJECT
         Q_CLASSINFO("D-Bus Interface","org.thesii.DBus.Wintermute")
         Q_CLASSINFO("Author","Synthetic Intellect Institute")
@@ -58,12 +80,29 @@ namespace Wintermute {
         Q_PROPERTY(string module READ module)
 
         public:
-            DbusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
-            ~DbusAdaptor() { emit destroyed (this); }
-
-            string module() { return IPC::s_mod; }
+            /**
+             * @brief
+             * @fn DbusAdaptor
+             * @param p_app
+             */
+            DBusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
+            /**
+             * @brief
+             * @fn ~DbusAdaptor
+             */
+            ~DBusAdaptor() { emit destroyed (this); }
 
         public slots:
+            /**
+             * @brief
+             * @fn module
+             * @return string
+             */
+            Q_INVOKABLE string module() { return IPC::s_mod; }
+            /**
+             * @brief
+             * @fn quit
+             */
             Q_NOREPLY void quit(){
                 cout << "(core) [Dbus] Recieved quit signal. Quitting..." << endl;
                 QCoreApplication::instance ()->quit ();

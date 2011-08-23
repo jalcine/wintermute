@@ -22,7 +22,8 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QVariantMap>
 
 namespace Wintermute {
     struct Core;
@@ -37,24 +38,30 @@ namespace Wintermute {
         public:
             static void Configure ( int& , char ** );
             /**
-             * @brief
-             *
+             * @brief Initializes the system.
+             * Does the first bit of initialization work for the core process of Wintermute.
+             * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
              * @fn Initialize
              */
             static void Initialize();
             /**
-             * @brief
-             *
+             * @brief Deinitializes the system.
+             * Cleans up all of the work for the core processes and runs the approriate disconnection methods.
              * @fn Deinitialize
              */
             static void Deinitialize ();
-
-        signals:
-            void initialized();
-            void deinitialized();
+            /**
+             * @brief
+             * @fn appInstance
+             */
+            static QApplication* appInstance();
 
         protected:
-            static QCoreApplication* m_app;
+            static QApplication* s_app;
+            static QVariantMap* s_args;
+
+        private:
+            static void configureCommandLine();
     };
 }
 

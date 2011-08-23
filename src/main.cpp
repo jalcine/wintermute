@@ -21,7 +21,6 @@
 
 #include <string>
 #include <iostream>
-#include <QCoreApplication>
 #include <wntrdata.hpp>
 #include <wntrling.hpp>
 #include "wintermute.hpp"
@@ -39,22 +38,17 @@ using Wintermute::Linguistics::Parser;
 
 int main ( int argc, char** argv ) {
     Core::Configure ( argc , argv );
-    Core::Initialize ();
 
-    if (IPC::currentModule () == "master"){
-        Linguistics::Parser aParser("en");
-        QTextStream qin ( stdin );
-        QString line;
+    Wintermute::Linguistics::Parser l_prsr;
+    QTextStream l_strm(stdin);
 
-        cout << "** Enter '*quit*' to exit linguistics parsing. **" << endl;
-
-        while ( line != "*quit*" ) {
-            cout << "** Statement: ?] ";
-            line = qin.readLine ();
-            aParser.parse( line.toStdString () );
-            cout.flush ();
-        }
+    while (!l_strm.atEnd ()){
+        l_strm << "(main) Statement: ] ";
+        QString l_ln = l_strm.readLine ();
+        l_prsr.parse (l_ln.toStdString ());
+        l_strm << endl;
     }
+
     return 0;
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -76,7 +76,11 @@ namespace Wintermute {
                  * @param
                  */
                 static const PluginBase* loadPlugin ( const QFile* );
-
+                /**
+                 * @brief
+                 * @fn loadedPlugins
+                 * @return const PluginList &
+                 */
                 PluginList const & loadedPlugins() { return s_allPlgns; }
             private:
                 static PluginList s_allPlgns;
@@ -104,33 +108,112 @@ namespace Wintermute {
                 QPluginLoader* m_plgnLdr;
 
             public:
+                /**
+                 * @brief
+                 * @fn PluginBase
+                 */
                 explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL) { }
+                /**
+                 * @brief
+                 * @fn PluginBase
+                 * @param p_pl
+                 */
                 PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl) { }
+                /**
+                 * @brief
+                 * @fn PluginBase
+                 * @param p_pb
+                 */
                 PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr){  }
+                /**
+                 * @brief
+                 * @fn operator =
+                 * @param p_plgn
+                 */
                 void operator= (PluginBase const &p_plgn) {
                     delete this->m_plgnLdr;
                     this->m_plgnLdr = p_plgn.m_plgnLdr;
                 }
+                /**
+                 * @brief
+                 * @fn ~PluginBase
+                 */
                 virtual ~PluginBase() {
                     delete this->m_plgnLdr;
                 }
 
+                /**
+                 * @brief
+                 * @fn version
+                 */
                 virtual const double version() const = 0;
+                /**
+                 * @brief
+                 * @fn compatVersion
+                 */
                 virtual const double compatVersion() const = 0;
+                /**
+                 * @brief
+                 * @fn uuid
+                 */
                 virtual const QString uuid() const = 0;
+                /**
+                 * @brief
+                 * @fn name
+                 */
                 virtual const QString name() const = 0;
+                /**
+                 * @brief
+                 * @fn author
+                 */
                 virtual const QString author() const = 0;
+                /**
+                 * @brief
+                 * @fn vendorName
+                 */
                 virtual const QString vendorName() const = 0;
+                /**
+                 * @brief
+                 * @fn description
+                 */
                 virtual const QString description() const = 0;
+                /**
+                 * @brief
+                 * @fn webPage
+                 */
                 virtual const QString webPage() const = 0;
+                /**
+                 * @brief
+                 * @fn dependencies
+                 */
                 virtual const QString dependencies() const = 0;
+                /**
+                 * @brief
+                 * @fn initialize
+                 */
                 virtual void initialize() = 0;
+                /**
+                 * @brief
+                 * @fn deinitialize
+                 */
                 virtual void deinitialize() = 0;
+                /**
+                 * @brief
+                 * @fn instance
+                 */
                 virtual QObject* instance() = 0;
-
+                /**
+                 * @brief
+                 * @fn isSupported
+                 * @return const bool
+                 */
                 const bool isSupported() const { return compatVersion() >= WINTERMUTE_VERSION; }
+                /**
+                 * @brief
+                 * @fn path
+                 * @return const QString
+                 */
                 const QString path() const { return QString::null; }
-                //bool operator == (const PluginBase &p_1 ) { return p_1.m_plgnLdr == m_plgnLdr; }
         };
 
     }

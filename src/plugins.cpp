@@ -45,7 +45,7 @@ namespace Wintermute {
             foreach (QString l_pd, l_pls)
                 Factory::loadPlugin (string(WINTER_PLUGINS_PATH) + string("/") + l_pd.toStdString ());
 
-            Factory::loadPlugin ("/usr/lib/libwntrgui.so");
+            //Factory::loadPlugin ("/usr/lib/libwntrgui.so");
         }
 
         /// @todo Unload every loaded plugin and free all resources.

@@ -19,31 +19,29 @@
  * @endlegalese
  */
 
-#include <QtDBus>
 #include "ipc.hpp"
+#include <wntrntwk.hpp>
+#include <QtDBus>
+#include <QProcess>
 #include <QCoreApplication>
 
 namespace Wintermute {
     string IPC::s_mod;
-    DbusAdaptor* IPC::s_dbus;
+    DBusAdaptor* IPC::s_dbus;
 
-    /// @todo #1: Start the network and plugin processes and check if they're alive.
-    /// @todo #2: Initialize the network system and begin attempting to connect to a local socket, the Intranet, and the Internet.
-    /// @todo #3: Load system plugins (input management) and load user plugins.
+    /// @todo Connect to D-Bus via an wrapper class (make that a static object of IPC).
+    /// @todo Determine the actions to be taken depending on the IPC module.
     void IPC::Initialize(const string& p_ipcMod){
         s_mod = p_ipcMod;
-        s_dbus = new DbusAdaptor(QCoreApplication::instance ());
-        QDBusConnection::sessionBus().registerObject("/Wintermute", QCoreApplication::instance ());
+        s_dbus = new DBusAdaptor(QCoreApplication::instance ());
+        QDBusConnection::sessionBus().registerObject("/Wintermute", Core::appInstance());
 
         cout << "(core) [IPC] Module '" << p_ipcMod << "' running." << endl;
 
-        if (p_ipcMod == "master"){
-            // See the first TODO.
-        } else if (p_ipcMod == "network") {
-            // See the second TODO.
-        } else if (p_ipcMod == "plugin") {
-            // See the third TODO.
-        }
+        if (p_ipcMod == "master")
+            Core::Initialize ();
+        else if (p_ipcMod == "network")
+            Network::Initialize ();
     }
 }
 

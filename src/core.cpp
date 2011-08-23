@@ -26,6 +26,9 @@
 #include <iostream>
 #include <wntrdata.hpp>
 #include <wntrntwk.hpp>
+#include <QProcess>
+#include <QtDebug>
+#include <QVariantMap>
 #include <boost/program_options.hpp>
 
 using namespace std;
@@ -39,79 +42,82 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-    QCoreApplication* Core::m_app = NULL;
+    QApplication* Core::s_app = NULL;
+    QVariantMap* Core::s_args = NULL;
 
-    void Core::Configure ( int& argc, char** argv ) {
-        if ( !m_app ) {
-            m_app = new QCoreApplication ( argc , argv );
-            m_app->setApplicationName ( "Wintermute" );
-            m_app->setApplicationVersion( QString::number (WINTERMUTE_VERSION) );
-            m_app->setOrganizationDomain ( "org.thesii.Wntr" );
-            m_app->setOrganizationName ( "Synthetic Intellect Institute" );
-        }
+    void Core::Configure ( int& p_argc, char** p_argv ) {
+        int l_argc = p_argc;
+        s_app = new QApplication(p_argc,p_argv);
+        s_app->setApplicationName ( "Wintermute" );
+        s_app->setApplicationVersion( QString::number (WINTERMUTE_VERSION) );
+        s_app->setOrganizationDomain ( "org.thesii.Wintermute" );
+        s_app->setOrganizationName ( "Synthetic Intellect Institute" );
 
         cout << qPrintable(QCoreApplication::applicationName ()) << " " << qPrintable(QCoreApplication::applicationVersion ()) << " (pid " << QCoreApplication::applicationPid () << ") :: "
              << "Artificial intelligence for common Man." << endl;
 
-        variables_map vm;
-        options_description desc ( "Options" );
+        configureCommandLine();
 
-        desc.add_options ()
-        ( "locale" , po::value<string>(), "Defines the locale used by the system for parsing. (default: 'en')")
-        ( "plugin" , po::value< vector<string> >(),"Loads a list of plugins. (default: '')" );
-        ( "ipc" , po::value<string>(),"Defines the IPC module to run this process as. (default: 'master')" );
+        string ipcModule = "master";
+
+        if (s_args->count ("ipc") != 0)
+            ipcModule = s_args->value ("ipc").toString ().toStdString ();
+
+        IPC::Initialize(ipcModule);
+    }
+
+    void Core::configureCommandLine () {
+        variables_map l_vm;
+        s_args = new QVariantMap;
+        int l_argc = QApplication::argc ();
+        char** l_argv = QApplication::argv ();
+        options_description l_desc ( "Options" );
+
+        l_desc.add_options ()
+        ( "locale" , "Defines the locale used by the system for parsing. (default: 'en')")
+        ( "plugin" , "Loads a list of plugins. (default: '')" )
+        ( "ipc"    , "Defines the IPC module to run this process as. (default: 'master')" );
 
         string ipcModule("master");
-        desc.add_options()
+        l_desc.add_options()
         ( "help","show help screen" );
 
-        po::notify ( vm );
-        po::store ( po::parse_command_line ( QCoreApplication::argc (), QCoreApplication::argv () , desc ), vm );
+        po::notify ( l_vm );
+        po::store ( po::parse_command_line ( l_argc, l_argv , l_desc ), l_vm );
 
-        if ( !vm.empty () ) {
-            if ( vm.count ( "help" ) ) {
+        if ( !l_vm.empty () ) {
+            if ( l_vm.count ( "help" ) ) {
                 /// @todo Render a set of text to be used for the help screen.
                 cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
-                     << desc << endl << endl
+                     << l_desc << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
                      << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
 
                 exit (0);
             }
 
-            if ( vm.count ( "ipc" ) ) {
-                if ( vm["ipc"].as<string>() == "master" || vm["ipc"].as<int>() == 0 )		  ipcModule = "master";
-                else if ( vm["ipc"].as<string>() == "network" || vm["ipc"].as<int>() == 1 )   ipcModule = "network";
-                else if ( vm["ipc"].as<string>() == "plugin" || vm["ipc"].as<int>() == 2 )    ipcModule = "plugin";
-            } else ipcModule = "master";
+            if ( l_vm.count ( "ipc" ) )
+                s_args->insert ("ipc" , QString::fromStdString (l_vm["ipc"].as<string>()));
 
-            if ( vm.count ("locale") )
-                Wintermute::Data::Linguistics::Configuration::setLocale (vm["locale"].as<string>());
+            if ( l_vm.count ("locale") )
+                s_args->insert ("locale" , QString::fromStdString (l_vm["locale"].as<string>()));
 
-            if ( vm.count ("plugin") ){
-                vector<string> l_plgnLst = vm["plugin"].as< vector<string> >();
-                foreach(string l_k, l_plgnLst)
-                    Wintermute::Plugins::Factory::loadPlugin (l_k);
-            }
+            if ( l_vm.count ("plugin") )
+                s_args->insert ("plugin" , QString::fromStdString (l_vm["plugin"].as<string>()));
+
         } else
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
-
-        IPC::Initialize(ipcModule);
     }
 
+    QApplication* Core::appInstance () { return s_app; }
+
     void Core::Initialize() {
-        if (IPC::currentModule() == "master")
-            Wintermute::Data::Configuration::Initialize();
-        else if (IPC::currentModule() == "network")
-            Wintermute::Network::Initialize ();
-        Wintermute::Plugins::Factory::Startup ();
+        Data::Configuration::Initialize ();
+        Plugins::Factory::Startup ();
     }
 
     void Core::Deinitialize() {
-        if (IPC::currentModule() == "master")
-            Wintermute::Data::Configuration::Deinitialize ();
-        else if (IPC::currentModule() == "network")
-            Wintermute::Network::Deinitialize ();
-        Wintermute::Plugins::Factory::Shutdown ();
+        Data::Configuration::Deinitialize ();
+        Plugins::Factory::Shutdown ();
     }
 }
