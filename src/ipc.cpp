@@ -1,5 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ namespace Wintermute {
     void IPC::Initialize(const string& p_ipcMod){
         s_mod = p_ipcMod;
         s_dbus = new DBusAdaptor(QCoreApplication::instance ());
-        QDBusConnection::sessionBus().registerObject("/Wintermute", Core::appInstance());
+        QDBusConnection::sessionBus().registerObject("/Wintermute", const_cast<Core*>(Core::instance()));
 
         cout << "(core) [IPC] Module '" << p_ipcMod << "' running." << endl;
 

@@ -1,6 +1,5 @@
 /**
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
- *
  * @legalese
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,25 +16,22 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  * @endlegalese
- *
- * File providing compile-time data about runtime-configuration.
- * Required for the core of Wintermute.
  */
 
-#ifndef __CONFIG_HPP__
-#define __CONFIG_HPP__
+#include <ncurses.h>
+#include "ncurses.hpp"
 
-#cmakedefine DEBUG
+namespace Wintermute {
+    Curses Curses::s_crs;
 
-#define WINTERMUTE_VERSION @WINTERMUTE_VERSION@
-#define WINTER_PLUGINS_PATH "@WINTER_LIB_INSTALL_DIR@/wntr"
+    Curses::Curses() {  }
 
-#if @WINTERMUTE_USE_GUI@ == true
-#define WINTERMUTE_USING_GUI true
-#else
-#undef WINTERMUTE_USING_GUI
-#endif
+    Curses::Curses(const Curses &p_crs) { }
 
-#endif // __CONFIG_HPP__
+    Curses::~Curses () { }
 
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+    void Curses::start() { }
+
+    void Curses::stop () { }
+
+}

@@ -1,5 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -21,10 +21,10 @@
 #ifndef IPC_HPP
 #define IPC_HPP
 
-#include <iostream>
-#include <string>
-#include <QtDBus>
 #include "wintermute.hpp"
+#include <QtDBus>
+#include <string>
+#include <iostream>
 
 using namespace std;
 using namespace Wintermute;
@@ -35,23 +35,48 @@ namespace Wintermute {
 
     /**
      * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
+     *
+     * This class manages the inter process communication of Wintermute. It handles the
+     * incoming and outcoming requests of data, and allows Wintermute to fork off into
+     * the approriate processes that represent it.
+     *
+     * Wintermute can run as one of the following sub-modules:
+     * - <b>master</b>: Represents the core module, or the master daemon that'll be a means
+     * of regulating the sub processes.
+     *
+     * - <b>network</b>: Represents the network module. This module typically runs asynchronously
+     * of the core Wintermute processes and implements most of its work in the core networking library (WntrNtwk).
+     *
+     * - <b>plugin</b>: Represnts the plugin module. Plug-ins are run in their process, allowing them
+     * to take advantage of their own work, and prevents system failure if the plug-in happens to
+     * crash.
+     *
+     * @note If you're attempting to send messages via Wintermute, you should look at @c DBusAdaptor.
+     *
+     * @see DBusAdaptor
      * @class IPC ipc.hpp "include/wntr/ipc.hpp"
      */
     class IPC {
         friend class DBusAdaptor;
         public:
             /**
-             * @brief
+             * @brief Initializes the IPC system.
+             *
+             * Starts up the IPC system by storing the type of module that Wintermute's
+             * running under and executing the code required to render that module.
+             *
              * @fn Initialize
              * @param
              */
             static void Initialize (const string& = "master");
+
             /**
-             * @brief
+             * @brief Obtains the current module.
              * @fn currentModule
-             * @return const string
+             * @return The name of the running module (either 'master', 'network' or 'plugin').
              */
             static const string currentModule() { return s_mod; }
+
         private:
             /**
              * @brief
@@ -69,9 +94,9 @@ namespace Wintermute {
 
     /**
      * @brief
-     * @class DbusAdaptor ipc.hpp "include/wntr/ipc.hpp"
+     * @class DBusAdaptor ipc.hpp "include/wntr/ipc.hpp"
      */
-    class DBusAdaptor : protected QDBusAbstractAdaptor {
+    class DBusAdaptor : public QDBusAbstractAdaptor {
         Q_OBJECT
         Q_CLASSINFO("D-Bus Interface","org.thesii.DBus.Wintermute")
         Q_CLASSINFO("Author","Synthetic Intellect Institute")
@@ -82,10 +107,23 @@ namespace Wintermute {
         public:
             /**
              * @brief
+             *
+             * @fn DBusAdaptor
+             */
+            DBusAdaptor() : QDBusAbstractAdaptor(NULL) { }
+            /**
+             * @brief
              * @fn DbusAdaptor
              * @param p_app
              */
             DBusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
+            /**
+             * @brief
+             *
+             * @fn DBusAdaptor
+             * @param p_dbus
+             */
+            DBusAdaptor(const DBusAdaptor& p_dbus) : QDBusAbstractAdaptor(NULL) { }
             /**
              * @brief
              * @fn ~DbusAdaptor

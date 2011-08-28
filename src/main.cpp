@@ -1,5 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -36,19 +36,23 @@ using std::string;
 using Wintermute::Core;
 using Wintermute::Linguistics::Parser;
 
+/// @todo Suggestion: Maybe we can get a ncurses interface going?
 int main ( int argc, char** argv ) {
-    Core::Configure ( argc , argv );
+    Core l_core(argc,argv);
+    /**
 
-    Wintermute::Linguistics::Parser l_prsr;
-    QTextStream l_strm(stdin);
+    if (!WINTERMUTE_USING_GUI){
+        Wintermute::Linguistics::Parser l_prsr;
+        QTextStream l_strm(stdin);
 
-    while (!l_strm.atEnd ()){
-        l_strm << "(main) Statement: ] ";
-        QString l_ln = l_strm.readLine ();
-        l_prsr.parse (l_ln.toStdString ());
-        l_strm << endl;
-    }
+        while (!l_strm.atEnd ()){
+            cout << "(main) Statement: ] ";
+            QString l_ln = l_strm.readLine ();
+            l_prsr.parse (l_ln.toStdString ());
+            l_strm << endl;
+        }
+    }*/
 
-    return 0;
+    return WNTR_APPLICATION::exec ();
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

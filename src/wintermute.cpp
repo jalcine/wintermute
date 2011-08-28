@@ -1,5 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or

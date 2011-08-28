@@ -1,5 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -19,6 +19,9 @@
  * @endlegalese
  */
 
+#ifndef WINTERMUTE_USING_GUI
+#include "ncurses.hpp"
+#endif
 #include "config.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
@@ -42,23 +45,37 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-    QApplication* Core::s_app = NULL;
+    WNTR_APPLICATION* Core::s_app = NULL;
     QVariantMap* Core::s_args = NULL;
+    Core* Core::s_core = NULL;
+
+    Core::Core(int &p_argc, char **p_argv) {
+        Core::s_core = this;
+        Core::Configure (p_argc,p_argv);
+        ::QObject(s_app);
+
+        s_core->connect(WNTR_APPLICATION::instance (),SIGNAL(aboutToQuit()), Core::instance (),SLOT(doDeinit()));
+    }
 
     void Core::Configure ( int& p_argc, char** p_argv ) {
         int l_argc = p_argc;
-        s_app = new QApplication(p_argc,p_argv);
+        string ipcModule = "master";
+        s_app = new WNTR_APPLICATION(p_argc,p_argv);
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion( QString::number (WINTERMUTE_VERSION) );
         s_app->setOrganizationDomain ( "org.thesii.Wintermute" );
         s_app->setOrganizationName ( "Synthetic Intellect Institute" );
 
-        cout << qPrintable(QCoreApplication::applicationName ()) << " " << qPrintable(QCoreApplication::applicationVersion ()) << " (pid " << QCoreApplication::applicationPid () << ") :: "
+        cout << qPrintable(s_app->applicationName ()) << " "
+             << qPrintable(s_app->applicationVersion ())
+             << " (pid " << s_app->applicationPid () << ") :: "
              << "Artificial intelligence for common Man." << endl;
 
-        configureCommandLine();
+#ifdef WINTERMUTE_USING_GUI
+            cout << "(core) [Core] Compiled with graphical user interface enabled." << endl;
+#endif
 
-        string ipcModule = "master";
+        configureCommandLine();
 
         if (s_args->count ("ipc") != 0)
             ipcModule = s_args->value ("ipc").toString ().toStdString ();
@@ -69,8 +86,8 @@ namespace Wintermute {
     void Core::configureCommandLine () {
         variables_map l_vm;
         s_args = new QVariantMap;
-        int l_argc = QApplication::argc ();
-        char** l_argv = QApplication::argv ();
+        int l_argc = s_app->argc ();
+        char** l_argv = s_app->argv ();
         options_description l_desc ( "Options" );
 
         l_desc.add_options ()
@@ -109,15 +126,37 @@ namespace Wintermute {
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
     }
 
-    QApplication* Core::appInstance () { return s_app; }
+    const Core* Core::instance () { return s_core; }
 
     void Core::Initialize() {
         Data::Configuration::Initialize ();
         Plugins::Factory::Startup ();
+        emit s_core->initialized ();
+#ifndef WINTERMUTE_USING_GUI
+        Core::startCurses();
+#endif
     }
 
     void Core::Deinitialize() {
         Data::Configuration::Deinitialize ();
+        emit s_core->deinitialized ();
         Plugins::Factory::Shutdown ();
+#ifndef WINTERMUTE_USING_GUI
+        Core::stopCurses();
+#endif
     }
+
+    void Core::doDeinit () const {
+        Core::Deinitialize ();
+    }
+
+#ifndef WINTERMUTE_USING_GUI
+    void Core::startCurses() {
+        Curses::start();
+    }
+
+    void Core::stopCurses(){
+        Curses::stop();
+    }
+#endif
 }

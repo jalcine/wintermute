@@ -1,6 +1,5 @@
 /**
- * @author Jacky Alcine <jackyalcine@gmail.com>
- *
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  * @legalese
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,10 +20,10 @@
 
 #include <QDir>
 #include <QtDebug>
-#include <QStringList>
 #include <QCoreApplication>
 #include "config.hpp"
 #include "plugins.hpp"
+#include "core.hpp"
 
 using namespace std;
 
@@ -34,18 +33,21 @@ namespace Wintermute {
 
         /// @todo Find a means of storing plugins that should be loaded.
         /// @todo Load the plugins designated to be loaded.
+        /// @todo Have plugins be found in "${PREFIX_LIB}/plugins" (/usr/lib/wintermute/plugins via their corresponding ".plgn". They should only load this information into Wintermute, and only load plugins marked to be loaded.
         void Factory::Startup () {
             qDebug() << "(core) [Factory] Starting up...";
             QCoreApplication::addLibraryPath (WINTER_PLUGINS_PATH);
             QDir *d = new QDir(WINTER_PLUGINS_PATH);
-            QStringList l_pls = d->entryList (QDir::Files | QDir::Readable | QDir::NoSymLinks);
+            d->setFilter (QDir::Files | QDir::Readable | QDir::NoSymLinks);
+            d->setSorting (QDir::Name);
 
-            qDebug() << l_pls;
-
+            QStringList l_pls = d->entryList();
             foreach (QString l_pd, l_pls)
                 Factory::loadPlugin (string(WINTER_PLUGINS_PATH) + string("/") + l_pd.toStdString ());
 
-            //Factory::loadPlugin ("/usr/lib/libwntrgui.so");
+#ifdef WINTERMUTE_USING_GUI
+            Factory::loadPlugin ("/usr/lib/libwntrgui.so");
+#endif
         }
 
         /// @todo Unload every loaded plugin and free all resources.
@@ -55,12 +57,15 @@ namespace Wintermute {
                 qDebug() << "(core) [Factory] Unloaded" << l_plgnBs->name () << ".";
                 l_plgnBs->deinitialize ();
             }
-
-            delete[] &s_allPlgns;
         }
 
         const PluginBase* Factory::loadPlugin (const string &p_pth) {
             return loadPlugin((new QFile(QString::fromStdString (p_pth))));
+        }
+
+        void Factory::unloadPlugin(const QString& p_uuid){
+            PluginBase* l_plgn = Factory::s_allPlgns.take (p_uuid);
+            delete l_plgn;
         }
 
         /// @todo Improve dependency checking.
@@ -69,6 +74,8 @@ namespace Wintermute {
                 qWarning() << "(core) [Factory] Failed to load " << p_fl->fileName () << p_fl->errorString ();
                 return NULL;
             }
+
+            //QSettings* l_plgnSpec = new QSettings(p_fl->fileName (),QSettings::IniFormat);
 
             QPluginLoader* l_plgnLdr = new QPluginLoader(p_fl->fileName ());
             l_plgnLdr->setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
@@ -84,12 +91,13 @@ namespace Wintermute {
 
                 qDebug() << "(core) [Factory] Dependency checking skipped.";
 
-                l_plgnBase->initialize ();
+                l_plgnBase->doInitializing ();
+                QObject::connect (Core::instance (),SIGNAL(deinitialized()),l_plgnBase,SLOT(doDeinitialize()));
 
                 Factory::s_allPlgns.insert (l_plgnBase->uuid (),l_plgnBase);
                 return l_plgnBase;
             } else {
-                qWarning() << "(core) [Factory] Err:" << l_plgnLdr->errorString ();
+                qWarning() << "(core) [Factory] Err loading plugin:" << l_plgnLdr->errorString ();
                 return NULL;
             }
         }
