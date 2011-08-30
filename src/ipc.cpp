@@ -38,10 +38,13 @@ namespace Wintermute {
 
         cout << "(core) [IPC] Module '" << p_ipcMod << "' running." << endl;
 
-        if (p_ipcMod == "master")
+        if (p_ipcMod == "master" || p_ipcMod.empty ()){
             Core::Initialize ();
-        else if (p_ipcMod == "network")
+        } else if (p_ipcMod == "network"){
             Network::Initialize ();
+        } else if (p_ipcMod == "plugin"){
+
+        }
     }
 }
 

@@ -27,8 +27,10 @@
 #include "ipc.hpp"
 #include "plugins.hpp"
 #include <iostream>
+#include <QtDebug>
 #include <wntrdata.hpp>
 #include <wntrntwk.hpp>
+#include <wntrling.hpp>
 #include <QProcess>
 #include <QtDebug>
 #include <QVariantMap>
@@ -41,6 +43,7 @@ namespace po = boost::program_options;
 
 using boost::program_options::variables_map;
 using boost::program_options::options_description;
+using Wintermute::Linguistics::Parser;
 using std::cout;
 using std::endl;
 
@@ -69,7 +72,8 @@ namespace Wintermute {
         cout << qPrintable(s_app->applicationName ()) << " "
              << qPrintable(s_app->applicationVersion ())
              << " (pid " << s_app->applicationPid () << ") :: "
-             << "Artificial intelligence for common Man." << endl;
+             << "Artificial intelligence for common Man." << endl
+             << "Licensed under the GPL v3 license." << endl;
 
 #ifdef WINTERMUTE_USING_GUI
             cout << "(core) [Core] Compiled with graphical user interface enabled." << endl;
@@ -88,25 +92,52 @@ namespace Wintermute {
         s_args = new QVariantMap;
         int l_argc = s_app->argc ();
         char** l_argv = s_app->argv ();
-        options_description l_desc ( "Options" );
+        options_description l_publicOptions ( "General Options" ),
+                            l_configOptions ( "Configuration" ),
+                            l_hiddenOptions ( "Hidden Options" ),
+                            l_allOptions( "All Options" );
 
-        l_desc.add_options ()
-        ( "locale" , "Defines the locale used by the system for parsing. (default: 'en')")
-        ( "plugin" , "Loads a list of plugins. (default: '')" )
-        ( "ipc"    , "Defines the IPC module to run this process as. (default: 'master')" );
+        l_publicOptions.add_options()
+            ( "help"     , "show help screen" )
+            ( "help-all" , "show all options")
+            ( "version" , "output version number.");
+
+        l_configOptions.add_options ()
+            ( "locale,l" , po::value<string>()->default_value(WNTRDATA_DEFAULT_LOCALE) ,
+                "Defines the locale used by the system for parsing.");
+            ( "linguistics-dir,lingdir,l" , po::value<string>()->default_value(WNTRDATA_DEFAULT_LOCALE) ,
+                "Defines the directory where the linguistics information is stored.");
+
+        l_hiddenOptions.add_options ()
+            ( "plugin,p" , po::value<string>() ,
+                "Loads a plug-in. (default: none specified)" )
+            ( "ipc,i"    , po::value<string>()->default_value("master") ,
+                "Defines the IPC module to run this process as. (default: 'master')" );
+
+        l_configOptions.add (l_hiddenOptions);
+
+        l_allOptions.add(l_publicOptions).add(l_configOptions);
 
         string ipcModule("master");
-        l_desc.add_options()
-        ( "help","show help screen" );
 
-        po::notify ( l_vm );
-        po::store ( po::parse_command_line ( l_argc, l_argv , l_desc ), l_vm );
+        try {
+            po::store ( po::parse_command_line ( l_argc, l_argv , l_allOptions ), l_vm );
+            po::notify ( l_vm );
+        } catch (exception &e){
+            qDebug() << "Command-line parsing error: " << e.what();
+        }
 
         if ( !l_vm.empty () ) {
-            if ( l_vm.count ( "help" ) ) {
+            if ( l_vm.count ( "help" ) || l_vm.count ("help-all")) {
                 /// @todo Render a set of text to be used for the help screen.
-                cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl
-                     << l_desc << endl << endl
+                cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl;
+
+                if (l_vm.count ("help"))
+                     cout << l_publicOptions;
+                else if (l_vm.count ("help-all"))
+                     cout << l_allOptions;
+
+                cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
                      << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
 
@@ -119,8 +150,13 @@ namespace Wintermute {
             if ( l_vm.count ("locale") )
                 s_args->insert ("locale" , QString::fromStdString (l_vm["locale"].as<string>()));
 
+            if ( l_vm.count ("linguistics-dir") )
+                s_args->insert ("linguistics-dir" , QString::fromStdString (l_vm["linguistics-dir"].as<string>()));
+
             if ( l_vm.count ("plugin") )
                 s_args->insert ("plugin" , QString::fromStdString (l_vm["plugin"].as<string>()));
+
+            qDebug() << *s_args;
 
         } else
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
@@ -130,8 +166,12 @@ namespace Wintermute {
 
     void Core::Initialize() {
         Data::Configuration::Initialize ();
+        Data::Linguistics::Configuration::setLocale (s_args->value ("locale").toString ().toStdString ());
+        Data::Linguistics::Configuration::setDirectory (s_args->value ("linguistics-dir").toString ().toStdString ());
         Plugins::Factory::Startup ();
         emit s_core->initialized ();
+        Thread l_thrd;
+        l_thrd.run();
 #ifndef WINTERMUTE_USING_GUI
         Core::startCurses();
 #endif
@@ -158,5 +198,18 @@ namespace Wintermute {
     void Core::stopCurses(){
         Curses::stop();
     }
+
+    void Thread::run() {
+        Wintermute::Linguistics::Parser l_prsr;
+        QTextStream l_strm(stdin);
+
+        while (!l_strm.atEnd ()){
+            cout << "(main) Statement: ] ";
+            QString l_ln = l_strm.readLine ();
+            l_prsr.parse (l_ln.toStdString ());
+            l_strm << endl;
+        }
+    }
+
 #endif
 }

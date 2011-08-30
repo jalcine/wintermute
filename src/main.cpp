@@ -21,37 +21,20 @@
 
 #include <string>
 #include <iostream>
-#include <wntrdata.hpp>
-#include <wntrling.hpp>
 #include "wintermute.hpp"
 
 using namespace std;
 using namespace Wintermute;
-using namespace Wintermute::Data::Ontology;
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
 using Wintermute::Core;
-using Wintermute::Linguistics::Parser;
 
 /// @todo Suggestion: Maybe we can get a ncurses interface going?
 int main ( int argc, char** argv ) {
     Core l_core(argc,argv);
-    /**
-
-    if (!WINTERMUTE_USING_GUI){
-        Wintermute::Linguistics::Parser l_prsr;
-        QTextStream l_strm(stdin);
-
-        while (!l_strm.atEnd ()){
-            cout << "(main) Statement: ] ";
-            QString l_ln = l_strm.readLine ();
-            l_prsr.parse (l_ln.toStdString ());
-            l_strm << endl;
-        }
-    }*/
 
     return WNTR_APPLICATION::exec ();
 }
