@@ -46,7 +46,8 @@ namespace Wintermute {
                 Factory::loadPlugin (string(WINTER_PLUGINS_PATH) + string("/") + l_pd.toStdString ());
 
 #ifdef WINTERMUTE_USING_GUI
-            Factory::loadPlugin ("/usr/lib/libwntrgui.so");
+            if (Core::arguments ()->value ("gui").toBool () == true)
+                Factory::loadPlugin ("/usr/lib/libwntrgui.so");
 #endif
         }
 
@@ -65,7 +66,8 @@ namespace Wintermute {
 
         void Factory::unloadPlugin(const QString& p_uuid){
             PluginBase* l_plgn = Factory::s_allPlgns.take (p_uuid);
-            delete l_plgn;
+            if (l_plgn)
+                delete l_plgn;
         }
 
         /// @todo Improve dependency checking.

@@ -38,16 +38,6 @@
 namespace Wintermute {
     struct Core;
 
-#ifndef WINTERMUTE_USING_GUI
-    class Thread {
-        friend class Core;
-
-        public:
-            void run();
-
-    };
-#endif
-
     /**
      * @brief The central management class of Wintermute.
      *
@@ -224,6 +214,14 @@ namespace Wintermute {
 
         private slots:
             void doDeinit() const;
+    };
+
+    class Thread {
+        friend class Core;
+
+        public:
+            void run();
+
     };
 }
 

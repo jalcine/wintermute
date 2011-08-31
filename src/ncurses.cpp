@@ -23,15 +23,20 @@
 
 namespace Wintermute {
     Curses Curses::s_crs;
+    static WINDOW* s_mnWndw = NULL;
 
-    Curses::Curses() {  }
+    Curses::Curses() { }
 
     Curses::Curses(const Curses &p_crs) { }
 
     Curses::~Curses () { }
 
-    void Curses::start() { }
+    void Curses::start() {
 
-    void Curses::stop () { }
+    }
+
+    void Curses::stop () {
+
+    }
 
 }

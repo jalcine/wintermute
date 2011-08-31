@@ -271,8 +271,10 @@ namespace Wintermute {
                  *
                  * @note Version information is not yet supported.
                  * @todo Implement depenency checking with strings like (something similar to dpkg's versioning scheme or pkg-config's):
-                        foo-bar (= 0.01)
-                        foo-bar (>= 0.01) | hello-world (>> 0.02)
+                 * @code
+                 *       foo-bar (= 0.01)
+                 *       foo-bar (>= 0.01) | hello-world (>> 0.02)
+                 * @endcode
                  * @todo Use UUIDs as the canonical strings representing plug-ins. We'd need to have a Wiki page with a list of all currently known
                  * plug-ins as a central resource for developers. Add this page to the documentation once made.
                  * @fn dependencies
@@ -281,9 +283,12 @@ namespace Wintermute {
 
                 /**
                  * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.
+                 *
                  * @note This does <b>not</b> do a dependency check (not yet fully implemented).
+                 *
                  * @fn isSupported
                  * @return true if this plug-in's compatiable version is less than or equal to this version of Wintermute.
+                 *
                  * @todo More checking needs to be done to tell if it's compatible. (i.e: on major changes, make that a minimum compability value).
                  * @todo Implement checking of plug-in depenencies after checking versioning.
                  */
@@ -307,21 +312,21 @@ namespace Wintermute {
 
                 /**
                  * @brief Reimplement this method to define the deinitialization code of your plug-in.
-                 * This is run before the deinitialized() signal is emitted.
+                 * This is run after the deinitialized() signal is emitted.
                  * @fn deinitialize
                  */
                 virtual void deinitialize() = 0;
 
             private slots:
                 void doDeinitialize () {
-                    deinitialize ();
                     emit deinitializing ();
+                    deinitialize ();
                     Factory::unloadPlugin(uuid());
                 }
 
                 void doInitializing() {
-                    initialize ();
                     emit initializing ();
+                    initialize ();
                 }
         };
 

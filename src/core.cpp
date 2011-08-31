@@ -76,7 +76,7 @@ namespace Wintermute {
              << "Licensed under the GPL v3 license." << endl;
 
 #ifdef WINTERMUTE_USING_GUI
-            cout << "(core) [Core] Compiled with graphical user interface enabled." << endl;
+            cout << "(core) [Core] Compiled with graphical user interface capabilities." << endl;
 #endif
 
         configureCommandLine();
@@ -86,6 +86,8 @@ namespace Wintermute {
 
         IPC::Initialize(ipcModule);
     }
+
+    const QVariantMap* Core::arguments (){ return s_args; }
 
     void Core::configureCommandLine () {
         variables_map l_vm;
@@ -98,27 +100,34 @@ namespace Wintermute {
                             l_allOptions( "All Options" );
 
         l_publicOptions.add_options()
-            ( "help"     , "show help screen" )
-            ( "help-all" , "show all options")
-            ( "version" , "output version number.");
+            ( "help,h"         , "show help screen" )
+            ( "verbose-help"   , "show all options")
+            ( "version,v"      , "output version number.")
+        ;
 
         l_configOptions.add_options ()
             ( "locale,l" , po::value<string>()->default_value(WNTRDATA_DEFAULT_LOCALE) ,
-                "Defines the locale used by the system for parsing.");
-            ( "linguistics-dir,lingdir,l" , po::value<string>()->default_value(WNTRDATA_DEFAULT_LOCALE) ,
-                "Defines the directory where the linguistics information is stored.");
+                "Defines the locale used by the system for parsing.")
+            ( "data-dir,datadir,l" , po::value<string>()->default_value(WNTRDATA_DATA_DIR) ,
+                "Defines the directory where Wintermute's data is stored.")
+        ;
 
         l_hiddenOptions.add_options ()
             ( "plugin,p" , po::value<string>() ,
                 "Loads a plug-in. (default: none specified)" )
             ( "ipc,i"    , po::value<string>()->default_value("master") ,
-                "Defines the IPC module to run this process as. (default: 'master')" );
-
-        l_configOptions.add (l_hiddenOptions);
+                "Defines the IPC module to run this process as." )
+            ( "gui,g"    ,
+#ifdef WINTERMUTE_USING_GUI
+             po::value<bool>()->default_value(true),
+#else
+             po::value<bool>()->default_value(false),
+#endif
+                "Toggles whether or not the graphical user interface is loaded.")
+        ;
 
         l_allOptions.add(l_publicOptions).add(l_configOptions);
-
-        string ipcModule("master");
+        l_allOptions.add (l_hiddenOptions);
 
         try {
             po::store ( po::parse_command_line ( l_argc, l_argv , l_allOptions ), l_vm );
@@ -128,20 +137,27 @@ namespace Wintermute {
         }
 
         if ( !l_vm.empty () ) {
-            if ( l_vm.count ( "help" ) || l_vm.count ("help-all")) {
+            if ( l_vm.count ( "help" ) || l_vm.count ("verbose-help")) {
                 /// @todo Render a set of text to be used for the help screen.
                 cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl;
 
                 if (l_vm.count ("help"))
-                     cout << l_publicOptions;
-                else if (l_vm.count ("help-all"))
-                     cout << l_allOptions;
+                    cout << l_publicOptions;
+                else if (l_vm.count ("verbose-help"))
+                    cout << l_allOptions;
 
                 cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
                      << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
 
                 exit (0);
+            } else if (l_vm.count ("version")){
+                cout << endl << "Wintermute " << WNTR_APPLICATION::applicationVersion ().toStdString () << " "
+                     << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
+                     << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
+                     << "Boost v" << BOOST_VERSION << endl;
+
+                exit(0);
             }
 
             if ( l_vm.count ( "ipc" ) )
@@ -150,13 +166,14 @@ namespace Wintermute {
             if ( l_vm.count ("locale") )
                 s_args->insert ("locale" , QString::fromStdString (l_vm["locale"].as<string>()));
 
-            if ( l_vm.count ("linguistics-dir") )
-                s_args->insert ("linguistics-dir" , QString::fromStdString (l_vm["linguistics-dir"].as<string>()));
+            if ( l_vm.count ("data-dir") )
+                s_args->insert ("data-dir" , QString::fromStdString (l_vm["data-dir"].as<string>()));
+
+            if ( l_vm.count ("gui") )
+                s_args->insert ("gui" , l_vm["gui"].as<bool>());
 
             if ( l_vm.count ("plugin") )
                 s_args->insert ("plugin" , QString::fromStdString (l_vm["plugin"].as<string>()));
-
-            qDebug() << *s_args;
 
         } else
             cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
@@ -164,17 +181,20 @@ namespace Wintermute {
 
     const Core* Core::instance () { return s_core; }
 
+    /// @todo This method doesn't update the default locale and directory from the command-line.
     void Core::Initialize() {
-        Data::Configuration::Initialize ();
+        Data::Configuration::Initialize();
         Data::Linguistics::Configuration::setLocale (s_args->value ("locale").toString ().toStdString ());
         Data::Linguistics::Configuration::setDirectory (s_args->value ("linguistics-dir").toString ().toStdString ());
         Plugins::Factory::Startup ();
         emit s_core->initialized ();
-        Thread l_thrd;
-        l_thrd.run();
+        if (!Core::arguments ()->value ("gui").toBool ()){
+            Thread l_thrd;
+            l_thrd.run();
 #ifndef WINTERMUTE_USING_GUI
-        Core::startCurses();
+            Core::startCurses();
 #endif
+        }
     }
 
     void Core::Deinitialize() {
@@ -191,25 +211,30 @@ namespace Wintermute {
     }
 
 #ifndef WINTERMUTE_USING_GUI
-    void Core::startCurses() {
-        Curses::start();
-    }
+    void Core::startCurses() { Curses::start(); }
 
-    void Core::stopCurses(){
-        Curses::stop();
-    }
+    void Core::stopCurses(){ Curses::stop(); }
+#endif
 
     void Thread::run() {
-        Wintermute::Linguistics::Parser l_prsr;
-        QTextStream l_strm(stdin);
+        if (!Core::arguments ()->value ("gui").toBool ()){
+            Wintermute::Linguistics::Parser l_prsr;
+            QTextStream l_strm(stdin);
 
-        while (!l_strm.atEnd ()){
-            cout << "(main) Statement: ] ";
-            QString l_ln = l_strm.readLine ();
-            l_prsr.parse (l_ln.toStdString ());
-            l_strm << endl;
+            while (!l_strm.atEnd ()){
+                cout << "(main) Statement: ] ";
+                QString l_ln = l_strm.readLine ();
+                if (l_ln == "--"){
+                    cout << "(main) Statement parsing stopped." << endl;
+                    break;
+                } else {
+                    l_prsr.parse (l_ln.toStdString ());
+                    l_strm << endl;
+                }
+            }
+
+            WNTR_APPLICATION::quit ();
         }
     }
 
-#endif
 }

@@ -43,7 +43,7 @@ namespace Wintermute {
         } else if (p_ipcMod == "network"){
             Network::Initialize ();
         } else if (p_ipcMod == "plugin"){
-
+            Plugins::Factory::Startup ();
         }
     }
 }

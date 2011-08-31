@@ -39,6 +39,7 @@ namespace Wintermute {
      *          reason.
      *
      * @bug <QTimer> or some object with Qt's MOC system is inhibiting the use of nCurses. (Apply bug number here once reported).
+     * @todo Move from the C ncurses library to the C++ cwidget library.
      *
      * @class Curses ncurses.cpp "src/ncurses.cpp"
      */
