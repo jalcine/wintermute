@@ -1,9 +1,10 @@
 project(Wintermute)
 cmake_minimum_required(VERSION 2.8)
 set(WINTERMUTE_MAJOR_VERSION 0)
-set(WINTERMUTE_MINOR_VERSION 01)
+set(WINTERMUTE_MINOR_VERSION 1)
+set(WINTERMUTE_MICRO_VERSION 0)
 set(WINTERMUTE_VERSION
-    ${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION})
+    ${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}.${WINTERMUTE_MICRO_VERSION})
 #
 # Modules
 #
@@ -31,9 +32,6 @@ find_package(Qt4 4.4.3 COMPONENTS
 #
 # WNTR SDK
 #
-include(WinterDefaults)
-include(WinterLibsDependencies)
-include(WinterMacros)
 include("${QT_USE_FILE}")
 #
 # Files
