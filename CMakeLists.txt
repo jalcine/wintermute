@@ -32,6 +32,7 @@ find_package(Qt4 4.4.3 COMPONENTS
 #
 # WNTR SDK
 #
+include(WintermuteDefaults)
 include("${QT_USE_FILE}")
 #
 # Files
@@ -87,17 +88,11 @@ QT4_WRAP_CPP(MOC_CODE "${WINTERMUTE_SHPP}")
 # Configs
 #
 
-configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
-
-configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
-    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
-
 configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
    "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-    "${PROJECT_SOURCE_DIR}/include/wntr/config.hpp")
+    "${CURRENT_BINARY_DIR}/config.hpp")
 
 #
 # Targets
@@ -117,12 +112,6 @@ target_link_libraries(wintermute
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
     DESTINATION "${WINTER_LIB_INSTALL_DIR}/pkgconfig/")
 
-install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
-    DESTINATION "${WINTERMUTE_CMAKE_INSTALL_DIR}")
-
-install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
-    DESTINATION "${WINTERMUTE_CMAKE_INSTALL_DIR}")
-
 install(FILES ${CMAKE_MODULES}
     DESTINATION "${CMAKE_MODULE_DIR}")
 
@@ -132,5 +121,4 @@ install(FILES ${WINTERMUTE_SHPP}
 
 install(TARGETS wintermute
     RUNTIME DESTINATION "${WINTERMUTE_BIN_INSTALL_DIR}"
-    # Need to give permissions to write/read from '{PREFIX}' but also executable by anyone
     COMPONENT bin)

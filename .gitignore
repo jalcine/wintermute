@@ -1,3 +1,5 @@
 *~
 *.kdev4
+*.patch
 build
+lib
