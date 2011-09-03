@@ -7,7 +7,7 @@ set(WINTERMUTE_VERSION
 #
 # Modules
 #
-list(APPEND CMAKE_MODULE_PATH "cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 #
 # Packages
@@ -29,11 +29,12 @@ find_package(Qt4 4.4.3 COMPONENTS
     REQUIRED)
 
 #
-# WNTR SDK
+# Wintermute SDK
 #
 include(WinterDefaults)
-include(WinterLibsDependencies)
 include(WinterMacros)
+include(WinterLibsDependencies)
+
 include("${QT_USE_FILE}")
 #
 # Files
@@ -49,7 +50,7 @@ set(MOC_CODE )
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core")
 set(PROJECT_LABEL "Wintermute Core")
-set(WINTERMUTE_USE_GUI false CACHE BOOL "Determines whether or not Wintermute is using an GUI base.")
+set(WINTERMUTE_USE_GUI true CACHE BOOL "Determines whether or not Wintermute will be compiled with GUI capabilities.")
 set(WINTERMUTE_BIN_INSTALL_DIR "${WINTER_BIN_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS "${WNTRLING_INCLUDE_DIRS}"
     ${WNTRDATA_INCLUDE_DIRS}

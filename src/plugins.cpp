@@ -36,67 +36,93 @@ namespace Wintermute {
         /// @todo Have plugins be found in "${PREFIX_LIB}/plugins" (/usr/lib/wintermute/plugins via their corresponding ".plgn". They should only load this information into Wintermute, and only load plugins marked to be loaded.
         void Factory::Startup () {
             qDebug() << "(core) [Factory] Starting up...";
-            QCoreApplication::addLibraryPath (WINTER_PLUGINS_PATH);
-            QDir *d = new QDir(WINTER_PLUGINS_PATH);
-            d->setFilter (QDir::Files | QDir::Readable | QDir::NoSymLinks);
-            d->setSorting (QDir::Name);
+            QCoreApplication::addLibraryPath ( WINTER_PLUGINS_PATH );
+            QDir *d = new QDir ( WINTER_PLUGINS_PATH );
+            d->setFilter ( QDir::Files | QDir::Readable | QDir::NoSymLinks );
+            d->setSorting ( QDir::Name );
 
             QStringList l_pls = d->entryList();
-            foreach (QString l_pd, l_pls)
-                Factory::loadPlugin (string(WINTER_PLUGINS_PATH) + string("/") + l_pd.toStdString ());
+            foreach ( QString l_pd, l_pls )
+            Factory::loadPlugin ( string ( WINTER_PLUGINS_PATH ) + string ( "/" ) + l_pd.toStdString () );
 
+            if ( Core::arguments ()->value ( "gui" ).toBool () == true ){
 #ifdef WINTERMUTE_USING_GUI
-            if (Core::arguments ()->value ("gui").toBool () == true)
-                Factory::loadPlugin ("/usr/lib/libwntrgui.so");
+                Factory::loadPlugin ( "/usr/lib/libwntrgui.so" );
+#else
+                qDebug() << "(core) Wintermute has been built without GUI capabilities. Cancelling loading of GUI plug-in...";
 #endif
+            }
         }
 
         /// @todo Unload every loaded plugin and free all resources.
         void Factory::Shutdown () {
             qDebug() << "(core) [Factory] Unloading plugins..";
-            foreach (PluginBase* l_plgnBs, s_allPlgns){
+            foreach ( PluginBase* l_plgnBs, s_allPlgns ) {
                 qDebug() << "(core) [Factory] Unloaded" << l_plgnBs->name () << ".";
                 l_plgnBs->deinitialize ();
             }
         }
 
-        const PluginBase* Factory::loadPlugin (const string &p_pth) {
-            return loadPlugin((new QFile(QString::fromStdString (p_pth))));
+        const PluginBase* Factory::loadPlugin ( const string &p_pth ) {
+            return loadPlugin ( ( new QFile ( QString::fromStdString ( p_pth ) ) ) );
         }
 
-        void Factory::unloadPlugin(const QString& p_uuid){
-            PluginBase* l_plgn = Factory::s_allPlgns.take (p_uuid);
-            if (l_plgn)
+        void Factory::unloadPlugin ( const QString& p_uuid ) {
+            PluginBase* l_plgn = Factory::s_allPlgns.take ( p_uuid );
+            if ( l_plgn )
                 delete l_plgn;
         }
 
-        /// @todo Improve dependency checking.
-        const PluginBase* Factory::loadPlugin (const QFile *p_fl){
-            if (!p_fl->exists ()){
+        const bool PluginBase::isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
+
+        const QString PluginBase::path () const { return m_plgnLdr->fileName (); }
+
+        void PluginBase::doDeinitialize () const {
+            qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Deinitializing..";
+            emit deinitializing ();
+            deinitialize ();
+            Factory::unloadPlugin(uuid());
+        }
+
+        void PluginBase::doInitialize() const {
+            qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
+            emit initializing ();
+            initialize ();
+        }
+
+        /// @todo Improve dependency checking by using QSettings.
+        const PluginBase* Factory::loadPlugin ( const QFile *p_fl ) {
+            if ( !p_fl->exists () ) {
                 qWarning() << "(core) [Factory] Failed to load " << p_fl->fileName () << p_fl->errorString ();
                 return NULL;
             }
 
             //QSettings* l_plgnSpec = new QSettings(p_fl->fileName (),QSettings::IniFormat);
 
-            QPluginLoader* l_plgnLdr = new QPluginLoader(p_fl->fileName ());
-            l_plgnLdr->setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
-            if (l_plgnLdr->load ()){
-                PluginBase* l_plgnBase = dynamic_cast<PluginBase*>(l_plgnLdr->instance ());
+            QPluginLoader* l_plgnLdr = new QPluginLoader ( p_fl->fileName () );
+            l_plgnLdr->setLoadHints ( QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint );
+            if ( l_plgnLdr->load () ) {
+                PluginBase* l_plgnBase = dynamic_cast<PluginBase*> ( l_plgnLdr->instance () );
                 l_plgnBase->m_plgnLdr = l_plgnLdr;
 
-                if (!l_plgnBase->isSupported ()){
+                if ( !l_plgnBase->isSupported () ) {
                     qWarning() << "(core) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
                     return NULL;
                 } else
                     qDebug() << "(core) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "loaded.";
+#if 0
+                if (!l_plgnBase->checkDependencies()){
+                    l_plgnLdr->unload ();
+                    qDebug() << "(core) [Factory] Critical dependencies for this plug-in could not be found.";
+                }
+#endif
 
-                qDebug() << "(core) [Factory] Dependency checking skipped.";
+                qDebug() << "(core) [Factory] {plug-in:" << l_plgnBase->uuid () << "}: Dependency checking skipped.";
 
-                l_plgnBase->doInitializing ();
-                QObject::connect (Core::instance (),SIGNAL(deinitialized()),l_plgnBase,SLOT(doDeinitialize()));
+                l_plgnBase->doInitialize ();
+                QObject::connect ( Core::instance (),SIGNAL ( deinitialized() ),l_plgnBase,SLOT ( doDeinitialize() ) );
 
-                Factory::s_allPlgns.insert (l_plgnBase->uuid (),l_plgnBase);
+                Factory::s_allPlgns.insert ( l_plgnBase->uuid (),l_plgnBase );
                 return l_plgnBase;
             } else {
                 qWarning() << "(core) [Factory] Err loading plugin:" << l_plgnLdr->errorString ();

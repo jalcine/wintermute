@@ -1,5 +1,6 @@
 /**
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @file ipc.hpp
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -19,15 +20,15 @@
  * @endlegalese
  */
 #ifndef IPC_HPP
+#ifndef NCURSES_HPP
 #define IPC_HPP
 
-#include "wintermute.hpp"
+#include "config.hpp"
 #include <QtDBus>
 #include <string>
 #include <iostream>
 
 using namespace std;
-using namespace Wintermute;
 
 namespace Wintermute {
     struct IPC;
@@ -57,7 +58,7 @@ namespace Wintermute {
      * @class IPC ipc.hpp "include/wntr/ipc.hpp"
      */
     class IPC {
-        friend class DBusAdaptor;
+            friend class DBusAdaptor;
         public:
             /**
              * @brief Initializes the IPC system.
@@ -68,14 +69,16 @@ namespace Wintermute {
              * @fn Initialize
              * @param
              */
-            static void Initialize (const string& = "master");
+            static void Initialize ( const string& = "master" );
 
             /**
              * @brief Obtains the current module.
              * @fn currentModule
              * @return The name of the running module (either 'master', 'network' or 'plugin').
              */
-            static const string currentModule() { return s_mod; }
+            static const string currentModule() {
+                return s_mod;
+            }
 
         private:
             /**
@@ -97,12 +100,12 @@ namespace Wintermute {
      * @class DBusAdaptor ipc.hpp "include/wntr/ipc.hpp"
      */
     class DBusAdaptor : public QDBusAbstractAdaptor {
-        Q_OBJECT
-        Q_CLASSINFO("D-Bus Interface","org.thesii.DBus.Wintermute")
-        Q_CLASSINFO("Author","Synthetic Intellect Institute")
-        Q_CLASSINFO("URL","http://www.thesii.org")
+            Q_OBJECT
+            Q_CLASSINFO ( "D-Bus Interface","org.thesii.DBus.Wintermute" )
+            Q_CLASSINFO ( "Author","Synthetic Intellect Institute" )
+            Q_CLASSINFO ( "URL","http://www.thesii.org" )
 
-        Q_PROPERTY(string module READ module)
+            Q_PROPERTY ( string module READ module )
 
         public:
             /**
@@ -110,25 +113,27 @@ namespace Wintermute {
              *
              * @fn DBusAdaptor
              */
-            DBusAdaptor() : QDBusAbstractAdaptor(NULL) { }
+            DBusAdaptor() : QDBusAbstractAdaptor ( NULL ) { }
             /**
              * @brief
              * @fn DbusAdaptor
              * @param p_app
              */
-            DBusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
+            DBusAdaptor ( QCoreApplication* p_app ) : QDBusAbstractAdaptor ( p_app ) { }
             /**
              * @brief
              *
              * @fn DBusAdaptor
              * @param p_dbus
              */
-            DBusAdaptor(const DBusAdaptor& p_dbus) : QDBusAbstractAdaptor(NULL) { }
+            DBusAdaptor ( const DBusAdaptor& p_dbus ) : QDBusAbstractAdaptor ( NULL ) { }
             /**
              * @brief
              * @fn ~DbusAdaptor
              */
-            ~DBusAdaptor() { emit destroyed (this); }
+            ~DBusAdaptor() {
+                emit destroyed ( this );
+            }
 
         public slots:
             /**
@@ -136,18 +141,21 @@ namespace Wintermute {
              * @fn module
              * @return string
              */
-            Q_INVOKABLE string module() { return IPC::s_mod; }
+            Q_INVOKABLE string module() {
+                return IPC::s_mod;
+            }
             /**
              * @brief
              * @fn quit
              */
-            Q_NOREPLY void quit(){
+            Q_NOREPLY void quit() {
                 cout << "(core) [Dbus] Recieved quit signal. Quitting..." << endl;
-                QCoreApplication::instance ()->quit ();
-                exit(0);
+                WNTR_APPLICATION::instance ()->quit ();
+                exit ( 0 );
             }
     };
 }
 
+#endif
 #endif /* IPC_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

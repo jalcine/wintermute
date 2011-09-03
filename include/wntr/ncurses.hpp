@@ -21,7 +21,7 @@
 #define NCURSES_HPP
 
 #include "config.hpp"
-#include <QObject>
+#include <ncurses.h>
 
 namespace Wintermute {
     struct Curses;
@@ -31,56 +31,27 @@ namespace Wintermute {
      *
      * In an effort to provide another less resource-intenstive interface, aside
      * from the QtGui module, Wintermute::Curses is here to implement a terminal
-     * interface for Wintermute.
-     *
-     * @warning This class is not implemented at all. There's a chance that it may
-     *          even be the cause of a build-time error. This is because (perhaps)
-     *          the <QTimer> class has an issue with @variable stdscr for some absurb
-     *          reason.
-     *
-     * @bug <QTimer> or some object with Qt's MOC system is inhibiting the use of nCurses. (Apply bug number here once reported).
-     * @todo Move from the C ncurses library to the C++ cwidget library.
+     * interface for Wintermute. The nCurses interface can be used with or without
+     * QtGui installed. To use it, run 'wintermute --gui false' to have the actions
+     * of Wintermute redirected to the nCurses interface.
      *
      * @class Curses ncurses.cpp "src/ncurses.cpp"
      */
-    class Curses : public QObject {
-        Q_OBJECT
+    class Curses {
         private:
-            static Curses s_crs;
-            /**
-             * @brief
-             *
-             * @fn Curses
-             */
             Curses();
-            /**
-             * @brief
-             *
-             * @fn Curses
-             * @param
-             */
             Curses(const Curses&);
+            static void _init();
+            static void _print(const int, const int, const QString& );
+            static void _refresh();
 
         public:
-            /**
-             * @brief
-             *
-             * @fn ~Curses
-             */
             virtual ~Curses();
-            /**
-             * @brief
-             *
-             * @fn start
-             */
+            static void printText(const QString& , const int = -1, const int = - 1);
+            static void printStatus(const QString&);
             static void start();
-
-            /**
-             * @brief
-             *
-             * @fn stop
-             */
             static void stop();
     };
 }
 #endif
+// kate: indent-mode cstyle; space-indent on; indent-width 0;

@@ -20,29 +20,30 @@
  */
 
 #include "ipc.hpp"
+#include "core.hpp"
+#include "plugins.hpp"
 #include <wntrntwk.hpp>
 #include <QtDBus>
 #include <QProcess>
-#include <QCoreApplication>
 
 namespace Wintermute {
     string IPC::s_mod;
     DBusAdaptor* IPC::s_dbus;
 
-    /// @todo Connect to D-Bus via an wrapper class (make that a static object of IPC).
-    /// @todo Determine the actions to be taken depending on the IPC module.
-    void IPC::Initialize(const string& p_ipcMod){
+/// @todo Connect to D-Bus via an wrapper class (make that a static object of IPC).
+/// @todo Determine the actions to be taken depending on the IPC module.
+    void IPC::Initialize ( const string& p_ipcMod ) {
         s_mod = p_ipcMod;
-        s_dbus = new DBusAdaptor(QCoreApplication::instance ());
-        QDBusConnection::sessionBus().registerObject("/Wintermute", const_cast<Core*>(Core::instance()));
+        s_dbus = new DBusAdaptor ( WNTR_APPLICATION::instance () );
+        QDBusConnection::sessionBus().registerObject ( "/Wintermute", const_cast<Core*> ( Core::instance() ) );
 
         cout << "(core) [IPC] Module '" << p_ipcMod << "' running." << endl;
 
-        if (p_ipcMod == "master" || p_ipcMod.empty ()){
+        if ( p_ipcMod == "master" || p_ipcMod.empty () ) {
             Core::Initialize ();
-        } else if (p_ipcMod == "network"){
+        } else if ( p_ipcMod == "network" ) {
             Network::Initialize ();
-        } else if (p_ipcMod == "plugin"){
+        } else if ( p_ipcMod == "plugin" ) {
             Plugins::Factory::Startup ();
         }
     }

@@ -26,15 +26,6 @@
 #include "config.hpp"
 #include <QVariantMap>
 
-// Check if Wintermute's built with X11 (GUI) support. (We're targeting UNIX-based systems)
-#ifdef WINTERMUTE_USING_GUI
-#include <QApplication>
-#define WNTR_APPLICATION QApplication
-#else
-#include <QCoreApplication>
-#define WNTR_APPLICATION QCoreApplication
-#endif
-
 namespace Wintermute {
     struct Core;
 
@@ -44,7 +35,7 @@ namespace Wintermute {
      * @c Wintermute::Core holds the vital activities of Wintermute's startup. It
      * handles the actions from the outside system environment and, with a little
      * Qt magic and hours of coding, transfers control to the parts of Wintermute
-     * that would be approriate to be under control.
+     * that would be appropriate to be under control.
      *
      * @nonreentrant
      * @class Core wintermute.hpp "include/wintermute/wintermute.hpp"
@@ -56,7 +47,7 @@ namespace Wintermute {
             /**
              * @brief Raised once the core's ready to go.
              *
-             * This signal is emitted when the core's done loading prerequisities.
+             * This signal is emitted when the core's done loading prerequisites.
              * This is <b>after</b> all plug-ins have been loaded and the inter-
              * process communication system is active.
              *
@@ -91,13 +82,8 @@ namespace Wintermute {
              */
             static void Configure ( int& , char ** );
 
-#ifndef WINTERMUTE_USING_GUI
             /**
              * @brief Starts the nCurses interface.
-             *
-             * @note This method is only avialable when Wintermute is compiled under CMake
-             *       with the <b>WINTERMUTE_USE_GUI</b> variable set to false, thus activating
-             *       Wintermute's nCurses mode.
              *
              * @fn doCurses
              */
@@ -106,14 +92,9 @@ namespace Wintermute {
             /**
              * @brief
              *
-             * @note This method is only avialable when Wintermute is compiled under CMake
-             *       with the <b>WINTERMUTE_USE_GUI</b> variable set to false, thus activating
-             *       Wintermute's nCurses mode.
-             *
              * @fn stopCurses
              */
             static void stopCurses();
-#endif
 
         public:
 
@@ -137,7 +118,7 @@ namespace Wintermute {
              * @param argv The command line argument passed representing the value of each argument.
              * @badcode
              */
-            explicit Core(int&, char** );
+            explicit Core ( int&, char** );
 
             /**
              * @brief Initializes the system.
@@ -191,16 +172,16 @@ namespace Wintermute {
              * @fn userInterface
              */
             inline const static UserInterface userInterface() {
-#ifndef WINTERMUTE_USING_GUI
+        #ifndef WINTERMUTE_USING_GUI
                 return Textual;
-#else
+        #else
                 return Graphical;
-#endif
+        #endif
             }
 
         private:
             static WNTR_APPLICATION* s_app; /**< Holds the object representing the current Q(Core)Application. */
-            static QVariantMap* s_args; /**< Holds the map contanining the arguments passed to Wintermute in a normalized format. */
+            static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
             static Core* s_core; /**< The internal object that represents the core of Wintermute. */
             /**
              * @brief Processes the command line arguments.
@@ -214,6 +195,7 @@ namespace Wintermute {
 
         private slots:
             void doDeinit() const;
+            void unixSignal(int signal) const;
     };
 
     class Thread {
@@ -221,8 +203,8 @@ namespace Wintermute {
 
         public:
             void run();
-
     };
 }
 
 #endif /* CORE_HPP */
+// kate: indent-mode cstyle; space-indent on; indent-width 0;

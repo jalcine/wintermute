@@ -26,9 +26,7 @@
 #include <QFile>
 #include <QVector>
 #include <QVariant>
-#include <QSettings>
 #include <QPluginLoader>
-#include <wntr/config.hpp>
 
 using namespace std;
 using std::vector;
@@ -93,7 +91,9 @@ namespace Wintermute {
                  * @fn loadedPlugins
                  * @returns A QList of plug-ins that are currently loaded into the system.
                  */
-                PluginList const & loadedPlugins() { return s_allPlgns; }
+                PluginList const & loadedPlugins() {
+                    return s_allPlgns;
+                }
 
             private:
                 static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
@@ -160,13 +160,13 @@ namespace Wintermute {
                  * This is usually raised right after the Core finishes initialization.
                  * @fn initializing
                  */
-                void initializing();
+                void initializing() const;
                 /**
                  * @brief Raised when the plug-in is being deinitialized.
                  * This is usually raised right before the Core begin to deinitialize.
                  * @fn deinitializing
                  */
-                void deinitializing();
+                void deinitializing() const;
 
             private:
                 QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
@@ -190,13 +190,15 @@ namespace Wintermute {
                  * @fn PluginBase
                  * @param p_pb The plug-in to be copied.
                  */
-                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr){  }
+                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr) {  }
 
                 /**
                  * @brief Default deconstructor.
                  * @fn ~PluginBase
                  */
-                virtual ~PluginBase() { delete m_plgnLdr; };
+                virtual ~PluginBase() {
+                    delete m_plgnLdr;
+                };
 
                 /**
                  * @brief Defines the version of the plug-in.
@@ -292,14 +294,13 @@ namespace Wintermute {
                  * @todo More checking needs to be done to tell if it's compatible. (i.e: on major changes, make that a minimum compability value).
                  * @todo Implement checking of plug-in depenencies after checking versioning.
                  */
-                const bool isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
-
+                const bool isSupported () const;
                 /**
                  * @brief Returns a string that contains the absolute path to the plug-in.
                  * @fn path
                  * @deprecated This method is unnecessary towards the implementation of a plug-in.
                  */
-                const QString path () const { return m_plgnLdr->fileName (); }
+                const QString path () const;
 
             protected slots:
 
@@ -308,26 +309,18 @@ namespace Wintermute {
                  * This is run after the initialized() signal is emitted.
                  * @fn initialize
                  */
-                virtual void initialize() = 0;
+                virtual void initialize() const = 0;
 
                 /**
                  * @brief Reimplement this method to define the deinitialization code of your plug-in.
                  * This is run after the deinitialized() signal is emitted.
                  * @fn deinitialize
                  */
-                virtual void deinitialize() = 0;
+                virtual void deinitialize() const = 0;
 
             private slots:
-                void doDeinitialize () {
-                    emit deinitializing ();
-                    deinitialize ();
-                    Factory::unloadPlugin(uuid());
-                }
-
-                void doInitializing() {
-                    emit initializing ();
-                    initialize ();
-                }
+                void doDeinitialize () const;
+                void doInitialize() const;
         };
 
     }
@@ -336,4 +329,4 @@ namespace Wintermute {
 Q_DECLARE_INTERFACE(Wintermute::Plugins::PluginBase, "org.thesii.Wintermute.PluginBase");
 
 #endif /* PLUGINS_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// kate: indent-mode cstyle; space-indent on; indent-width 0;
