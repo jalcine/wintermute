@@ -56,7 +56,7 @@ namespace Wintermute {
     }
 
     void Core::Configure ( int& p_argc, char** p_argv ) {
-        string ipcModule = "master";
+        QString l_ipcMod = "master";
         s_app = new WNTR_APPLICATION ( p_argc,p_argv );
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
@@ -65,27 +65,19 @@ namespace Wintermute {
         connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT ( doDeinit() ) );
         s_core->setParent (s_app);
 
-        cout << qPrintable ( s_app->applicationName () ) << " "
-             << qPrintable ( s_app->applicationVersion () )
-             << " (pid " << s_app->applicationPid () << ") :: "
-             << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
-
-#ifdef WINTERMUTE_USING_GUI
-        cout << "(core) Built with graphical user interface capabilities." << endl;
-#endif
-
         configureCommandLine();
 
         if ( s_args->count ( "ipc" ) != 0 )
-            ipcModule = s_args->value ( "ipc" ).toString ().toStdString ();
+            l_ipcMod = s_args->value ( "ipc" ).toString ();
 
-        IPC::Initialize ( ipcModule );
+        IPC::Initialize ( l_ipcMod );
     }
 
     const QVariantMap* Core::arguments () {
         return s_args;
     }
 
+    /// @todo Allow arbitrary arguments to be added into the system.
     void Core::configureCommandLine () {
         variables_map l_vm;
         s_args = new QVariantMap;
@@ -112,9 +104,11 @@ namespace Wintermute {
 
         l_hiddenOptions.add_options ()
         ( "plugin,p"  , po::value<string>() ,
-          "Loads a plug-in. (default: none specified)" )
+          "Loads a plug-in; used for module 'Plugin'. (default: none specified)" )
         ( "ipc,i"     , po::value<string>()->default_value ( "master" ) ,
           "Defines the IPC module to run this process as." )
+        ( "daemon"    , po::value<bool>()->default_value( false ),
+           "Toggles whether or not this process should be run as a daemon.")
         ( "ncurses,n" ,
  #ifdef WINTERMUTE_USING_GUI
            po::value<bool>()->default_value ( false ),
@@ -205,25 +199,40 @@ namespace Wintermute {
         }
     }
 
-/// @todo This method doesn't update the default locale and directory from the command-line.
     void Core::Initialize() {
-        Data::Configuration::Initialize();
-        Data::Linguistics::Configuration::setLocale ( s_args->value ( "locale" ).toString ().toStdString () );
-        Plugins::Factory::Startup ();
+        if (IPC::currentModule () == "Master"){
+            cout << qPrintable ( s_app->applicationName () ) << " "
+                 << qPrintable ( s_app->applicationVersion () )
+                 << " (pid " << s_app->applicationPid () << ") :: "
+                 << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
+
+#ifdef WINTERMUTE_USING_GUI
+        cout << "(core) Built with graphical user interface capabilities." << endl;
+#endif
+        }
+
         emit s_core->initialized ();
 
-        if ( Core::arguments ()->value ( "ncurses" ).toBool () )
-            Core::startCurses();
-        else {
-            (new Thread)->run ();
+        if (!s_args->value ("daemon").toBool ()){
+            if ( Core::arguments ()->value ( "ncurses" ).toBool () )
+                Core::startCurses();
+            else
+                (new Thread)->run ();
+        } else {
+            const QStringList l_ntwkArgs = QString("--ipc network").split (" ");
+            const QStringList l_pluginArgs = QString("--ipc plugin --plugin root").split (" ");
+            QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs);
+            QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_pluginArgs);
         }
     }
 
     void Core::Deinitialize() {
-        Core::stopCurses();
-        Data::Configuration::Deinitialize ();
+        if (IPC::currentModule () == "Master"){
+            if (!s_args->value ("daemon").toBool ())
+                Core::stopCurses();
+        }
+
         emit s_core->deinitialized ();
-        Plugins::Factory::Shutdown ();
     }
 
     void Core::doDeinit () const {
@@ -258,7 +267,7 @@ namespace Wintermute {
                     cout << "(main) Statement parsing stopped." << endl;
                     break;
                 } else {
-                    l_prsr.parse ( l_ln.toStdString () );
+                    l_prsr.parse ( l_ln );
                     l_strm << endl;
                 }
             }

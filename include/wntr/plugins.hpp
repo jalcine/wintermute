@@ -26,6 +26,8 @@
 #include <QFile>
 #include <QVector>
 #include <QVariant>
+#include <QSettings>
+#include <QStringList>
 #include <QPluginLoader>
 
 using namespace std;
@@ -54,9 +56,12 @@ namespace Wintermute {
          * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
          * @see PluginBase
          */
-        class Factory {
+        class Factory : public QObject {
+            Q_OBJECT
+            Q_DISABLE_COPY(Factory)
             friend class PluginBase;
-            public:
+
+            public slots:
                 /**
                  * @brief Starts the plug-in system.
                  * @fn Startup
@@ -67,12 +72,20 @@ namespace Wintermute {
                  * @fn Shutdown
                  */
                 static void Shutdown();
+
+            public:
                 /**
                  * @brief Loads a plug-in.
                  * @fn loadPlugin
                  * @param
                  */
-                static const PluginBase* loadPlugin ( const string& );
+                static const PluginBase* loadPlugin ( const QString& );
+                /**
+                 * @brief Unloads a plug-in from the system.
+                 * @fn unloadPlugin
+                 * @param
+                 */
+                static void unloadPlugin(const QString& );
                 /**
                  * @brief Loads a plug-in into the system.
                  * @fn loadPlugin
@@ -81,22 +94,39 @@ namespace Wintermute {
                  */
                 static const PluginBase* loadPlugin ( const QFile* );
                 /**
-                 * @brief Unloads a plug-in from the system.
-                 * @fn unloadPlugin
-                 * @param
-                 */
-                static void unloadPlugin(const QString& );
-                /**
                  * @brief Returns a list of all currently plug-ins with meta-data information.
                  * @fn loadedPlugins
                  * @returns A QList of plug-ins that are currently loaded into the system.
                  */
-                PluginList const & loadedPlugins() {
-                    return s_allPlgns;
-                }
+                static PluginList const & loadedPlugins() { return s_allPlgns; }
+
+                /**
+                 * @brief
+                 *
+                 * @fn instance
+                 * @return const Factory *
+                 */
+                static const Factory* instance() { return s_factory; }
 
             private:
+                Factory() { }
                 static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
+                static Factory* s_factory;
+
+            private slots:
+                /**
+                 * @brief
+                 *
+                 * @fn loadStandardPlugin
+                 */
+                static void loadStandardPlugin();
+
+                /**
+                 * @brief
+                 *
+                 * @fn unloadStandardPlugin
+                 */
+                static void unloadStandardPlugin();
         };
 
         /**
@@ -152,7 +182,7 @@ namespace Wintermute {
             Q_PROPERTY(const QString VendorName READ vendorName)
             Q_PROPERTY(const QString Description READ description)
             Q_PROPERTY(const QString WebPage READ webPage)
-            Q_PROPERTY(const QString Dependencies READ dependencies)
+            Q_PROPERTY(const QStringList Dependencies READ dependencies)
 
             signals:
                 /**
@@ -170,27 +200,28 @@ namespace Wintermute {
 
             private:
                 QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
+                QSettings* m_settings;
 
             public:
                 /**
                  * @brief Empty, nullifying constructor.
                  * @fn PluginBase
                  */
-                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL) { }
+                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
                  * @fn PluginBase
                  * @param p_pl The plug-in to be loaded from disk.
                  */
-                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl) { }
+                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
 
                 /**
                  * @brief Default copy constructor.
                  * @fn PluginBase
                  * @param p_pb The plug-in to be copied.
                  */
-                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr) {  }
+                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
 
                 /**
                  * @brief Default deconstructor.
@@ -206,22 +237,22 @@ namespace Wintermute {
                  * @see compatVersion ()
                  * @fn version
                  */
-                virtual const double version() const = 0;
+                const double version() const;
 
                 /**
                  * @brief Defines the least required version of Wintermute needed for this plug-in to operate.
                  * @see version()
                  * @fn compatVersion
                  */
-                virtual const double compatVersion() const = 0;
+                const double compatVersion() const;
 
                 /**
                  * @brief Represents a Universally Unique Identifier (UUID) for the plug-in.
-                 * @note On Linux systems, the program 'uuidgen -t' could generate an unique UUID for you to use.
-                 *       It's recommend that you fill this value, otherwise a run-time warning would be invoked.
+                 * @note On Linux systems, the program 'uuidgen -t' could generate an unique UUID for you to define in your
+                 *       plug-in specification file.
                  * @fn uuid
                  */
-                virtual const QString uuid() const = 0;
+                const QString uuid() const;
 
                 /**
                  * @brief Returns the canonical name of the plug-in. This is typically presented to the user.
@@ -229,7 +260,7 @@ namespace Wintermute {
                  * @see author()
                  * @see vendorName()
                  */
-                virtual const QString name() const = 0;
+                const QString name() const;
 
                 /**
                  * @brief Returns the name of the person, group, or organization that created this plug-in.
@@ -238,30 +269,30 @@ namespace Wintermute {
                  * John Q. Doe
                  * Doe Developers <doe-devel@lists.doe.org>
                  * @endcode
-                 * @note We encourage you to include an e-mail address in the 'Author' field.
+                 * @note We encourage you to include an e-mail address in the 'Author' field of your plug-in specification file.
                  * @see vendorName()
                  * @fn author
                  */
-                virtual const QString author() const = 0;
+                const QString author() const;
 
                 /**
                  * @brief Returns the name of the person, group, or organization that packaged or distributed this plug-in.
                  * @note The syntax guideline for author() applies here as well.
                  * @fn vendorName
                  */
-                virtual const QString vendorName() const = 0;
+                const QString vendorName() const;
 
                 /**
                  * @brief Returns a (preferably brief) description about the plug-in.
                  * @fn description
                  */
-                virtual const QString description() const = 0;
+                const QString description() const;
 
                 /**
                  * @brief Returns a URI to a web-page containing information about this plug-in.
                  * @fn webPage
                  */
-                virtual const QString webPage() const = 0;
+                const QString webPage() const;
 
                 /**
                  * @brief Returns a comma-separated list of plug-ins that this plug-in requires to operate.
@@ -281,7 +312,7 @@ namespace Wintermute {
                  * plug-ins as a central resource for developers. Add this page to the documentation once made.
                  * @fn dependencies
                  */
-                virtual const QString dependencies() const = 0;
+                const QStringList dependencies() const;
 
                 /**
                  * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.

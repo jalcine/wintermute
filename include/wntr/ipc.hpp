@@ -42,23 +42,25 @@ namespace Wintermute {
      * the approriate processes that represent it.
      *
      * Wintermute can run as one of the following sub-modules:
-     * - <b>master</b>: Represents the core module, or the master daemon that'll be a means
+     * - <b>Master</b>: Represents the core module, or the master daemon that'll be a means
      * of regulating the sub processes.
      *
-     * - <b>network</b>: Represents the network module. This module typically runs asynchronously
+     * - <b>Network</b>: Represents the network module. This module typically runs asynchronously
      * of the core Wintermute processes and implements most of its work in the core networking library (WntrNtwk).
      *
-     * - <b>plugin</b>: Represnts the plugin module. Plug-ins are run in their process, allowing them
+     * - <b>Plugin</b>: Represnts the plugin module. Plug-ins are run in their process, allowing them
      * to take advantage of their own work, and prevents system failure if the plug-in happens to
      * crash.
      *
-     * @note If you're attempting to send messages via Wintermute, you should look at @c DBusAdaptor.
-     *
+     * @todo We need to implement locks (and remind developers that work on plug-ins with local files) to implement locks for their files.
      * @see DBusAdaptor
      * @class IPC ipc.hpp "include/wntr/ipc.hpp"
      */
-    class IPC {
-            friend class DBusAdaptor;
+    class IPC : public QObject {
+        friend class DBusAdaptor;
+        Q_OBJECT
+        Q_DISABLE_COPY(IPC)
+
         public:
             /**
              * @brief Initializes the IPC system.
@@ -69,90 +71,43 @@ namespace Wintermute {
              * @fn Initialize
              * @param
              */
-            static void Initialize ( const string& = "master" );
+            static void Initialize ( const QString& = "Master" );
 
             /**
              * @brief Obtains the current module.
              * @fn currentModule
-             * @return The name of the running module (either 'master', 'network' or 'plugin').
+             * @return The name of the running module (either 'Master', 'Network' or 'Plugin').
              */
-            static const string currentModule() {
-                return s_mod;
-            }
+            static inline const QString currentModule() { return s_appMod; }
 
         private:
-            /**
-             * @brief
-             * @fn IPC
-             */
-            IPC();
-            /**
-             * @brief
-             * @fn ~IPC
-             */
-            ~IPC();
-            static string s_mod;
-            static DBusAdaptor* s_dbus;
+            static QString s_appMod;
     };
 
-    /**
-     * @brief
-     * @class DBusAdaptor ipc.hpp "include/wntr/ipc.hpp"
-     */
     class DBusAdaptor : public QDBusAbstractAdaptor {
-            Q_OBJECT
-            Q_CLASSINFO ( "D-Bus Interface","org.thesii.DBus.Wintermute" )
-            Q_CLASSINFO ( "Author","Synthetic Intellect Institute" )
-            Q_CLASSINFO ( "URL","http://www.thesii.org" )
+        friend class IPC;
+        Q_OBJECT
+        Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute")
+        Q_PROPERTY(const QString Module READ module)
 
-            Q_PROPERTY ( string module READ module )
+        signals:
+            void started();
+            void stopped();
+
+        private:
+            static DBusAdaptor* s_dbus;
+            QDBusInterface *m_mstrIntr;
 
         public:
-            /**
-             * @brief
-             *
-             * @fn DBusAdaptor
-             */
-            DBusAdaptor() : QDBusAbstractAdaptor ( NULL ) { }
-            /**
-             * @brief
-             * @fn DbusAdaptor
-             * @param p_app
-             */
-            DBusAdaptor ( QCoreApplication* p_app ) : QDBusAbstractAdaptor ( p_app ) { }
-            /**
-             * @brief
-             *
-             * @fn DBusAdaptor
-             * @param p_dbus
-             */
-            DBusAdaptor ( const DBusAdaptor& p_dbus ) : QDBusAbstractAdaptor ( NULL ) { }
-            /**
-             * @brief
-             * @fn ~DbusAdaptor
-             */
-            ~DBusAdaptor() {
-                emit destroyed ( this );
-            }
+            DBusAdaptor();
+            ~DBusAdaptor();
 
         public slots:
-            /**
-             * @brief
-             * @fn module
-             * @return string
-             */
-            Q_INVOKABLE string module() {
-                return IPC::s_mod;
-            }
-            /**
-             * @brief
-             * @fn quit
-             */
-            Q_NOREPLY void quit() {
-                cout << "(core) [Dbus] Recieved quit signal. Quitting..." << endl;
-                WNTR_APPLICATION::instance ()->quit ();
-                exit ( 0 );
-            }
+            const QString module() const;
+            Q_NOREPLY void quit() const;
+
+        protected slots:
+            void reportAlive(const QDBusMessage &) const;
     };
 }
 

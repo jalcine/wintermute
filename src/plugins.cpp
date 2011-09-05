@@ -16,11 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  * @endlegalese
+ *
+ * @todo Perhaps implement a means of upgrading old plug-in definition files?
  */
 
 #include <QDir>
+#include <QtDBus>
 #include <QtDebug>
-#include <QCoreApplication>
+#include <QProcess>
 #include "config.hpp"
 #include "plugins.hpp"
 #include "core.hpp"
@@ -30,28 +33,79 @@ using namespace std;
 namespace Wintermute {
     namespace Plugins {
         PluginList Factory::s_allPlgns;
+        Factory* Factory::s_factory = new Factory;
 
-        /// @todo Find a means of storing plugins that should be loaded.
-        /// @todo Load the plugins designated to be loaded.
-        /// @todo Have plugins be found in "${PREFIX_LIB}/plugins" (/usr/lib/wintermute/plugins via their corresponding ".plgn". They should only load this information into Wintermute, and only load plugins marked to be loaded.
         void Factory::Startup () {
             qDebug() << "(core) [Factory] Starting up...";
-            QCoreApplication::addLibraryPath ( WINTER_PLUGINS_PATH );
-            QDir *d = new QDir ( WINTER_PLUGINS_PATH );
+            QDir *d = new QDir ( WINTER_PLUGINSPEC_PATH );
             d->setFilter ( QDir::Files | QDir::Readable | QDir::NoSymLinks );
+            d->setNameFilters (QString("*.spec").split (" "));
             d->setSorting ( QDir::Name );
 
-            QStringList l_pls = d->entryList();
-            foreach ( QString l_pd, l_pls )
-            Factory::loadPlugin ( string ( WINTER_PLUGINS_PATH ) + string ( "/" ) + l_pd.toStdString () );
-
-            if ( Core::arguments ()->value ( "gui" ).toBool ()){
-#ifdef WINTERMUTE_USING_GUI
-                Factory::loadPlugin ( "/usr/lib/libwntrgui.so" );
-#else
-                qDebug() << "(core) Wintermute has been built without GUI capabilities. Cancelling loading of GUI plug-in...";
-#endif
+            QStringList l_plgnSpecLst = d->entryList();
+            foreach ( const QString l_plgnSpecFile, l_plgnSpecLst ){
+                const QString l_plgnName = l_plgnSpecFile.split (".").at (0);
+                Factory::loadPlugin (l_plgnName);
             }
+        }
+
+        /// @todo Monitor plug-in status when the program loads and it connects to D-Bus.
+        const PluginBase* Factory::loadPlugin ( const QString &p_plgName ) {
+            WNTR_APPLICATION::addLibraryPath (WINTER_PLUGIN_PATH);
+            if (Core::arguments ()->value ("plugin").toString () != "root"){
+                const QString l_plgnSpecPath = QString(WINTER_PLUGINSPEC_PATH) + "/" + p_plgName + ".spec";
+                const QString l_plgPth = QString(WINTER_PLUGIN_PATH) + "/lib" + p_plgName + ".so";
+
+                if (!QFile::exists (l_plgnSpecPath)){
+                    qWarning() << "(core) [Factory] Failed to load " << l_plgnSpecPath;
+                    return NULL;
+                }
+
+                QSettings* l_plgnSpec = new QSettings(l_plgnSpecPath,QSettings::IniFormat);
+                QPluginLoader* l_plgnLdr = new QPluginLoader ( l_plgPth );
+                l_plgnLdr->setLoadHints ( QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint );
+                if ( l_plgnLdr->load () ) {
+                    PluginBase* l_plgnBase = dynamic_cast<PluginBase*> ( l_plgnLdr->instance () );
+                    l_plgnBase->m_plgnLdr = l_plgnLdr;
+                    l_plgnBase->m_settings = l_plgnSpec;
+
+                    if ( !l_plgnBase->isSupported () ) {
+                        qWarning() << "(core) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
+                        return NULL;
+                    } else
+                        qDebug() << "(core) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "loaded.";
+
+                    qDebug() << "(core) [Factory] {plug-in:" << l_plgnBase->uuid () << "}: Dependency checking skipped.";
+
+                    l_plgnBase->doInitialize ();
+                    QObject::connect ( Core::instance (),SIGNAL ( deinitialized() ),l_plgnBase,SLOT ( doDeinitialize() ) );
+
+                    Factory::s_allPlgns.insert ( l_plgnBase->uuid (),l_plgnBase );
+                    return l_plgnBase;
+                } else {
+                    qWarning() << "(core) [Factory] Err loading plugin (" << l_plgnLdr->fileName () << "):" << l_plgnLdr->errorString ();
+                    return NULL;
+                }
+
+
+            } else {
+                const QStringList l_plgnArgs = QString("--ipc plugin --plugin " + p_plgName).split(" ");
+                QProcess::startDetached(WNTR_APPLICATION::applicationFilePath (),l_plgnArgs);
+            }
+        }
+
+        void Factory::unloadPlugin ( const QString& p_uuid ) {
+            PluginBase* l_plgn = Factory::s_allPlgns.take ( p_uuid );
+            if ( l_plgn )
+                delete l_plgn;
+        }
+
+        void Factory::loadStandardPlugin () {
+            loadPlugin(Core::arguments ()->value ("plugin").toString ());
+        }
+
+        void Factory::unloadStandardPlugin () {
+            unloadPlugin(Core::arguments ()->value ("plugin").toString ());
         }
 
         /// @todo Unload every loaded plugin and free all resources.
@@ -63,15 +117,27 @@ namespace Wintermute {
             }
         }
 
-        const PluginBase* Factory::loadPlugin ( const string &p_pth ) {
-            return loadPlugin ( ( new QFile ( QString::fromStdString ( p_pth ) ) ) );
+        const QString PluginBase::author () const { return m_settings->value ("Description/Author").toString (); }
+
+        const QString PluginBase::name () const { return m_settings->value ("Description/Name").toString (); }
+
+        const QString PluginBase::vendorName () const { return m_settings->value ("Description/Vendor").toString (); }
+
+        const QString PluginBase::uuid () const { return m_settings->value ("Version/UUID").toString (); }
+
+        const QString PluginBase::description () const { return m_settings->value ("Description/Blurb").toString (); }
+
+        const QString PluginBase::webPage () const { return m_settings->value ("Description/WebPage").toString (); }
+
+        const QStringList PluginBase::dependencies () const {
+            QStringList l_dep = m_settings->value ("Dependencies/Plugins").toStringList ();
+            l_dep.append (m_settings->value ("Dependencies/Packages").toStringList ());
+            return l_dep;
         }
 
-        void Factory::unloadPlugin ( const QString& p_uuid ) {
-            PluginBase* l_plgn = Factory::s_allPlgns.take ( p_uuid );
-            if ( l_plgn )
-                delete l_plgn;
-        }
+        const double PluginBase::version () const { return m_settings->value ("Version/Plugin").toDouble (); }
+
+        const double PluginBase::compatVersion () const { return m_settings->value ("Version/Compat").toDouble (); }
 
         const bool PluginBase::isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
 
@@ -88,46 +154,6 @@ namespace Wintermute {
             qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
             emit initializing ();
             initialize ();
-        }
-
-        /// @todo Improve dependency checking by using QSettings.
-        const PluginBase* Factory::loadPlugin ( const QFile *p_fl ) {
-            if ( !p_fl->exists () ) {
-                qWarning() << "(core) [Factory] Failed to load " << p_fl->fileName () << p_fl->errorString ();
-                return NULL;
-            }
-
-            //QSettings* l_plgnSpec = new QSettings(p_fl->fileName (),QSettings::IniFormat);
-
-            QPluginLoader* l_plgnLdr = new QPluginLoader ( p_fl->fileName () );
-            l_plgnLdr->setLoadHints ( QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint );
-            if ( l_plgnLdr->load () ) {
-                PluginBase* l_plgnBase = dynamic_cast<PluginBase*> ( l_plgnLdr->instance () );
-                l_plgnBase->m_plgnLdr = l_plgnLdr;
-
-                if ( !l_plgnBase->isSupported () ) {
-                    qWarning() << "(core) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
-                    return NULL;
-                } else
-                    qDebug() << "(core) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "loaded.";
-#if 0
-                if (!l_plgnBase->checkDependencies()){
-                    l_plgnLdr->unload ();
-                    qDebug() << "(core) [Factory] Critical dependencies for this plug-in could not be found.";
-                }
-#endif
-
-                qDebug() << "(core) [Factory] {plug-in:" << l_plgnBase->uuid () << "}: Dependency checking skipped.";
-
-                l_plgnBase->doInitialize ();
-                QObject::connect ( Core::instance (),SIGNAL ( deinitialized() ),l_plgnBase,SLOT ( doDeinitialize() ) );
-
-                Factory::s_allPlgns.insert ( l_plgnBase->uuid (),l_plgnBase );
-                return l_plgnBase;
-            } else {
-                qWarning() << "(core) [Factory] Err loading plugin:" << l_plgnLdr->errorString ();
-                return NULL;
-            }
         }
     }
 }

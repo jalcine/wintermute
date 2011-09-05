@@ -117,8 +117,8 @@ namespace Wintermute {
 
                 case 'd': {
                     QTextStream l_dataStrm(l_data);
-                    l_dataStrm << "Locale: " << Data::Linguistics::Configuration::locale().c_str () << " (default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
-                               << "Root data directory:" << Data::Configuration::directory ().c_str() << " (default: " << WNTRDATA_DATA_DIR << ")" << endl;
+                    l_dataStrm << "Locale:" << Data::Linguistics::Configuration::locale() << "(default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
+                               << "Root data directory:" << Data::Configuration::directory () << "(default: " << WNTRDATA_DATA_DIR << ")" << endl;
 
                     QString l_str(*l_data);
                     printText(l_str);
@@ -145,7 +145,7 @@ namespace Wintermute {
                     getText ("Input: ",l_str);
 
                     while (!l_str.isEmpty ()){
-                        l_prsr.parse(l_str.toStdString ());
+                        l_prsr.parse(l_str);
                         getText ("Input: ",l_str);
                     }
 
