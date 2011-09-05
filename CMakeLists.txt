@@ -24,7 +24,6 @@ find_package(Boost 1.42 COMPONENTS
     REQUIRED)
 find_package(Qt4 4.4.3 COMPONENTS
     QtCore
-    QtGui
     QtDBus
     REQUIRED)
 

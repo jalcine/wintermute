@@ -329,4 +329,4 @@ namespace Wintermute {
 Q_DECLARE_INTERFACE(Wintermute::Plugins::PluginBase, "org.thesii.Wintermute.PluginBase");
 
 #endif /* PLUGINS_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 0;
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

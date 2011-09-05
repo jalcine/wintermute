@@ -32,9 +32,9 @@ using std::endl;
 using std::string;
 using Wintermute::Core;
 
-/// @todo Suggestion: Maybe we can get a ncurses interface going?
 int main ( int argc, char** argv ) {
-    Core l_core ( argc,argv );
+    Core l_core ( argc , argv );
+
     return WNTR_APPLICATION::exec();
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

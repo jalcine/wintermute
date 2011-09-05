@@ -43,15 +43,18 @@ namespace Wintermute {
             Curses(const Curses&);
             static void _init();
             static void _print(const int, const int, const QString& );
+            static void _read(QString&);
+            static void _doCommands();
             static void _refresh();
 
         public:
             virtual ~Curses();
             static void printText(const QString& , const int = -1, const int = - 1);
             static void printStatus(const QString&);
+            static void getText(const QString&, QString&);
             static void start();
             static void stop();
     };
 }
 #endif
-// kate: indent-mode cstyle; space-indent on; indent-width 0;
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

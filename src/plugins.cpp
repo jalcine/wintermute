@@ -45,7 +45,7 @@ namespace Wintermute {
             foreach ( QString l_pd, l_pls )
             Factory::loadPlugin ( string ( WINTER_PLUGINS_PATH ) + string ( "/" ) + l_pd.toStdString () );
 
-            if ( Core::arguments ()->value ( "gui" ).toBool () == true ){
+            if ( Core::arguments ()->value ( "gui" ).toBool ()){
 #ifdef WINTERMUTE_USING_GUI
                 Factory::loadPlugin ( "/usr/lib/libwntrgui.so" );
 #else

@@ -39,6 +39,7 @@ using namespace Wintermute;
 namespace po = boost::program_options;
 
 using boost::program_options::variables_map;
+using boost::program_options::variable_value;
 using boost::program_options::options_description;
 using Wintermute::Linguistics::Parser;
 using std::cout;
@@ -52,22 +53,17 @@ namespace Wintermute {
     Core::Core ( int &p_argc, char **p_argv ) {
         Core::s_core = this;
         Core::Configure ( p_argc,p_argv );
-        ::QObject ( s_app );
-
-        s_core->connect ( WNTR_APPLICATION::instance (),SIGNAL ( aboutToQuit() ),
-                          Core::instance (),SLOT ( doDeinit() ) );
-        s_core->connect (WNTR_APPLICATION::instance (),SIGNAL(unixSignal(int)),
-                         Core::instance (),SLOT(unixSignal(int)));
     }
 
     void Core::Configure ( int& p_argc, char** p_argv ) {
-        int l_argc = p_argc;
         string ipcModule = "master";
         s_app = new WNTR_APPLICATION ( p_argc,p_argv );
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
         s_app->setOrganizationDomain ( "org.thesii.Wintermute" );
         s_app->setOrganizationName ( "Synthetic Intellect Institute" );
+        connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT ( doDeinit() ) );
+        s_core->setParent (s_app);
 
         cout << qPrintable ( s_app->applicationName () ) << " "
              << qPrintable ( s_app->applicationVersion () )
@@ -75,7 +71,7 @@ namespace Wintermute {
              << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
 
 #ifdef WINTERMUTE_USING_GUI
-        cout << "(core) Compiled with graphical user interface capabilities." << endl;
+        cout << "(core) Built with graphical user interface capabilities." << endl;
 #endif
 
         configureCommandLine();
@@ -115,17 +111,24 @@ namespace Wintermute {
         ;
 
         l_hiddenOptions.add_options ()
-        ( "plugin,p" , po::value<string>() ,
+        ( "plugin,p"  , po::value<string>() ,
           "Loads a plug-in. (default: none specified)" )
-        ( "ipc,i"    , po::value<string>()->default_value ( "master" ) ,
+        ( "ipc,i"     , po::value<string>()->default_value ( "master" ) ,
           "Defines the IPC module to run this process as." )
-        ( "gui,g"    ,
+        ( "ncurses,n" ,
+ #ifdef WINTERMUTE_USING_GUI
+           po::value<bool>()->default_value ( false ),
+ #else
+           po::value<bool>()->default_value ( true ),
+ #endif
+         "Toggles whether or not the nCurses interface is being used. This automatically disables the GUI.")
+        ( "gui,g"     ,
 #ifdef WINTERMUTE_USING_GUI
           po::value<bool>()->default_value ( true ),
 #else
           po::value<bool>()->default_value ( false ),
 #endif
-          "Toggles whether or not the graphical user interface is loaded." )
+          "Toggles whether or not the graphical user interface is loaded. This automatically disables nCurses." )
         ;
 
         l_allOptions.add ( l_publicOptions ).add ( l_configOptions );
@@ -157,7 +160,7 @@ namespace Wintermute {
                 cout << endl << "Wintermute " << WNTR_APPLICATION::applicationVersion ().toStdString () << " "
                      << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
                      << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
-                     << "Boost v" << BOOST_VERSION << endl;
+                     << "Boost v" << BOOST_VERSION << endl << endl;
 
                 exit ( 0 );
             } else if ( l_vm.count ( "copyright" ) ) {
@@ -171,23 +174,24 @@ namespace Wintermute {
                 exit ( 0 );
             }
 
-            if ( l_vm.count ( "ipc" ) )
-                s_args->insert ( "ipc" , QString::fromStdString ( l_vm["ipc"].as<string>() ) );
+            for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
+                const QString l_key = QString::fromStdString (l_itr->first);
+                const variable_value l_val = l_itr->second;
+                const QString l_typeName = l_val.value ().type ().name ();
 
-            if ( l_vm.count ( "locale" ) )
-                s_args->insert ( "locale" , QString::fromStdString ( l_vm["locale"].as<string>() ) );
+                if (l_typeName == "Ss")
+                    s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
+                else if (l_typeName == "b")
+                    s_args->insert (l_key,l_val.as<bool>());
+            }
 
-            if ( l_vm.count ( "data-dir" ) )
-                s_args->insert ( "data-dir" , QString::fromStdString ( l_vm["data-dir"].as<string>() ) );
-
-            if ( l_vm.count ( "gui" ) )
-                s_args->insert ( "gui" , l_vm["gui"].as<bool>() );
-
-            if ( l_vm.count ( "plugin" ) )
-                s_args->insert ( "plugin" , QString::fromStdString ( l_vm["plugin"].as<string>() ) );
+            if (s_args->value ("gui").toBool() && !s_args->value ("ncurses").toBool ())
+                s_args->insert ("ncurses",false);
+            else if (s_args->value ("ncurses").toBool())
+                s_args->insert ("gui",false);
 
         } else
-            cout << "(core) [Core] Run this application with '--help' to get help information." << endl;
+            cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
     }
 
     const Core* Core::instance () {
@@ -205,13 +209,13 @@ namespace Wintermute {
     void Core::Initialize() {
         Data::Configuration::Initialize();
         Data::Linguistics::Configuration::setLocale ( s_args->value ( "locale" ).toString ().toStdString () );
-        Data::Linguistics::Configuration::setDirectory ( s_args->value ( "linguistics-dir" ).toString ().toStdString () );
         Plugins::Factory::Startup ();
         emit s_core->initialized ();
-        if ( !Core::arguments ()->value ( "gui" ).toBool () ) {
-            Thread l_thrd;
+
+        if ( Core::arguments ()->value ( "ncurses" ).toBool () )
             Core::startCurses();
-            l_thrd.run();
+        else {
+            (new Thread)->run ();
         }
     }
 
@@ -229,13 +233,17 @@ namespace Wintermute {
     }
 
     void Core::startCurses() {
-        qDebug() << "(core) nCurses is disabled, not starting.";
-        //Curses::start();
+        if (s_args->value ("ncurses").toBool ())
+            Curses::start();
+        else
+            qDebug() << "(core) nCurses is disabled, not starting.";
     }
 
     void Core::stopCurses() {
-        qDebug() << "(core) nCurses is disabled, not stopping.";
-        //Curses::stop();
+        if (s_args->value ("ncurses").toBool ())
+            Curses::stop();
+        else
+            qDebug() << "(core) nCurses is disabled, not stopping.";
     }
 
     void Thread::run() {

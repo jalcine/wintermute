@@ -19,8 +19,18 @@
  */
 
 #include "ncurses.hpp"
+#include "plugins.hpp"
+#include <wntrdata.hpp>
+#include <wntrling.hpp>
 #include <QString>
+#include <QtDebug>
 #include <QStringList>
+#include <QTextStream>
+#include <iostream>
+
+using namespace Wintermute::Data;
+using namespace Wintermute::Plugins;
+using namespace std;
 
 namespace Wintermute {
     static WINDOW* s_mnWndw = NULL;
@@ -32,16 +42,15 @@ namespace Wintermute {
     Curses::~Curses () { }
 
     void Curses::start() {
+        cout << "(core) [Curses] Starting...";
+        usleep(100);
         _init();
-        const QString l_status = QString("ALERT: Wintermute's nCurses is currently non-functional.\nWe recommend that you use") +
-                QString(" the graphical frontend when compiled in GUI mode. Run 'wintermute --gui true' to") +
-                QString(" enable GUI mode.");
 
         printText(QString("\nWintermute v.") + QString::number (WINTERMUTE_VERSION) +
-                  QString("\n** Visit us at <http://www.thesii.org> or on Freenode (IRC) in ##sii-general. **\n"));
-        printStatus(l_status);
-        _refresh();
-        getch();
+                  QString("\n** Visit us at <http://www.thesii.org> or on Freenode (IRC) in ##sii-general. **\n") +
+                  QString("Press 'h' for more information."));
+
+        _doCommands();
         stop();
     }
 
@@ -63,6 +72,11 @@ namespace Wintermute {
         }
     }
 
+    void Curses::getText (const QString &p_prompt, QString &p_result){
+        printStatus(p_prompt);
+        _read (p_result);
+    }
+
     void Curses::printStatus (const QString &p_status){
         const QStringList l_txtLst = p_status.split("\n");
         int l_row, l_col;
@@ -76,12 +90,90 @@ namespace Wintermute {
 
     void Curses::_init () {
         initscr ();
-        raw(); keypad(stdscr,true); noecho();
+        keypad(stdscr,true); echo();
+    }
+
+    void Curses::_doCommands() {
+        char l_chr ;
+        while (l_chr != 'q'){
+            printStatus ("Command: ");
+            l_chr = getch(); clear();
+
+            printStatus ("Command: " + QString(l_chr));
+            QByteArray *l_data = new QByteArray;
+            switch (l_chr){
+                case 'h': {
+                    QTextStream l_dataStrm(l_data);
+                    l_dataStrm << "Wintermute doesn't do much currently in it's nCurses" << endl
+                               << "interface. We're working to get this fixed, but it's really"  << endl
+                               << "easier said than done." << endl << endl
+                               << "Commands:" << endl
+                               << "d: Dump internal data (locale, directories, etc)." << endl
+                               << "g: Start X11/GUI interface" << endl;
+
+                    QString l_str(*l_data);
+                    printText(l_str);
+                } break;
+
+                case 'd': {
+                    QTextStream l_dataStrm(l_data);
+                    l_dataStrm << "Locale: " << Data::Linguistics::Configuration::locale().c_str () << " (default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
+                               << "Root data directory:" << Data::Configuration::directory ().c_str() << " (default: " << WNTRDATA_DATA_DIR << ")" << endl;
+
+                    QString l_str(*l_data);
+                    printText(l_str);
+                } break;
+
+                case 'g': {
+                    printStatus("Starting graphical user interface..");
+                    stop();
+                    Factory::loadPlugin("/usr/lib/libwntrgui.so");
+                    return;
+                } break;
+
+                case 'q': {
+                    clear();
+                    printStatus("Exitting...\n");
+                    stop();
+                    WNTR_APPLICATION::quit ();
+                } break;
+
+                case 'l': {
+                    printStatus("Starting linguistics parser...");
+                    QString l_str;
+                    Linguistics::Parser l_prsr;
+                    getText ("Input: ",l_str);
+
+                    while (!l_str.isEmpty ()){
+                        l_prsr.parse(l_str.toStdString ());
+                        getText ("Input: ",l_str);
+                    }
+
+                    clear();
+                } break;
+
+                default: {
+                    printText ("Unknown command: '" + QString(l_chr) + "'.");
+                } break;
+            }
+
+            _refresh ();
+        }
     }
 
     void Curses::_print(const int p_row, const int p_col, const QString& p_txt){
         mvprintw (p_row,p_col,p_txt.toStdString().c_str());
         _refresh();
+    }
+
+    void Curses::_read(QString& l_str){
+        char* l_data;
+        getstr(l_data);
+
+        if (!QString(l_data).isEmpty ())
+            l_str = l_data;
+        else
+            l_str.clear ();
     }
 
     void Curses::_refresh() {
@@ -91,6 +183,10 @@ namespace Wintermute {
     void Curses::stop () {
         _refresh();
         endwin();
+        clear();
+        fixterm();
+        resetterm();
+        qDebug() << "(core) [Curses] Halted.";
     }
 
 }

@@ -24,6 +24,7 @@
 #define CORE_HPP
 
 #include "config.hpp"
+#include <boost/any.hpp>
 #include <QVariantMap>
 
 namespace Wintermute {
@@ -207,4 +208,4 @@ namespace Wintermute {
 }
 
 #endif /* CORE_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 0;
+// kate: indent-mode cstyle; space-indent on; indent-width 4;
