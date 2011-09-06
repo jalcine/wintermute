@@ -7,3 +7,14 @@ macro(winter_make_absolute paths)
         endif()
     endforeach()
 endmacro(winter_make_absolute)
+
+macro(enable_doxygen)
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        configure_file(Doxyfile.in Doxyfile)
+        add_custom_target(doxydoc
+            ${DOXYGEN_EXECUTABLE} Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Generating API documentation with Doxygen")
+    endif()
+endmacro()

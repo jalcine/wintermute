@@ -30,9 +30,16 @@ sed '/#$/ {
     }
     ' CMakeLists.txt > CMakeLists.new
 
+cat > lib/CMakeLists.txt <<EOF
+cmake_minimum_required(VERSION 2.8)
+add_subdirectory(wntrdata)
+add_subdirectory(wntrntwk)
+add_subdirectory(wntrling)
+EOF
+
 case "$1" in
   "enable-patches")
-    diff -U 3 -dN -- CMakeLists.txt CMakeLists.new > CMakeLists.patch
+    diff -U 3 -dN -- CMakeLists.txt CMakeLists.new > CMakeLists.txt.patch
     rm CMakeLists.new
     ;;
   *)
