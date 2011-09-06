@@ -108,10 +108,3 @@ add_subdirectory(src)
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
     DESTINATION "${WINTERMUTE_LIB_INSTALL_DIR}/pkgconfig/")
 
-install(FILES ${WINTERMUTE_MOC_FILES}
-    DESTINATION ${WINTERMUTE_INCLUDE_DIR}
-    COMPONENT dev)
-
-install(TARGETS wintermute
-    RUNTIME DESTINATION "${WINTERMUTE_BIN_INSTALL_DIR}"
-    COMPONENT bin)
