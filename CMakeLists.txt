@@ -100,6 +100,7 @@ configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
     "${CMAKE_CURRENT_BINARY_DIR}/config.hpp")
 
+add_subdirectory(src)
 #
 # Installs
 #
