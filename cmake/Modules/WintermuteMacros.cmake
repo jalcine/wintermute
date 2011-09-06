@@ -14,6 +14,7 @@ macro(enable_doxygen)
         configure_file(Doxyfile.in Doxyfile)
         add_custom_target(doxydoc
             ${DOXYGEN_EXECUTABLE} Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             COMMENT "Generating API documentation with Doxygen")
     endif()
 endmacro()

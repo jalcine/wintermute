@@ -5,6 +5,8 @@ set(WINTERMUTE_MINOR_VERSION 1)
 set(WINTERMUTE_MICRO_VERSION 0)
 set(WINTERMUTE_VERSION
     ${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}.${WINTERMUTE_MICRO_VERSION})
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #
 # Modules
 #
@@ -32,8 +34,12 @@ find_package(Qt4 4.4.3 COMPONENTS
 #
 # WNTR SDK
 #
-include(WintermuteDefaults)
+include(WintermuteMacros)
 include("${QT_USE_FILE}")
+
+#----Doxygen target----#
+enable_doxygen()
+
 #
 # Files
 #
@@ -44,20 +50,23 @@ file(GLOB CMAKE_MODULES "${PROJECT_SOURCE_DIR}/cmake/Modules/*.cmake")
 #
 # Main variables
 #
-set(MOC_CODE )
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core")
 set(PROJECT_LABEL "Wintermute Core")
+
 set(WINTERMUTE_USE_GUI false CACHE BOOL "Determines whether or not Wintermute is using an GUI base.")
-set(WINTERMUTE_BIN_INSTALL_DIR "${WINTER_BIN_INSTALL_DIR}")
-set(WINTERMUTE_INCLUDE_DIRS "${WNTRLING_INCLUDE_DIRS}"
+set(WINTERMUTE_BIN_INSTALL_DIR bin)
+set(WINTERMUTE_LIB_INSTALL_DIR lib)
+set(WINTERMUTE_INCLUDE_DIRS 
+    ${WNTRLING_INCLUDE_DIRS}
     ${WNTRDATA_INCLUDE_DIRS}
     ${WNTRNTWK_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}
-    ${CURSES_INCLUDE_DIR}
+    ${CURSES_INCLUDE_DIRS}
     )
-set(WINTERMUTE_LIBRARIES "${WNTRLING_LIBRARIES}"
+set(WINTERMUTE_LIBRARIES 
+    ${WNTRLING_LIBRARIES}
     ${WNTRDATA_LIBRARIES}
     ${WNTRNTWK_LIBRARIES}
     ${Boost_LIBRARIES}
@@ -65,12 +74,12 @@ set(WINTERMUTE_LIBRARIES "${WNTRLING_LIBRARIES}"
     ${CURSES_LIBRARIES}
     )
 
-set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}/wntr" CACHE PATH "Includes directory.")
+set(WINTERMUTE_INCLUDE_DIR "include/wntr/core" CACHE PATH "Includes directory.")
 set(WINTERMUTE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
 
 if(WINTERMUTE_USE_GUI)
-    set(WINTERMUTE_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIRS}" ${QT_QTGUI_INCLUDE_DIR})
-    set(WINTERMUTE_LIBRARIES "${WINTERMUTE_LIBRARIES}" ${QT_QTGUI_LIBRARY})
+    set(WINTERMUTE_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS} ${QT_QTGUI_INCLUDE_DIR})
+    set(WINTERMUTE_LIBRARIES ${WINTERMUTE_LIBRARIES} ${QT_QTGUI_LIBRARY})
     set(WINTERMUTE_USE_GUI "true")
 else()
     set(WINTERMUTE_USE_GUI "false")
@@ -79,10 +88,7 @@ endif()
 #
 # Include directories
 #
-include_directories(${WINTERMUTE_INCLUDE_DIRS}
-    "${PROJECT_SOURCE_DIR}/include/wntr")
-
-QT4_WRAP_CPP(MOC_CODE "${WINTERMUTE_SHPP}")
+include_directories(${WINTERMUTE_INCLUDE_DIRS})
 
 #
 # Configs
@@ -92,31 +98,17 @@ configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
    "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-    "${CURRENT_BINARY_DIR}/config.hpp")
-
-#
-# Targets
-#
-add_executable(wintermute
-    ${WINTERMUTE_SHPP}
-    ${WINTERMUTE_SCPP}
-    ${MOC_CODE})
-
-target_link_libraries(wintermute
-    ${WINTERMUTE_LIBRARIES})
+    "${CMAKE_CURRENT_BINARY_DIR}/config.hpp")
 
 #
 # Installs
 #
 
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
-    DESTINATION "${WINTER_LIB_INSTALL_DIR}/pkgconfig/")
+    DESTINATION "${WINTERMUTE_LIB_INSTALL_DIR}/pkgconfig/")
 
-install(FILES ${CMAKE_MODULES}
-    DESTINATION "${CMAKE_MODULE_DIR}")
-
-install(FILES ${WINTERMUTE_SHPP}
-    DESTINATION "${WINTERMUTE_INCLUDE_DIR}"
+install(FILES ${WINTERMUTE_MOC_FILES}
+    DESTINATION ${WINTERMUTE_INCLUDE_DIR}
     COMPONENT dev)
 
 install(TARGETS wintermute
