@@ -1,5 +1,6 @@
 /**
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @file   ipc.cpp
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -21,81 +22,102 @@
 
 #include "ipc.hpp"
 #include "core.hpp"
+#include "config.hpp"
 #include "plugins.hpp"
+#include "adaptors.hpp"
 #include <wntrntwk.hpp>
 #include <wntrdata.hpp>
+#include <wntrling.hpp>
 #include <QtDBus>
 #include <QProcess>
 
 namespace Wintermute {
-    QString IPC::s_appMod;
-    DBusAdaptor* DBusAdaptor::s_dbus = NULL;
+    namespace IPC {
+        QString System::s_appMod;
+        QDBusConnection* System::s_cnntn = NULL;
 
-    /// @todo Determine the actions to be taken depending on the IPC module.
-    void IPC::Initialize ( const QString& p_appMod ) {
-        if (p_appMod.isEmpty ())
-            s_appMod = "Master";
-        else
-            s_appMod = p_appMod;
+        void System::start ( ) {
+            s_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
+            s_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
+            QString l_serviceName = WINTERMUTE_SERVICE_NAME, l_objectName;
 
-        s_appMod[0] = s_appMod[0].toUpper ();
+            if ( s_appMod == "master") {
+                l_objectName = "master";
+                connect(Core::instance (),SIGNAL(started()), Plugins::Factory::instance(),SLOT(Startup()));
+                connect(Core::instance (),SIGNAL(stopped()),Plugins::Factory::instance (),SLOT(Shutdown()));
 
-        if ( s_appMod == "Master") {
-            Data::Linguistics::Configuration::setLocale ( Core::arguments ()->value ("locale").toString () );
-            connect(Core::instance (),SIGNAL(initialized()), Data::Configuration::instance (),SLOT(Initialize()));
-            connect(Core::instance (),SIGNAL(deinitialized()),Data::Configuration::instance (),SLOT(Deinitialize()));
-        } else if ( s_appMod == "Network" ) {
-            Network::Initialize ();
-        } else if ( s_appMod == "Plugin" ) {
-            const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
-            if (l_plgn == "root"){
-                connect(Core::instance (),SIGNAL(initialized()), Plugins::Factory::instance(),SLOT(Startup()));
-                connect(Core::instance (),SIGNAL(deinitialized()),Plugins::Factory::instance (),SLOT(Shutdown()));
+                CoreAdaptor* l_adpt = new CoreAdaptor;
+                Plugins::PluginFactoryAdaptor* l_adpt2 = new Plugins::PluginFactoryAdaptor;
+
+                registerObject ("/Master" , l_adpt);
+                registerObject ("/Factory" , l_adpt2);
+            } else if ( s_appMod == "ling" ) {
+                l_objectName = "Linguistics";
+
+                Linguistics::SystemAdaptor* l_adpt = new Linguistics::SystemAdaptor;
+
+                registerObject ("/System", l_adpt);
+            } else if ( s_appMod == "data" ) {
+                l_objectName = "Data";
+                Data::Linguistics::System::setLocale ( Core::arguments ()->value ("locale").toString () );
+
+                connect(Core::instance (),SIGNAL(started()),Data::System::instance (),SLOT(start()));
+                connect(Core::instance (),SIGNAL(stopped()),Data::System::instance (),SLOT(stop()));
+
+                Data::SystemAdaptor* l_adpt = new Data::SystemAdaptor;
+                Data::NodeAdaptor* l_adpt2 = new Data::NodeAdaptor;
+                Data::RuleAdaptor* l_adpt3 = new Data::RuleAdaptor;
+
+                registerObject ("/System" , l_adpt);
+                registerObject ("/Nodes"  , l_adpt2);
+                registerObject ("/Rules"  , l_adpt3);
+            } else if ( s_appMod == "ntwk" ) {
+                l_objectName = "Network";
+
+                connect(Core::instance (),SIGNAL(started()),Network::Interface::instance(),SLOT(start()));
+                connect(Core::instance (),SIGNAL(stopped()),Network::Interface::instance(),SLOT(stop()));
+
+                Network::SystemAdaptor* l_adpt = new Network::SystemAdaptor;
+                Network::BroadcastAdaptor* l_adpt2 = new Network::BroadcastAdaptor;
+
+                registerObject ("/System" , l_adpt);
+                registerObject ("/Broadcast",l_adpt2);
+            } else if ( s_appMod == "plugin" ) {
+                const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
+                l_objectName = "Plugin." + l_plgn;
+                connect(Core::instance (),SIGNAL(started()),Plugins::Factory::instance (),SLOT(loadStandardPlugin()));
+                connect(Core::instance (),SIGNAL(stopped()),Plugins::Factory::instance (),SLOT(unloadStandardPlugin()));
             }
-            else {
-                s_appMod += QString("_") + l_plgn;
-                connect(Core::instance (),SIGNAL(initialized()),Plugins::Factory::instance (),SLOT(loadStandardPlugin()));
-                connect(Core::instance (),SIGNAL(initialized()),Plugins::Factory::instance (),SLOT(unloadStandardPlugin()));
+
+            if (l_objectName != "master") l_serviceName += "." + l_objectName;
+
+            if (!s_cnntn->registerService (l_serviceName) && l_objectName == "master"){
+                qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << l_serviceName
+                         << ") under the same user on the same computer";
+                Core::endProgram ();
             }
+
+            qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
         }
 
-        DBusAdaptor::s_dbus = new DBusAdaptor;
-        qDebug() << "(core) [IPC] Module" << s_appMod << "running.";
-        Core::Initialize ();
-    }
+        const bool System::registerObject(const QString& p_pth, QObject* p_obj){
+            QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
+                    | QDBusConnection::ExportAdaptors;
 
-    DBusAdaptor::DBusAdaptor() : QDBusAbstractAdaptor(WNTR_APPLICATION::instance ()) {
-        connect(this,SIGNAL(destroyed()),WNTR_APPLICATION::instance (),SLOT(quit()));
-        connect(WNTR_APPLICATION::instance (),SIGNAL(aboutToQuit()),this,SLOT(deleteLater()));
+            if (s_cnntn->objectRegisteredAt (p_pth)){
+                qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << s_cnntn->interface ()->service ();
+                return false;
+            } else
+                return s_cnntn->registerObject (p_pth , qobject_cast<GenericAdaptor*>(p_obj), l_opts);
 
-        if (QDBusConnection::sessionBus().registerObject("/" + IPC::currentModule (), this , QDBusConnection::ExportAllContents)){
-            qDebug() << "(core) [D-Bus] Connected to D-Bus as" << IPC::currentModule ();
-            emit started();
-
-            connect(WNTR_APPLICATION::instance (),SIGNAL(aboutToQuit()),this,SLOT(deleteLater()));
-            if (IPC::currentModule () != "Master"){
-                m_mstrIntr = new QDBusInterface("org.thesii.Wintermute","/Master");
-                m_mstrIntr->connect (m_mstrIntr,SIGNAL(destroyed()),this,SLOT(deleteLater()));
-                m_mstrIntr->call ("reportAlive");
-            }
-        } else {
-            qDebug() << "(core) [D-Bus] Can't connect to D-Bus; a module with the name" << IPC::currentModule () << "already exists!";
-            WNTR_APPLICATION::quit ();
-            exit(0);
+            return false;
         }
-    }
 
-    DBusAdaptor::~DBusAdaptor() {
-        qDebug() << "(core) [D-Bus] Disconnecting...";
-        emit stopped();
-    }
+        void System::stop () {
+            s_cnntn->disconnectFromBus (s_cnntn->name ());
+        }
 
-    const QString DBusAdaptor::module() const { return IPC::currentModule (); }
-
-    void DBusAdaptor::quit () const { WNTR_APPLICATION::quit (); }
-
-    void DBusAdaptor::reportAlive (const QDBusMessage &p_msg) const {
-        qDebug() << "(core) [D-Bus] Module "<< p_msg.interface () << "reporting for duty.";
+        QDBusConnection* System::bus() { return s_cnntn; }
     }
 }
 

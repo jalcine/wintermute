@@ -117,8 +117,8 @@ namespace Wintermute {
 
                 case 'd': {
                     QTextStream l_dataStrm(l_data);
-                    l_dataStrm << "Locale:" << Data::Linguistics::Configuration::locale() << "(default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
-                               << "Root data directory:" << Data::Configuration::directory () << "(default: " << WNTRDATA_DATA_DIR << ")" << endl;
+                    l_dataStrm << "Locale:" << Data::Linguistics::System::locale() << "(default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
+                               << "Root data directory:" << Data::System::directory () << "(default: " << WNTRDATA_DATA_DIR << ")" << endl;
 
                     QString l_str(*l_data);
                     printText(l_str);
@@ -127,7 +127,7 @@ namespace Wintermute {
                 case 'g': {
                     printStatus("Starting graphical user interface..");
                     stop();
-                    Factory::loadPlugin("/usr/lib/libwntrgui.so");
+                    Factory::loadPlugin("wntrgui");
                     return;
                 } break;
 

@@ -44,61 +44,7 @@ namespace Wintermute {
     class Core : public QObject {
         Q_OBJECT
 
-        signals:
-            /**
-             * @brief Raised once the core's ready to go.
-             *
-             * This signal is emitted when the core's done loading prerequisites.
-             * This is <b>after</b> all plug-ins have been loaded and the inter-
-             * process communication system is active.
-             *
-             * @fn initialized
-             * @see Wintermute::Core::Initialize()
-             */
-            void initialized();
-
-            /**
-             * @brief Raised once the core's ready to shut down.
-             *
-             * This signal is emitted when the core's ready to shutdown the system.
-             * This is <b>before</b> any plug-ins are unloaded, but not before they're
-             * deinitialized.
-             *
-             * @fn deinitialized
-             */
-            void deinitialized();
-
-        protected:
-            /**
-             * @brief Configures Wintermute's core.
-             *
-             * This method holds the instructions tos set-up some imperative command line arguments.
-             * It then parses each argument and saves it to the global cache of arguments for other
-             * utilities to use.
-             *
-             * @fn Configure
-             * @param argc The command line argument passed representing the number of given arguments.
-             * @param argv The command line argument passed representing the value of each argument.
-             * @see Wintermute::Core::Initialize
-             */
-            static void Configure ( int& , char ** );
-
-            /**
-             * @brief Starts the nCurses interface.
-             *
-             * @fn doCurses
-             */
-            static void startCurses();
-
-            /**
-             * @brief
-             *
-             * @fn stopCurses
-             */
-            static void stopCurses();
-
         public:
-
             /**
              * @brief Flags representing the user interface of Wintermute.
              * @enum UserInterface
@@ -122,28 +68,6 @@ namespace Wintermute {
             explicit Core ( int&, char** );
 
             /**
-             * @brief Initializes the system.
-             *
-             * Does the first bit of initialization work for the core process of Wintermute by
-             * loading the plug-ins and then the data system.
-             *
-             * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
-             * @see Wintermute::Core::initialized
-             * @fn Initialize
-             */
-            static void Initialize();
-
-            /**
-             * @brief Deinitializes the system.
-             *
-             * Cleans up all of the work for the core processes and runs the approriate disconnection methods.
-             *
-             * @see Wintermute::Core::deinitialized
-             * @fn Deinitialize
-             */
-            static void Deinitialize ();
-
-            /**
              * @brief Obtains an instance of the Core.
              *
              * Provided that a developer wishes to connect to the signals exposed by the core,
@@ -152,7 +76,8 @@ namespace Wintermute {
              * @return A constant pointer to the Core.
              * @fn instance
              */
-            const static Core* instance();
+            static Core* instance();
+
             /**
              * @brief Obtains a pointer to the current arguments.
              *
@@ -168,6 +93,13 @@ namespace Wintermute {
             const static QVariantMap* arguments();
 
             /**
+             * @brief
+             *
+             * @fn endProgram
+             */
+            static void endProgram();
+
+            /**
              * @brief Determines the kind of front-facing interface the Wintermute process is using.
              * @todo Consider using a bool instead of an enum, feels like a waste of memory to me, just adding onto the vtable.
              * @fn userInterface
@@ -179,6 +111,83 @@ namespace Wintermute {
                 return Graphical;
         #endif
             }
+
+        signals:
+            /**
+             * @brief Raised once the core's ready to go.
+             *
+             * This signal is emitted when the core's done loading prerequisites.
+             * This is <b>after</b> all plug-ins have been loaded and the inter-
+             * process communication system is active.
+             *
+             * @fn initialized
+             * @see Wintermute::Core::Initialize()
+             */
+            void started() const;
+
+            /**
+             * @brief Raised once the core's ready to shut down.
+             *
+             * This signal is emitted when the core's ready to shutdown the system.
+             * This is <b>before</b> any plug-ins are unloaded, but not before they're
+             * deinitialized.
+             *
+             * @fn deinitialized
+             */
+            void stopped() const;
+
+        protected:
+            /**
+             * @brief Configures Wintermute's core.
+             *
+             * This method holds the instructions tos set-up some imperative command line arguments.
+             * It then parses each argument and saves it to the global cache of arguments for other
+             * utilities to use.
+             *
+             * @fn Configure
+             * @param argc The command line argument passed representing the number of given arguments.
+             * @param argv The command line argument passed representing the value of each argument.
+             * @see Wintermute::Core::Initialize
+             */
+            static void Configure ( int& , char ** );
+
+            /**
+             * @brief Initializes the system.
+             *
+             * Does the first bit of initialization work for the core process of Wintermute by
+             * loading the plug-ins and then the data system.
+             *
+             * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
+             * @see Wintermute::Core::initialized
+             * @fn Initialize
+             */
+            static void start();
+
+            /**
+             * @brief Deinitializes the system.
+             *
+             * Cleans up all of the work for the core processes and runs the approriate disconnection methods.
+             *
+             * @see Wintermute::Core::deinitialized
+             * @fn Deinitialize
+             */
+            static void stop ();
+
+
+        public slots:
+            /**
+             * @brief Starts the nCurses interface.
+             *
+             * @fn doCurses
+             */
+            static void startCurses();
+
+            /**
+             * @brief
+             *
+             * @fn stopCurses
+             */
+            static void stopCurses();
 
         private:
             static WNTR_APPLICATION* s_app; /**< Holds the object representing the current Q(Core)Application. */

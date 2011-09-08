@@ -17,9 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  * @endlegalese
- * @todo Consider splitting up the master Wintermute process into a master process and multiple sub processes (one master process, one child process managing the network, one child managing the plugin system, etc).
  */
 
 #include "wintermute.hpp"
 
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

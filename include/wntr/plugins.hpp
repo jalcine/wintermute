@@ -22,28 +22,27 @@
 #ifndef PLUGINS_HPP
 #define PLUGINS_HPP
 
-#include <QMap>
-#include <QFile>
-#include <QVector>
-#include <QVariant>
+#include <QHash>
+#include <QList>
 #include <QSettings>
 #include <QStringList>
 #include <QPluginLoader>
-
-using namespace std;
-using std::vector;
-using std::map;
+#include <QProcess>
+#include <QtDBus/QDBusAbstractAdaptor>
+#include <QtDBus/QDBusMessage>
+#include "adaptors.hpp"
 
 namespace Wintermute {
     namespace Plugins {
         struct Factory;
         struct PluginBase;
+        struct PluginInstance;
 
         /**
          * @brief Represents a named set of plugins.
          * @typedef PluginMap
          */
-        typedef QMap<QString, PluginBase*> PluginList;
+        typedef QHash<QString, PluginBase*> PluginList;
 
         /**
          * @brief Provides factory management of plug-ins.
@@ -61,6 +60,13 @@ namespace Wintermute {
             Q_DISABLE_COPY(Factory)
             friend class PluginBase;
 
+            signals:
+                void pluginLoaded(const QString& ) const;
+                void pluginUnloaded(const QString& ) const;
+                void pluginCrashed(const QString& ) const;
+                void initialized() const;
+                void deinitialized() const;
+
             public slots:
                 /**
                  * @brief Starts the plug-in system.
@@ -74,12 +80,13 @@ namespace Wintermute {
                 static void Shutdown();
 
             public:
+                Factory();
                 /**
                  * @brief Loads a plug-in.
                  * @fn loadPlugin
                  * @param
                  */
-                static const PluginBase* loadPlugin ( const QString& );
+                static PluginBase* loadPlugin ( const QString& );
                 /**
                  * @brief Unloads a plug-in from the system.
                  * @fn unloadPlugin
@@ -87,18 +94,19 @@ namespace Wintermute {
                  */
                 static void unloadPlugin(const QString& );
                 /**
-                 * @brief Loads a plug-in into the system.
-                 * @fn loadPlugin
-                 * @overload
-                 * @param
-                 */
-                static const PluginBase* loadPlugin ( const QFile* );
-                /**
                  * @brief Returns a list of all currently plug-ins with meta-data information.
                  * @fn loadedPlugins
                  * @returns A QList of plug-ins that are currently loaded into the system.
                  */
-                static PluginList const & loadedPlugins() { return s_allPlgns; }
+                static const QStringList loadedPlugins();
+
+                /**
+                 * @brief
+                 *
+                 * @fn allPlugins
+                 * @return const QStringList
+                 */
+                static const QStringList allPlugins();
 
                 /**
                  * @brief
@@ -106,12 +114,12 @@ namespace Wintermute {
                  * @fn instance
                  * @return const Factory *
                  */
-                static const Factory* instance() { return s_factory; }
+                static Factory* instance();
 
             private:
-                Factory() { }
                 static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
                 static Factory* s_factory;
+                QHash<const QString, PluginInstance*> m_plgnPool;
 
             private slots:
                 /**
@@ -127,6 +135,27 @@ namespace Wintermute {
                  * @fn unloadStandardPlugin
                  */
                 static void unloadStandardPlugin();
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginLoad
+                 * @param
+                 */
+                static void doPluginLoad(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginUnload
+                 * @param
+                 */
+                static void doPluginUnload(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginCrash
+                 * @param
+                 */
+                static void doPluginCrash(const QString&);
         };
 
         /**
@@ -173,6 +202,7 @@ namespace Wintermute {
          */
         class PluginBase : public QObject {
             friend class Factory;
+            friend class PluginInstanceAdaptor;
             Q_OBJECT
             Q_PROPERTY(const double Version READ version)
             Q_PROPERTY(const double CompatibleVersion READ compatVersion)
@@ -354,6 +384,42 @@ namespace Wintermute {
                 void doInitialize() const;
         };
 
+        class PluginInstance : public QObject {
+            friend class Factory;
+            Q_OBJECT
+            Q_DISABLE_COPY(PluginInstance)
+            Q_PROPERTY(const bool Active READ isActive)
+            Q_PROPERTY(const QString Name READ name)
+
+            public:
+                PluginInstance();
+                PluginInstance(const QString&, QSettings*);
+                const bool isActive();
+                const QString name();
+                const QSettings* settings();
+
+            public slots:
+                void stop(const QDBusMessage = QDBusMessage());
+                void start(const QDBusMessage = QDBusMessage());
+
+            signals:
+                void crashed(const QString&);
+                void loaded(const QString&);
+                void unloaded(const QString&);
+
+            private:
+                QProcess* m_prcss;
+                const QString m_plgnName;
+                QSettings* m_settings;
+                void doCrashed(const QString&, const QDBusMessage = QDBusMessage());
+                void doLoaded(const QString&, const QDBusMessage = QDBusMessage());
+                void doUnloaded(const QString&, const QDBusMessage = QDBusMessage());
+
+            private slots:
+                void catchStart();
+                void catchError(const QProcess::ProcessError& );
+                void catchExit(int, const QProcess::ExitStatus& );
+        };
     }
 }
 

@@ -26,13 +26,14 @@
 #include "ncurses.hpp"
 #include <iostream>
 #include <QtDebug>
+#include <QProcess>
+#include <QtDebug>
+#include <QLibraryInfo>
+#include <QVariantMap>
+#include <boost/program_options.hpp>
 #include <wntrdata.hpp>
 #include <wntrntwk.hpp>
 #include <wntrling.hpp>
-#include <QProcess>
-#include <QtDebug>
-#include <QVariantMap>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace Wintermute;
@@ -60,7 +61,7 @@ namespace Wintermute {
         s_app = new WNTR_APPLICATION ( p_argc,p_argv );
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
-        s_app->setOrganizationDomain ( "org.thesii.Wintermute" );
+        s_app->setOrganizationDomain ( "thesii.org" );
         s_app->setOrganizationName ( "Synthetic Intellect Institute" );
         connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT ( doDeinit() ) );
         s_core->setParent (s_app);
@@ -70,12 +71,10 @@ namespace Wintermute {
         if ( s_args->count ( "ipc" ) != 0 )
             l_ipcMod = s_args->value ( "ipc" ).toString ();
 
-        IPC::Initialize ( l_ipcMod );
+        Core::start ();
     }
 
-    const QVariantMap* Core::arguments () {
-        return s_args;
-    }
+    const QVariantMap* Core::arguments () { return s_args; }
 
     /// @todo Allow arbitrary arguments to be added into the system.
     void Core::configureCommandLine () {
@@ -103,26 +102,26 @@ namespace Wintermute {
         ;
 
         l_hiddenOptions.add_options ()
-        ( "plugin,p"  , po::value<string>() ,
-          "Loads a plug-in; used for module 'Plugin'. (default: none specified)" )
+        ( "plugin,p"  , po::value<string>()->default_value("root") ,
+          "Loads a plug-in; used for module 'Plugin'. (default: 'root' [the manager])" )
         ( "ipc,i"     , po::value<string>()->default_value ( "master" ) ,
           "Defines the IPC module to run this process as." )
         ( "daemon"    , po::value<bool>()->default_value( false ),
-           "Toggles whether or not this process should be run as a daemon.")
+           "Determines whether or not this process runs as a daemon.")
         ( "ncurses,n" ,
- #ifdef WINTERMUTE_USING_GUI
+#ifdef WINTERMUTE_USING_GUI
            po::value<bool>()->default_value ( false ),
- #else
+#else
            po::value<bool>()->default_value ( true ),
- #endif
-         "Toggles whether or not the nCurses interface is being used. This automatically disables the GUI.")
+#endif
+         "Determines whether or not the nCurses interface is being used. This automatically disables the GUI.")
         ( "gui,g"     ,
 #ifdef WINTERMUTE_USING_GUI
           po::value<bool>()->default_value ( true ),
 #else
           po::value<bool>()->default_value ( false ),
 #endif
-          "Toggles whether or not the graphical user interface is loaded. This automatically disables nCurses." )
+          "Determines whether or not the graphical user interface is loaded. This automatically disables nCurses." )
         ;
 
         l_allOptions.add ( l_publicOptions ).add ( l_configOptions );
@@ -137,7 +136,6 @@ namespace Wintermute {
 
         if ( !l_vm.empty () ) {
             if ( l_vm.count ( "help" ) || l_vm.count ( "verbose-help" ) ) {
-                /// @todo Render a set of text to be used for the help screen.
                 cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl;
 
                 if ( l_vm.count ( "help" ) )
@@ -149,14 +147,14 @@ namespace Wintermute {
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
                      << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
 
-                exit ( 0 );
+                endProgram ();
             } else if ( l_vm.count ( "version" ) ) {
                 cout << endl << "Wintermute " << WNTR_APPLICATION::applicationVersion ().toStdString () << " "
                      << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
                      << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
                      << "Boost v" << BOOST_VERSION << endl << endl;
 
-                exit ( 0 );
+                endProgram ( );
             } else if ( l_vm.count ( "copyright" ) ) {
                 cout << "Copyright (C) 2010 Synthetic Intellect Institute <contact@thesii.org> <sii@lists.launchpad.net>" << endl
                      << "Copyright (C) 2010 Wintermute Developers <wintermute-devel@lists.launchpad.net> " << endl
@@ -165,7 +163,7 @@ namespace Wintermute {
                      << "\tit under the terms of the GNU General Public License as published by " << endl
                      << "\tthe Free Software Foundation; either version 3 of the License, or" << endl
                      << "\t(at your option) any later version." << endl << endl;
-                exit ( 0 );
+                endProgram ( );
             }
 
             for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
@@ -179,16 +177,11 @@ namespace Wintermute {
                     s_args->insert (l_key,l_val.as<bool>());
             }
 
-            if (s_args->value ("gui").toBool() && !s_args->value ("ncurses").toBool ())
-                s_args->insert ("ncurses",false);
-            else if (s_args->value ("ncurses").toBool())
-                s_args->insert ("gui",false);
-
         } else
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
     }
 
-    const Core* Core::instance () {
+    Core* Core::instance () {
         return s_core;
     }
 
@@ -199,64 +192,105 @@ namespace Wintermute {
         }
     }
 
-    void Core::Initialize() {
-        if (IPC::currentModule () == "Master"){
+    void Core::start () {
+        if (Core::arguments ()->value("ipc").toString () == "master"){
             cout << qPrintable ( s_app->applicationName () ) << " "
                  << qPrintable ( s_app->applicationVersion () )
                  << " (pid " << s_app->applicationPid () << ") :: "
                  << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
 
 #ifdef WINTERMUTE_USING_GUI
-        cout << "(core) Built with graphical user interface capabilities." << endl;
+            cout << "(core) Built with graphical user interface capabilities." << endl;
 #endif
         }
 
-        emit s_core->initialized ();
+        qDBusRegisterMetaType<Lexical::Data>();
+        qDBusRegisterMetaType<Rules::Bond>();
+        qDBusRegisterMetaType<Rules::Chain>();
 
-        if (!s_args->value ("daemon").toBool ()){
+        IPC::System::start ();
+        emit s_core->started();
+
+        if (IPC::System::module () == "master"){
+            const QStringList l_ntwkArgs = QString("--ipc ntwk").split (" ");
+            const QStringList l_lingArgs = QString("--ipc ling").split (" ");
+            QStringList l_dataArgs = QString("--ipc data").split (" ");
+            l_dataArgs << "--locale" << s_args->value ("locale").toString ()
+                       << "--data-dir" << s_args->value ("data-dir").toString ();
+
+            if (Core::arguments ()->value ("daemon").toBool ()){
+                qDebug() << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs)
+                         << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_dataArgs)
+                         << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_lingArgs);
+            } else {
+                QProcess l_ntwk(Core::instance ());
+                QProcess l_data(Core::instance ());
+                QProcess l_ling(Core::instance ());
+
+                l_data.setProcessChannelMode (QProcess::ForwardedChannels);
+                l_data.start(WNTR_APPLICATION::applicationFilePath (),l_dataArgs);
+
+                l_ntwk.setProcessChannelMode (QProcess::ForwardedChannels);
+                l_ntwk.start(WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs);
+
+                l_ling.setProcessChannelMode (QProcess::ForwardedChannels);
+                l_ling.start(WNTR_APPLICATION::applicationFilePath (),l_lingArgs);
+            }
+
             if ( Core::arguments ()->value ( "ncurses" ).toBool () )
                 Core::startCurses();
             else
                 (new Thread)->run ();
-        } else {
-            const QStringList l_ntwkArgs = QString("--ipc network").split (" ");
-            const QStringList l_pluginArgs = QString("--ipc plugin --plugin root").split (" ");
-            QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs);
-            QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_pluginArgs);
         }
     }
 
-    void Core::Deinitialize() {
-        if (IPC::currentModule () == "Master"){
+    void Core::endProgram (){
+        qDebug() << "(core) Shutting down Wintermute...";
+        if (IPC::System::module () != "master"){
+            QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
+            QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
+            if (l_reply.type () == QDBusMessage::ErrorMessage){
+                qDebug() << "(core) Can't shutdown Wintermute's core :"
+                         << l_reply.errorMessage ();
+            }
+        }
+
+        WNTR_APPLICATION::quit ();
+    }
+
+    void Core::stop () {
+        if (IPC::System::module () == "master"){
             if (!s_args->value ("daemon").toBool ())
                 Core::stopCurses();
         }
 
-        emit s_core->deinitialized ();
+        IPC::System::stop ();
+        emit s_core->stopped ();
     }
 
     void Core::doDeinit () const {
-        qDebug() << "(core) Cleaning up..";
-        Core::Deinitialize ();
-        qDebug() << "(core) All clean!";
+        qDebug() << "(core [module=" << IPC::System::module () << "]) Cleaning up..";
+        Core::stop ();
+        qDebug() << "(core [module=" << IPC::System::module () << "]) All clean!";
     }
 
     void Core::startCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::start();
         else
-            qDebug() << "(core) nCurses is disabled, not starting.";
+            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not starting.";
     }
 
     void Core::stopCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::stop();
         else
-            qDebug() << "(core) nCurses is disabled, not stopping.";
+            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }
 
     void Thread::run() {
         if ( !Core::arguments ()->value ( "gui" ).toBool () ) {
+            resetty ();
             Wintermute::Linguistics::Parser l_prsr;
             QTextStream l_strm ( stdin );
 
