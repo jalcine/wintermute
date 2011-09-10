@@ -51,7 +51,7 @@ namespace Wintermute {
 
         /// @todo Find a way to detect if a plug-in instance's rose an error.
         PluginBase* Factory::loadPlugin ( const QString &p_plgnName ) {
-            WNTR_APPLICATION::addLibraryPath (WINTER_PLUGIN_PATH);
+	    QApplication::addLibraryPath(WINTER_PLUGIN_PATH);
             const QString l_plgnSpecPath = QString(WINTER_PLUGINSPEC_PATH) + "/" + p_plgnName + ".spec";
             const QString l_plgPth = QString(WINTER_PLUGIN_PATH) + "/lib" + p_plgnName + ".so";
 
@@ -244,7 +244,7 @@ namespace Wintermute {
                 connect(m_prcss,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(catchExit(int,QProcess::ExitStatus)));
 
                 m_prcss->setProcessChannelMode (QProcess::ForwardedChannels);
-                m_prcss->start (WNTR_APPLICATION::applicationFilePath (),l_plgnArgs);
+                m_prcss->start (QApplication::applicationFilePath (),l_plgnArgs);
             } else
                 qDebug() << "(core) [PluginInstance] Plug-in" << m_plgnName << "has already started in pid" << m_prcss->pid ();
         }

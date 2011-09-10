@@ -47,7 +47,7 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-    WNTR_APPLICATION* Core::s_app = NULL;
+    QApplication* Core::s_app = NULL;
     QVariantMap* Core::s_args = NULL;
     Core* Core::s_core = NULL;
 
@@ -58,7 +58,7 @@ namespace Wintermute {
 
     void Core::Configure ( int& p_argc, char** p_argv ) {
         QString l_ipcMod = "master";
-        s_app = new WNTR_APPLICATION ( p_argc,p_argv );
+        s_app = new QApplication ( p_argc,p_argv );
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
         s_app->setOrganizationDomain ( "thesii.org" );
@@ -76,7 +76,7 @@ namespace Wintermute {
 
     const QVariantMap* Core::arguments () { return s_args; }
 
-    /// @todo Allow arbitrary arguments to be added into the system.
+    /// @todo Allow arbitrary arguments to be added into the system
     void Core::configureCommandLine () {
         variables_map l_vm;
         s_args = new QVariantMap;
@@ -109,18 +109,10 @@ namespace Wintermute {
         ( "daemon"    , po::value<bool>()->default_value( false ),
            "Determines whether or not this process runs as a daemon.")
         ( "ncurses,n" ,
-#ifdef WINTERMUTE_USING_GUI
            po::value<bool>()->default_value ( false ),
-#else
-           po::value<bool>()->default_value ( true ),
-#endif
-         "Determines whether or not the nCurses interface is being used. This automatically disables the GUI.")
+          "Determines whether or not the nCurses interface is being used. This automatically disables the GUI.")
         ( "gui,g"     ,
-#ifdef WINTERMUTE_USING_GUI
-          po::value<bool>()->default_value ( true ),
-#else
           po::value<bool>()->default_value ( false ),
-#endif
           "Determines whether or not the graphical user interface is loaded. This automatically disables nCurses." )
         ;
 
@@ -149,7 +141,7 @@ namespace Wintermute {
 
                 endProgram ();
             } else if ( l_vm.count ( "version" ) ) {
-                cout << endl << "Wintermute " << WNTR_APPLICATION::applicationVersion ().toStdString () << " "
+                cout << endl << "Wintermute " << QApplication::applicationVersion ().toStdString () << " "
                      << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
                      << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
                      << "Boost v" << BOOST_VERSION << endl << endl;
@@ -198,10 +190,6 @@ namespace Wintermute {
                  << qPrintable ( s_app->applicationVersion () )
                  << " (pid " << s_app->applicationPid () << ") :: "
                  << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
-
-#ifdef WINTERMUTE_USING_GUI
-            cout << "(core) Built with graphical user interface capabilities." << endl;
-#endif
         }
 
         qDBusRegisterMetaType<Lexical::Data>();
@@ -219,22 +207,22 @@ namespace Wintermute {
                        << "--data-dir" << s_args->value ("data-dir").toString ();
 
             if (Core::arguments ()->value ("daemon").toBool ()){
-                qDebug() << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs)
-                         << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_dataArgs)
-                         << QProcess::startDetached (WNTR_APPLICATION::applicationFilePath (),l_lingArgs);
+                qDebug() << QProcess::startDetached (QApplication::applicationFilePath (),l_ntwkArgs)
+                         << QProcess::startDetached (QApplication::applicationFilePath (),l_dataArgs)
+                         << QProcess::startDetached (QApplication::applicationFilePath (),l_lingArgs);
             } else {
                 QProcess l_ntwk(Core::instance ());
                 QProcess l_data(Core::instance ());
                 QProcess l_ling(Core::instance ());
 
                 l_data.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_data.start(WNTR_APPLICATION::applicationFilePath (),l_dataArgs);
+                l_data.start(QApplication::applicationFilePath (),l_dataArgs);
 
                 l_ntwk.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ntwk.start(WNTR_APPLICATION::applicationFilePath (),l_ntwkArgs);
+                l_ntwk.start(QApplication::applicationFilePath (),l_ntwkArgs);
 
                 l_ling.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ling.start(WNTR_APPLICATION::applicationFilePath (),l_lingArgs);
+                l_ling.start(QApplication::applicationFilePath (),l_lingArgs);
             }
 
             if ( Core::arguments ()->value ( "ncurses" ).toBool () )
@@ -255,7 +243,7 @@ namespace Wintermute {
             }
         }
 
-        WNTR_APPLICATION::quit ();
+        QApplication::quit ();
     }
 
     void Core::stop () {
@@ -307,7 +295,7 @@ namespace Wintermute {
             }
         }
 
-        WNTR_APPLICATION::quit();
+        QApplication::quit();
     }
 
 }

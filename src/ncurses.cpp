@@ -19,6 +19,7 @@
  */
 
 #include "ncurses.hpp"
+#include "core.hpp"
 #include "plugins.hpp"
 #include <wntrdata.hpp>
 #include <wntrling.hpp>
@@ -135,7 +136,7 @@ namespace Wintermute {
                     clear();
                     printStatus("Exitting...\n");
                     stop();
-                    WNTR_APPLICATION::quit ();
+                    Core::endProgram();
                 } break;
 
                 case 'l': {

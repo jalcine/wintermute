@@ -70,7 +70,7 @@ namespace Wintermute {
             m_tmr->start ();
         }
 
-        const int GenericAdaptor::pid () const { return WNTR_APPLICATION::applicationPid (); }
+        const int GenericAdaptor::pid () const { return QApplication::applicationPid (); }
 
         const QString GenericAdaptor::module () const { return IPC::System::module (); }
     }
@@ -109,9 +109,9 @@ namespace Wintermute {
         PluginInstanceAdaptor::PluginInstanceAdaptor(PluginBase *p_plgn) : Adaptor(Core::instance ()) {
             if (p_plgn == NULL){
                 emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
-                WNTR_APPLICATION::quit ();
+                QApplication::quit ();
             } else {
-                connect(WNTR_APPLICATION::instance (),SIGNAL(aboutToQuit()),this,SIGNAL(aboutToQuit()));
+                connect(QApplication::instance (),SIGNAL(aboutToQuit()),this,SIGNAL(aboutToQuit()));
                 QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
                                                         "org.thesii.Wintermute.Factory","pluginCantLoad",
                                                         this,SIGNAL(pluginCantLoad(QString)));
@@ -160,6 +160,6 @@ namespace Wintermute {
             QDBusConnection::sessionBus ().send (l_call);
         }
 
-        WNTR_APPLICATION::quit ();
+        QApplication::quit ();
     }
 }
