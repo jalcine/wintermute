@@ -106,13 +106,11 @@ namespace Wintermute {
           "Loads a plug-in; used for module 'Plugin'. (default: 'root' [the manager])" )
         ( "ipc,i"     , po::value<string>()->default_value ( "master" ) ,
           "Defines the IPC module to run this process as." )
-        ( "daemon"    , po::value<bool>()->default_value( false ),
+        ( "daemon"    , po::value<string>()->default_value( "false" ),
            "Determines whether or not this process runs as a daemon.")
-        ( "ncurses,n" ,
-           po::value<bool>()->default_value ( false ),
+        ( "ncurses,n" , po::value<string>()->default_value ( "false" ),
           "Determines whether or not the nCurses interface is being used. This automatically disables the GUI.")
-        ( "gui,g"     ,
-          po::value<bool>()->default_value ( false ),
+        ( "gui,g"     , po::value<string>()->default_value ( "false" ),
           "Determines whether or not the graphical user interface is loaded. This automatically disables nCurses." )
         ;
 
@@ -161,12 +159,7 @@ namespace Wintermute {
             for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
                 const QString l_key = QString::fromStdString (l_itr->first);
                 const variable_value l_val = l_itr->second;
-                const QString l_typeName = l_val.value ().type ().name ();
-
-                if (l_typeName == "Ss")
-                    s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
-                else if (l_typeName == "b")
-                    s_args->insert (l_key,l_val.as<bool>());
+                s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
             }
 
         } else
@@ -191,10 +184,6 @@ namespace Wintermute {
                  << " (pid " << s_app->applicationPid () << ") :: "
                  << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
         }
-
-        qDBusRegisterMetaType<Lexical::Data>();
-        qDBusRegisterMetaType<Rules::Bond>();
-        qDBusRegisterMetaType<Rules::Chain>();
 
         IPC::System::start ();
         emit s_core->started();

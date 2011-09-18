@@ -1,0 +1,8 @@
+# - Config file for the WINTERMUTE package
+# It defines the following variables
+#  WINTERMUTE_INCLUDE_DIRS - include directories for WINTERMUTE
+#  WINTERMUTE_LIBRARY_DIRS - library directories for WINTERMUTE (normally not used!)
+
+# Tell the user project where to find our headers and libraries
+set(WINTERMUTE_INCLUDE_DIRS @WINTERMUTE_INCLUDE_DIRS@)
+set(WINTERMUTE_LIBRARY_DIRS @WINTERMUTE_LIB_DIR@)

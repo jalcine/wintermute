@@ -36,7 +36,14 @@ namespace Wintermute {
         QString System::s_appMod;
         QDBusConnection* System::s_cnntn = NULL;
 
+        void System::registerDataTypes (){
+            qDBusRegisterMetaType<Lexical::Data>();
+            qDBusRegisterMetaType<Rules::Bond>();
+            qDBusRegisterMetaType<Rules::Chain>();
+        }
+
         void System::start ( ) {
+            registerDataTypes();
             s_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
             s_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
             QString l_serviceName = WINTERMUTE_SERVICE_NAME, l_objectName;

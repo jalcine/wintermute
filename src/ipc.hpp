@@ -131,6 +131,12 @@ namespace Wintermute {
                  */
                 static const bool registerObject(const QString&, QObject* );
 
+                /**
+                 * @brief
+                 *
+                 * @fn registerDataTypes
+                 */
+                static void registerDataTypes();
             private:
                 static QString s_appMod;
                 static QDBusConnection* s_cnntn;

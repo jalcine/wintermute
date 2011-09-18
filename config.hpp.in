@@ -32,22 +32,6 @@
 #define WINTER_PLUGIN_PATH "@WINTER_PLUGIN_INSTALL_DIR@"
 #define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGINSPEC_INSTALL_DIR@"
 
-
-#if @WINTERMUTE_USE_GUI@ == true
-#define WINTERMUTE_USING_GUI
-#else
-#undef WINTERMUTE_USING_GUI
-#endif
-
-// Check if Wintermute's built with X11 (GUI) support. (We're targeting UNIX-based systems)
-#ifdef WINTERMUTE_USING_GUI
-#include <QApplication>
-#define WNTR_APPLICATION QApplication
-#else
-#include <QCoreApplication>
-#define WNTR_APPLICATION QCoreApplication
-#endif
-
 #endif // __CONFIG_HPP__
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

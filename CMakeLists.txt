@@ -62,18 +62,24 @@ set(WINTERMUTE_LIBRARIES
     ${CURSES_LIBRARIES}
     )
 
-set(WINTERMUTE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
+set(WINTERMUTE_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
 
 ## Include directories
 include_directories(${WINTERMUTE_INCLUDE_DIRS})
 
 ## Configs
 
+configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
+
+configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
+    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
+
 configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
    "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-    "${PROJECT_SOURCE_DIR}/src/config.hpp")
+    "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
 add_subdirectory(src)
 
@@ -84,3 +90,7 @@ install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
 
 install(FILES ${CMAKE_MODULES}
     DESTINATION "${CMAKE_MODULE_DIR}")
+
+install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
+	      "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
+    DESTINATION "${WINTERMUTE_CMAKE_DIR}")
