@@ -8,11 +8,10 @@ set(WINTERMUTE_VERSION
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 ## Modules
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
-## Packages
 set(CURSES_NEED_NCURSES TRUE)
 find_package(WntrData REQUIRED)
 find_package(WntrLing REQUIRED)
