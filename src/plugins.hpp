@@ -22,28 +22,27 @@
 #ifndef PLUGINS_HPP
 #define PLUGINS_HPP
 
-#include <QMap>
-#include <QFile>
-#include <QVector>
-#include <QVariant>
+#include <QHash>
+#include <QList>
 #include <QSettings>
+#include <QStringList>
 #include <QPluginLoader>
-#include <wntr/config.hpp>
-
-using namespace std;
-using std::vector;
-using std::map;
+#include <QProcess>
+#include <QtDBus/QDBusAbstractAdaptor>
+#include <QtDBus/QDBusMessage>
+#include "adaptors.hpp"
 
 namespace Wintermute {
     namespace Plugins {
         struct Factory;
         struct PluginBase;
+        struct PluginInstance;
 
         /**
          * @brief Represents a named set of plugins.
          * @typedef PluginMap
          */
-        typedef QMap<QString, PluginBase*> PluginList;
+        typedef QHash<QString, PluginBase*> PluginList;
 
         /**
          * @brief Provides factory management of plug-ins.
@@ -56,9 +55,19 @@ namespace Wintermute {
          * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
          * @see PluginBase
          */
-        class Factory {
+        class Factory : public QObject {
+            Q_OBJECT
+            Q_DISABLE_COPY(Factory)
             friend class PluginBase;
-            public:
+
+            signals:
+                void pluginLoaded(const QString& ) const;
+                void pluginUnloaded(const QString& ) const;
+                void pluginCrashed(const QString& ) const;
+                void initialized() const;
+                void deinitialized() const;
+
+            public slots:
                 /**
                  * @brief Starts the plug-in system.
                  * @fn Startup
@@ -69,19 +78,15 @@ namespace Wintermute {
                  * @fn Shutdown
                  */
                 static void Shutdown();
+
+            public:
+                Factory();
                 /**
                  * @brief Loads a plug-in.
                  * @fn loadPlugin
                  * @param
                  */
-                static const PluginBase* loadPlugin ( const string& );
-                /**
-                 * @brief Loads a plug-in into the system.
-                 * @fn loadPlugin
-                 * @overload
-                 * @param
-                 */
-                static const PluginBase* loadPlugin ( const QFile* );
+                static PluginBase* loadPlugin ( const QString& );
                 /**
                  * @brief Unloads a plug-in from the system.
                  * @fn unloadPlugin
@@ -93,10 +98,64 @@ namespace Wintermute {
                  * @fn loadedPlugins
                  * @returns A QList of plug-ins that are currently loaded into the system.
                  */
-                PluginList const & loadedPlugins() { return s_allPlgns; }
+                static const QStringList loadedPlugins();
+
+                /**
+                 * @brief
+                 *
+                 * @fn allPlugins
+                 * @return const QStringList
+                 */
+                static const QStringList allPlugins();
+
+                /**
+                 * @brief
+                 *
+                 * @fn instance
+                 * @return const Factory *
+                 */
+                static Factory* instance();
 
             private:
                 static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
+                static Factory* s_factory;
+                QHash<const QString, PluginInstance*> m_plgnPool;
+
+            private slots:
+                /**
+                 * @brief
+                 *
+                 * @fn loadStandardPlugin
+                 */
+                static void loadStandardPlugin();
+
+                /**
+                 * @brief
+                 *
+                 * @fn unloadStandardPlugin
+                 */
+                static void unloadStandardPlugin();
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginLoad
+                 * @param
+                 */
+                static void doPluginLoad(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginUnload
+                 * @param
+                 */
+                static void doPluginUnload(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn doPluginCrash
+                 * @param
+                 */
+                static void doPluginCrash(const QString&);
         };
 
         /**
@@ -143,6 +202,7 @@ namespace Wintermute {
          */
         class PluginBase : public QObject {
             friend class Factory;
+            friend class PluginInstanceAdaptor;
             Q_OBJECT
             Q_PROPERTY(const double Version READ version)
             Q_PROPERTY(const double CompatibleVersion READ compatVersion)
@@ -152,7 +212,7 @@ namespace Wintermute {
             Q_PROPERTY(const QString VendorName READ vendorName)
             Q_PROPERTY(const QString Description READ description)
             Q_PROPERTY(const QString WebPage READ webPage)
-            Q_PROPERTY(const QString Dependencies READ dependencies)
+            Q_PROPERTY(const QStringList Dependencies READ dependencies)
 
             signals:
                 /**
@@ -160,43 +220,46 @@ namespace Wintermute {
                  * This is usually raised right after the Core finishes initialization.
                  * @fn initializing
                  */
-                void initializing();
+                void initializing() const;
                 /**
                  * @brief Raised when the plug-in is being deinitialized.
                  * This is usually raised right before the Core begin to deinitialize.
                  * @fn deinitializing
                  */
-                void deinitializing();
+                void deinitializing() const;
 
             private:
                 QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
+                QSettings* m_settings;
 
             public:
                 /**
                  * @brief Empty, nullifying constructor.
                  * @fn PluginBase
                  */
-                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL) { }
+                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
                  * @fn PluginBase
                  * @param p_pl The plug-in to be loaded from disk.
                  */
-                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl) { }
+                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
 
                 /**
                  * @brief Default copy constructor.
                  * @fn PluginBase
                  * @param p_pb The plug-in to be copied.
                  */
-                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr){  }
+                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
 
                 /**
                  * @brief Default deconstructor.
                  * @fn ~PluginBase
                  */
-                virtual ~PluginBase() { delete m_plgnLdr; };
+                virtual ~PluginBase() {
+                    delete m_plgnLdr;
+                };
 
                 /**
                  * @brief Defines the version of the plug-in.
@@ -204,22 +267,22 @@ namespace Wintermute {
                  * @see compatVersion ()
                  * @fn version
                  */
-                virtual const double version() const = 0;
+                const double version() const;
 
                 /**
                  * @brief Defines the least required version of Wintermute needed for this plug-in to operate.
                  * @see version()
                  * @fn compatVersion
                  */
-                virtual const double compatVersion() const = 0;
+                const double compatVersion() const;
 
                 /**
                  * @brief Represents a Universally Unique Identifier (UUID) for the plug-in.
-                 * @note On Linux systems, the program 'uuidgen -t' could generate an unique UUID for you to use.
-                 *       It's recommend that you fill this value, otherwise a run-time warning would be invoked.
+                 * @note On Linux systems, the program 'uuidgen -t' could generate an unique UUID for you to define in your
+                 *       plug-in specification file.
                  * @fn uuid
                  */
-                virtual const QString uuid() const = 0;
+                const QString uuid() const;
 
                 /**
                  * @brief Returns the canonical name of the plug-in. This is typically presented to the user.
@@ -227,7 +290,7 @@ namespace Wintermute {
                  * @see author()
                  * @see vendorName()
                  */
-                virtual const QString name() const = 0;
+                const QString name() const;
 
                 /**
                  * @brief Returns the name of the person, group, or organization that created this plug-in.
@@ -236,30 +299,30 @@ namespace Wintermute {
                  * John Q. Doe
                  * Doe Developers <doe-devel@lists.doe.org>
                  * @endcode
-                 * @note We encourage you to include an e-mail address in the 'Author' field.
+                 * @note We encourage you to include an e-mail address in the 'Author' field of your plug-in specification file.
                  * @see vendorName()
                  * @fn author
                  */
-                virtual const QString author() const = 0;
+                const QString author() const;
 
                 /**
                  * @brief Returns the name of the person, group, or organization that packaged or distributed this plug-in.
                  * @note The syntax guideline for author() applies here as well.
                  * @fn vendorName
                  */
-                virtual const QString vendorName() const = 0;
+                const QString vendorName() const;
 
                 /**
                  * @brief Returns a (preferably brief) description about the plug-in.
                  * @fn description
                  */
-                virtual const QString description() const = 0;
+                const QString description() const;
 
                 /**
                  * @brief Returns a URI to a web-page containing information about this plug-in.
                  * @fn webPage
                  */
-                virtual const QString webPage() const = 0;
+                const QString webPage() const;
 
                 /**
                  * @brief Returns a comma-separated list of plug-ins that this plug-in requires to operate.
@@ -279,7 +342,7 @@ namespace Wintermute {
                  * plug-ins as a central resource for developers. Add this page to the documentation once made.
                  * @fn dependencies
                  */
-                virtual const QString dependencies() const = 0;
+                const QStringList dependencies() const;
 
                 /**
                  * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.
@@ -292,14 +355,13 @@ namespace Wintermute {
                  * @todo More checking needs to be done to tell if it's compatible. (i.e: on major changes, make that a minimum compability value).
                  * @todo Implement checking of plug-in depenencies after checking versioning.
                  */
-                const bool isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
-
+                const bool isSupported () const;
                 /**
                  * @brief Returns a string that contains the absolute path to the plug-in.
                  * @fn path
                  * @deprecated This method is unnecessary towards the implementation of a plug-in.
                  */
-                const QString path () const { return m_plgnLdr->fileName (); }
+                const QString path () const;
 
             protected slots:
 
@@ -308,28 +370,56 @@ namespace Wintermute {
                  * This is run after the initialized() signal is emitted.
                  * @fn initialize
                  */
-                virtual void initialize() = 0;
+                virtual void initialize() const = 0;
 
                 /**
                  * @brief Reimplement this method to define the deinitialization code of your plug-in.
                  * This is run after the deinitialized() signal is emitted.
                  * @fn deinitialize
                  */
-                virtual void deinitialize() = 0;
+                virtual void deinitialize() const = 0;
 
             private slots:
-                void doDeinitialize () {
-                    emit deinitializing ();
-                    deinitialize ();
-                    Factory::unloadPlugin(uuid());
-                }
-
-                void doInitializing() {
-                    emit initializing ();
-                    initialize ();
-                }
+                void doDeinitialize () const;
+                void doInitialize() const;
         };
 
+        class PluginInstance : public QObject {
+            friend class Factory;
+            Q_OBJECT
+            Q_DISABLE_COPY(PluginInstance)
+            Q_PROPERTY(const bool Active READ isActive)
+            Q_PROPERTY(const QString Name READ name)
+
+            public:
+                PluginInstance();
+                PluginInstance(const QString&, QSettings*);
+                const bool isActive();
+                const QString name();
+                const QSettings* settings();
+
+            public slots:
+                void stop(const QDBusMessage = QDBusMessage());
+                void start(const QDBusMessage = QDBusMessage());
+
+            signals:
+                void crashed(const QString&);
+                void loaded(const QString&);
+                void unloaded(const QString&);
+
+            private:
+                QProcess* m_prcss;
+                const QString m_plgnName;
+                QSettings* m_settings;
+                void doCrashed(const QString&, const QDBusMessage = QDBusMessage());
+                void doLoaded(const QString&, const QDBusMessage = QDBusMessage());
+                void doUnloaded(const QString&, const QDBusMessage = QDBusMessage());
+
+            private slots:
+                void catchStart();
+                void catchError(const QProcess::ProcessError& );
+                void catchExit(int, const QProcess::ExitStatus& );
+        };
     }
 }
 

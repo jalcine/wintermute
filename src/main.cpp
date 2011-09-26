@@ -1,4 +1,5 @@
 /**
+ * @file main.cpp
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
@@ -19,23 +20,13 @@
  * @endlegalese
  */
 
-#include <string>
-#include <iostream>
 #include "wintermute.hpp"
 
-using namespace std;
 using namespace Wintermute;
-
-using std::cout;
-using std::cin;
-using std::endl;
-using std::string;
 using Wintermute::Core;
 
-/// @todo Suggestion: Maybe we can get a ncurses interface going?
 int main ( int argc, char** argv ) {
-    Core l_core(argc,argv);
-
-    return WNTR_APPLICATION::exec ();
+    Core l_core ( argc , argv );
+    return QApplication::exec();
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

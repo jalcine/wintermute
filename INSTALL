@@ -58,15 +58,15 @@ difficult to pinpoint an issue with compilation.
    $ ccmake ..
 
  - Compile and then install as root (or locally, if you prefer).
-
-   # make
+	
+   $ make
    # make install
 
 3. Complete!
 
 You have successfully installed Wintermute! Now, just run 'wintermute --help'
 in a command window to investigate the currently available command line
-options. Report any bugs, errors, glitches and calibrations to our development
+options. Report any bugs, errors, glitches or miscalibrations to our development
 team by leaving an open bug report on either <https://launchpad.net/~wintermute>
-or <https://www.github.com/wntr/core>. Thank you for installing Wintermute, we
+or <https://www.github.com/wntr/core>. Thank you for installing Wintermute; we
 hope to hear from you shortly.

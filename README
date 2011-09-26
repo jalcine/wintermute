@@ -1,4 +1,4 @@
-Wintermute Core Module (WntrCore)
+Wintermute Core Application (WntrCore)
 ---------------------------
 
 1. Introduction
@@ -10,19 +10,22 @@ of awesome :).
 2. About Wintermute
 
 Wintermute, in short, is designed to a flexible, autonomous and
-adaptive application framework that'll learn about any and every aspect of your
-life on a computer. It's primary goal is to become your personal life
+adaptive application framework that would learn about any and every aspect of
+your life on a computer. Its primary goal is to become your personal life
 assistant from responding to e-mails, checking social networks to
 developing documents and rendering tasks on the computer as if you've done
 it yourself. Wintermute, with the help of computer vision, voice recognition
 and other human interface utilities (HIUs), attempts to implement a
-superbly natural language interface (NLUI) to the end-user.
+superbly natural language interface (NLUI) to the end-user. The ideas and
+inspiration of Wintermute are all due to the thinking and speculations of Dante
+ Ashton <dante.ashton@thesii.org>, CPU/CEO of the Synthetic Intellect Institute.
 
 3. Running Wintermute
 
 Wintermute may be already bundled up for your operating system distribution.
 Please visit <http://www.thesii.org/wiki/Wintermute#Download> to see if your
-system is currently supported.
+system is currently supported. Otherwise, see the INSTALL file for information
+about building Wintermute on your system.
 
 4. Plug-ins and Language Bindings
 
@@ -33,9 +36,9 @@ support to amplify the capabilities of Wintermute and its range of developers.
 5. Documentation
 
 Practically all of the documentation that's done for Wintermute is stored
-online at http://www.thesii.org/wiki. Feel free to not only search that site,
-but also enter our IRC channel (##sii-general or ##sii-dev) to ask
-questions about Wintermute and how you can assist.
+  on-line at <http://www.thesii.org/wiki>. Feel free to not only search that
+site, but also enter our IRC channel (##sii-general or ##sii-dev, both on
+FreeNode) to ask questions about Wintermute and how you can assist.
 
 6. Reporting and Contributing to the Cause
 

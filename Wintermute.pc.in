@@ -4,10 +4,10 @@ libdir=${prefix}/lib
 includedir=${prefix}/include
 
 Name: Wintermute
-Description: Core files required to add extensibility to the Wintermute application by means of building a plugin.
+Description: Core files required to add extensibility to the Wintermute application by means of building a plug-in.
 Version: @GENERIC_LIB_VERSION@
 URL: https://www.launchpad.net/wintermute
-Requires: QtCore, python, Boost
+Requires: QtCore, python, Boost, wntrling, wntrdata, wntrntwk
 Conflicts: wntr > @GENERIC_LIB_VERSION@
 Libs: -L${libdir} @WINTERMUTE_LIBRARIES@
 Libs.private: -lm

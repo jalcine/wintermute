@@ -1,5 +1,6 @@
 /**
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @file ipc.hpp
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -19,135 +20,130 @@
  * @endlegalese
  */
 #ifndef IPC_HPP
+#ifndef NCURSES_HPP
 #define IPC_HPP
 
-#include "wintermute.hpp"
-#include <QtDBus>
-#include <string>
-#include <iostream>
+#include "config.hpp"
+#include "adaptors.hpp"
+#include <QtDBus/QDBusAbstractAdaptor>
+#include <QtDBus/QDBusInterface>
+#include <QVariantMap>
 
-using namespace std;
-using namespace Wintermute;
 
 namespace Wintermute {
-    struct IPC;
-    struct DBusAdaptor;
+    namespace Plugins { struct Factory; } //forward class decl;
+    namespace IPC {
+        struct System;
 
-    /**
-     * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
-     *
-     * This class manages the inter process communication of Wintermute. It handles the
-     * incoming and outcoming requests of data, and allows Wintermute to fork off into
-     * the approriate processes that represent it.
-     *
-     * Wintermute can run as one of the following sub-modules:
-     * - <b>master</b>: Represents the core module, or the master daemon that'll be a means
-     * of regulating the sub processes.
-     *
-     * - <b>network</b>: Represents the network module. This module typically runs asynchronously
-     * of the core Wintermute processes and implements most of its work in the core networking library (WntrNtwk).
-     *
-     * - <b>plugin</b>: Represnts the plugin module. Plug-ins are run in their process, allowing them
-     * to take advantage of their own work, and prevents system failure if the plug-in happens to
-     * crash.
-     *
-     * @note If you're attempting to send messages via Wintermute, you should look at @c DBusAdaptor.
-     *
-     * @see DBusAdaptor
-     * @class IPC ipc.hpp "include/wntr/ipc.hpp"
-     */
-    class IPC {
-        friend class DBusAdaptor;
-        public:
-            /**
-             * @brief Initializes the IPC system.
-             *
-             * Starts up the IPC system by storing the type of module that Wintermute's
-             * running under and executing the code required to render that module.
-             *
-             * @fn Initialize
-             * @param
-             */
-            static void Initialize (const string& = "master");
+        /**
+         * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
+         *
+         * This class manages the inter process communication of Wintermute. It handles the
+         * incoming and outcoming requests of data, and allows Wintermute to fork off into
+         * the approriate processes that represent it. Wintermute uses D-Bus to do the inter
+         * communications and also can manage external resource requests. This makes it possible
+         * to extend Wintermute's public API to other applications or even languages that can
+         * work with D-Bus.
+         *
+         * @section N01 Modules
+         *
+         * Wintermute can run as one of the following sub-modules:
+         * - <b>Master</b>: Represents the core module, or the master daemon that'll be a means
+         * of regulating the sub processes.
+         *
+         * - <b>Network</b>: Represents the network module. This module typically runs asynchronously
+         * of the core Wintermute processes and implements most of its work in the core networking library (WntrNtwk).
+         *
+         * - <b>Plugin</b>: Represents the plugin module. Plug-ins are run in their process, allowing them
+         * to take advantage of their own work, and prevents system failure if the plug-in happens to
+         * crash.
+         *
+         * - <b>Data</b>: Represents the data module. This module manages all of the data hard-wiring works
+         * of Wintermute.
+         *
+         * - <b>Linguistics</b>: Represents the linguistics module. This acts as a daemon for all natural
+         * language processing requests.
+         *
+         * @section N02 D-Bus
+         *
+         * Wintermute's domain lives on the session bus, under the name <b>org.thesii.Wintermute</b>.
+         * The Core object is exposed as "/Master" on the home domain, with the interface name "org.thesii.Wintermute.Master".
+         * You can find the plug-in factory under "/Factory" on the same domain, but this may move to the domain
+         * <b>org.thesii.Wintermute.Plugin</b>. Other components of Wintermute, such as the <b>Data</b>,
+         * <b>Network</b> and the <b>Linguistics</b> module can be found at sub-domains of the home domain.
+         * Start Wintermute and use the <b>qdbusviewer</b> application to peek at the intermingling.
+         *
+         * @section N03 Plug-ins
+         *
+         * Plug-ins each have their own D-Bus domain (since they're run in a sandbox; see @c PluginInstance).
+         * The domain would be a subset of <b>org.thesii.Wintermute.Plugin</b>. This allow remote access
+         * of plug-ins from processes and remoting loading of plug-ins whenever needed. Plug-ins domains
+         * are able to run certain exposed parts of a plug-in by using the <b>invoke()</b> method (see @c PluginBase)
+         * and thus allowing a dynamic API based on plug-ins for Wintermute.
+         *
+         * @see CoreAdaptor
+         * @see PluginBase
+         * @see PluginInstance
+         * @class System ipc.hpp "include/wntr/ipc.hpp"
+         */
+        class System : public QObject {
+            Q_OBJECT
+            Q_DISABLE_COPY(System)
 
-            /**
-             * @brief Obtains the current module.
-             * @fn currentModule
-             * @return The name of the running module (either 'master', 'network' or 'plugin').
-             */
-            static const string currentModule() { return s_mod; }
+            public:
+                /**
+                 * @brief Initializes the IPC system.
+                 *
+                 * Starts up the IPC system by storing the type of module that Wintermute's
+                 * running under and executing the code required to render that module.
+                 *
+                 * @fn Initialize
+                 */
+                static void start ( );
 
-        private:
-            /**
-             * @brief
-             * @fn IPC
-             */
-            IPC();
-            /**
-             * @brief
-             * @fn ~IPC
-             */
-            ~IPC();
-            static string s_mod;
-            static DBusAdaptor* s_dbus;
-    };
+                /**
+                 * @brief
+                 *
+                 * @fn stop
+                 */
+                static void stop();
 
-    /**
-     * @brief
-     * @class DBusAdaptor ipc.hpp "include/wntr/ipc.hpp"
-     */
-    class DBusAdaptor : public QDBusAbstractAdaptor {
-        Q_OBJECT
-        Q_CLASSINFO("D-Bus Interface","org.thesii.DBus.Wintermute")
-        Q_CLASSINFO("Author","Synthetic Intellect Institute")
-        Q_CLASSINFO("URL","http://www.thesii.org")
+                /**
+                 * @brief Obtains the current module.
+                 * @fn currentModule
+                 * @return The name of the running module.
+                 */
+                static inline const QString module() { return s_appMod; }
 
-        Q_PROPERTY(string module READ module)
+                /**
+                 * @brief
+                 *
+                 * @fn connection
+                 */
+                static QDBusConnection* bus();
 
-        public:
-            /**
-             * @brief
-             *
-             * @fn DBusAdaptor
-             */
-            DBusAdaptor() : QDBusAbstractAdaptor(NULL) { }
-            /**
-             * @brief
-             * @fn DbusAdaptor
-             * @param p_app
-             */
-            DBusAdaptor(QCoreApplication* p_app) : QDBusAbstractAdaptor(p_app) { }
-            /**
-             * @brief
-             *
-             * @fn DBusAdaptor
-             * @param p_dbus
-             */
-            DBusAdaptor(const DBusAdaptor& p_dbus) : QDBusAbstractAdaptor(NULL) { }
-            /**
-             * @brief
-             * @fn ~DbusAdaptor
-             */
-            ~DBusAdaptor() { emit destroyed (this); }
+                /**
+                 * @brief
+                 *
+                 * @fn registerObject
+                 * @param
+                 * @param
+                 */
+                static const bool registerObject(const QString&, QObject* );
 
-        public slots:
-            /**
-             * @brief
-             * @fn module
-             * @return string
-             */
-            Q_INVOKABLE string module() { return IPC::s_mod; }
-            /**
-             * @brief
-             * @fn quit
-             */
-            Q_NOREPLY void quit(){
-                cout << "(core) [Dbus] Recieved quit signal. Quitting..." << endl;
-                QCoreApplication::instance ()->quit ();
-                exit(0);
-            }
-    };
+                /**
+                 * @brief
+                 *
+                 * @fn registerDataTypes
+                 */
+                static void registerDataTypes();
+            private:
+                static QString s_appMod;
+                static QDBusConnection* s_cnntn;
+        };
+    }
 }
 
+#endif
 #endif /* IPC_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
