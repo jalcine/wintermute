@@ -81,29 +81,24 @@ namespace Wintermute {
          * are able to run certain exposed parts of a plug-in by using the <b>invoke()</b> method (see @c PluginBase)
          * and thus allowing a dynamic API based on plug-ins for Wintermute.
          *
-         * @see CoreAdaptor
-         * @see PluginBase
-         * @see PluginInstance
-         * @class System ipc.hpp "include/wntr/ipc.hpp"
+         * @see CoreAdaptor, PluginBase, PluginInstance, Factory
+         * @class System ipc.hpp "src/ipc.hpp"
          */
         class System : public QObject {
+            friend class Plugins::Factory;
             Q_OBJECT
             Q_DISABLE_COPY(System)
 
             public:
                 /**
-                 * @brief Initializes the IPC system.
-                 *
                  * Starts up the IPC system by storing the type of module that Wintermute's
                  * running under and executing the code required to render that module.
-                 *
                  * @fn Initialize
                  */
                 static void start ( );
 
                 /**
-                 * @brief
-                 *
+                 * Stops all of the work of the IPC system and then exits Wintermute.
                  * @fn stop
                  */
                 static void stop();
@@ -116,30 +111,36 @@ namespace Wintermute {
                 static inline const QString module() { return s_appMod; }
 
                 /**
-                 * @brief
-                 *
+                 * @brief Obtains the currently running bus.
                  * @fn connection
                  */
                 static QDBusConnection* bus();
 
                 /**
-                 * @brief
-                 *
-                 * @fn registerObject
-                 * @param
-                 * @param
+                 * @brief Obtains the adaptor being used (most likely the SystemAdaptor).
+                 * @fn adaptor
                  */
-                static const bool registerObject(const QString&, QObject* );
+                static Adaptor* adaptor();
 
                 /**
-                 * @brief
-                 *
+                 * @brief Registers an Adaptor onto the current D-Bus bus.
+                 * @fn registerObject
+                 * @param QString The name of the Adaptor.
+                 * @param Adaptor* The Adaptor to be added.
+                 */
+                static const bool registerObject(const QString&, Adaptor* );
+
+                /**
+                 * @brief Does the work of adding user data-types (user PODs) as
+                 *        recognizable, marshallable types for QDBusArgument.
                  * @fn registerDataTypes
                  */
                 static void registerDataTypes();
+
             private:
                 static QString s_appMod;
                 static QDBusConnection* s_cnntn;
+                static Adaptor* s_adapt;
         };
     }
 }

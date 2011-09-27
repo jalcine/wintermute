@@ -88,10 +88,9 @@ namespace Wintermute {
         l_allOptions ( "All Options" );
 
         l_publicOptions.add_options()
-        ( "help,h"       , "show help screen" )
-        ( "verbose-help" , "show all options" )
-        ( "copyright,C"  , "show copyright information" )
-        ( "version,V"    , "output version number." )
+        ( "help,h"       , po::value<string>()->default_value("ignore") , "Show meaning of command line arguments. (valid values are 'standard', 'config', and 'all')" )
+        ( "copyright,C"  , "Prints copyright information and exits." )
+        ( "version,V"    , "Prints version number and exits." )
         ;
 
         l_configOptions.add_options ()
@@ -125,13 +124,21 @@ namespace Wintermute {
         }
 
         if ( !l_vm.empty () ) {
-            if ( l_vm.count ( "help" ) || l_vm.count ( "verbose-help" ) ) {
+            for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
+                const QString l_key = QString::fromStdString (l_itr->first);
+                const variable_value l_val = l_itr->second;
+                s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
+            }
+
+            if ( l_vm.count ( "help" ) && l_vm.at ("help").as<string>() != "ignore") {
                 cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl;
 
-                if ( l_vm.count ( "help" ) )
-                    cout << l_publicOptions;
-                else if ( l_vm.count ( "verbose-help" ) )
+                if ( l_vm.at ("help").as<string>() == "all" )
                     cout << l_allOptions;
+                else if ( l_vm.at ("help").as<string>() == "config" )
+                    cout << l_configOptions;
+                else if (l_vm.at ("help").as<string>() == "standard")
+                    cout << l_publicOptions;
 
                 cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
@@ -155,13 +162,6 @@ namespace Wintermute {
                      << "\t(at your option) any later version." << endl << endl;
                 endProgram ( );
             }
-
-            for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
-                const QString l_key = QString::fromStdString (l_itr->first);
-                const variable_value l_val = l_itr->second;
-                s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
-            }
-
         } else
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
     }
@@ -222,12 +222,13 @@ namespace Wintermute {
     }
 
     void Core::endProgram (){
-        qDebug() << "(core) Shutting down Wintermute...";
-        if (IPC::System::module () != "master"){
+        qDebug() << "(core) Shutting down Wintermute..." << *(arguments());
+
+        if (IPC::System::module () != "master" && !arguments ()->contains ("help")){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
-                qDebug() << "(core) Can't shutdown Wintermute's core :"
+                qDebug() << "(core) [module = " << IPC::System::module () << "] Can't terminate master module of Wintermute :"
                          << l_reply.errorMessage ();
             }
         }
@@ -236,33 +237,34 @@ namespace Wintermute {
     }
 
     void Core::stop () {
+        IPC::System::stop ();
+
         if (IPC::System::module () == "master"){
             if (!s_args->value ("daemon").toBool ())
                 Core::stopCurses();
         }
 
-        IPC::System::stop ();
         emit s_core->stopped ();
     }
 
     void Core::doDeinit () const {
-        qDebug() << "(core [module=" << IPC::System::module () << "]) Cleaning up..";
+        qDebug() << "(core [module =" << IPC::System::module () << "]) Cleaning up..";
         Core::stop ();
-        qDebug() << "(core [module=" << IPC::System::module () << "]) All clean!";
+        qDebug() << "(core [module =" << IPC::System::module () << "]) All clean!";
     }
 
     void Core::startCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::start();
         else
-            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not starting.";
+            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not starting.";
     }
 
     void Core::stopCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::stop();
         else
-            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
+            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }
 
     void Thread::run() {

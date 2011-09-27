@@ -35,6 +35,7 @@ namespace Wintermute {
     namespace IPC {
         QString System::s_appMod;
         QDBusConnection* System::s_cnntn = NULL;
+        Adaptor* System::s_adapt = NULL;
 
         void System::registerDataTypes (){
             qDBusRegisterMetaType<Lexical::Data>();
@@ -58,12 +59,14 @@ namespace Wintermute {
 
                 registerObject ("/Master" , l_adpt);
                 registerObject ("/Factory" , l_adpt2);
+                s_adapt = l_adpt;
             } else if ( s_appMod == "ling" ) {
                 l_objectName = "Linguistics";
 
                 Linguistics::SystemAdaptor* l_adpt = new Linguistics::SystemAdaptor;
 
                 registerObject ("/System", l_adpt);
+                s_adapt = l_adpt;
             } else if ( s_appMod == "data" ) {
                 l_objectName = "Data";
                 Data::Linguistics::System::setLocale ( Core::arguments ()->value ("locale").toString () );
@@ -78,6 +81,7 @@ namespace Wintermute {
                 registerObject ("/System" , l_adpt);
                 registerObject ("/Nodes"  , l_adpt2);
                 registerObject ("/Rules"  , l_adpt3);
+                s_adapt = l_adpt;
             } else if ( s_appMod == "ntwk" ) {
                 l_objectName = "Network";
 
@@ -89,6 +93,7 @@ namespace Wintermute {
 
                 registerObject ("/System" , l_adpt);
                 registerObject ("/Broadcast",l_adpt2);
+                s_adapt = l_adpt;
             } else if ( s_appMod == "plugin" ) {
                 const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
                 l_objectName = "Plugin." + l_plgn;
@@ -107,7 +112,7 @@ namespace Wintermute {
             qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
         }
 
-        const bool System::registerObject(const QString& p_pth, QObject* p_obj){
+        const bool System::registerObject(const QString& p_pth, Adaptor* p_obj){
             QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
                     | QDBusConnection::ExportAdaptors;
 
@@ -115,16 +120,16 @@ namespace Wintermute {
                 qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << s_cnntn->interface ()->service ();
                 return false;
             } else
-                return s_cnntn->registerObject (p_pth , qobject_cast<GenericAdaptor*>(p_obj), l_opts);
+                return s_cnntn->registerObject (p_pth , p_obj, l_opts);
 
             return false;
         }
 
-        void System::stop () {
-            s_cnntn->disconnectFromBus (s_cnntn->name ());
-        }
+        void System::stop () { s_cnntn->disconnectFromBus (s_cnntn->name ()); }
 
         QDBusConnection* System::bus() { return s_cnntn; }
+
+        Adaptor* System::adaptor () { return s_adapt; }
     }
 }
 

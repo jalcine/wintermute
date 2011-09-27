@@ -1,7 +1,7 @@
 /**
  * @file    adaptors.hpp
  * @author  Wintermute Developers <wintermute-devel@lists.launchpad.net>
- * @created 9/6/2011
+ *  
  *
  *
  *
@@ -34,7 +34,18 @@ struct QTimer;
 
 namespace Wintermute {
     namespace IPC {
-        /// @todo Have this register WNTR_APPLICATION as its parent and hold an object so that the object's contents aren't exposed over D-Bus.
+
+        /**
+         * @brief The foundational adaptor for Wintermute's IPC.
+         *
+         * Wintermute uses D-Bus on Linux systems as its means of achieveing a
+         * stabilized layer of inter-process communication. In doing so, a foundational
+         * and optimized base for said transactions are required. The GenericAdaptor
+         * serves as a base for communicating between multiple processes of Wintermute.
+         *
+         * @see Plugins::PluginFactoryAdaptor, Plugins::PluginInstanceAdaptor, CoreAdaptor
+         * @class GenericAdaptor adaptors.hpp "src/adaptors.hpp"
+         */
         class GenericAdaptor : public QDBusAbstractAdaptor {
             Q_OBJECT
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Adaptor")
@@ -45,13 +56,43 @@ namespace Wintermute {
                 Q_SLOT void detect() const;
 
             public:
+                /**
+                 * @brief Default constructor.
+                 * @fn GenericAdaptor
+                 * @param The QObject to set as this parent.
+                 */
                 explicit GenericAdaptor(QObject* = 0);
+
+                /**
+                 * @brief Obtains the module's name.
+                 * @fn module The name of the module.
+                 */
                 Q_INVOKABLE const QString module() const;
+
+                /**
+                 * @brief Obtains the process's ID.
+                 * @fn pid The pid of the process.
+                 */
                 Q_INVOKABLE const int pid() const;
 
             signals:
+                /**
+                 * @brief Emitted right before this process exits.
+                 * @see Wintermute::core::stopped();
+                 * @fn aboutToQuit
+                 */
                 void aboutToQuit() const;
+
+                /**
+                 * @brief Emitted when the core module has been detected.
+                 * @fn coreModuleLoaded
+                 */
                 void coreModuleLoaded() const;
+
+                /**
+                 * @brief Emitted when the core module isn't detected anymore.
+                 * @fn coreModuleUnloaded
+                 */
                 void coreModuleUnloaded() const;
 
             public slots:
@@ -63,12 +104,33 @@ namespace Wintermute {
 
     namespace Plugins {
         struct PluginBase;
+
+        /**
+         * @brief An adaptor representing the management work of the plug-in factory.
+         *
+         * The plug-in factory is meant to be a hub of management for all of the
+         * plug-ins loaded in Wintermute. It merely serves as a means of exposure
+         * for the Factory interfacing class.
+         *
+         * @see Plugins::Factory
+         * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
+         */
         class PluginFactoryAdaptor : public Adaptor {
             Q_OBJECT
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Factory")
 
             public:
+                /**
+                 * @brief Default constructor.
+                 * @fn PluginFactoryAdaptor
+                 */
                 explicit PluginFactoryAdaptor();
+
+                /**
+                 * @brief Loads a plug-in.
+                 * @fn loadPlugin
+                 * @param string The name of the plug-in.
+                 */
                 Q_INVOKABLE Q_NOREPLY void loadPlugin(const QString&, const QDBusMessage&);
                 Q_INVOKABLE Q_NOREPLY void unloadPlugin(const QString&, const QDBusMessage&);
                 Q_INVOKABLE const QStringList allPlugins(const QDBusMessage&) const;

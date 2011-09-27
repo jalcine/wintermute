@@ -1,7 +1,7 @@
 /**
  * @file    adaptors.cpp
  * @author  Wintermute Developers <wintermute-devel@lists.launchpad.net>
- * @created 9/6/2011
+ *  
  *
  *
  *
@@ -127,7 +127,7 @@ namespace Wintermute {
                                                         this,SLOT(aboutToQuit()));
 
                 setParent(p_plgn);
-                setAutoRelaySignals (true);
+                //setAutoRelaySignals (true);
             }
         }
 

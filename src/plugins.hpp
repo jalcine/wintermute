@@ -117,7 +117,7 @@ namespace Wintermute {
                 static Factory* instance();
 
             private:
-                static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
+                static PluginList s_plugins; /**< Holds a list  */
                 static Factory* s_factory;
                 QHash<const QString, PluginInstance*> m_plgnPool;
 
@@ -197,7 +197,7 @@ namespace Wintermute {
          * @attention It's important to note that you must define the Q_EXPORT_PLUGIN2() macro <i>outside</i>
          * the scope of any namespace declarations.
          *
-         * @class PluginBase plugins.hpp "include/wntr/plugins.hpp"
+         * @class PluginBase plugins.hpp "plugins.hpp"
          * @
          */
         class PluginBase : public QObject {
@@ -257,9 +257,7 @@ namespace Wintermute {
                  * @brief Default deconstructor.
                  * @fn ~PluginBase
                  */
-                virtual ~PluginBase() {
-                    delete m_plgnLdr;
-                };
+                virtual ~PluginBase();
 
                 /**
                  * @brief Defines the version of the plug-in.
@@ -343,6 +341,13 @@ namespace Wintermute {
                  * @fn dependencies
                  */
                 const QStringList dependencies() const;
+
+                /**
+                 * @brief Determines if the dependencies of this plug-in have been satisified.
+                 * @see dependencies
+                 * @fn hasDependencies
+                 */
+                const bool hasDependencies() const;
 
                 /**
                  * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.

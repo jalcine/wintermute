@@ -93,8 +93,7 @@ namespace Wintermute {
             const static QVariantMap* arguments();
 
             /**
-             * @brief
-             *
+             * @brief Ends the program.
              * @fn endProgram
              */
             static void endProgram();
@@ -134,7 +133,7 @@ namespace Wintermute {
              * @fn Configure
              * @param argc The command line argument passed representing the number of given arguments.
              * @param argv The command line argument passed representing the value of each argument.
-             * @see Wintermute::Core::Initialize
+             * @see Wintermute::Core::Initialize()
              */
             static void Configure ( int& , char ** );
 
@@ -163,15 +162,13 @@ namespace Wintermute {
 
         public slots:
             /**
-             * @brief Starts the nCurses interface.
-             *
+             * @brief Starts the nCurses operations.
              * @fn doCurses
              */
             static void startCurses();
 
             /**
-             * @brief
-             *
+             * @brief Stops the nCurses operations.
              * @fn stopCurses
              */
             static void stopCurses();
@@ -180,11 +177,12 @@ namespace Wintermute {
             static QApplication* s_app; /**< Holds the object representing the current Q(Core)Application. */
             static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
             static Core* s_core; /**< The internal object that represents the core of Wintermute. */
+
             /**
              * @brief Processes the command line arguments.
              *
              * This method handles the nitty-gritty work of converting all of those command-line arguments
-             * to someone less C-style-ish and more C++ workable.
+             * to something less C-style-ish and more C++ workable.
              *
              * @fn configureCommandLine
              */
