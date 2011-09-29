@@ -103,7 +103,7 @@ namespace Wintermute {
     typedef IPC::GenericAdaptor Adaptor;
 
     namespace Plugins {
-        struct PluginBase;
+        struct AbstractPlugin;
 
         /**
          * @brief An adaptor representing the management work of the plug-in factory.
@@ -147,12 +147,12 @@ namespace Wintermute {
                 virtual void quit(const QDBusMessage&) const;
         };
 
-        class PluginInstanceAdaptor : public Adaptor {
+        class InstanceAdaptor : public Adaptor {
             Q_OBJECT
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.PluginInstance")
 
             public:
-                explicit PluginInstanceAdaptor(Plugins::PluginBase*);
+                explicit InstanceAdaptor(Plugins::AbstractPlugin*);
 
             signals:
                 void pluginLoaded(const QString&) const;

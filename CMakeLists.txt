@@ -9,14 +9,17 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 ## Modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+
+## Wintermute SDK
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
 ## Packages
-set(CURSES_NEED_NCURSES TRUE)
-find_package(WntrData REQUIRED)
-find_package(WntrLing REQUIRED)
-find_package(WntrNtwk REQUIRED)
+set(CURSES_NEED_NCURSES ON)
+find_package(WntrData 0.01 REQUIRED)
+find_package(WntrLing 0.01 REQUIRED)
+find_package(WntrNtwk 0.01 REQUIRED)
+find_package(QPackageKit 0.6.11 REQUIRED)
 find_package(Curses REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost 1.42 COMPONENTS
@@ -29,8 +32,6 @@ find_package(Qt4 4.4.3 COMPONENTS
     QtDBus
     REQUIRED)
 
-## Wintermute SDK
-include(WintermuteMacros)
 include("${QT_USE_FILE}")
 
 #----Doxygen target----#
@@ -92,5 +93,12 @@ install(FILES ${CMAKE_MODULES}
     DESTINATION "${CMAKE_MODULE_DIR}")
 
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
-	      "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
+          "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
     DESTINATION "${WINTERMUTE_CMAKE_DIR}")
+
+## Test Suite
+enable_testing()
+
+add_test(NAME wntrtest
+         CONFIGURATIONS Debug
+         COMMAND wintermute)

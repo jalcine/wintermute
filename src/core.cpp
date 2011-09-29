@@ -222,9 +222,9 @@ namespace Wintermute {
     }
 
     void Core::endProgram (){
-        qDebug() << "(core) Shutting down Wintermute..." << *(arguments());
+        qDebug() << "(core) Shutting down Wintermute...";
 
-        if (IPC::System::module () != "master" && !arguments ()->contains ("help")){
+        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore"){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
@@ -234,6 +234,8 @@ namespace Wintermute {
         }
 
         QApplication::quit ();
+        qDebug() << "(core) Wintermute down for the count; goodbye!";
+        exit(0);
     }
 
     void Core::stop () {

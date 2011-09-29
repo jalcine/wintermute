@@ -114,6 +114,11 @@ namespace Wintermute {
 
         const bool System::registerObject(const QString& p_pth, Adaptor* p_obj){
             QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
+                    | QDBusConnection::ExportAllSignals
+                    | QDBusConnection::ExportAllSlots
+                    | QDBusConnection::ExportAllProperties
+                    | QDBusConnection::ExportAllInvokables
+                    | QDBusConnection::ExportChildObjects
                     | QDBusConnection::ExportAdaptors;
 
             if (s_cnntn->objectRegisteredAt (p_pth)){
