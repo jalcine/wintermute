@@ -16,9 +16,6 @@ include(WintermuteMacros)
 
 ## Packages
 set(CURSES_NEED_NCURSES ON)
-find_package(WntrData 0.01 REQUIRED)
-find_package(WntrLing 0.01 REQUIRED)
-find_package(WntrNtwk 0.01 REQUIRED)
 find_package(QPackageKit 0.6.11 REQUIRED)
 find_package(Curses REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -46,18 +43,12 @@ set(VS_SCC_PROJECTNAME "Wintermute Core")
 set(PROJECT_LABEL "Wintermute Core")
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS
-    ${WNTRLING_INCLUDE_DIRS}
-    ${WNTRDATA_INCLUDE_DIRS}
-    ${WNTRNTWK_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}
     ${CURSES_INCLUDE_DIRS}
     )
 
 set(WINTERMUTE_LIBRARIES
-    ${WNTRLING_LIBRARIES}
-    ${WNTRDATA_LIBRARIES}
-    ${WNTRNTWK_LIBRARIES}
     ${Boost_LIBRARIES}
     ${QT_LIBRARIES}
     ${CURSES_LIBRARIES}
@@ -95,10 +86,3 @@ install(FILES ${CMAKE_MODULES}
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
           "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
     DESTINATION "${WINTERMUTE_CMAKE_DIR}")
-
-## Test Suite
-enable_testing()
-
-add_test(NAME wntrtest
-         CONFIGURATIONS Debug
-         COMMAND wintermute)
