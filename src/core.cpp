@@ -31,9 +31,6 @@
 #include <QLibraryInfo>
 #include <QVariantMap>
 #include <boost/program_options.hpp>
-#include <wntrdata.hpp>
-#include <wntrntwk.hpp>
-#include <wntrling.hpp>
 
 using namespace std;
 using namespace Wintermute;
@@ -42,7 +39,6 @@ namespace po = boost::program_options;
 using boost::program_options::variables_map;
 using boost::program_options::variable_value;
 using boost::program_options::options_description;
-using Wintermute::Linguistics::Parser;
 using std::cout;
 using std::endl;
 
@@ -187,38 +183,6 @@ namespace Wintermute {
 
         IPC::System::start ();
         emit s_core->started();
-
-        if (IPC::System::module () == "master"){
-            const QStringList l_ntwkArgs = QString("--ipc ntwk").split (" ");
-            const QStringList l_lingArgs = QString("--ipc ling").split (" ");
-            QStringList l_dataArgs = QString("--ipc data").split (" ");
-            l_dataArgs << "--locale" << s_args->value ("locale").toString ()
-                       << "--data-dir" << s_args->value ("data-dir").toString ();
-
-            if (Core::arguments ()->value ("daemon").toBool ()){
-                qDebug() << QProcess::startDetached (QApplication::applicationFilePath (),l_ntwkArgs)
-                         << QProcess::startDetached (QApplication::applicationFilePath (),l_dataArgs)
-                         << QProcess::startDetached (QApplication::applicationFilePath (),l_lingArgs);
-            } else {
-                QProcess l_ntwk(Core::instance ());
-                QProcess l_data(Core::instance ());
-                QProcess l_ling(Core::instance ());
-
-                l_data.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_data.start(QApplication::applicationFilePath (),l_dataArgs);
-
-                l_ntwk.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ntwk.start(QApplication::applicationFilePath (),l_ntwkArgs);
-
-                l_ling.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ling.start(QApplication::applicationFilePath (),l_lingArgs);
-            }
-
-            if ( Core::arguments ()->value ( "ncurses" ).toBool () )
-                Core::startCurses();
-            else
-                (new Thread)->run ();
-        }
     }
 
     void Core::endProgram (){
@@ -268,28 +232,5 @@ namespace Wintermute {
         else
             qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }
-
-    void Thread::run() {
-        if ( !Core::arguments ()->value ( "gui" ).toBool () ) {
-            resetty ();
-            Wintermute::Linguistics::Parser l_prsr;
-            QTextStream l_strm ( stdin );
-
-            while ( !l_strm.atEnd () ) {
-                cout << "(main) Statement: ] ";
-                QString l_ln = l_strm.readLine ();
-                if ( l_ln == "--" ) {
-                    cout << "(main) Statement parsing stopped." << endl;
-                    break;
-                } else {
-                    l_prsr.parse ( l_ln );
-                    l_strm << endl;
-                }
-            }
-        }
-
-        QApplication::quit();
-    }
-
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -51,18 +51,9 @@ namespace Wintermute {
          * - <b>Master</b>: Represents the core module, or the master daemon that'll be a means
          * of regulating the sub processes.
          *
-         * - <b>Network</b>: Represents the network module. This module typically runs asynchronously
-         * of the core Wintermute processes and implements most of its work in the core networking library (WntrNtwk).
-         *
          * - <b>Plugin</b>: Represents the plugin module. Plug-ins are run in their process, allowing them
          * to take advantage of their own work, and prevents system failure if the plug-in happens to
          * crash.
-         *
-         * - <b>Data</b>: Represents the data module. This module manages all of the data hard-wiring works
-         * of Wintermute.
-         *
-         * - <b>Linguistics</b>: Represents the linguistics module. This acts as a daemon for all natural
-         * language processing requests.
          *
          * @section N02 D-Bus
          *
@@ -76,7 +67,7 @@ namespace Wintermute {
          * @section N03 Plug-ins
          *
          * Plug-ins each have their own D-Bus domain (since they're run in a sandbox; see @c PluginInstance).
-         * The domain would be a subset of <b>org.thesii.Wintermute.Plugin</b>. This allow remote access
+         * The domain would be a subset of <b>org.thesii.Wintermute.Plugin-{PLUGIN_UUID}</b>. This allow remote access
          * of plug-ins from processes and remoting loading of plug-ins whenever needed. Plug-ins domains
          * are able to run certain exposed parts of a plug-in by using the <b>invoke()</b> method (see @c PluginBase)
          * and thus allowing a dynamic API based on plug-ins for Wintermute.
