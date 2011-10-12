@@ -21,8 +21,6 @@
 #include "ncurses.hpp"
 #include "core.hpp"
 #include "plugins.hpp"
-#include <wntrdata.hpp>
-#include <wntrling.hpp>
 #include <QString>
 #include <QtDebug>
 #include <QStringList>
@@ -142,13 +140,10 @@ namespace Wintermute {
                 case 'l': {
                     printStatus("Starting linguistics parser...");
                     QString l_str;
-                    Linguistics::Parser l_prsr;
                     getText ("Input: ",l_str);
 
-                    while (!l_str.isEmpty ()){
-                        l_prsr.parse(l_str);
+                    while (!l_str.isEmpty ())
                         getText ("Input: ",l_str);
-                    }
 
                     clear();
                 } break;
