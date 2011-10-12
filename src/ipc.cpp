@@ -25,9 +25,6 @@
 #include "config.hpp"
 #include "plugins.hpp"
 #include "adaptors.hpp"
-#include <wntrntwk.hpp>
-#include <wntrdata.hpp>
-#include <wntrling.hpp>
 #include <QtDBus>
 #include <QProcess>
 
@@ -36,12 +33,6 @@ namespace Wintermute {
         QString System::s_appMod;
         QDBusConnection* System::s_cnntn = NULL;
         Adaptor* System::s_adapt = NULL;
-
-        void System::registerDataTypes (){
-            qDBusRegisterMetaType<Lexical::Data>();
-            qDBusRegisterMetaType<Rules::Bond>();
-            qDBusRegisterMetaType<Rules::Chain>();
-        }
 
         void System::start ( ) {
             registerDataTypes();
@@ -59,40 +50,6 @@ namespace Wintermute {
 
                 registerObject ("/Master" , l_adpt);
                 registerObject ("/Factory" , l_adpt2);
-                s_adapt = l_adpt;
-            } else if ( s_appMod == "ling" ) {
-                l_objectName = "Linguistics";
-
-                Linguistics::SystemAdaptor* l_adpt = new Linguistics::SystemAdaptor;
-
-                registerObject ("/System", l_adpt);
-                s_adapt = l_adpt;
-            } else if ( s_appMod == "data" ) {
-                l_objectName = "Data";
-                Data::Linguistics::System::setLocale ( Core::arguments ()->value ("locale").toString () );
-
-                connect(Core::instance (),SIGNAL(started()),Data::System::instance (),SLOT(start()));
-                connect(Core::instance (),SIGNAL(stopped()),Data::System::instance (),SLOT(stop()));
-
-                Data::SystemAdaptor* l_adpt = new Data::SystemAdaptor;
-                Data::NodeAdaptor* l_adpt2 = new Data::NodeAdaptor;
-                Data::RuleAdaptor* l_adpt3 = new Data::RuleAdaptor;
-
-                registerObject ("/System" , l_adpt);
-                registerObject ("/Nodes"  , l_adpt2);
-                registerObject ("/Rules"  , l_adpt3);
-                s_adapt = l_adpt;
-            } else if ( s_appMod == "ntwk" ) {
-                l_objectName = "Network";
-
-                connect(Core::instance (),SIGNAL(started()),Network::Interface::instance(),SLOT(start()));
-                connect(Core::instance (),SIGNAL(stopped()),Network::Interface::instance(),SLOT(stop()));
-
-                Network::SystemAdaptor* l_adpt = new Network::SystemAdaptor;
-                Network::BroadcastAdaptor* l_adpt2 = new Network::BroadcastAdaptor;
-
-                registerObject ("/System" , l_adpt);
-                registerObject ("/Broadcast",l_adpt2);
                 s_adapt = l_adpt;
             } else if ( s_appMod == "plugin" ) {
                 const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
