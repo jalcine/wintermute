@@ -25,9 +25,6 @@
 #include "config.hpp"
 #include "plugins.hpp"
 #include "adaptors.hpp"
-#include <wntrntwk.hpp>
-#include <wntrdata.hpp>
-#include <wntrling.hpp>
 #include <QtDBus>
 #include <QProcess>
 
@@ -35,12 +32,7 @@ namespace Wintermute {
     namespace IPC {
         QString System::s_appMod;
         QDBusConnection* System::s_cnntn = NULL;
-
-        void System::registerDataTypes (){
-            qDBusRegisterMetaType<Lexical::Data>();
-            qDBusRegisterMetaType<Rules::Bond>();
-            qDBusRegisterMetaType<Rules::Chain>();
-        }
+        Adaptor* System::s_adapt = NULL;
 
         void System::start ( ) {
             registerDataTypes();
@@ -58,37 +50,7 @@ namespace Wintermute {
 
                 registerObject ("/Master" , l_adpt);
                 registerObject ("/Factory" , l_adpt2);
-            } else if ( s_appMod == "ling" ) {
-                l_objectName = "Linguistics";
-
-                Linguistics::SystemAdaptor* l_adpt = new Linguistics::SystemAdaptor;
-
-                registerObject ("/System", l_adpt);
-            } else if ( s_appMod == "data" ) {
-                l_objectName = "Data";
-                Data::Linguistics::System::setLocale ( Core::arguments ()->value ("locale").toString () );
-
-                connect(Core::instance (),SIGNAL(started()),Data::System::instance (),SLOT(start()));
-                connect(Core::instance (),SIGNAL(stopped()),Data::System::instance (),SLOT(stop()));
-
-                Data::SystemAdaptor* l_adpt = new Data::SystemAdaptor;
-                Data::NodeAdaptor* l_adpt2 = new Data::NodeAdaptor;
-                Data::RuleAdaptor* l_adpt3 = new Data::RuleAdaptor;
-
-                registerObject ("/System" , l_adpt);
-                registerObject ("/Nodes"  , l_adpt2);
-                registerObject ("/Rules"  , l_adpt3);
-            } else if ( s_appMod == "ntwk" ) {
-                l_objectName = "Network";
-
-                connect(Core::instance (),SIGNAL(started()),Network::Interface::instance(),SLOT(start()));
-                connect(Core::instance (),SIGNAL(stopped()),Network::Interface::instance(),SLOT(stop()));
-
-                Network::SystemAdaptor* l_adpt = new Network::SystemAdaptor;
-                Network::BroadcastAdaptor* l_adpt2 = new Network::BroadcastAdaptor;
-
-                registerObject ("/System" , l_adpt);
-                registerObject ("/Broadcast",l_adpt2);
+                s_adapt = l_adpt;
             } else if ( s_appMod == "plugin" ) {
                 const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
                 l_objectName = "Plugin." + l_plgn;
@@ -107,24 +69,29 @@ namespace Wintermute {
             qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
         }
 
-        const bool System::registerObject(const QString& p_pth, QObject* p_obj){
+        const bool System::registerObject(const QString& p_pth, Adaptor* p_obj){
             QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
+                    | QDBusConnection::ExportAllSignals
+                    | QDBusConnection::ExportAllSlots
+                    | QDBusConnection::ExportAllProperties
+                    | QDBusConnection::ExportAllInvokables
+                    | QDBusConnection::ExportChildObjects
                     | QDBusConnection::ExportAdaptors;
 
             if (s_cnntn->objectRegisteredAt (p_pth)){
                 qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << s_cnntn->interface ()->service ();
                 return false;
             } else
-                return s_cnntn->registerObject (p_pth , qobject_cast<GenericAdaptor*>(p_obj), l_opts);
+                return s_cnntn->registerObject (p_pth , p_obj, l_opts);
 
             return false;
         }
 
-        void System::stop () {
-            s_cnntn->disconnectFromBus (s_cnntn->name ());
-        }
+        void System::stop () { s_cnntn->disconnectFromBus (s_cnntn->name ()); }
 
         QDBusConnection* System::bus() { return s_cnntn; }
+
+        Adaptor* System::adaptor () { return s_adapt; }
     }
 }
 

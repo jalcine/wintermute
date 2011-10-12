@@ -12,7 +12,6 @@ GIT_WLING=$GIT_BASE/ling.git
 
 # Having these set we can start preparing.
 # First of all, we pull needed branches.
-# TODO: use a loop here
 echo "*** Cloning $GIT_WDATA..."
 git clone $GIT_WDATA lib/wntrdata
 

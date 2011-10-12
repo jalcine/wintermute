@@ -1,7 +1,7 @@
 /**
  * @file    adaptors.cpp
  * @author  Wintermute Developers <wintermute-devel@lists.launchpad.net>
- * @created 9/6/2011
+ *
  *
  *
  *
@@ -62,7 +62,7 @@ namespace Wintermute {
             }
 
             if (l_pingReply.type () == QDBusMessage::ErrorMessage){
-                //qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
+                qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
                 if (!Core::arguments ()->value ("daemon").toBool ())
                     CoreAdaptor::haltSystem ();
             }
@@ -106,7 +106,7 @@ namespace Wintermute {
             Factory::Shutdown ();
         }
 
-        PluginInstanceAdaptor::PluginInstanceAdaptor(PluginBase *p_plgn) : Adaptor(Core::instance ()) {
+        InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : Adaptor(Core::instance ()) {
             if (p_plgn == NULL){
                 emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
                 QApplication::quit ();
@@ -127,14 +127,14 @@ namespace Wintermute {
                                                         this,SLOT(aboutToQuit()));
 
                 setParent(p_plgn);
-                setAutoRelaySignals (true);
+                //setAutoRelaySignals (true);
             }
         }
 
-        void PluginInstanceAdaptor::quit (const QDBusMessage& p_msg) const {
-            const QString l_uuid = qobject_cast<PluginBase*>(parent())->uuid();
+        void InstanceAdaptor::quit (const QDBusMessage& p_msg) const {
+            const QString l_uuid = qobject_cast<AbstractPlugin*>(parent())->uuid();
             emit aboutToQuit ();
-            qobject_cast<PluginBase*>(parent())->doDeinitialize();
+            qobject_cast<AbstractPlugin*>(parent())->doDeinitialize();
             emit pluginUnloaded (l_uuid);
         }
     }

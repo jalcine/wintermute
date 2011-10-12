@@ -31,9 +31,6 @@
 #include <QLibraryInfo>
 #include <QVariantMap>
 #include <boost/program_options.hpp>
-#include <wntrdata.hpp>
-#include <wntrntwk.hpp>
-#include <wntrling.hpp>
 
 using namespace std;
 using namespace Wintermute;
@@ -42,7 +39,6 @@ namespace po = boost::program_options;
 using boost::program_options::variables_map;
 using boost::program_options::variable_value;
 using boost::program_options::options_description;
-using Wintermute::Linguistics::Parser;
 using std::cout;
 using std::endl;
 
@@ -88,10 +84,9 @@ namespace Wintermute {
         l_allOptions ( "All Options" );
 
         l_publicOptions.add_options()
-        ( "help,h"       , "show help screen" )
-        ( "verbose-help" , "show all options" )
-        ( "copyright,C"  , "show copyright information" )
-        ( "version,V"    , "output version number." )
+        ( "help,h"       , po::value<string>()->default_value("ignore") , "Show meaning of command line arguments. (valid values are 'standard', 'config', and 'all')" )
+        ( "copyright,C"  , "Prints copyright information and exits." )
+        ( "version,V"    , "Prints version number and exits." )
         ;
 
         l_configOptions.add_options ()
@@ -125,13 +120,21 @@ namespace Wintermute {
         }
 
         if ( !l_vm.empty () ) {
-            if ( l_vm.count ( "help" ) || l_vm.count ( "verbose-help" ) ) {
+            for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
+                const QString l_key = QString::fromStdString (l_itr->first);
+                const variable_value l_val = l_itr->second;
+                s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
+            }
+
+            if ( l_vm.count ( "help" ) && l_vm.at ("help").as<string>() != "ignore") {
                 cout << "\"There's no help for those who lack the valor of mighty men!\"" << endl;
 
-                if ( l_vm.count ( "help" ) )
-                    cout << l_publicOptions;
-                else if ( l_vm.count ( "verbose-help" ) )
+                if ( l_vm.at ("help").as<string>() == "all" )
                     cout << l_allOptions;
+                else if ( l_vm.at ("help").as<string>() == "config" )
+                    cout << l_configOptions;
+                else if (l_vm.at ("help").as<string>() == "standard")
+                    cout << l_publicOptions;
 
                 cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
@@ -155,13 +158,6 @@ namespace Wintermute {
                      << "\t(at your option) any later version." << endl << endl;
                 endProgram ( );
             }
-
-            for (variables_map::const_iterator l_itr = l_vm.begin (); l_itr != l_vm.end (); l_itr++){
-                const QString l_key = QString::fromStdString (l_itr->first);
-                const variable_value l_val = l_itr->second;
-                s_args->insert (l_key,QString::fromStdString(l_val.as<string>()));
-            }
-
         } else
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
     }
@@ -187,105 +183,54 @@ namespace Wintermute {
 
         IPC::System::start ();
         emit s_core->started();
-
-        if (IPC::System::module () == "master"){
-            const QStringList l_ntwkArgs = QString("--ipc ntwk").split (" ");
-            const QStringList l_lingArgs = QString("--ipc ling").split (" ");
-            QStringList l_dataArgs = QString("--ipc data").split (" ");
-            l_dataArgs << "--locale" << s_args->value ("locale").toString ()
-                       << "--data-dir" << s_args->value ("data-dir").toString ();
-
-            if (Core::arguments ()->value ("daemon").toBool ()){
-                qDebug() << QProcess::startDetached (QApplication::applicationFilePath (),l_ntwkArgs)
-                         << QProcess::startDetached (QApplication::applicationFilePath (),l_dataArgs)
-                         << QProcess::startDetached (QApplication::applicationFilePath (),l_lingArgs);
-            } else {
-                QProcess l_ntwk(Core::instance ());
-                QProcess l_data(Core::instance ());
-                QProcess l_ling(Core::instance ());
-
-                l_data.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_data.start(QApplication::applicationFilePath (),l_dataArgs);
-
-                l_ntwk.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ntwk.start(QApplication::applicationFilePath (),l_ntwkArgs);
-
-                l_ling.setProcessChannelMode (QProcess::ForwardedChannels);
-                l_ling.start(QApplication::applicationFilePath (),l_lingArgs);
-            }
-
-            if ( Core::arguments ()->value ( "ncurses" ).toBool () )
-                Core::startCurses();
-            else
-                (new Thread)->run ();
-        }
     }
 
     void Core::endProgram (){
         qDebug() << "(core) Shutting down Wintermute...";
-        if (IPC::System::module () != "master"){
+
+        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore"){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
-                qDebug() << "(core) Can't shutdown Wintermute's core :"
+                qDebug() << "(core) [module = " << IPC::System::module () << "] Can't terminate master module of Wintermute :"
                          << l_reply.errorMessage ();
             }
         }
 
         QApplication::quit ();
+        qDebug() << "(core) Wintermute down for the count; goodbye!";
+        exit(0);
     }
 
     void Core::stop () {
+        IPC::System::stop ();
+
         if (IPC::System::module () == "master"){
             if (!s_args->value ("daemon").toBool ())
                 Core::stopCurses();
         }
 
-        IPC::System::stop ();
         emit s_core->stopped ();
     }
 
     void Core::doDeinit () const {
-        qDebug() << "(core [module=" << IPC::System::module () << "]) Cleaning up..";
+        qDebug() << "(core [module =" << IPC::System::module () << "]) Cleaning up..";
         Core::stop ();
-        qDebug() << "(core [module=" << IPC::System::module () << "]) All clean!";
+        qDebug() << "(core [module =" << IPC::System::module () << "]) All clean!";
     }
 
     void Core::startCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::start();
         else
-            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not starting.";
+            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not starting.";
     }
 
     void Core::stopCurses() {
         if (s_args->value ("ncurses").toBool ())
             Curses::stop();
         else
-            qDebug() << "(core [module=" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
+            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }
-
-    void Thread::run() {
-        if ( !Core::arguments ()->value ( "gui" ).toBool () ) {
-            resetty ();
-            Wintermute::Linguistics::Parser l_prsr;
-            QTextStream l_strm ( stdin );
-
-            while ( !l_strm.atEnd () ) {
-                cout << "(main) Statement: ] ";
-                QString l_ln = l_strm.readLine ();
-                if ( l_ln == "--" ) {
-                    cout << "(main) Statement parsing stopped." << endl;
-                    break;
-                } else {
-                    l_prsr.parse ( l_ln );
-                    l_strm << endl;
-                }
-            }
-        }
-
-        QApplication::quit();
-    }
-
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

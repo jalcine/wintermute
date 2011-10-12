@@ -35,36 +35,64 @@
 namespace Wintermute {
     namespace Plugins {
         struct Factory;
-        struct PluginBase;
-        struct PluginInstance;
+        struct AbstractPlugin;
+        struct Instance;
 
         /**
          * @brief Represents a named set of plugins.
          * @typedef PluginMap
          */
-        typedef QHash<QString, PluginBase*> PluginList;
+        typedef QHash<QString, AbstractPlugin*> PluginList;
 
         /**
          * @brief Provides factory management of plug-ins.
          *
          * This abstract class manages anything and everything to do with plug-ins; from
          * loading, unloading, obtaining information and more about plugins. A lot of the
-         * internal working dealing with plug-ins, however, are done within the PluginBase
+         * internal working dealing with plug-ins, however, are done within the AbstractPlugin
          * class itself. This merely manages the loaded plug-ins and executes prerequisties commands.
          *
          * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
-         * @see PluginBase
+         * @see AbstractPlugin
          */
         class Factory : public QObject {
             Q_OBJECT
             Q_DISABLE_COPY(Factory)
-            friend class PluginBase;
+            friend class AbstractPlugin;
 
             signals:
+                /**
+                 * @brief
+                 *
+                 * @fn pluginLoaded
+                 * @param
+                 */
                 void pluginLoaded(const QString& ) const;
+                /**
+                 * @brief
+                 *
+                 * @fn pluginUnloaded
+                 * @param
+                 */
                 void pluginUnloaded(const QString& ) const;
+                /**
+                 * @brief
+                 *
+                 * @fn pluginCrashed
+                 * @param
+                 */
                 void pluginCrashed(const QString& ) const;
+                /**
+                 * @brief
+                 *
+                 * @fn initialized
+                 */
                 void initialized() const;
+                /**
+                 * @brief
+                 *
+                 * @fn deinitialized
+                 */
                 void deinitialized() const;
 
             public slots:
@@ -86,7 +114,7 @@ namespace Wintermute {
                  * @fn loadPlugin
                  * @param
                  */
-                static PluginBase* loadPlugin ( const QString& );
+                static AbstractPlugin* loadPlugin ( const QString& );
                 /**
                  * @brief Unloads a plug-in from the system.
                  * @fn unloadPlugin
@@ -117,9 +145,9 @@ namespace Wintermute {
                 static Factory* instance();
 
             private:
-                static PluginList s_allPlgns; /**< Holds pointers to all of the loaded plugins. */
+                static PluginList s_plugins; /**< Holds a list  */
                 static Factory* s_factory;
-                QHash<const QString, PluginInstance*> m_plgnPool;
+                QHash<const QString, Instance*> m_plgnPool;
 
             private slots:
                 /**
@@ -161,7 +189,7 @@ namespace Wintermute {
         /**
          * @brief Abstract class representing the outlining information of a plug-in.
          *
-         * PluginBase is an abstract class laying out how the required bits of information
+         * The AbstractPlugin class is an abstract class laying out how the required bits of information
          * that a shared library or any other exectuable code that wish to add more functionality
          * to Wintermute. It's important that plug-in developers provide implementations of the
          * virtually defined methods, or their plug-in will fail to load. It is required that
@@ -175,10 +203,10 @@ namespace Wintermute {
          * #include <wntr/plugins.hpp>
          *
          * using namespace Wintermute::Plugins;
-         * using Wintermute::Plugins::PluginBase;
+         * using Wintermute::Plugins::AbstractPlugin;
          *
          * namespace Foo {
-         *      class Bar : public PluginBase {
+         *      class Bar : public AbstractPlugin {
          *          public:
          *              Bar() : m_magicNumber(0) { }
          *              Bar(const Bar &p_bar) : m_magicNumber(p_bar.magicNumber) { }
@@ -197,12 +225,12 @@ namespace Wintermute {
          * @attention It's important to note that you must define the Q_EXPORT_PLUGIN2() macro <i>outside</i>
          * the scope of any namespace declarations.
          *
-         * @class PluginBase plugins.hpp "include/wntr/plugins.hpp"
+         * @class AbstractPlugin plugins.hpp "plugins.hpp"
          * @
          */
-        class PluginBase : public QObject {
+        class AbstractPlugin : public QObject {
             friend class Factory;
-            friend class PluginInstanceAdaptor;
+            friend class InstanceAdaptor;
             Q_OBJECT
             Q_PROPERTY(const double Version READ version)
             Q_PROPERTY(const double CompatibleVersion READ compatVersion)
@@ -235,31 +263,29 @@ namespace Wintermute {
             public:
                 /**
                  * @brief Empty, nullifying constructor.
-                 * @fn PluginBase
+                 * @fn AbstractPlugin
                  */
-                explicit PluginBase() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
+                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
-                 * @fn PluginBase
+                 * @fn AbstractPlugin
                  * @param p_pl The plug-in to be loaded from disk.
                  */
-                PluginBase(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
+                AbstractPlugin(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
 
                 /**
                  * @brief Default copy constructor.
-                 * @fn PluginBase
+                 * @fn AbstractPlugin
                  * @param p_pb The plug-in to be copied.
                  */
-                PluginBase(PluginBase const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
+                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
 
                 /**
                  * @brief Default deconstructor.
-                 * @fn ~PluginBase
+                 * @fn ~AbstractPlugin
                  */
-                virtual ~PluginBase() {
-                    delete m_plgnLdr;
-                };
+                virtual ~AbstractPlugin();
 
                 /**
                  * @brief Defines the version of the plug-in.
@@ -345,6 +371,13 @@ namespace Wintermute {
                 const QStringList dependencies() const;
 
                 /**
+                 * @brief Determines if the dependencies of this plug-in have been satisified.
+                 * @see dependencies
+                 * @fn hasDependencies
+                 */
+                const bool hasDependencies() const;
+
+                /**
                  * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.
                  *
                  * @note This does <b>not</b> do a dependency check (not yet fully implemented).
@@ -382,29 +415,93 @@ namespace Wintermute {
             private slots:
                 void doDeinitialize () const;
                 void doInitialize() const;
+                void loadDependencies() const;
         };
 
-        class PluginInstance : public QObject {
+        /**
+         * @brief Provides the Factory with a controllable instnace of a plugin.
+         *
+         * @see Factory, AbstractPlugin
+         * @class Instance plugins.hpp "src/plugins.hpp"
+         */
+        class Instance : public QObject {
             friend class Factory;
             Q_OBJECT
-            Q_DISABLE_COPY(PluginInstance)
+            Q_DISABLE_COPY(Instance)
             Q_PROPERTY(const bool Active READ isActive)
             Q_PROPERTY(const QString Name READ name)
 
             public:
-                PluginInstance();
-                PluginInstance(const QString&, QSettings*);
+                /**
+                 * @brief
+                 *
+                 * @fn Instance
+                 */
+                Instance();
+                /**
+                 * @brief
+                 *
+                 * @fn Instance
+                 * @param
+                 * @param
+                 */
+                Instance(const QString&, QSettings*);
+                /**
+                 * @brief
+                 *
+                 * @fn isActive
+                 */
                 const bool isActive();
+                /**
+                 * @brief
+                 *
+                 * @fn name
+                 */
                 const QString name();
+                /**
+                 * @brief
+                 *
+                 * @fn settings
+                 */
                 const QSettings* settings();
 
             public slots:
+                /**
+                 * @brief
+                 *
+                 * @fn stop
+                 * @param QDBusMessage
+                 */
                 void stop(const QDBusMessage = QDBusMessage());
+                /**
+                 * @brief
+                 *
+                 * @fn start
+                 * @param QDBusMessage
+                 */
                 void start(const QDBusMessage = QDBusMessage());
 
             signals:
+                /**
+                 * @brief
+                 *
+                 * @fn crashed
+                 * @param
+                 */
                 void crashed(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn loaded
+                 * @param
+                 */
                 void loaded(const QString&);
+                /**
+                 * @brief
+                 *
+                 * @fn unloaded
+                 * @param
+                 */
                 void unloaded(const QString&);
 
             private:
@@ -423,7 +520,7 @@ namespace Wintermute {
     }
 }
 
-Q_DECLARE_INTERFACE(Wintermute::Plugins::PluginBase, "org.thesii.Wintermute.PluginBase");
+Q_DECLARE_INTERFACE(Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin");
 
 #endif /* PLUGINS_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

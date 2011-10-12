@@ -32,9 +32,7 @@ namespace Wintermute {
      *
      * In an effort to provide another less resource-intenstive interface, aside
      * from the QtGui module, Wintermute::Curses is here to implement a terminal
-     * interface for Wintermute. The nCurses interface can be used with or without
-     * QtGui installed. To use it, run 'wintermute --gui false' to have the actions
-     * of Wintermute redirected to the nCurses interface.
+     * interface for Wintermute.
      *
      * @class Curses ncurses.cpp "src/ncurses.cpp"
      */

@@ -1,5 +1,6 @@
 /**
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @file   config.hpp
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -22,8 +23,8 @@
  * Required for the core of Wintermute.
  */
 
-#ifndef __CONFIG_HPP__
-#define __CONFIG_HPP__
+#ifndef _WNTR_CONFIG_HPP__
+#define _WNTR_CONFIG_HPP__
 
 #cmakedefine DEBUG
 
