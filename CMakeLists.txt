@@ -16,7 +16,7 @@ include(WintermuteMacros)
 
 ## Packages
 set(CURSES_NEED_NCURSES ON)
-find_package(QPackageKit 0.6.11 REQUIRED)
+#find_package(QPackageKit 0.6.11 REQUIRED)
 find_package(Curses REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost 1.42 COMPONENTS
