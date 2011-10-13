@@ -33,6 +33,9 @@
 #define WINTER_PLUGIN_PATH "@WINTER_PLUGIN_INSTALL_DIR@"
 #define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGINSPEC_INSTALL_DIR@"
 
+#define WINTERMUTE_LOCALE "@WINTERMUTE_LOCALE@"
+#define WINTER_DATA_INSTALL_DIR "@WINTER_DATA_INSTALL_DIR@"
+
 #endif // __CONFIG_HPP__
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
