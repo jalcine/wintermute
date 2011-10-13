@@ -33,9 +33,6 @@
 #define WINTER_PLUGIN_PATH "@WINTER_PLUGIN_INSTALL_DIR@"
 #define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGINSPEC_INSTALL_DIR@"
 
-#define WNTRDATA_DEFAULT_LOCALE "en"
-#define WNTRDATA_DATA_DIR "/usr/share/wintermute/data"
-
 #endif // __CONFIG_HPP__
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
