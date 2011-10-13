@@ -26,7 +26,7 @@
 #ifndef _WNTR_CONFIG_HPP__
 #define _WNTR_CONFIG_HPP__
 
-#cmakedefine DEBUG
+#cmakedefine01 DEBUG
 
 #define WINTERMUTE_SERVICE_NAME "org.thesii.Wintermute"
 #define WINTERMUTE_VERSION @WINTERMUTE_VERSION@

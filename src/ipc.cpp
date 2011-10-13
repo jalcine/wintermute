@@ -34,6 +34,11 @@ namespace Wintermute {
         QDBusConnection* System::s_cnntn = NULL;
         Adaptor* System::s_adapt = NULL;
 
+        void System::registerDataTypes()
+        {
+            qDebug() << "[Core] [IPC/System::registerDataTypes()] TODO";
+        }
+
         void System::start ( ) {
             registerDataTypes();
             s_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));

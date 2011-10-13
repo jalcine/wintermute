@@ -27,7 +27,6 @@
 #include <QTextStream>
 #include <iostream>
 
-using namespace Wintermute::Data;
 using namespace Wintermute::Plugins;
 using namespace std;
 
@@ -116,8 +115,8 @@ namespace Wintermute {
 
                 case 'd': {
                     QTextStream l_dataStrm(l_data);
-                    l_dataStrm << "Locale:" << Data::Linguistics::System::locale() << "(default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
-                               << "Root data directory:" << Data::System::directory () << "(default: " << WNTRDATA_DATA_DIR << ")" << endl;
+                    l_dataStrm << "Locale:" << "Locale " <<  "(default: " << WNTRDATA_DEFAULT_LOCALE << ")"<< endl
+                               << "Root data directory:" <<  "(default: " << WNTRDATA_DATA_DIR << ")" << endl;
 
                     QString l_str(*l_data);
                     printText(l_str);
