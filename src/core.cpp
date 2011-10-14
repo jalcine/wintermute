@@ -90,9 +90,9 @@ namespace Wintermute {
         ;
 
         l_configOptions.add_options ()
-        ( "locale,l" , po::value<string>()->default_value ( WNTRDATA_DEFAULT_LOCALE ) ,
+        ( "locale,l" , po::value<string>()->default_value ( WINTERMUTE_LOCALE ) ,
           "Defines the locale used by the system for parsing." )
-        ( "data-dir,datadir,l" , po::value<string>()->default_value ( WNTRDATA_DATA_DIR ) ,
+        ( "data-dir,datadir,l" , po::value<string>()->default_value ( WINTER_DATA_INSTALL_DIR ) ,
           "Defines the directory where Wintermute's data is stored." )
         ;
 
