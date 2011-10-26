@@ -23,7 +23,6 @@
 #include "core.hpp"
 #include "ipc.hpp"
 #include "plugins.hpp"
-#include "ncurses.hpp"
 #include <iostream>
 #include <QtDebug>
 #include <QProcess>
@@ -207,7 +206,7 @@ namespace Wintermute {
 
         if (IPC::System::module () == "master"){
             if (!s_args->value ("daemon").toBool ())
-                Core::stopCurses();
+            {}
         }
 
         emit s_core->stopped ();
@@ -221,14 +220,14 @@ namespace Wintermute {
 
     void Core::startCurses() {
         if (s_args->value ("ncurses").toBool ())
-            Curses::start();
+        {}
         else
             qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not starting.";
     }
 
     void Core::stopCurses() {
         if (s_args->value ("ncurses").toBool ())
-            Curses::stop();
+        {}
         else
             qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }

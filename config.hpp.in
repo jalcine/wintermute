@@ -28,11 +28,17 @@
 
 #cmakedefine01 DEBUG
 
+// DBus section
 #define WINTERMUTE_SERVICE_NAME "org.thesii.Wintermute"
+
+// Project info
 #define WINTERMUTE_VERSION @WINTERMUTE_VERSION@
+
+// Plugin system data
 #define WINTER_PLUGIN_PATH "@WINTER_PLUGIN_INSTALL_DIR@"
 #define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGINSPEC_INSTALL_DIR@"
 
+// Compile-time configuration
 #define WINTERMUTE_LOCALE "@WINTERMUTE_LOCALE@"
 #define WINTER_DATA_INSTALL_DIR "@WINTER_DATA_INSTALL_DIR@"
 

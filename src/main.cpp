@@ -23,7 +23,6 @@
 #include "wintermute.hpp"
 
 using namespace Wintermute;
-using Wintermute::Core;
 
 int main ( int argc, char** argv ) {
     Core l_core ( argc , argv );
