@@ -206,7 +206,6 @@ namespace Wintermute {
 
         if (IPC::System::module () == "master"){
             if (!s_args->value ("daemon").toBool ())
-                //Core::stopCurses();
             {}
         }
 
@@ -221,7 +220,6 @@ namespace Wintermute {
 
     void Core::startCurses() {
         if (s_args->value ("ncurses").toBool ())
-            //Curses::start();
         {}
         else
             qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not starting.";
@@ -229,7 +227,6 @@ namespace Wintermute {
 
     void Core::stopCurses() {
         if (s_args->value ("ncurses").toBool ())
-            //Curses::stop();
         {}
         else
             qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
