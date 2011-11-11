@@ -30,33 +30,29 @@
 
 namespace Wintermute {
     namespace IPC {
-        QString System::s_appMod;
-        QDBusConnection* System::s_cnntn = NULL;
-        Adaptor* System::s_adapt = NULL;
+        System* System::s_inst = new System;
 
-        void System::registerDataTypes()
-        {
-            qDebug() << "[Core] [IPC/System::registerDataTypes()] TODO";
-        }
+        System::System(QObject* p_obj) : QObject(p_obj) { }
+
+        System::~System() { }
 
         void System::start ( ) {
-            registerDataTypes();
-            s_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
-            s_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
+            instance()->m_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
+            instance()->m_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
             QString l_serviceName = WINTERMUTE_SERVICE_NAME, l_objectName;
 
-            if ( s_appMod == "master") {
+            if ( instance()->m_appMod == "master") {
                 l_objectName = "master";
-                connect(Core::instance (),SIGNAL(started()), Plugins::Factory::instance(),SLOT(Startup()));
-                connect(Core::instance (),SIGNAL(stopped()),Plugins::Factory::instance (),SLOT(Shutdown()));
+                connect(Core::instance (),SIGNAL(started()), Plugins::Factory::instance (), SLOT(Startup()));
+                connect(Core::instance (),SIGNAL(stopped()), Plugins::Factory::instance (), SLOT(Shutdown()));
 
                 CoreAdaptor* l_adpt = new CoreAdaptor;
                 Plugins::PluginFactoryAdaptor* l_adpt2 = new Plugins::PluginFactoryAdaptor;
 
                 registerObject ("/Master" , l_adpt);
                 registerObject ("/Factory" , l_adpt2);
-                s_adapt = l_adpt;
-            } else if ( s_appMod == "plugin" ) {
+                instance()->m_adapt = l_adpt;
+            } else if (instance()->m_appMod == "plugin" ) {
                 const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
                 l_objectName = "Plugin." + l_plgn;
                 connect(Core::instance (),SIGNAL(started()),Plugins::Factory::instance (),SLOT(loadStandardPlugin()));
@@ -65,15 +61,17 @@ namespace Wintermute {
 
             if (l_objectName != "master") l_serviceName += "." + l_objectName;
 
-            if (!s_cnntn->registerService (l_serviceName) && l_objectName == "master"){
+            if (!instance()->m_cnntn->registerService (l_serviceName) && l_objectName == "master"){
                 qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << l_serviceName
                          << ") under the same user on the same computer";
                 Core::endProgram ();
             }
 
             qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
+            emit instance()->registerDataTypes();
         }
 
+        /// @todo Find a way to expose adaptors _properly_ over D-Bus.
         const bool System::registerObject(const QString& p_pth, Adaptor* p_obj){
             QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
                     | QDBusConnection::ExportAllSignals
@@ -83,20 +81,22 @@ namespace Wintermute {
                     | QDBusConnection::ExportChildObjects
                     | QDBusConnection::ExportAdaptors;
 
-            if (s_cnntn->objectRegisteredAt (p_pth)){
-                qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << s_cnntn->interface ()->service ();
+            if (instance()->m_cnntn->objectRegisteredAt (p_pth)){
+                qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << instance()->m_cnntn->interface ()->service ();
                 return false;
             } else
-                return s_cnntn->registerObject (p_pth , p_obj, l_opts);
+                return instance()->m_cnntn->registerObject (p_pth , p_obj, l_opts);
 
             return false;
         }
 
-        void System::stop () { s_cnntn->disconnectFromBus (s_cnntn->name ()); }
+        void System::stop () { instance()->m_cnntn->disconnectFromBus (instance()->m_cnntn->name ()); }
 
-        QDBusConnection* System::bus() { return s_cnntn; }
+        QDBusConnection* System::bus() { return instance()->m_cnntn; }
 
-        Adaptor* System::adaptor () { return s_adapt; }
+        Adaptor* System::adaptor () { return instance()->m_adapt; }
+
+        System* System::instance() { return s_inst; }
     }
 }
 

@@ -39,7 +39,6 @@
 #ifndef WINTERMUTE_HPP
 #define WINTERMUTE_HPP
 
-#include "ncurses.hpp"
 #include "config.hpp"
 #include "plugins.hpp"
 #include "core.hpp"

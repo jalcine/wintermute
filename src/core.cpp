@@ -23,13 +23,14 @@
 #include "core.hpp"
 #include "ipc.hpp"
 #include "plugins.hpp"
-#include "ncurses.hpp"
 #include <iostream>
 #include <QtDebug>
 #include <QProcess>
 #include <QtDebug>
 #include <QLibraryInfo>
 #include <QVariantMap>
+#include <QSettings>
+#include <QDateTime>
 #include <boost/program_options.hpp>
 
 using namespace std;
@@ -54,7 +55,7 @@ namespace Wintermute {
 
     void Core::Configure ( int& p_argc, char** p_argv ) {
         QString l_ipcMod = "master";
-        s_app = new QApplication ( p_argc,p_argv );
+        s_app = new QApplication ( p_argc, p_argv );
         s_app->setApplicationName ( "Wintermute" );
         s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
         s_app->setOrganizationDomain ( "thesii.org" );
@@ -85,8 +86,8 @@ namespace Wintermute {
 
         l_publicOptions.add_options()
         ( "help,h"       , po::value<string>()->default_value("ignore") , "Show meaning of command line arguments. (valid values are 'standard', 'config', and 'all')" )
-        ( "copyright,C"  , "Prints copyright information and exits." )
-        ( "version,V"    , "Prints version number and exits." )
+        ( "copyright,c"  , "Prints copyright information and exits." )
+        ( "version,v"    , "Prints version number and exits." )
         ;
 
         l_configOptions.add_options ()
@@ -103,10 +104,6 @@ namespace Wintermute {
           "Defines the IPC module to run this process as." )
         ( "daemon"    , po::value<string>()->default_value( "false" ),
            "Determines whether or not this process runs as a daemon.")
-        ( "ncurses,n" , po::value<string>()->default_value ( "false" ),
-          "Determines whether or not the nCurses interface is being used. This automatically disables the GUI.")
-        ( "gui,g"     , po::value<string>()->default_value ( "false" ),
-          "Determines whether or not the graphical user interface is loaded. This automatically disables nCurses." )
         ;
 
         l_allOptions.add ( l_publicOptions ).add ( l_configOptions );
@@ -182,13 +179,22 @@ namespace Wintermute {
         }
 
         IPC::System::start ();
+
+        QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
+        QDate l_lstDate = l_settings->value("Statistics/StartupDate").toDate();
+
+        if (IPC::System::module() == "master"){
+            l_settings->setValue("Statistics/StartupDate",QDate::currentDate());
+            qDebug() << "(core) Last startup:" << l_lstDate;
+        }
+
         emit s_core->started();
     }
 
-    void Core::endProgram (){
+    void Core::endProgram (int p_exitCode, bool p_killSelfOnly){
         qDebug() << "(core) Shutting down Wintermute...";
 
-        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore"){
+        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && !p_killSelfOnly){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
@@ -197,18 +203,13 @@ namespace Wintermute {
             }
         }
 
-        QApplication::quit ();
+        QApplication::exit(p_exitCode);
         qDebug() << "(core) Wintermute down for the count; goodbye!";
-        exit(0);
+        exit(p_exitCode);
     }
 
     void Core::stop () {
         IPC::System::stop ();
-
-        if (IPC::System::module () == "master"){
-            if (!s_args->value ("daemon").toBool ())
-                Core::stopCurses();
-        }
 
         emit s_core->stopped ();
     }
@@ -217,20 +218,6 @@ namespace Wintermute {
         qDebug() << "(core [module =" << IPC::System::module () << "]) Cleaning up..";
         Core::stop ();
         qDebug() << "(core [module =" << IPC::System::module () << "]) All clean!";
-    }
-
-    void Core::startCurses() {
-        if (s_args->value ("ncurses").toBool ())
-            Curses::start();
-        else
-            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not starting.";
-    }
-
-    void Core::stopCurses() {
-        if (s_args->value ("ncurses").toBool ())
-            Curses::stop();
-        else
-            qDebug() << "(core [module =" << IPC::System::module () << "]) nCurses is disabled, not stopping.";
     }
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

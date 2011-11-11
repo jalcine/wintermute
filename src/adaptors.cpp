@@ -2,9 +2,6 @@
  * @file    adaptors.cpp
  * @author  Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
- *
- *
- *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -32,6 +29,7 @@
 namespace Wintermute {
     namespace IPC {
         GenericAdaptor::GenericAdaptor(QObject *parent) : QDBusAbstractAdaptor(parent), m_core(true) {
+            this->dumpObjectInfo ();
             if (IPC::System::module () != "master"){
                 m_tmr = new QTimer(this);
                 connect(m_tmr,SIGNAL(timeout()),this,SLOT(detect()));

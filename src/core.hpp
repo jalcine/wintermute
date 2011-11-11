@@ -25,7 +25,7 @@
 
 #include "config.hpp"
 #include <QVariantMap>
-#include <QApplication>
+#include <QtGui/QApplication>
 
 namespace Wintermute {
     struct Core;
@@ -45,14 +45,6 @@ namespace Wintermute {
         Q_OBJECT
 
         public:
-            /**
-             * @brief Flags representing the user interface of Wintermute.
-             * @enum UserInterface
-             */
-            enum UserInterface {
-                Graphical = 0, /**< Wintermute was compiled with QtGui and, therefore, support a graphical user interface. */
-                Textual /**< Wintermute was compiled without QtGui and, therefore, does not support a graphical user interface. It does, however, provide a textual user interface, using nCurses. */
-            };
 
             /**
              * @brief Default constructor.
@@ -87,16 +79,16 @@ namespace Wintermute {
              *
              * @note This list only contains the qualified arguments in a list. Support for
              *       arbitrary arguments is coming soon.
-             *
+             * @todo Add support for arbitrary arguments.
              * @fn arguments
              */
             const static QVariantMap* arguments();
 
             /**
-             * @brief Ends the program.
+             * @brief Ends the program; with an optional exit code.
              * @fn endProgram
              */
-            static void endProgram();
+            static void endProgram(const int = 0, const bool = false);
 
         signals:
             /**
@@ -159,20 +151,6 @@ namespace Wintermute {
              */
             static void stop ();
 
-
-        public slots:
-            /**
-             * @brief Starts the nCurses operations.
-             * @fn doCurses
-             */
-            static void startCurses();
-
-            /**
-             * @brief Stops the nCurses operations.
-             * @fn stopCurses
-             */
-            static void stopCurses();
-
         private:
             static QApplication* s_app; /**< Holds the object representing the current Q(Core)Application. */
             static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
@@ -191,13 +169,6 @@ namespace Wintermute {
         private slots:
             void doDeinit() const;
             void unixSignal(int signal) const;
-    };
-
-    class Thread {
-        friend class Core;
-
-        public:
-            void run();
     };
 }
 
