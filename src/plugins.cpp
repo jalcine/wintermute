@@ -144,6 +144,12 @@ namespace Wintermute {
 
         void Factory::unloadPlugin ( const QString& p_plgnUuid ) {
             doPluginUnload (p_plgnUuid);
+
+            qDebug() << Factory::instance ()->m_plgnPool.count ();
+            if (Factory::instance ()->m_plgnPool.count () == 0){
+                qWarning() << "(core) [Factory] No plug-ins running; exitting..";
+                Core::endProgram (0);
+            }
         }
 
         void Factory::loadStandardPlugin () {
@@ -241,7 +247,7 @@ namespace Wintermute {
         const bool AbstractPlugin::isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
 
         const QStringList AbstractPlugin::plugins () const {
-            qDebug() << m_settings->value ("Depends/Plugins");
+            qDebug() << m_settings->value ("Depends/Plugins") << m_settings->value ("Depends/Plugins").typeName ();
             QStringList l_dep = m_settings->value ("Depends/Plugins").toStringList ();
             l_dep.removeDuplicates ();
             l_dep.removeAll ("None");

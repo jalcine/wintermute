@@ -136,15 +136,13 @@ namespace Wintermute {
                 cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
                      << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
-
-                endProgram ();
+		exit(0);
             } else if ( l_vm.count ( "version" ) ) {
                 cout << endl << "Wintermute " << QApplication::applicationVersion ().toStdString () << " "
                      << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
                      << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
                      << "Boost v" << BOOST_VERSION << endl << endl;
-
-                endProgram ( );
+		exit(0);
             } else if ( l_vm.count ( "copyright" ) ) {
                 cout << "Copyright (C) 2010 Synthetic Intellect Institute <contact@thesii.org> <sii@lists.launchpad.net>" << endl
                      << "Copyright (C) 2010 Wintermute Developers <wintermute-devel@lists.launchpad.net> " << endl
@@ -153,7 +151,7 @@ namespace Wintermute {
                      << "\tit under the terms of the GNU General Public License as published by " << endl
                      << "\tthe Free Software Foundation; either version 3 of the License, or" << endl
                      << "\t(at your option) any later version." << endl << endl;
-                endProgram ( );
+		exit(0);
             }
         } else
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
@@ -192,19 +190,19 @@ namespace Wintermute {
     }
 
     void Core::endProgram (int p_exitCode, bool p_killSelfOnly){
-        qDebug() << "(core) Shutting down Wintermute...";
+        qDebug() << "(core) [" << IPC::System::module () << "] Shutting down Wintermute...";
 
         if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && !p_killSelfOnly){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
-                qDebug() << "(core) [module = " << IPC::System::module () << "] Can't terminate master module of Wintermute :"
+                qDebug() << "(core) [" << IPC::System::module () << "] [module = " << IPC::System::module () << "] Can't terminate master module of Wintermute :"
                          << l_reply.errorMessage ();
             }
         }
 
         QApplication::exit(p_exitCode);
-        qDebug() << "(core) Wintermute down for the count; goodbye!";
+        qDebug() << "(core) [" << IPC::System::module () << "] Wintermute down for the count; goodbye!";
         exit(p_exitCode);
     }
 
