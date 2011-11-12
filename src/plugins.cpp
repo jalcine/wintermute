@@ -241,9 +241,9 @@ namespace Wintermute {
         const bool AbstractPlugin::isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
 
         const QStringList AbstractPlugin::plugins () const {
+            qDebug() << m_settings->value ("Depends/Plugins");
             QStringList l_dep = m_settings->value ("Depends/Plugins").toStringList ();
             l_dep.removeDuplicates ();
-            l_dep.removeAll ("");
             l_dep.removeAll ("None");
             return l_dep;
         }
@@ -310,7 +310,6 @@ namespace Wintermute {
         const QStringList AbstractPlugin::packages () const {
             QStringList l_dep = m_settings->value ("Depends/Packages").toStringList ();
             l_dep.removeDuplicates ();
-            l_dep.removeAll ("");
             l_dep.removeAll ("None");
             return l_dep;
         }
