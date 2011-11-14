@@ -85,7 +85,7 @@ namespace Wintermute {
          * the scope of any namespace declarations.
          *
          * @class AbstractPlugin plugins.hpp "plugins.hpp"
-         * @
+         * @todo Add conflicting plug-ins as a specification addition.
          */
         class AbstractPlugin : public QObject {
             friend class Factory;

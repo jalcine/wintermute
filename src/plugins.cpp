@@ -39,6 +39,7 @@ namespace Wintermute {
         Factory::Factory() : QObject(Core::instance ()) {}
 
         /// @todo Allow more in-depth listing of plugins (disabled, specific arguments, etc).
+        /// @todo Move out the QSettings of the application into Core.
         void Factory::Startup () {
             qDebug() << "(core) [Factory] Starting up...";
             QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
@@ -122,7 +123,7 @@ namespace Wintermute {
         const QStringList Factory::loadedPlugins () {
             QStringList l_st;
             foreach (Instance* l_inst, Factory::instance ()->m_plgnPool)
-                l_st << l_inst->name();
+                l_st << l_inst->uuid();
 
             return l_st;
         }
@@ -145,7 +146,7 @@ namespace Wintermute {
         void Factory::unloadPlugin ( const QString& p_plgnUuid ) {
             doPluginUnload (p_plgnUuid);
 
-            qDebug() << Factory::instance ()->m_plgnPool.count ();
+            //qDebug() << Factory::instance ()->m_plgnPool.count ();
             if (Factory::instance ()->m_plgnPool.count () == 0){
                 qWarning() << "(core) [Factory] No plug-ins running; exitting..";
                 Core::endProgram (0);
@@ -198,7 +199,7 @@ namespace Wintermute {
             qDebug() << "(core) [Factory] Unloading plugins..";
 
             foreach ( Instance* l_inst, s_factory->m_plgnPool )
-                unloadPlugin (l_inst->name ());
+                unloadPlugin (l_inst->uuid ());
 
             qDebug() << "(core) [Factory] Plugins unloaded.";
         }
@@ -247,7 +248,6 @@ namespace Wintermute {
         const bool AbstractPlugin::isSupported () const { return WINTERMUTE_VERSION >= compatVersion (); }
 
         const QStringList AbstractPlugin::plugins () const {
-            qDebug() << m_settings->value ("Depends/Plugins") << m_settings->value ("Depends/Plugins").typeName ();
             QStringList l_dep = m_settings->value ("Depends/Plugins").toStringList ();
             l_dep.removeDuplicates ();
             l_dep.removeAll ("None");
