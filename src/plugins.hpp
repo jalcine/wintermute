@@ -308,6 +308,9 @@ namespace Wintermute {
                  */
                 virtual void deinitialize() const = 0;
 
+            private:
+                QSettings* configuration() const;
+
             private slots:
                 void doDeinitialize () const;
                 void doInitialize() const;

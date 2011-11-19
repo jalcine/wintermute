@@ -3,3 +3,5 @@
 *.patch
 build
 lib
+CMakeLists.txt.user*
+src/config.hpp

@@ -32,6 +32,7 @@ namespace Wintermute {
             this->dumpObjectInfo ();
             if (IPC::System::module () != "master"){
                 m_tmr = new QTimer(this);
+                detect();
                 connect(m_tmr,SIGNAL(timeout()),this,SLOT(detect()));
                 m_tmr->setInterval (1000);
                 m_tmr->start ();

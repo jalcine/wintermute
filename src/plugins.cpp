@@ -41,32 +41,37 @@ namespace Wintermute {
         /// @todo Allow more in-depth listing of plugins (disabled, specific arguments, etc).
         /// @todo Move out the QSettings of the application into Core.
         void Factory::Startup () {
-            qDebug() << "(core) [Factory] Starting up...";
-            QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
-            const QVariant l_plgnLstVrnt = l_settings->value("Plugins/AutoStart");
+            if (!Core::arguments()->value("daemon").toBool()){
+                qDebug() << "(core) [Factory] Starting up...";
+                QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
+                const QVariant l_plgnLstVrnt = l_settings->value("Plugins/AutoStart");
 
-            if (l_plgnLstVrnt.isValid()){
-                QStringList l_plgnLst = l_plgnLstVrnt.toStringList();
-                if (!l_plgnLst.isEmpty()){
-                    foreach ( const QString l_plgnUuid, l_plgnLst){
-                        if (l_plgnUuid.at(0) == QString("*").at(0))
-                            qDebug() << "(core) [Factory] Plugin" << l_plgnUuid << "disabled for start-up.";
-                        else {
-                            qDebug() << "(core) [Factory] Obtaining plugin" << l_plgnUuid << "..";
-                            Factory::loadPlugin (l_plgnUuid);
+                if (l_plgnLstVrnt.isValid()){
+                    QStringList l_plgnLst = l_plgnLstVrnt.toStringList();
+                    if (!l_plgnLst.isEmpty()){
+                        foreach ( const QString l_plgnUuid, l_plgnLst){
+                            if (l_plgnUuid.at(0) == QString("*").at(0))
+                                qDebug() << "(core) [Factory] Plugin" << l_plgnUuid << "disabled for start-up.";
+                            else {
+                                qDebug() << "(core) [Factory] Obtaining plugin" << l_plgnUuid << "..";
+                                Factory::loadPlugin (l_plgnUuid);
+                            }
                         }
                     }
+                } else {
+                    qWarning() << "(core) [Factory] No plug-ins determined for loading in configuration file!"      << endl
+                               << "Please check" << l_settings->fileName() << "for the option 'Plugins/AutoStart'"  << endl
+                               << "and ensure that plug-ins are defined for initial loading of Wintermute." << endl << endl
+                               << "*** Reset to default plug-in list.";
+
                 }
+
+                emit Factory::instance ()->initialized ();
+                qDebug() << "(core) [Factory] Started.";
             } else {
-                qWarning() << "(core) [Factory] No plug-ins determined for loading in configuration file!"      << endl
-                           << "Please check" << l_settings->fileName() << "for the option 'Plugins/AutoStart'"  << endl
-                           << "and ensure that plug-ins are defined for initial loading of Wintermute." << endl << endl
-                           << "*** Reset to default plug-in list.";
-
+                qDebug() << "(core] [Factory] Executing in daemon mode. Plug-ins are loaded at will.";
+                emit Factory::instance ()->initialized ();
             }
-
-            emit Factory::instance ()->initialized ();
-            qDebug() << "(core) [Factory] Started.";
         }
 
         AbstractPlugin* Factory::loadPlugin ( const QString &p_plgnUuid, const bool& p_forceLoad ) {
@@ -357,23 +362,25 @@ namespace Wintermute {
         }
 
         const QVariant AbstractPlugin::attribute(const QString& p_attrPath) const {
-            QVariant l_vrt = m_settings->value("ActiveConfiguration/" + p_attrPath);
-            if (!l_vrt.isValid())
-                l_vrt = m_settings->value("Configuration/" + p_attrPath);
-
+            QVariant l_vrt = configuration()->value(p_attrPath);
             return l_vrt;
         }
 
         void AbstractPlugin::setAttribute(const QString& p_attrPath, const QVariant& p_attrVal) {
-            m_settings->setValue("ActiveConfiguration/"+ p_attrPath, p_attrVal);
+            configuration()->setValue(p_attrPath, p_attrVal);
         }
 
         /// @todo Allow resetting of specific attributes.
         void AbstractPlugin::resetAttributes() {
-            foreach (const QString& l_keyName, m_settings->allKeys ())
-                m_settings->remove(l_keyName);
+            configuration()->clear();
         }
 
+        /// @todo Obtain a unique configuration file for the plug-in, first at the user level then work the way up.
+        QSettings* AbstractPlugin::configuration() const {
+            return m_settings;
+        }
+
+        /// @todo Return whether or not this method was successful to calling method.
         void AbstractPlugin::loadLibrary () const {
             const QString l_plgnLibrary = m_settings->value("Version/Library").toString();
             const QString l_plgPth = QString(WINTER_PLUGIN_PATH) + "/lib" + l_plgnLibrary + ".so";
@@ -415,7 +422,9 @@ namespace Wintermute {
         /// @todo Allow instances to have their own arguments passed in.
         void Instance::start (const QDBusMessage p_msg){
             if (!m_prcss){
-                const QStringList l_plgnArgs = QString("--ipc plugin --plugin " + m_uuid).split(" ");
+                QStringList l_plgnArgs;
+                l_plgnArgs << "--ipc"    << "plugin"
+                           << "--plugin" << m_uuid;
 
                 m_prcss = new QProcess(Factory::instance ());
                 connect(m_prcss,SIGNAL(started()),this,SLOT(catchStart()));
@@ -424,6 +433,7 @@ namespace Wintermute {
 
                 m_prcss->setProcessChannelMode (QProcess::ForwardedChannels);
                 m_prcss->start (QApplication::applicationFilePath (),l_plgnArgs);
+                p_msg.createReply(true);
             } else
                 qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has already started in pid" << m_prcss->pid ();
         }

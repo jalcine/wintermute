@@ -169,30 +169,32 @@ namespace Wintermute {
     }
 
     void Core::start () {
+        qDebug() << "(core) [Core] Starting up...";
         if (Core::arguments ()->value("ipc").toString () == "master"){
             cout << qPrintable ( s_app->applicationName () ) << " "
                  << qPrintable ( s_app->applicationVersion () )
                  << " (pid " << s_app->applicationPid () << ") :: "
-                 << "Artificial intelligence for common Man. (Licensed under the GPL3+)" << endl;
+                 << "Artificial intelligence for Common Man. (Licensed under the GPL3+)" << endl;
         }
 
         IPC::System::start ();
 
         QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
-        QDate l_lstDate = l_settings->value("Statistics/StartupDate").toDate();
+        QDateTime l_lstDate = l_settings->value("Statistics/StartupDate").toDateTime();
 
         if (IPC::System::module() == "master"){
-            l_settings->setValue("Statistics/StartupDate",QDate::currentDate());
-            qDebug() << "(core) Last startup:" << l_lstDate;
+            l_settings->setValue("Statistics/StartupDate",QDateTime::currentDateTime());
+            qDebug() << "(core) Last startup was at" << l_lstDate.toLocalTime().toString();
         }
 
         emit s_core->started();
+        qDebug() << "(core) [Core] Started.";
     }
 
-    void Core::endProgram (int p_exitCode, bool p_killSelfOnly){
-        qDebug() << "(core) [" << IPC::System::module () << "] Shutting down Wintermute...";
+    void Core::endProgram (int p_exitCode, bool p_killSystem){
+        qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
 
-        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && !p_killSelfOnly){
+        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && p_killSystem){
             QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
             QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
             if (l_reply.type () == QDBusMessage::ErrorMessage){
@@ -202,20 +204,20 @@ namespace Wintermute {
         }
 
         QApplication::exit(p_exitCode);
-        qDebug() << "(core) [" << IPC::System::module () << "] Wintermute down for the count; goodbye!";
-        exit(p_exitCode);
+        qDebug() << "(core) [" << IPC::System::module () << "] Exited.";
     }
 
     void Core::stop () {
+        qDebug() << "(core) [" << IPC::System::module() << "] Stopping...";
         IPC::System::stop ();
-
         emit s_core->stopped ();
+        qDebug() << "(core) [" << IPC::System::module() << "] Process stopped.";
     }
 
     void Core::doDeinit () const {
-        qDebug() << "(core [module =" << IPC::System::module () << "]) Cleaning up..";
+        qDebug() << "(core) [" << IPC::System::module () << "] Performing deinitializing cycle.";
         Core::stop ();
-        qDebug() << "(core [module =" << IPC::System::module () << "]) All clean!";
+        qDebug() << "(core) [" << IPC::System::module () << "] Ending deinitializing cycle.";
     }
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
