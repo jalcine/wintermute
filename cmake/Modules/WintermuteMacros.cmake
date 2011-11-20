@@ -1,4 +1,6 @@
 ## Bunch of useful macros and functions
+
+# Fixes the local paths to represent full, absolute paths.
 macro(winter_make_absolute paths)
     foreach(in paths)
         set(p ${PROJECT_CAPITAL_NAME}_${in}_DIR)

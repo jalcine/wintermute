@@ -27,7 +27,7 @@ set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR "${WINTER_INCLUDE_INSTALL_DIR}/plugins" CA
 set(WINTER_PLUGIN_DATA_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/plugins" CACHE PATH "Plugin data installation path.")
 set(WINTER_PLUGINSPEC_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/specs" CACHE PATH "Plugin specification installation path.")
 
-set(WINTERMUTE_IS_PLUGIN OFF)
+set(WINTERMUTE_IS_PLUGIN OFF CACHE STRING "The status of this project (is it a plug-in?)")
 set(WINTERMUTE_LOCALE "en" CACHE STRING "The standard locale for Wintermute to use.")
 
 ## Standard CMake information.

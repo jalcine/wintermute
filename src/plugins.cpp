@@ -100,8 +100,9 @@ namespace Wintermute {
                         qWarning() << "(plugin) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
                         Core::endProgram(2,true);
                         return NULL;
-                    } else
-                        qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
+                    } else {
+                        //qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
+                    }
 
                     Factory::s_plugins.insert ( l_plgnBase->uuid (),l_plgnBase );
                     l_plgnBase->doInitialize ();
@@ -161,8 +162,7 @@ namespace Wintermute {
         void Factory::loadStandardPlugin () {
             const QString l_plgnUuid = Core::arguments ()->value ("plugin").toString ();
 
-            qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (l_plgnUuid,"Description/Name").toString ()
-                     << "; uuid:" << l_plgnUuid << "...";
+            //qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (l_plgnUuid,"Description/Name").toString () << "; uuid:" << l_plgnUuid << "...";
 
             InstanceAdaptor* l_adpt = new InstanceAdaptor(loadPlugin(l_plgnUuid));
             IPC::System::registerObject ("/Plugin",l_adpt);
@@ -171,7 +171,7 @@ namespace Wintermute {
 
         void Factory::unloadStandardPlugin () {
             const QString l_plgnUuid = Core::arguments ()->value ("plugin").toString ();
-            qDebug() << "(core) [Factory] Removing plug-in" << l_plgnUuid << "...";
+            //qDebug() << "(core) [Factory] Removing plug-in" << l_plgnUuid << "...";
             unloadPlugin(l_plgnUuid);
         }
 
@@ -261,12 +261,11 @@ namespace Wintermute {
 
         void AbstractPlugin::loadPlugins() const {
             const QStringList l_plgnLst = this->plugins ();
-            qDebug () << "(core) [AbstractPlugin] Loading plug-ins for" << name () << ";" << l_plgnLst.length () << "plugin(s) to be loaded." << endl
-                      << l_plgnLst;
+            //qDebug () << "(core) [AbstractPlugin] Loading plug-ins for" << name () << ";" << l_plgnLst.length () << "plugin(s) to be loaded." << endl;
 
             foreach (const QString l_plgn, l_plgnLst){
                 const QString l_plgnUuid = l_plgn.split (" ").at (0);
-                qDebug() << "(core) [AbstractPlugin] Loading dependency" << l_plgnUuid << "...";
+                //qDebug() << "(core) [AbstractPlugin] Loading dependency" << l_plgnUuid << "...";
                 Factory::GenericPlugin* l_gnrc = new Factory::GenericPlugin(l_plgnUuid);
                 l_gnrc->loadLibrary();
             }
@@ -329,7 +328,7 @@ namespace Wintermute {
         /// @todo Add code using QPackageKit's API to detect if packages are installed on a system and if not, install them.
         void AbstractPlugin::loadPackages() const {
             const QStringList l_deps = this->packages ();
-            qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << l_deps.length () << "package(s) to be loaded.";
+            //qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << l_deps.length () << "package(s) to be loaded.";
             foreach (const QString l_dep, l_deps){
                 const QString l_depName = l_dep.split (" ").at (0);
             }
@@ -350,13 +349,13 @@ namespace Wintermute {
         }
 
         void AbstractPlugin::doDeinitialize () const {
-            qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Deinitializing..";
+            //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Deinitializing..";
             emit deinitializing ();
             deinitialize ();
         }
 
         void AbstractPlugin::doInitialize() const {
-            qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
+            //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
             emit initializing ();
             initialize ();
         }
@@ -452,7 +451,7 @@ namespace Wintermute {
             switch (p_exitStatus){
                 case QProcess::NormalExit:
                     if (p_exitCode == 0){
-                        qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
+                        //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
                         emit stopped();
                     } else
                         catchExit(p_exitCode,QProcess::CrashExit);
@@ -472,7 +471,7 @@ namespace Wintermute {
         }
 
         void Instance::catchStart (){
-            qDebug() << "(core) [PluginInstance] Plug-in" << name() << "running.";
+            //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "running.";
             emit started();
         }
 
