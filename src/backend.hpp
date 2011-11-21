@@ -21,14 +21,21 @@
  */
 
 #include <QMap>
+#include <QStringList>
 #include <QObject>
 
 namespace Wintermute {
+    namespace Plugins {
+        struct AbstractPlugin;
+    }
+
     namespace Backends {
         struct AbstractFramework;
         struct AbstractBackend;
 
         typedef QMap<QString,AbstractBackend*> BackendList;
+
+        using Wintermute::Plugins::AbstractPlugin;
 
         class AbstractFramework : public QObject {
             Q_OBJECT
@@ -47,12 +54,11 @@ namespace Wintermute {
 
             public:
                 enum StartupMode {
-                    Default = 0,
-                    Configuration,
+                    Configuration = 0,
                     Manual
                 };
 
-                AbstractFramework(QObject* = 0);
+                AbstractFramework(AbstractPlugin*, QObject* = 0);
                 virtual ~AbstractFramework();
                 void addBackend(AbstractBackend*);
                 void removeBackend(AbstractBackend* );
@@ -60,7 +66,7 @@ namespace Wintermute {
                 void setStartMode(const StartupMode& );
 
                 const bool isBackendListed(const AbstractBackend* ) const;
-                AbstractBackend* defaultBackend() const;
+                QList<AbstractBackend*> defaultBackend() const;
                 const StartupMode& startMode() const;
 
             public slots:
@@ -69,8 +75,9 @@ namespace Wintermute {
 
             protected:
                 BackendList m_cmpLst;
-                QString m_dfltBcknd;
+                QStringList m_dfltBcknd;
                 StartupMode m_strtMd;
+                AbstractPlugin* m_plgn;
                 virtual void initialize() = 0;
                 virtual void deinitialize() = 0;
         };
@@ -86,10 +93,11 @@ namespace Wintermute {
                 void stopped();
 
             public:
-                AbstractBackend(QObject* = 0);
+                AbstractBackend(AbstractPlugin*, QObject* = 0);
                 virtual ~AbstractBackend();
                 virtual const QString id() const = 0;
                 virtual const bool isActive() const = 0;
+                static AbstractBackend* obtainBackend(const QString& );
 
             public slots:
                 virtual void start();
@@ -97,9 +105,13 @@ namespace Wintermute {
 
             protected:
                 QString m_id;
+                AbstractPlugin* m_plgn;
                 mutable bool m_actv;
                 virtual void initialize() = 0;
                 virtual void deinitialize() = 0;
+
+            private:
+                static BackendList s_lst;
         };
     }
 }

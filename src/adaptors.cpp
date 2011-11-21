@@ -126,7 +126,7 @@ namespace Wintermute {
                                                         this,SLOT(aboutToQuit()));
 
                 setParent(p_plgn);
-                //setAutoRelaySignals (true);
+                setAutoRelaySignals (true);
             }
         }
 

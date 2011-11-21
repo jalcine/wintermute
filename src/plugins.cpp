@@ -35,6 +35,7 @@ namespace Wintermute {
     namespace Plugins {
         PluginList Factory::s_plugins;
         Factory* Factory::s_factory = NULL;
+        AbstractPlugin* Factory::s_plgn = NULL;
 
         Factory::Factory() : QObject(Core::instance ()) {}
 
@@ -77,7 +78,7 @@ namespace Wintermute {
         AbstractPlugin* Factory::loadPlugin ( const QString &p_plgnUuid, const bool& p_forceLoad ) {
             QApplication::addLibraryPath(WINTER_PLUGIN_PATH);
 
-            if (IPC::System::module () == "plugin" && !p_forceLoad ){
+            if (IPC::System::module () == "plugin" || p_forceLoad ){
                 AbstractPlugin* l_plgnBase = NULL;
                 const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
 
@@ -96,6 +97,9 @@ namespace Wintermute {
                     l_plgnBase->m_plgnLdr = l_gnrcPlgn->m_plgnLdr;
                     l_plgnBase->m_settings = Factory::pluginSettings (p_plgnUuid);
 
+                    if (IPC::System::module() == "plugin" && !p_forceLoad)
+                        s_plgn = l_plgnBase;
+
                     if ( !l_plgnBase->isSupported () ) {
                         qWarning() << "(plugin) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
                         Core::endProgram(2,true);
@@ -109,7 +113,7 @@ namespace Wintermute {
 
                     QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT ( doDeinitialize() ) );
                 } else {
-                    qWarning() << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->m_plgnLdr->fileName () << ";" << l_gnrcPlgn->m_plgnLdr->errorString ();
+                    qWarning() << "(plugin) [Factory] Error loading plugin" << p_plgnUuid << ";" << l_gnrcPlgn->m_plgnLdr->errorString ();
                     emit Factory::instance ()->pluginCrashed (p_plgnUuid);
                     Core::endProgram(3,true);
                     return NULL;
@@ -164,9 +168,19 @@ namespace Wintermute {
 
             //qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (l_plgnUuid,"Description/Name").toString () << "; uuid:" << l_plgnUuid << "...";
 
-            InstanceAdaptor* l_adpt = new InstanceAdaptor(loadPlugin(l_plgnUuid));
+            s_plgn = loadPlugin(l_plgnUuid);
+            InstanceAdaptor* l_adpt = new InstanceAdaptor(s_plgn);
             IPC::System::registerObject ("/Plugin",l_adpt);
             IPC::System::instance()->m_adapt = l_adpt;
+        }
+
+        AbstractPlugin* Factory::currentPlugin() {
+            if (IPC::System::module() == "plugin")
+                return s_plgn;
+            else {
+                qWarning() << "(core) [Factory] This isn't a plug-in instance; can't find the current plug-in!";
+                return NULL;
+            }
         }
 
         void Factory::unloadStandardPlugin () {
@@ -360,9 +374,12 @@ namespace Wintermute {
             initialize ();
         }
 
-        const QVariant AbstractPlugin::attribute(const QString& p_attrPath) const {
+        const QVariant AbstractPlugin::attribute(const QString& p_attrPath, const QVariant& p_vrnt) const {
             QVariant l_vrt = configuration()->value(p_attrPath);
-            return l_vrt;
+            if (l_vrt.isValid() || l_vrt.isNull())
+                return p_vrnt;
+            else
+                return l_vrt;
         }
 
         void AbstractPlugin::setAttribute(const QString& p_attrPath, const QVariant& p_attrVal) {
@@ -376,7 +393,12 @@ namespace Wintermute {
 
         /// @todo Obtain a unique configuration file for the plug-in, first at the user level then work the way up.
         QSettings* AbstractPlugin::configuration() const {
-            return m_settings;
+            QString l_vendor = m_settings->value("Description/Vendor").toString().trimmed();
+            l_vendor.chop(l_vendor.indexOf(">") - l_vendor.indexOf(" <") + 1);
+
+            qDebug() << "(core) [AbstractPlugin] Loading configuration of plug-in" << this->uuid() << "..";
+            QSettings* l_settings = new QSettings(QApplication::organizationName(),l_vendor,this->uuid());
+            return l_settings;
         }
 
         /// @todo Return whether or not this method was successful to calling method.

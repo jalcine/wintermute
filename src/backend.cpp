@@ -20,12 +20,24 @@
  * @endlegalese
  */
 
+#include <QDebug>
 #include "backend.hpp"
+#include "plugins.hpp"
+
+using namespace Wintermute::Plugins;
 
 namespace Wintermute {
     namespace Backends {
-        AbstractFramework::AbstractFramework(QObject *parent) : QObject(parent),
-            m_cmpLst(), m_dfltBcknd() { }
+        BackendList AbstractBackend::s_lst;
+
+        AbstractFramework::AbstractFramework(AbstractPlugin* p_plgn, QObject *p_prnt) : QObject(p_prnt),
+            m_cmpLst(), m_dfltBcknd(), m_plgn(p_plgn) {
+            connect(m_plgn,SIGNAL(initializing()),this,SLOT(start()));
+            connect(m_plgn,SIGNAL(deinitializing()),this,SLOT(stop()));
+
+            m_dfltBcknd = m_plgn->attribute("Framework/Defaults").toStringList();
+            m_strtMd = (StartupMode) m_plgn->attribute("Framework/StartMode").toInt();
+        }
 
         void AbstractFramework::addBackend(AbstractBackend *p_cmpt) {
             if (!isBackendListed(p_cmpt)){
@@ -47,11 +59,14 @@ namespace Wintermute {
             if (!isBackendListed(p_cmpt))
                 addBackend(p_cmpt);
 
-            m_dfltBcknd = p_cmpt->id();
+            m_dfltBcknd << p_cmpt->id();
+            m_dfltBcknd.removeDuplicates();
+            m_plgn->setAttribute("Framework/Defaults",QVariant::fromValue<QStringList>(m_dfltBcknd));
         }
 
         void AbstractFramework::setStartMode(const StartupMode &p_strtMd) {
             m_strtMd = p_strtMd;
+            m_plgn->setAttribute("Framework/StartMode",QVariant::fromValue<int>((int) p_strtMd));
         }
 
         const bool AbstractFramework::isBackendListed(const AbstractBackend *p_cmpt) const {
@@ -62,9 +77,32 @@ namespace Wintermute {
             return m_strtMd;
         }
 
-        AbstractBackend* AbstractFramework::defaultBackend() const { return m_cmpLst.value(m_dfltBcknd); }
+        QList<AbstractBackend*> AbstractFramework::defaultBackend() const {
+            QList<AbstractBackend*> l_lst;
+            foreach (const QString& l_bcknd, m_dfltBcknd)
+                l_lst << m_cmpLst.value(l_bcknd);
+
+            return l_lst;
+        }
 
         void AbstractFramework::start() {
+            switch (m_strtMd){
+                case Configuration: {
+                    if (!m_dfltBcknd.empty()){
+                        foreach (const QString& l_bcknd, m_dfltBcknd)
+                            m_cmpLst.insert(l_bcknd,AbstractBackend::obtainBackend(l_bcknd));
+                    } else {
+                        qWarning() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
+                    }
+                };
+
+                default:
+                case Manual: {
+
+                };
+            }
+
+
             initialize();
             emit started();
         }
@@ -76,7 +114,14 @@ namespace Wintermute {
 
         AbstractFramework::~AbstractFramework() { }
 
-        AbstractBackend::AbstractBackend(QObject *parent) : QObject(parent) { }
+        AbstractBackend::AbstractBackend(AbstractPlugin* p_plgn, QObject *p_prnt) : QObject(p_prnt),
+            m_plgn(p_plgn) {
+            if (AbstractBackend::s_lst.contains(m_plgn->uuid())){
+                qWarning() << "(core) [AbstractBackend] Plugin" << m_plgn->uuid() << "already registered.";
+                Factory::unloadPlugin(m_plgn->uuid());
+            } else
+                AbstractBackend::s_lst.insert(m_plgn->uuid(),this);
+        }
 
         void AbstractBackend::start() {
             initialize();
@@ -88,6 +133,16 @@ namespace Wintermute {
             emit stopped();
         }
 
-        AbstractBackend::~AbstractBackend() { }
+        /// @note Load the associated plug-in. On load, it should register its backend to the global list.
+        AbstractBackend* AbstractBackend::obtainBackend(const QString& l_bcknd){
+            if (!AbstractBackend::s_lst.contains(l_bcknd))
+                Factory::loadPlugin(l_bcknd,true);
+
+            return AbstractBackend::s_lst.value(l_bcknd);
+        }
+
+        AbstractBackend::~AbstractBackend() {
+            AbstractBackend::s_lst.remove(m_plgn->uuid());
+        }
     }
 }

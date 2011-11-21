@@ -273,7 +273,7 @@ namespace Wintermute {
                  * @see setAttribute
                  * @fn attribute
                  */
-                const QVariant attribute(const QString&) const;
+                const QVariant attribute(const QString&, const QVariant& = QVariant()) const;
 
                 /**
                  * @brief Changes an attribute at p_attrPath to p_attrVal to the plug-in's configuration option set.
@@ -427,7 +427,7 @@ namespace Wintermute {
         /**
          * @brief Provides factory management of plug-ins.
          *
-         * This abstract class manages anything and everything to do with plug-ins; from
+         * This static class manages anything and everything to do with plug-ins; from
          * loading, unloading, obtaining information and more about plugins. A lot of the
          * internal working dealing with plug-ins, however, are done within the AbstractPlugin
          * class itself. This merely manages the loaded plug-ins and executes prerequisties commands.
@@ -439,20 +439,6 @@ namespace Wintermute {
             Q_OBJECT
             Q_DISABLE_COPY(Factory)
             friend class AbstractPlugin;
-
-            class GenericPlugin : public AbstractPlugin {
-                    friend class Factory;
-                    friend class AbstractPlugin;
-
-                public:
-                    GenericPlugin() { }
-                    GenericPlugin(const QString& p_plgnUuid) { AbstractPlugin::m_settings = Factory::pluginSettings (p_plgnUuid); }
-                    ~GenericPlugin() { }
-
-                private:
-                    virtual void initialize () const { }
-                    virtual void deinitialize () const { }
-            };
 
             signals:
                 /**
@@ -502,6 +488,20 @@ namespace Wintermute {
                 static void Shutdown();
 
             public:
+                class GenericPlugin : public AbstractPlugin {
+                        friend class Factory;
+                        friend class AbstractPlugin;
+
+                    public:
+                        GenericPlugin() { }
+                        GenericPlugin(const QString& p_plgnUuid) { AbstractPlugin::m_settings = Factory::pluginSettings (p_plgnUuid); }
+                        ~GenericPlugin() { }
+
+                    private:
+                        virtual void initialize () const { }
+                        virtual void deinitialize () const { }
+                };
+
                 Factory();
                 /**
                  * @brief Loads a plug-in.
@@ -536,15 +536,18 @@ namespace Wintermute {
                  */
                 static Factory* instance();
 
-                static QVariant attribute(const QString& , const QString&);
+                static AbstractPlugin* currentPlugin();
+
+                static QVariant attribute(const QString& , const QString&);                
 
                 static void setAttribute(const QString&, const QString&, const QVariant& );
 
             private:
                 static PluginList s_plugins; /**< Holds a list  */
                 static Factory* s_factory;
-                static QSettings* pluginSettings(const QString& );
+                static AbstractPlugin* s_plgn;
                 QHash<const QString, Instance*> m_plgnPool;
+                static QSettings* pluginSettings(const QString& );
 
             private slots:
                 /**
