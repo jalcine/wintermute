@@ -4,7 +4,7 @@ set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 0)
 set(WINTERMUTE_MICRO_VERSION 1)
 set(WINTERMUTE_VERSION
-    ${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}${WINTERMUTE_MICRO_VERSION})
+		${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}${WINTERMUTE_MICRO_VERSION})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 ## Modules
@@ -15,14 +15,12 @@ include(WintermuteDefaults)
 include(WintermuteMacros)
 
 ## Packages
-set(CURSES_NEED_NCURSES ON)
-#find_package(QPackageKit 0.6.11 REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(Boost 1.42 COMPONENTS
+find_package(Boost COMPONENTS
     system
     program_options
     REQUIRED)
-find_package(Qt4 4.4.3 COMPONENTS
+find_package(Qt4 COMPONENTS
     QtCore
     QtGui
     QtDBus
@@ -41,17 +39,14 @@ set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core")
 set(PROJECT_LABEL "Wintermute Core")
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
-set(WINTERMUTE_INCLUDE_DIRS
+set(WINTERMUTE_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIR}"
     ${Boost_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}
-    ${CURSES_INCLUDE_DIRS}
-    )
+    ${WINTER_PLUGIN_INCLUDE_INSTALL_DIR})
 
 set(WINTERMUTE_LIBRARIES
     ${Boost_LIBRARIES}
-    ${QT_LIBRARIES}
-    ${CURSES_LIBRARIES}
-    )
+    ${QT_LIBRARIES})
 
 set(WINTERMUTE_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
 
@@ -60,18 +55,14 @@ include_directories(${WINTERMUTE_INCLUDE_DIRS})
 include_directories(${PROJECT_BINARY_DIR})
 
 ## Configs
-
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
+                "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
-    "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
-
-configure_file("${PROJECT_SOURCE_DIR}/Wintermute.pc.in"
-   "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc" @ONLY)
+                "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-    "${PROJECT_BINARY_DIR}/config.hpp" @ONLY)
+                "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
 add_subdirectory(src)
 
@@ -84,5 +75,5 @@ install(FILES ${WINTER_CMAKE_MODULES}
     DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
-          "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
-    DESTINATION "${WINTERMUTE_CMAKE_DIR}")
+              "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
+        DESTINATION "${WINTERMUTE_CMAKE_DIR}")

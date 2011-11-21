@@ -79,6 +79,14 @@ namespace Wintermute {
             friend class Plugins::Factory;
             Q_OBJECT
             Q_DISABLE_COPY(System)
+            
+            signals:            
+                /**
+                 * @brief Does the work of adding user data-types (user PODs) as
+                 *        recognizable, marshallable types for QDBusArgument.
+                 * @fn registerDataTypes
+                 */
+                void registerDataTypes();            
 
             public:
                 /**
@@ -99,7 +107,7 @@ namespace Wintermute {
                  * @fn currentModule
                  * @return The name of the running module.
                  */
-                static inline const QString module() { return s_appMod; }
+                static inline const QString module() { return instance()->m_appMod; }
 
                 /**
                  * @brief Obtains the currently running bus.
@@ -120,18 +128,16 @@ namespace Wintermute {
                  * @param Adaptor* The Adaptor to be added.
                  */
                 static const bool registerObject(const QString&, Adaptor* );
-
-                /**
-                 * @brief Does the work of adding user data-types (user PODs) as
-                 *        recognizable, marshallable types for QDBusArgument.
-                 * @fn registerDataTypes
-                 */
-                static void registerDataTypes();
+                
+                static System* instance();
 
             private:
-                static QString s_appMod;
-                static QDBusConnection* s_cnntn;
-                static Adaptor* s_adapt;
+                System(QObject* = 0);
+                ~System();
+                QString m_appMod;
+                QDBusConnection* m_cnntn;
+                Adaptor* m_adapt;
+                static System* s_inst;
         };
     }
 }

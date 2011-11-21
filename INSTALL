@@ -7,35 +7,17 @@ In order to build Wintermute from scratch, you'll primarily need the following:
 
   * gcc (>= 4.4)
   * cmake (>= 2.8.3)
-  * QtDbus (>= 4.7.3), QtCore (>= 4.7.3), QtGui (>= 4.7.3), QtNetwork (>= 4.7.3)
-    QtXml (>= 4.7.3)
-  * QJson
-  * Boost::Python
+  * QtDbus (>= 4.7.3), QtCore (>= 4.7.3), QtGui (>= 4.7.3)
   * Boost::System
   * Boost::ProgramOptions
-  * Soprano
 
-Wintermute's core only needs QtDbus, QtCore, QtGui, Boost::System and
-Boost::ProgramOptions; the other libraries are included as some of the build
-dependencies for the central libraries of Wintermute. You will also need to have
-Wintermute's database (WntrData), Wintermute's network (WntrNtwk) and
-linguistics (WntrLing) libraries installed with development files in your
-system. See <http://www.github.com/wntr> for information about where to obtain
-these bits of code. Alternatively, you can branch the latest working copy of
-these libraries by running these commands in your terminal:
+Be sure that you also have the **development** packages for each of these librar
+ies. A simple shell command to install everything would be:
 
-  $ git clone git@github.com:wntr/ntwk
-  $ git clone git@github.com:wntr/data
-  $ git clone git@github.com:wntr/ling
+$ apt-get install cmake libqt-dev libboost-dev
 
-Ensure you build these libraries in this order:
-
-  (WntrNtwk) or (WntrData)
-  (WntrLing)
-
-WntrLing relies on WntrData, so it's important that it's already built and
-installed. Refer to the INSTALL document in each repository for more
-information about building each library. 
+After that's all done and completed; you should have a proper development enviro
+nment (in terms of headers and libraries) for building.
 
 2. Compiling
 
@@ -44,7 +26,7 @@ instructions given here for compiling. Deviation makes it that much more
 difficult to pinpoint an issue with compilation. 
 
  - Create a directory called 'build' in the downloaded repository folder (in
-   this case, 'core') and then enter it:
+   this case, 'core') and then enter in a terminal:
 
    $ mkdir -p core/build && cd core/build
 
@@ -55,7 +37,7 @@ difficult to pinpoint an issue with compilation.
          Debug or RelWithDebInfo, so that appropriate back-traces and memory
          dumps can be done.
 
-   $ ccmake ..
+   $ ccmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug
 
  - Compile and then install as root (or locally, if you prefer).
 	
@@ -70,3 +52,18 @@ options. Report any bugs, errors, glitches or miscalibrations to our development
 team by leaving an open bug report on either <https://launchpad.net/~wintermute>
 or <https://www.github.com/wntr/core>. Thank you for installing Wintermute; we
 hope to hear from you shortly.
+
+4. Sidenotes
+
+Wintermute may report issues about missing GTK themes if you're running it unde
+r a GNOME desktop. Installing the Qt Curve engine for GTK will hide this warning
+on your system.
+
+Also, if you installed from scratch in this manner; there's no real means of u
+nistalling the program from your computer. If this is desired, run the followi
+ng in a terminal window:
+
+	# rm -rv /usr/include/wntr
+	# rm -rv /usr/share/wintermute
+	# rm -rv /usr/share/Wintermute /usr/share/Wntr*
+	# rm -v /usr/bin/wintermute
