@@ -393,11 +393,8 @@ namespace Wintermute {
 
         /// @todo Obtain a unique configuration file for the plug-in, first at the user level then work the way up.
         QSettings* AbstractPlugin::configuration() const {
-            QString l_vendor = m_settings->value("Description/Vendor").toString().trimmed();
-            l_vendor.chop(l_vendor.indexOf(">") - l_vendor.indexOf(" <") + 1);
-
             qDebug() << "(core) [AbstractPlugin] Loading configuration of plug-in" << this->uuid() << "..";
-            QSettings* l_settings = new QSettings(QApplication::organizationName(),l_vendor,this->uuid());
+            QSettings* l_settings = new QSettings(QApplication::organizationName(),this->uuid());
             return l_settings;
         }
 
