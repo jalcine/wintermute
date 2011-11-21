@@ -32,7 +32,7 @@ include("${QT_USE_FILE}")
 enable_doxygen()
 
 ## Files
-file(GLOB CMAKE_MODULES "${PROJECT_SOURCE_DIR}/cmake/Modules/*.cmake")
+file(GLOB WINTER_CMAKE_MODULES "${PROJECT_SOURCE_DIR}/cmake/Modules/*.cmake")
 
 ## Main variables
 set(VS_KEYWORD Qt4VSv1.0)
@@ -52,6 +52,7 @@ set(WINTERMUTE_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE 
 
 ## Include directories
 include_directories(${WINTERMUTE_INCLUDE_DIRS})
+include_directories(${PROJECT_BINARY_DIR})
 
 ## Configs
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
@@ -67,8 +68,11 @@ add_subdirectory(src)
 
 ## Installs
 
-install(FILES ${CMAKE_MODULES}
-        DESTINATION "${CMAKE_MODULE_DIR}")
+install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
+    DESTINATION "${WINTER_LIB_INSTALL_DIR}/pkgconfig/")
+
+install(FILES ${WINTER_CMAKE_MODULES}
+    DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"

@@ -217,7 +217,7 @@ namespace Wintermute {
     void Core::doDeinit () const {
         qDebug() << "(core) [" << IPC::System::module () << "] Performing deinitializing cycle.";
         Core::stop ();
-        qDebug() << "(core) [" << IPC::System::module () << "] Ending deinitializing cycle.";
+        qDebug() << "(core [module =" << IPC::System::module () << "]) All clean!";
     }
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
