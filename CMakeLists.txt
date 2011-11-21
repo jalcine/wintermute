@@ -68,9 +68,6 @@ add_subdirectory(src)
 
 ## Installs
 
-install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/Wintermute.pc"
-    DESTINATION "${WINTER_LIB_INSTALL_DIR}/pkgconfig/")
-
 install(FILES ${WINTER_CMAKE_MODULES}
     DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
