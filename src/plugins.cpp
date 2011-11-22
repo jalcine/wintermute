@@ -81,6 +81,7 @@ namespace Wintermute {
             if (IPC::System::module () == "plugin" || p_forceLoad ){
                 AbstractPlugin* l_plgnBase = NULL;
                 const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
+                QSettings* l_config = new QSettings(QApplication::organizationName(),p_plgnUuid);
 
                 if (!l_gnrcPlgn->m_settings->value ("Version/Enabled",true).toBool ()){
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
@@ -95,6 +96,7 @@ namespace Wintermute {
                 if ( l_gnrcPlgn->m_plgnLdr->isLoaded ()) {
                     l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_plgnLdr->instance () );
                     l_plgnBase->m_plgnLdr = l_gnrcPlgn->m_plgnLdr;
+                    l_plgnBase->m_config = l_config;
                     l_plgnBase->m_settings = Factory::pluginSettings (p_plgnUuid);
 
                     if (IPC::System::module() == "plugin" && !p_forceLoad)
@@ -248,6 +250,8 @@ namespace Wintermute {
                 l_plgnSpec->setValue (p_attrPth,p_attrVal);
         }
 
+        AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
+
         const QString AbstractPlugin::author () const { return m_settings->value ("Description/Author").toString (); }
 
         const QString AbstractPlugin::name () const { return m_settings->value ("Description/Name").toString (); }
@@ -364,38 +368,27 @@ namespace Wintermute {
 
         void AbstractPlugin::doDeinitialize () const {
             //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Deinitializing..";
-            emit deinitializing ();
             deinitialize ();
+            emit deinitializing ();
         }
 
         void AbstractPlugin::doInitialize() const {
             //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
-            emit initializing ();
             initialize ();
+            emit initializing ();
         }
 
-        const QVariant AbstractPlugin::attribute(const QString& p_attrPath, const QVariant& p_vrnt) const {
-            QVariant l_vrt = configuration()->value(p_attrPath);
-            if (l_vrt.isValid() || l_vrt.isNull())
-                return p_vrnt;
-            else
-                return l_vrt;
+        const QVariant AbstractPlugin::attribute(const QString& p_attrPath) const {
+            return m_config->value(p_attrPath);
         }
 
         void AbstractPlugin::setAttribute(const QString& p_attrPath, const QVariant& p_attrVal) {
-            configuration()->setValue(p_attrPath, p_attrVal);
+            m_config->setValue(p_attrPath, p_attrVal);
         }
 
         /// @todo Allow resetting of specific attributes.
         void AbstractPlugin::resetAttributes() {
-            configuration()->clear();
-        }
-
-        /// @todo Obtain a unique configuration file for the plug-in, first at the user level then work the way up.
-        QSettings* AbstractPlugin::configuration() const {
-            qDebug() << "(core) [AbstractPlugin] Loading configuration of plug-in" << this->uuid() << "..";
-            QSettings* l_settings = new QSettings(QApplication::organizationName(),this->uuid());
-            return l_settings;
+            m_config->clear();
         }
 
         /// @todo Return whether or not this method was successful to calling method.

@@ -14,9 +14,9 @@ macro(enable_doxygen)
     find_package(Doxygen)
     if(DOXYGEN_FOUND)
         configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${PROJECT_BINARY_DIR}/Doxyfile")
-        add_custom_target(doxydoc
+        add_custom_target(doxygen
             ${DOXYGEN_EXECUTABLE} Doxyfile
-            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/doc"
             COMMENT "Generating API documentation with Doxygen...")
     endif()
 endmacro()

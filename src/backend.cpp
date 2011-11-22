@@ -86,6 +86,7 @@ namespace Wintermute {
         }
 
         void AbstractFramework::start() {
+            qDebug() << "(core) [AbstractFramework] Starting...";
             switch (m_strtMd){
                 case Configuration: {
                     if (!m_dfltBcknd.empty()){
@@ -105,6 +106,7 @@ namespace Wintermute {
 
             initialize();
             emit started();
+            qDebug() << "(core) [AbstractFramework] Started.";
         }
 
         void AbstractFramework::stop() {
@@ -135,9 +137,11 @@ namespace Wintermute {
 
         /// @note Load the associated plug-in. On load, it should register its backend to the global list.
         AbstractBackend* AbstractBackend::obtainBackend(const QString& l_bcknd){
+            qDebug() << "(core) [AbstractBackend] Obtaining back-end" << l_bcknd << "...";
             if (!AbstractBackend::s_lst.contains(l_bcknd))
                 Factory::loadPlugin(l_bcknd,true);
 
+            qDebug() << "(core) [AbstractBackend] Back-end" << l_bcknd << "obtained.";
             return AbstractBackend::s_lst.value(l_bcknd);
         }
 

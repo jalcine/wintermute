@@ -119,6 +119,7 @@ namespace Wintermute {
             private:
                 mutable QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
                 QSettings* m_settings;
+                QSettings* m_config;
 
             protected:
                 void loadLibrary() const;
@@ -128,21 +129,22 @@ namespace Wintermute {
                  * @brief Empty, nullifying constructor.
                  * @fn AbstractPlugin
                  */
-                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
+                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL), m_config(NULL){ }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
                  * @fn AbstractPlugin
                  * @param p_pl The plug-in to be loaded from disk.
                  */
-                AbstractPlugin(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
+                AbstractPlugin(QPluginLoader* );
 
                 /**
                  * @brief Default copy constructor.
                  * @fn AbstractPlugin
                  * @param p_pb The plug-in to be copied.
                  */
-                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
+                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr),
+                    m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {  }
 
                 /**
                  * @brief Default deconstructor.
@@ -273,7 +275,7 @@ namespace Wintermute {
                  * @see setAttribute
                  * @fn attribute
                  */
-                const QVariant attribute(const QString&, const QVariant& = QVariant()) const;
+                const QVariant attribute(const QString&) const;
 
                 /**
                  * @brief Changes an attribute at p_attrPath to p_attrVal to the plug-in's configuration option set.
@@ -307,9 +309,6 @@ namespace Wintermute {
                  * @fn deinitialize
                  */
                 virtual void deinitialize() const = 0;
-
-            private:
-                QSettings* configuration() const;
 
             private slots:
                 void doDeinitialize () const;
