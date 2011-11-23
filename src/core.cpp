@@ -169,7 +169,6 @@ namespace Wintermute {
     }
 
     void Core::start () {
-        qDebug() << "(core) [Core] Starting up...";
         if (Core::arguments ()->value("ipc").toString () == "master"){
             cout << qPrintable ( s_app->applicationName () ) << " "
                  << qPrintable ( s_app->applicationVersion () )

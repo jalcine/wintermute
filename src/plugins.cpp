@@ -83,7 +83,7 @@ namespace Wintermute {
                 const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
                 QSettings* l_config = new QSettings(QApplication::organizationName(),p_plgnUuid);
 
-                if (!l_gnrcPlgn->m_settings->value ("Version/Enabled",true).toBool ()){
+                if (!l_gnrcPlgn->m_settings->value ("Plugin/Enabled",true).toBool ()){
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
                     Core::endProgram(1,true);
                     return NULL;
@@ -110,10 +110,14 @@ namespace Wintermute {
                         //qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
                     }
 
-                    Factory::s_plugins.insert ( l_plgnBase->uuid (),l_plgnBase );
-                    l_plgnBase->doInitialize ();
+                    if (Factory::currentPlugin()->m_settings->value("Plugin/Type").toString() == "API")
+                        Factory::s_plugins.insert ( l_plgnBase->uuid (),l_plgnBase );
 
-                    QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT ( doDeinitialize() ) );
+                    l_plgnBase->initialize();
+                    emit l_plgnBase->initializing();
+
+                    QObject::connect ( Core::instance (), SIGNAL(stopped()) ,
+                                       l_plgnBase       , SIGNAL(deinitializing()) );
                 } else {
                     qWarning() << "(plugin) [Factory] Error loading plugin" << p_plgnUuid << ";" << l_gnrcPlgn->m_plgnLdr->errorString ();
                     emit Factory::instance ()->pluginCrashed (p_plgnUuid);
@@ -286,6 +290,8 @@ namespace Wintermute {
                 //qDebug() << "(core) [AbstractPlugin] Loading dependency" << l_plgnUuid << "...";
                 Factory::GenericPlugin* l_gnrc = new Factory::GenericPlugin(l_plgnUuid);
                 l_gnrc->loadLibrary();
+                qobject_cast<AbstractPlugin*>(l_gnrc->m_plgnLdr->instance())->initialize();
+                emit qobject_cast<AbstractPlugin*>(l_gnrc->m_plgnLdr->instance())->initializing();
             }
         }
 
@@ -366,20 +372,12 @@ namespace Wintermute {
             return true;
         }
 
-        void AbstractPlugin::doDeinitialize () const {
-            //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Deinitializing..";
-            deinitialize ();
-            emit deinitializing ();
-        }
-
-        void AbstractPlugin::doInitialize() const {
-            //qDebug() << "(core) [Factory] {plug-in:" << this->uuid () << "} Initializing..";
-            initialize ();
-            emit initializing ();
-        }
-
-        const QVariant AbstractPlugin::attribute(const QString& p_attrPath) const {
-            return m_config->value(p_attrPath);
+        /// @note This method searches the plug-in's configuration for default settings. \o/
+        const QVariant AbstractPlugin::attribute(const QString& p_attrPath) const {            
+            if (m_config->contains(p_attrPath))
+                return m_config->value(p_attrPath);
+            else
+                return m_config->value("Configuration/" + const_cast<QString*>(&p_attrPath)->replace("/",":"));
         }
 
         void AbstractPlugin::setAttribute(const QString& p_attrPath, const QVariant& p_attrVal) {

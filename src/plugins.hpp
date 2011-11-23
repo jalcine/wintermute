@@ -311,8 +311,6 @@ namespace Wintermute {
                 virtual void deinitialize() const = 0;
 
             private slots:
-                void doDeinitialize () const;
-                void doInitialize() const;
                 void loadPlugins() const;
                 void loadPackages() const;
         };

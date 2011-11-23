@@ -133,7 +133,7 @@ namespace Wintermute {
         void InstanceAdaptor::quit (const QDBusMessage& p_msg) const {
             const QString l_uuid = qobject_cast<AbstractPlugin*>(parent())->uuid();
             emit aboutToQuit ();
-            qobject_cast<AbstractPlugin*>(parent())->doDeinitialize();
+            qobject_cast<AbstractPlugin*>(parent())->deinitialize();
             emit pluginUnloaded (l_uuid);
         }
     }

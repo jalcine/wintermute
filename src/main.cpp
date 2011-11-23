@@ -24,7 +24,7 @@
 
 using namespace Wintermute;
 
-int main ( int argc, char** argv ) {
+int main ( int argc, char** argv ) {    
     Core l_core ( argc , argv );
     return QApplication::exec();
 }
