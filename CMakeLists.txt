@@ -15,7 +15,7 @@ include(WintermuteDefaults)
 include(WintermuteMacros)
 
 ## Packages
-find_package(PkgConfig REQUIRED)
+find_package(PackageKitQt2 REQUIRED)
 find_package(Boost COMPONENTS
     system
     program_options
