@@ -57,7 +57,7 @@ namespace Wintermute {
         QString l_ipcMod = "master";
         s_app = new QApplication ( p_argc, p_argv );
         s_app->setApplicationName ( "Wintermute" );
-        s_app->setApplicationVersion ( QString::number ( WINTERMUTE_VERSION ) );
+        s_app->setApplicationVersion ( QString::number ( WNTR_VERSION ) );
         s_app->setOrganizationDomain ( "thesii.org" );
         s_app->setOrganizationName ( "Synthetic Intellect Institute" );
         connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT ( doDeinit() ) );
@@ -91,9 +91,9 @@ namespace Wintermute {
         ;
 
         l_configOptions.add_options ()
-        ( "locale,l" , po::value<string>()->default_value ( WINTERMUTE_LOCALE ) ,
+        ( "locale,l" , po::value<string>()->default_value ( WNTR_LOCALE ) ,
           "Defines the locale used by the system for parsing." )
-        ( "data-dir,datadir,l" , po::value<string>()->default_value ( WINTER_DATA_INSTALL_DIR ) ,
+        ( "data-dir,datadir,l" , po::value<string>()->default_value ( WNTR_DATA_DIR ) ,
           "Defines the directory where Wintermute's data is stored." )
         ;
 
@@ -135,14 +135,14 @@ namespace Wintermute {
 
                 cout << endl << endl
                      << "If you want more help and/or information, visit <http://www.thesii.org> to" << endl
-                     << "learn more about Wintermute or visit us on IRC (freenode) in ##sii-general." << endl;
-		exit(0);
+                     << "learn more about Wintermute or visit us on IRC (freenode) in #sii for general info." << endl;
+                exit(0);
             } else if ( l_vm.count ( "version" ) ) {
                 cout << endl << "Wintermute " << QApplication::applicationVersion ().toStdString () << " "
                      << "using Qt v" << QT_VERSION_STR << ", build " << QLibraryInfo::buildKey ().toStdString ()
                      << ", on " << QLibraryInfo::buildDate ().toString ().toStdString () << "." << endl
                      << "Boost v" << BOOST_VERSION << endl << endl;
-		exit(0);
+                exit(0);
             } else if ( l_vm.count ( "copyright" ) ) {
                 cout << "Copyright (C) 2010 Synthetic Intellect Institute <contact@thesii.org> <sii@lists.launchpad.net>" << endl
                      << "Copyright (C) 2010 Wintermute Developers <wintermute-devel@lists.launchpad.net> " << endl
@@ -151,7 +151,7 @@ namespace Wintermute {
                      << "\tit under the terms of the GNU General Public License as published by " << endl
                      << "\tthe Free Software Foundation; either version 3 of the License, or" << endl
                      << "\t(at your option) any later version." << endl << endl;
-		exit(0);
+                exit(0);
             }
         } else
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
