@@ -21,6 +21,7 @@
 #include "core.hpp"
 #include "plugins.hpp"
 #include "adaptors.hpp"
+#include "backend.hpp"
 #include "ipc.hpp"
 #include <QTimer>
 #include <QDBusConnection>
@@ -46,7 +47,7 @@ namespace Wintermute {
             QDBusMessage l_ping = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master","org.thesii.Wintermute.Master","ping");
             l_ping << IPC::System::module ();
             l_ping.setAutoStartService (true);
-            QDBusMessage l_pingReply = IPC::System::bus ()->call (l_ping,QDBus::BlockWithGui);
+            /*QDBusMessage l_pingReply = IPC::System::bus ()->call (l_ping,QDBus::BlockWithGui);
             m_core = l_pingReply.type () != QDBusMessage::ErrorMessage;
 
             if (m_core != l_prv){
@@ -61,12 +62,13 @@ namespace Wintermute {
             }
 
             if (l_pingReply.type () == QDBusMessage::ErrorMessage){
-                qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
+                //qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
                 if (!Core::arguments ()->value ("daemon").toBool ())
                     CoreAdaptor::haltSystem ();
             }
 
             m_tmr->start ();
+            */
         }
 
         const int GenericAdaptor::pid () const { return QApplication::applicationPid (); }
@@ -94,12 +96,6 @@ namespace Wintermute {
         const QStringList PluginFactoryAdaptor::loadedPlugins (const QDBusMessage& p_msg) const {
             return Factory::instance ()->loadedPlugins ();
         }
-
-        /// @todo Obtain information from plug-in.
-        const QSettings* PluginFactoryAdaptor::pluginInfo (const QString &p_plgnName, const QDBusMessage& p_msg) const {
-            return NULL;
-        }
-
         void PluginFactoryAdaptor::quit (const QDBusMessage& p_msg) const {
             emit aboutToQuit ();
             Factory::Shutdown ();
@@ -135,6 +131,14 @@ namespace Wintermute {
             emit aboutToQuit ();
             l_plgn->stop();
             emit pluginUnloaded (l_plgn->uuid());
+        }
+
+        void InstanceAdaptor::loadBackend(const QString &p_uuid, const QDBusMessage &p_msg) const {
+            AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
+            Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework(l_plgn->uuid());
+
+            if (l_frmk)
+                l_frmk->addBackend(Backends::AbstractBackend::obtainBackend(p_uuid));
         }
     }
 
