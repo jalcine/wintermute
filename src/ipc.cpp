@@ -39,7 +39,7 @@ namespace Wintermute {
         void System::start ( ) {
             instance()->m_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
             instance()->m_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
-            QString l_serviceName = WINTERMUTE_SERVICE_NAME, l_objectName;
+            QString l_serviceName = WNTR_DBUS_SERVICE_NAME, l_objectName;
 
             if ( instance()->m_appMod == "master") {
                 l_objectName = "master";
@@ -72,7 +72,7 @@ namespace Wintermute {
         }
 
         /// @todo Find a way to expose adaptors _properly_ over D-Bus.
-        const bool System::registerObject(const QString& p_pth, Adaptor* p_obj){
+        const bool System::registerObject(const QString& p_pth, QDBusAbstractAdaptor* p_obj){
             QDBusConnection::RegisterOptions l_opts = QDBusConnection::ExportAllContents
                     | QDBusConnection::ExportAllSignals
                     | QDBusConnection::ExportAllSlots

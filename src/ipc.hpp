@@ -127,7 +127,7 @@ namespace Wintermute {
                  * @param QString The name of the Adaptor.
                  * @param Adaptor* The Adaptor to be added.
                  */
-                static const bool registerObject(const QString&, Adaptor* );
+                static const bool registerObject(const QString&, QDBusAbstractAdaptor* );
                 
                 static System* instance();
 
