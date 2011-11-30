@@ -34,6 +34,7 @@ namespace Wintermute {
         struct AbstractBackend;
 
         typedef QMap<QString,AbstractBackend*> BackendList;
+        typedef QMap<QString,AbstractFramework*> FrameworkList;
 
         using Wintermute::Plugins::AbstractPlugin;
 
@@ -64,22 +65,27 @@ namespace Wintermute {
                 void removeBackend(AbstractBackend* );
                 void setDefaultBackend(AbstractBackend* );
                 void setStartMode(const StartupMode& );
-
                 const bool isBackendListed(const AbstractBackend* ) const;
                 QList<AbstractBackend*> defaultBackend() const;
                 const StartupMode& startMode() const;
+
+                static AbstractFramework* obtainFramework(const QString& );
+                static const int frameworks();
 
             public slots:
                 void start();
                 void stop();
 
             protected:
-                BackendList m_cmpLst;
+                BackendList m_bckndLst;
                 QStringList m_dfltBcknd;
                 StartupMode m_strtMd;
                 AbstractPlugin* m_plgn;
                 virtual void initialize() = 0;
                 virtual void deinitialize() = 0;
+
+            private:
+                static FrameworkList s_frmk;
         };
 
         class AbstractBackend : public QObject {
