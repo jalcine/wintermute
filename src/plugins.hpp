@@ -100,7 +100,7 @@ namespace Wintermute {
             Q_PROPERTY(const QString Description READ description)
             Q_PROPERTY(const QString WebPage READ webPage)
             Q_PROPERTY(const QStringList Packages READ packages)
-            Q_PROPERTY(const QStringList Pluginsscas READ plugins)
+            Q_PROPERTY(const QStringList Plugins READ plugins)
 
             signals:
                 /**
@@ -108,41 +108,43 @@ namespace Wintermute {
                  * This is usually raised right after the Core finishes initialization.
                  * @fn initializing
                  */
-                void initializing() const;
+                void started() const;
                 /**
                  * @brief Raised when the plug-in is being deinitialized.
                  * This is usually raised right before the Core begin to deinitialize.
                  * @fn deinitializing
                  */
-                void deinitializing() const;
+                void stopped() const;
 
             private:
                 mutable QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
                 QSettings* m_settings;
+                QSettings* m_config;
 
             protected:
-                void loadLibrary() const;
+                const bool loadLibrary() const;
 
             public:
                 /**
                  * @brief Empty, nullifying constructor.
                  * @fn AbstractPlugin
                  */
-                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL) { }
+                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL), m_config(NULL){ }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
                  * @fn AbstractPlugin
                  * @param p_pl The plug-in to be loaded from disk.
                  */
-                AbstractPlugin(QPluginLoader* p_pl ) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
+                AbstractPlugin(QPluginLoader* );
 
                 /**
                  * @brief Default copy constructor.
                  * @fn AbstractPlugin
                  * @param p_pb The plug-in to be copied.
                  */
-                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr), m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings) {  }
+                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr),
+                    m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {  }
 
                 /**
                  * @brief Default deconstructor.
@@ -273,7 +275,7 @@ namespace Wintermute {
                  * @see setAttribute
                  * @fn attribute
                  */
-                const QVariant attribute(const QString&, const QVariant& = QVariant()) const;
+                const QVariant attribute(const QString&) const;
 
                 /**
                  * @brief Changes an attribute at p_attrPath to p_attrVal to the plug-in's configuration option set.
@@ -299,23 +301,18 @@ namespace Wintermute {
                  * This is run after the initialized() signal is emitted.
                  * @fn initialize
                  */
-                virtual void initialize() const = 0;
+                virtual void start() const = 0;
 
                 /**
                  * @brief Reimplement this method to define the deinitialization code of your plug-in.
                  * This is run after the deinitialized() signal is emitted.
                  * @fn deinitialize
                  */
-                virtual void deinitialize() const = 0;
-
-            private:
-                QSettings* configuration() const;
+                virtual void stop() const = 0;
 
             private slots:
-                void doDeinitialize () const;
-                void doInitialize() const;
-                void loadPlugins() const;
-                void loadPackages() const;
+                const bool loadPlugins() const;
+                const bool loadPackages() const;
         };
 
         /**
@@ -466,13 +463,13 @@ namespace Wintermute {
                  * @brief Emitted when the factory's up and running.
                  * @fn initialized
                  */
-                void initialized() const;
+                void started() const;
 
                 /**
                  * @brief Emitted when the factory's down for the count.
                  * @fn deinitialized
                  */
-                void deinitialized() const;
+                void stopped() const;
 
             public slots:
 
@@ -494,12 +491,14 @@ namespace Wintermute {
 
                     public:
                         GenericPlugin() { }
-                        GenericPlugin(const QString& p_plgnUuid) { AbstractPlugin::m_settings = Factory::pluginSettings (p_plgnUuid); }
+                        GenericPlugin(const QString& p_plgnUuid) {
+                            AbstractPlugin::m_settings = Factory::pluginSettings(p_plgnUuid);
+                        }
                         ~GenericPlugin() { }
 
                     private:
-                        virtual void initialize () const { }
-                        virtual void deinitialize () const { }
+                        virtual void start () const { }
+                        virtual void stop () const { }
                 };
 
                 Factory();

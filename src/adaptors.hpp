@@ -126,17 +126,6 @@ namespace Wintermute {
                  */
                 explicit PluginFactoryAdaptor();
 
-                /**
-                 * @brief Loads a plug-in.
-                 * @fn loadPlugin
-                 * @param string The name of the plug-in.
-                 */
-                Q_INVOKABLE Q_NOREPLY void loadPlugin(const QString&, const QDBusMessage&);
-                Q_INVOKABLE Q_NOREPLY void unloadPlugin(const QString&, const QDBusMessage&);
-                Q_INVOKABLE const QStringList allPlugins(const QDBusMessage&) const;
-                Q_INVOKABLE const QStringList loadedPlugins(const QDBusMessage&) const;
-                Q_INVOKABLE const QSettings* pluginInfo(const QString&, const QDBusMessage&) const;
-
             signals:
                 void pluginLoaded(const QString&) const;
                 void pluginUnloaded(const QString&) const;
@@ -145,6 +134,10 @@ namespace Wintermute {
 
             public slots:
                 virtual void quit(const QDBusMessage&) const;
+                void loadPlugin(const QString&, const QDBusMessage&);
+                void unloadPlugin(const QString&, const QDBusMessage&);
+                const QStringList allPlugins(const QDBusMessage&) const;
+                const QStringList loadedPlugins(const QDBusMessage&) const;
         };
 
         class InstanceAdaptor : public Adaptor {
@@ -161,6 +154,7 @@ namespace Wintermute {
 
             public slots:
                 virtual void quit(const QDBusMessage&) const;
+                virtual void loadBackend(const QString&, const QDBusMessage&) const;
         };
     }
 

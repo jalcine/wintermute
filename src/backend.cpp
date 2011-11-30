@@ -29,19 +29,22 @@ using namespace Wintermute::Plugins;
 namespace Wintermute {
     namespace Backends {
         BackendList AbstractBackend::s_lst;
+        FrameworkList AbstractFramework::s_frmk;
 
         AbstractFramework::AbstractFramework(AbstractPlugin* p_plgn, QObject *p_prnt) : QObject(p_prnt),
-            m_cmpLst(), m_dfltBcknd(), m_plgn(p_plgn) {
-            connect(m_plgn,SIGNAL(initializing()),this,SLOT(start()));
-            connect(m_plgn,SIGNAL(deinitializing()),this,SLOT(stop()));
+            m_bckndLst(), m_dfltBcknd(), m_plgn(p_plgn) {
+
+            connect(p_plgn,SIGNAL(started()),this,SLOT(start()));
+            connect(p_plgn,SIGNAL(stopped()),this,SLOT(stop()));
 
             m_dfltBcknd = m_plgn->attribute("Framework/Defaults").toStringList();
             m_strtMd = (StartupMode) m_plgn->attribute("Framework/StartMode").toInt();
+            AbstractFramework::s_frmk.insert(m_plgn->uuid(),this);
         }
 
         void AbstractFramework::addBackend(AbstractBackend *p_cmpt) {
             if (!isBackendListed(p_cmpt)){
-                m_cmpLst.insert(p_cmpt->id(),p_cmpt);
+                m_bckndLst.insert(p_cmpt->id(),p_cmpt);
                 emit added();
                 emit added(p_cmpt);
             }
@@ -49,7 +52,7 @@ namespace Wintermute {
 
         void AbstractFramework::removeBackend(AbstractBackend *p_cmpt) {
             if (isBackendListed(p_cmpt)){
-                m_cmpLst.remove(p_cmpt->id());
+                m_bckndLst.remove(p_cmpt->id());
                 emit removed();
                 emit removed(p_cmpt);
             }
@@ -70,7 +73,7 @@ namespace Wintermute {
         }
 
         const bool AbstractFramework::isBackendListed(const AbstractBackend *p_cmpt) const {
-            return m_cmpLst.contains(p_cmpt->id());
+            return m_bckndLst.contains(p_cmpt->id());
         }
 
         const AbstractFramework::StartupMode& AbstractFramework::startMode() const {
@@ -80,36 +83,52 @@ namespace Wintermute {
         QList<AbstractBackend*> AbstractFramework::defaultBackend() const {
             QList<AbstractBackend*> l_lst;
             foreach (const QString& l_bcknd, m_dfltBcknd)
-                l_lst << m_cmpLst.value(l_bcknd);
+                l_lst << m_bckndLst.value(l_bcknd);
 
             return l_lst;
         }
 
         void AbstractFramework::start() {
+            qDebug() << "(core) [AbstractFramework] Starting...";
             switch (m_strtMd){
                 case Configuration: {
                     if (!m_dfltBcknd.empty()){
-                        foreach (const QString& l_bcknd, m_dfltBcknd)
-                            m_cmpLst.insert(l_bcknd,AbstractBackend::obtainBackend(l_bcknd));
-                    } else {
-                        qWarning() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
-                    }
+                        foreach (const QString& l_bcknd, m_dfltBcknd){
+                            AbstractBackend* l_bck = AbstractBackend::obtainBackend(l_bcknd);
+                            if (l_bck)
+                                m_bckndLst.insert(l_bcknd,l_bck);
+                            else
+                                qDebug() << "(core) [AbstractFramework] Backend" << Factory::attribute(l_bcknd,"Description/Name").toString() << "couldn't be loaded.";
+                        }
+                    } else
+                        qDebug() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
                 };
 
                 default:
                 case Manual: {
-
+                    // What's there to do? :P
                 };
             }
 
 
             initialize();
             emit started();
+            qDebug() << "(core) [AbstractFramework] Started.";
         }
 
         void AbstractFramework::stop() {
             deinitialize();
             emit stopped();
+        }
+
+        AbstractFramework* AbstractFramework::obtainFramework(const QString &p_uuid){
+            if (!s_frmk.contains(p_uuid))
+                return NULL;
+            return s_frmk.value(p_uuid);
+        }
+
+        const int AbstractFramework::frameworks() {
+            return s_frmk.values().size();
         }
 
         AbstractFramework::~AbstractFramework() { }
@@ -135,10 +154,15 @@ namespace Wintermute {
 
         /// @note Load the associated plug-in. On load, it should register its backend to the global list.
         AbstractBackend* AbstractBackend::obtainBackend(const QString& l_bcknd){
-            if (!AbstractBackend::s_lst.contains(l_bcknd))
-                Factory::loadPlugin(l_bcknd,true);
+            qDebug() << "(core) [AbstractBackend] Obtaining back-end" << l_bcknd << "...";
+            if (!AbstractBackend::s_lst.contains(l_bcknd)){
+                if (Factory::loadPlugin(l_bcknd,true)){
+                    qDebug() << "(core) [AbstractBackend] Back-end" << l_bcknd << "obtained.";
+                    return AbstractBackend::s_lst.value(l_bcknd);
+                }
+            }
 
-            return AbstractBackend::s_lst.value(l_bcknd);
+            return NULL;
         }
 
         AbstractBackend::~AbstractBackend() {

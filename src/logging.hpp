@@ -1,6 +1,6 @@
 /**
- * @file main.cpp
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @file logging.hpp
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -20,14 +20,30 @@
  * @endlegalese
  */
 
-#include "logging.hpp"
-#include "wintermute.hpp"
+#include <QObject>
+#include <QDebug>
+#include <QTime>
 
-using namespace Wintermute;
+namespace Wintermute {
+    struct Logging;
 
-int main ( int argc, char** argv ) {
-    qInstallMsgHandler(Logging::catchQDebugMessage);
-    Core l_core ( argc , argv );
-    return QApplication::exec();
+    /// @todo Allow triggering the saving of such logs to disc.
+    /// @todo Allow dynamic printing of certain flags (overriding build commands).
+    class Logging : public QObject {
+        Q_OBJECT
+
+        signals:
+            void linePrinted(const QString& );
+            void warningEncountered(const QString& );
+            void criticalErrorEncountered(const QString& );
+            void fatalErrorEncountered(const QString& );
+
+        public:
+            static void catchQDebugMessage(QtMsgType, const char* );
+            static Logging* instance();
+
+        private:
+            Logging();
+            static Logging* s_inst;
+    };
 }
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
