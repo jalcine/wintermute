@@ -1,7 +1,7 @@
 #!/bin/sh
 # @author Adrian Borcuki <gentoolx@gmail.com>
-# This shell script prepares this modular branch for building by pulling 
-# needed sources.
+# This shell script prepares this modular branch for building by pulling
+# the other repositories of Wintermute.
 
 # Base part of Git address on GitHub
 GIT_BASE=git://github.com/wntr
@@ -24,7 +24,7 @@ echo "*** Cloning $GIT_WLING..."
 git clone $GIT_WLING lib/wntrling
 
 echo "*** Cloning $GIT_WPLUGINS..."
-git clone $GIT_WPLUGINS
+git clone $GIT_WPLUGINS lib/plugins
 
 # Ok, let's use Sed to correct some files such that everything works.
 echo "*** Making file customizations..."
@@ -39,6 +39,7 @@ cmake_minimum_required(VERSION 2.8)
 add_subdirectory(wntrdata)
 add_subdirectory(wntrntwk)
 add_subdirectory(wntrling)
+add_subdirectory(plugins)
 EOF
 
 case "$1" in
