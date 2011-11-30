@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 0)
 set(WINTERMUTE_MICRO_VERSION 1)
-set(WINTERMUTE_VERSION
-		${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}${WINTERMUTE_MICRO_VERSION})
+set(WINTERMUTE_VERSION ${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}${WINTERMUTE_MICRO_VERSION})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 ## Modules
@@ -28,7 +27,6 @@ find_package(Qt4 COMPONENTS
 
 include("${QT_USE_FILE}")
 
-#----Doxygen target----#
 enable_doxygen()
 
 ## Files
@@ -64,6 +62,8 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
                 "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
+
+dbus_add_activation_service(org.thesii.Wintermute.service.in)
 add_subdirectory(src)
 
 ## Installs
