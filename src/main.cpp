@@ -20,11 +20,13 @@
  * @endlegalese
  */
 
+#include "logging.hpp"
 #include "wintermute.hpp"
 
 using namespace Wintermute;
 
-int main ( int argc, char** argv ) {    
+int main ( int argc, char** argv ) {
+    qInstallMsgHandler(Logging::catchQDebugMessage);
     Core l_core ( argc , argv );
     return QApplication::exec();
 }
