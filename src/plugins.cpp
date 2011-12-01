@@ -39,8 +39,6 @@ namespace Wintermute {
 
         Factory::Factory() : QObject(Core::instance ()) { }
 
-        /// @todo Allow more in-depth listing of plugins (disabled, specific arguments, etc).
-        /// @todo Move out the QSettings of the application into Core.
         void Factory::Startup () {
             if (!Core::arguments()->value("daemon").toBool()){
                 qDebug() << "(core) [Factory] Starting up...";
@@ -66,7 +64,7 @@ namespace Wintermute {
                                << "Please check" << l_settings->fileName() << "for the option 'Plugins/AutoStart'"  << endl
                                << "and ensure that plug-ins are defined for initial loading of Wintermute." << endl << endl
                                << "*** Reset to default plug-in list.";
-
+                    l_settings->setValue("Plugins/AutoStart", "a9b6b020-f4f2-11e0-be50-0800200c9a66, 81da3bd6-bed5-4c74-aae6-44f48cd5330c, 6d2a54ae-043d-11e1-b46a-93253d2b7d89, 5f0741d0-026b-11e1-8f4e-5999c633b9c0");
                 }
 
                 emit Factory::instance ()->started ();
