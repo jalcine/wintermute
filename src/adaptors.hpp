@@ -24,13 +24,14 @@
 #ifndef WINTERMUTE_ADAPTORS_HPP
 #define WINTERMUTE_ADAPTORS_HPP
 
+#include <QObject>
 #include <QStringList>
 #include <QVariantMap>
-#include <QSettings>
-#include <QtDBus/QDBusMessage>
 #include <QtDBus/QDBusAbstractAdaptor>
 
-struct QTimer;
+class QTimer;
+class QSettings;
+class QDBusMessage;
 
 namespace Wintermute {
     namespace IPC {
@@ -66,19 +67,21 @@ namespace Wintermute {
                 /**
                  * @brief Obtains the module's name.
                  * @fn module The name of the module.
+                 * @note This method is callable over D-Bus.
                  */
                 Q_INVOKABLE const QString module() const;
 
                 /**
                  * @brief Obtains the process's ID.
                  * @fn pid The pid of the process.
+                 * @note This method is callable over D-Bus.
                  */
                 Q_INVOKABLE const int pid() const;
 
             signals:
                 /**
                  * @brief Emitted right before this process exits.
-                 * @see Wintermute::core::stopped();
+                 * @see Wintermute::core::stopped()
                  * @fn aboutToQuit
                  */
                 void aboutToQuit() const;
@@ -96,7 +99,7 @@ namespace Wintermute {
                 void coreModuleUnloaded() const;
 
             public slots:
-                virtual void quit(const QDBusMessage&) const = 0;
+                virtual void quit() const = 0;
         };
     }
 
@@ -133,11 +136,11 @@ namespace Wintermute {
                 void pluginCrashed(const QString&) const;
 
             public slots:
-                virtual void quit(const QDBusMessage&) const;
-                void loadPlugin(const QString&, const QDBusMessage&);
-                void unloadPlugin(const QString&, const QDBusMessage&);
-                const QStringList allPlugins(const QDBusMessage&) const;
-                const QStringList loadedPlugins(const QDBusMessage&) const;
+                virtual void quit() const;
+                void loadPlugin(const QString&);
+                void unloadPlugin(const QString&);
+                const QStringList allPlugins() const;
+                const QStringList loadedPlugins() const;
         };
 
         class InstanceAdaptor : public Adaptor {
@@ -153,24 +156,24 @@ namespace Wintermute {
                 void pluginCantLoad(const QString&) const;
 
             public slots:
-                virtual void quit(const QDBusMessage&) const;
-                virtual void loadBackend(const QString&, const QDBusMessage&) const;
+                virtual void quit() const;
+                virtual void loadBackend(const QString&);
         };
     }
 
     class CoreAdaptor : public Adaptor {
-            Q_OBJECT
-            Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Master")
-            Q_PROPERTY(const QVariantMap Arguments READ arguments)
+        Q_OBJECT
+        Q_PROPERTY(const QVariantMap Arguments READ arguments)
+        Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Master")
 
-            public:
-                explicit CoreAdaptor();
-                const QVariantMap arguments() const;
-                Q_INVOKABLE Q_NOREPLY void ping(const QString&);
-                static void haltSystem();
+        public:
+            explicit CoreAdaptor();
 
-            public slots:
-                virtual void quit(const QDBusMessage&) const;
+        public slots:
+            virtual void quit() const;
+            static void haltSystem();
+            const QVariantMap arguments() const;
+            Q_INVOKABLE Q_NOREPLY void ping(const QString&);
     };
 }
 

@@ -81,22 +81,22 @@ namespace Wintermute {
             setAutoRelaySignals (true);
         }
 
-        void PluginFactoryAdaptor::loadPlugin (const QString &p_plgnName, const QDBusMessage& p_msg){
+        void PluginFactoryAdaptor::loadPlugin (const QString &p_plgnName){
             Factory::instance ()->loadPlugin (p_plgnName);
         }
 
-        void PluginFactoryAdaptor::unloadPlugin (const QString &p_plgnName, const QDBusMessage& p_msg){
+        void PluginFactoryAdaptor::unloadPlugin (const QString &p_plgnName){
             Factory::instance ()->unloadPlugin (p_plgnName);
         }
 
-        const QStringList PluginFactoryAdaptor::allPlugins (const QDBusMessage& p_msg) const {
+        const QStringList PluginFactoryAdaptor::allPlugins () const {
             return Factory::instance ()->allPlugins ();
         }
 
-        const QStringList PluginFactoryAdaptor::loadedPlugins (const QDBusMessage& p_msg) const {
+        const QStringList PluginFactoryAdaptor::loadedPlugins () const {
             return Factory::instance ()->loadedPlugins ();
         }
-        void PluginFactoryAdaptor::quit (const QDBusMessage& p_msg) const {
+        void PluginFactoryAdaptor::quit () const {
             emit aboutToQuit ();
             Factory::Shutdown ();
         }
@@ -126,14 +126,14 @@ namespace Wintermute {
             }
         }
 
-        void InstanceAdaptor::quit (const QDBusMessage& p_msg) const {
+        void InstanceAdaptor::quit () const {
             AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
             emit aboutToQuit ();
             l_plgn->stop();
             emit pluginUnloaded (l_plgn->uuid());
         }
 
-        void InstanceAdaptor::loadBackend(const QString &p_uuid, const QDBusMessage &p_msg) const {
+        void InstanceAdaptor::loadBackend(const QString &p_uuid) {
             AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
             Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework(l_plgn->uuid());
 
@@ -150,7 +150,7 @@ namespace Wintermute {
         //qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
     }
 
-    void CoreAdaptor::quit (const QDBusMessage& p_msg) const {
+    void CoreAdaptor::quit () const {
         emit aboutToQuit ();
         QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Factory", "org.thesii.Wintermute.Factory","quit");
         QDBusConnection::sessionBus ().call (l_msg,QDBus::NoBlock);

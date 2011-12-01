@@ -24,13 +24,15 @@
 
 #include <QHash>
 #include <QList>
-#include <QSettings>
-#include <QStringList>
-#include <QPluginLoader>
 #include <QProcess>
-#include <QtDBus/QDBusAbstractAdaptor>
-#include <QtDBus/QDBusMessage>
 #include "adaptors.hpp"
+
+class QProcess;
+class QSettings;
+class QStringList;
+class QDBusMessage;
+class QPluginLoader;
+class QDBusAbstractAdaptor;
 
 namespace Wintermute {
     namespace Plugins {
@@ -143,8 +145,7 @@ namespace Wintermute {
                  * @fn AbstractPlugin
                  * @param p_pb The plug-in to be copied.
                  */
-                AbstractPlugin(AbstractPlugin const &p_pb) : QObject(p_pb.m_plgnLdr),
-                    m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {  }
+                AbstractPlugin(AbstractPlugin const &);
 
                 /**
                  * @brief Default deconstructor.
@@ -372,16 +373,14 @@ namespace Wintermute {
                 /**
                  * @brief Halts the plug-in's process.
                  * @fn stop
-                 * @param QDBusMessage
                  */
-                void stop(const QDBusMessage = QDBusMessage());
+                void stop();
 
                 /**
                  * @brief Starts the plug-in's process.
                  * @fn start
-                 * @param QDBusMessage
                  */
-                void start(const QDBusMessage = QDBusMessage());
+                void start();
 
             signals:
 
@@ -411,9 +410,9 @@ namespace Wintermute {
                 QProcess* m_prcss;
                 const QString m_uuid;
                 QSettings* m_settings;
-                void doCrashed(const QString&, const QDBusMessage = QDBusMessage());
-                void doLoaded(const QString&, const QDBusMessage = QDBusMessage());
-                void doUnloaded(const QString&, const QDBusMessage = QDBusMessage());
+                void doCrashed(const QString&);
+                void doLoaded(const QString&);
+                void doUnloaded(const QString&);
 
             private slots:
                 void catchStart();

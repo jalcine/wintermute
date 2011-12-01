@@ -289,6 +289,9 @@ namespace Wintermute {
 
         AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) { }
 
+        AbstractPlugin::AbstractPlugin(const AbstractPlugin &p_pb): QObject(p_pb.m_plgnLdr),
+                           m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {  }
+
         const QString AbstractPlugin::author () const { return m_settings->value ("Description/Author").toString (); }
 
         const QString AbstractPlugin::name () const { return m_settings->value ("Description/Name").toString (); }
@@ -472,12 +475,12 @@ namespace Wintermute {
             this->stop ();
         }
 
-        void Instance::stop (const QDBusMessage p_msg){
+        void Instance::stop (){
             m_prcss->terminate ();
             m_prcss->close ();
         }
 
-        void Instance::start (const QDBusMessage p_msg){
+        void Instance::start (){
             if (!m_prcss){
                 m_prcss = new QProcess(Factory::instance ());
                 connect(m_prcss,SIGNAL(started()),this,SLOT(catchStart()));
@@ -486,7 +489,6 @@ namespace Wintermute {
 
                 m_prcss->setProcessChannelMode (QProcess::ForwardedChannels);
                 m_prcss->start (QApplication::applicationFilePath (),QStringList() << "--ipc" << "plugin" << "--plugin" << m_uuid);
-                p_msg.createReply(true);
             } else
                 qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has already started in pid" << m_prcss->pid ();
         }

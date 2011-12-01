@@ -25,7 +25,6 @@
 
 #include "config.hpp"
 #include "adaptors.hpp"
-#include <QtDBus/QDBusAbstractAdaptor>
 #include <QtDBus/QDBusInterface>
 #include <QVariantMap>
 
