@@ -78,3 +78,7 @@ install(FILES ${WINTER_CMAKE_MODULES}
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
         DESTINATION "${WINTERMUTE_CMAKE_DIR}")
+
+install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/WintermuteDefaults.cmake"
+              "${PROJECT_SOURCE_DIR}/cmake/Modules/WintermuteMacros.cmake"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/cmake-2.8/Modules")
