@@ -13,6 +13,12 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
+endif()
+
+set(CMAKE_INSTALL_PREFIX ${WINTER_INSTALL_DIR})
+
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
 find_package(Boost COMPONENTS
