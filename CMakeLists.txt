@@ -17,8 +17,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
 endif()
 
-set(CMAKE_INSTALL_PREFIX ${WINTER_INSTALL_DIR})
-
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
 find_package(Boost COMPONENTS
@@ -69,7 +67,7 @@ configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
                 "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
 
-dbus_add_activation_service(org.thesii.Wintermute.service.in)
+dbus_add_activation_service(services/org.thesii.Wintermute.service.in)
 add_subdirectory(src)
 
 ## Installs
