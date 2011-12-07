@@ -54,23 +54,27 @@ include_directories(${PROJECT_BINARY_DIR})
 
 ## Configs
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
-                "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
+               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
-                "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
+               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-                "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
+               "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
 
 dbus_add_activation_service(org.thesii.Wintermute.service.in)
+
 add_subdirectory(src)
 
 ## Installs
 
 install(FILES ${WINTER_CMAKE_MODULES}
-    DESTINATION "${WINTERMUTE_CMAKE_DIR}")
+	DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
         DESTINATION "${WINTERMUTE_CMAKE_DIR}")
+
+install(FILES "${PROJECT_SOURCE_DIR}/default.conf"
+	DESTINATION "${WINTER_DATA_INSTALL_DIR}/default.conf")
