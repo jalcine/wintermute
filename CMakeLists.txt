@@ -76,5 +76,6 @@ install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
         DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
+## @todo Add it to a system wide location.
 install(FILES "${PROJECT_SOURCE_DIR}/default.conf"
-	DESTINATION "${WINTER_DATA_INSTALL_DIR}/default.conf")
+	DESTINATION "~/.config/Synthetic Intellect Institute/default.conf")
