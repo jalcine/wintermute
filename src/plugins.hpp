@@ -119,9 +119,9 @@ namespace Wintermute {
                 void stopped() const;
 
             private:
-                mutable QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
+                mutable QPluginLoader* m_loader; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
                 QSettings* m_settings;
-                QSettings* m_config;
+                QSettings* m_configuration;
 
             protected:
                 const bool loadLibrary() const;
@@ -131,7 +131,7 @@ namespace Wintermute {
                  * @brief Empty, nullifying constructor.
                  * @fn AbstractPlugin
                  */
-                explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL), m_config(NULL){ }
+                explicit AbstractPlugin() : QObject(NULL), m_loader(NULL), m_settings(NULL), m_configuration(NULL){ }
 
                 /**
                  * @brief Loads a plug-in based on the QPluginLoader.
@@ -407,7 +407,7 @@ namespace Wintermute {
 
             private:
                 ~Instance();
-                QProcess* m_prcss;
+                QProcess* m_process;
                 const QString m_uuid;
                 QSettings* m_settings;
                 void doCrashed(const QString&);
@@ -543,7 +543,7 @@ namespace Wintermute {
             private:
                 static PluginList s_plugins; /**< Holds a list  */
                 static Factory* s_factory;
-                static AbstractPlugin* s_plgn;
+                static AbstractPlugin* s_plugin;
                 QHash<const QString, Instance*> m_plgnPool;
                 static QSettings* pluginSettings(const QString& );
 
