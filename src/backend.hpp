@@ -26,7 +26,7 @@
 
 namespace Wintermute {
     namespace Plugins {
-        struct AbstractPlugin;
+        struct AbstractPlugin; //forward declaration
     }
 
     namespace Backends {
