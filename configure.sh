@@ -2,7 +2,7 @@
 # This script _ensures_ that you can build & install Wintermute.
 
 echo "Downloading tools..."
-sudo apt-get install cmake cmake-curses-gui libqt4-dev libpackagekit-qt2-dev libboost-dev
+sudo apt-get install cmake cmake-curses-gui libqt4-dev libpackagekit-qt2-dev libboost-dev libboost-system-dev libboost-program-options-dev
 
 echo "Preparing build directory..."
 mkdir -p build
