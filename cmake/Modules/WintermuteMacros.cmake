@@ -1,4 +1,7 @@
+##
 ## Bunch of useful macros and functions
+## @author Adrian Borcuki <adrian@thesii.org>
+##
 include(UsePkgConfig)
 
 macro(winter_make_absolute paths)

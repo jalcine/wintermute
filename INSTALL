@@ -10,30 +10,33 @@ In order to build Wintermute from scratch, you'll primarily need the following:
   * QtDbus (>= 4.7.3), QtCore (>= 4.7.3), QtGui (>= 4.7.3)
   * Boost::System
   * Boost::ProgramOptions
+  * PackageKit (for Qt)
 
 Be sure that you also have the **development** packages for each of these librar
 ies. A simple shell command to install everything would be:
 
-$ apt-get install cmake libqt-dev libboost-dev
+# apt-get install cmake-curses-gui cmake libqt4-dev libboost-dev libpackagekit-qt2-dev
 
-After that's all done and completed; you should have a proper development enviro
-nment (in terms of headers and libraries) for building.
+After that's all done and completed; you should have a proper development environment
+(in terms of headers and libraries) for building.
 
 2. Compiling
 
 NOTE: We recommend that for bug reporting purposes that you stick to the
 instructions given here for compiling. Deviation makes it that much more
-difficult to pinpoint an issue with compilation. 
+difficult to pinpoint an issue with compilation. If anything, use the provided
+"configure.sh" script to build Wintermute's core.
 
  - Create a directory called 'build' in the downloaded repository folder (in
    this case, 'core') and then enter in a terminal:
 
-   $ mkdir -p core/build && cd core/build
+   $ mkdir -p core/build
+   $ cd core/build
 
  - Run 'CMake' and configure the variables for optimal build.
 
    NOTE: If you wish to debug Wintermute or provide debugging information, it's
-         important that you set the CMake varible 'CMAKE_BUILD_TYPE' to either
+         important that you set the CMake variable 'CMAKE_BUILD_TYPE' to either
          Debug or RelWithDebInfo, so that appropriate back-traces and memory
          dumps can be done.
 
@@ -46,24 +49,15 @@ difficult to pinpoint an issue with compilation.
 
 3. Complete!
 
-You have successfully installed Wintermute! Now, just run 'wintermute --help'
+You have successfully installed Wintermute! Now, just run 'wintermute --help=all'
 in a command window to investigate the currently available command line
-options. Report any bugs, errors, glitches or miscalibrations to our development
-team by leaving an open bug report on either <https://launchpad.net/~wintermute>
-or <https://www.github.com/wntr/core>. Thank you for installing Wintermute; we
+options. Report any bugs, errors, glitches or mis-calibrations to our development
+team by leaving an open bug report on <https://bugs.launchpad.net/wintermute>.
+Thank you for installing Wintermute; we
 hope to hear from you shortly.
 
-4. Sidenotes
+4. Side-notes
 
-Wintermute may report issues about missing GTK themes if you're running it unde
-r a GNOME desktop. Installing the Qt Curve engine for GTK will hide this warning
+Wintermute may report issues about missing GTK themes if you're running it under
+on a GNOME desktop. Installing the Qt Curve engine for GTK will hide this warning
 on your system.
-
-Also, if you installed from scratch in this manner; there's no real means of u
-nistalling the program from your computer. If this is desired, run the followi
-ng in a terminal window:
-
-	# rm -rv /usr/include/wntr
-	# rm -rv /usr/share/wintermute
-	# rm -rv /usr/share/Wintermute /usr/share/Wntr*
-	# rm -v /usr/bin/wintermute

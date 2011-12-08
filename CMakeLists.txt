@@ -61,7 +61,6 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
                "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
 
-
 dbus_add_activation_service(org.thesii.Wintermute.service.in)
 
 add_subdirectory(src)
