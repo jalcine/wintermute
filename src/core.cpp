@@ -189,7 +189,7 @@ namespace Wintermute {
         qDebug() << "(core) [Core] Started.";
     }
 
-    void Core::endProgram (int p_exitCode, bool p_killSystem){
+    void Core::exit (int p_exitCode, bool p_killSystem){
         qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
 
         if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && p_killSystem){

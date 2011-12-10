@@ -64,7 +64,7 @@ namespace Wintermute {
             if (!instance()->m_cnntn->registerService (l_serviceName) && l_objectName == "master"){
                 qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << l_serviceName
                          << ") under the same user on the same computer";
-                Core::endProgram ();
+                Core::exit ();
             }
 
             qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";

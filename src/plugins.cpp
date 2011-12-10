@@ -99,13 +99,13 @@ namespace Wintermute {
                     } else
                         qDebug() << "(plugin) [Factory] API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "isn't running for backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString();
 
-                    Core::endProgram();
+                    Core::exit();
                     return NULL;
                 }
 
                 if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ()){
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
-                    Core::endProgram(1,true);
+                    Core::exit(1,true);
                     return NULL;
                 }
 
@@ -135,7 +135,7 @@ namespace Wintermute {
 
                     if ( !l_plgnBase->isSupported () ) {
                         qWarning() << "(plugin) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
-                        Core::endProgram(2,true);
+                        Core::exit(2,true);
                         return NULL;
                     } else
                         qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
@@ -156,7 +156,7 @@ namespace Wintermute {
                         qDebug() << "(plugin) [Factory] Load error: " << l_gnrcPlgn->m_loader->errorString ();
 
                     emit Factory::instance ()->pluginCrashed (p_plgnUuid);
-                    Core::endProgram(3,true);
+                    Core::exit(3,true);
                     return NULL;
                 }
 
@@ -200,7 +200,7 @@ namespace Wintermute {
             //qDebug() << Factory::instance ()->m_plgnPool.count ();
             if (Factory::instance ()->m_plgnPool.count () == 0){
                 qWarning() << "(core) [Factory] No plug-ins running; exitting..";
-                Core::endProgram (0);
+                Core::exit (0);
             }
         }
 

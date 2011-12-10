@@ -88,7 +88,7 @@ namespace Wintermute {
              * @brief Ends the program; with an optional exit code.
              * @fn endProgram
              */
-            static void endProgram(const int = 0, const bool = false);
+            static void exit(const int = 0, const bool = false);
 
         signals:
             /**
