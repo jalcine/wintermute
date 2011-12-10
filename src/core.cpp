@@ -178,10 +178,9 @@ namespace Wintermute {
 
         IPC::System::start ();
 
-        QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
-        QDateTime l_lstDate = l_settings->value("Statistics/StartupDate").toDateTime();
-
         if (IPC::System::module() == "master"){
+            QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
+            QDateTime l_lstDate = l_settings->value("Statistics/StartupDate",QDateTime::currentDateTime()).toDateTime();
             l_settings->setValue("Statistics/StartupDate",QDateTime::currentDateTime());
             qDebug() << "(core) Last startup was at" << l_lstDate.toLocalTime().toString();
         }
