@@ -20,51 +20,57 @@
  * @endlegalese
  */
 
+#include "ipc.hpp"
+#include "core.hpp"
+#include "config.hpp"
+#include "plugins.hpp"
 #include <QDir>
 #include <QtDBus>
 #include <QtDebug>
 #include <QProcess>
-#include "core.hpp"
-#include "ipc.hpp"
-#include "config.hpp"
-#include "plugins.hpp"
+#include <QApplication>
 
 using namespace std;
 
 namespace Wintermute {
     namespace Plugins {
         PluginList Factory::s_plugins;
-        Factory* Factory::s_factory = NULL;
-        AbstractPlugin* Factory::s_plugin = NULL;
+        Factory* Factory::s_factory = 0;
+        AbstractPlugin* Factory::s_plugin = 0;
 
         Factory::Factory() : QObject(Core::instance ()) { }
 
         void Factory::Startup () {
-            if (!Core::arguments()->value("daemon").toBool()){
+            if (!Core::arguments()->value("daemon").toBool()) {
                 qDebug() << "(core) [Factory] Starting up...";
                 QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
                 const QVariant l_plgnLstVrnt = l_settings->value("Plugins/AutoStart");
 
-                if (l_plgnLstVrnt.isValid()){
+                if (l_plgnLstVrnt.isValid()) {
                     QStringList l_plgnLst = l_plgnLstVrnt.toStringList();
-                    if (!l_plgnLst.isEmpty()){
-                        foreach ( QString l_plgnUuid, l_plgnLst){
-                            if (l_plgnUuid.at(0) == QString("*").at(0)){
+                    if (!l_plgnLst.isEmpty()) {
+                        foreach ( QString l_plgnUuid, l_plgnLst) {
+                            if (l_plgnUuid.at(0) == QString("*").at(0)) {
                                 l_plgnUuid.chop(1);
                                 qDebug() << "(core) [Factory] Plugin" << Factory::attribute(l_plgnUuid,"Description/Name").toString() << "disabled for start-up.";
                             }
                             else {
-                                qDebug() << "(core) [Factory] Obtaining plugin" << Factory::attribute(l_plgnUuid,"Description/Name").toString() << "..";
+                                qDebug() << "(core) [Factory] Obtaining"
+                                << (( Factory::attribute(l_plgnUuid,"Plugin/Type").toString() == "API") ? "framework" : "plugin")
+                                << Factory::attribute(l_plgnUuid,"Description/Name").toString() << "..";
                                 Factory::loadPlugin (l_plgnUuid);
                             }
                         }
                     }
                 } else {
                     qWarning() << "(core) [Factory] No plug-ins determined for loading in configuration file!"      << endl
-                               << "Please check" << l_settings->fileName() << "for the option 'Plugins/AutoStart'"  << endl
-                               << "and ensure that plug-ins are defined for initial loading of Wintermute." << endl << endl
-                               << "*** Reset to default plug-in list.";
-                    l_settings->setValue("Plugins/AutoStart", "a9b6b020-f4f2-11e0-be50-0800200c9a66, 81da3bd6-bed5-4c74-aae6-44f48cd5330c, 6d2a54ae-043d-11e1-b46a-93253d2b7d89, 5f0741d0-026b-11e1-8f4e-5999c633b9c0");
+                    << "Please check" << l_settings->fileName() << "for the option 'Plugins/AutoStart'"  << endl
+                    << "and ensure that plug-ins are defined for initial loading of Wintermute." << endl << endl
+                    << "*** Reset to default plug-in list.";
+                    l_settings->setValue("Plugins/AutoStart", (QStringList() << "a9b6b020-f4f2-11e0-be50-0800200c9a66"
+                                         << "81da3bd6-bed5-4c74-aae6-44f48cd5330c"
+                                         << "6d2a54ae-043d-11e1-b46a-93253d2b7d89"
+                                         << "5f0741d0-026b-11e1-8f4e-5999c633b9c0").join(", "));
                 }
 
                 emit Factory::instance ()->started ();
@@ -76,17 +82,17 @@ namespace Wintermute {
         }
 
         AbstractPlugin* Factory::loadPlugin ( const QString &p_plgnUuid, const bool& p_forceLoad ) {
-            if (IPC::System::module () == "plugin" || p_forceLoad ){
-                AbstractPlugin* l_plgnBase = NULL;
+            if (IPC::System::module () == "plugin" || p_forceLoad ) {
+                AbstractPlugin* l_plgnBase = 0;
                 const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
                 QSettings* l_config = new QSettings(QApplication::organizationName(),p_plgnUuid);
                 const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
 
-                if (Factory::attribute(p_plgnUuid,"Plugin/Type").toString() == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid){
+                if (Factory::attribute(p_plgnUuid,"Plugin/Type").toString() == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid) {
                     const QDBusMessage l_callRunningList = QDBusMessage::createMethodCall (WNTR_DBUS_FACTORY_NAME,WNTR_DBUS_FACTORY_OBJNAME,WNTR_DBUS_FACTORY_OBJPATH,"loadedPlugins");
                     const QDBusMessage l_replyRunningList = QDBusConnection::sessionBus ().call(l_callRunningList,QDBus::BlockWithGui);
 
-                    if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid)){
+                    if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid)) {
                         QDBusMessage l_callLoadBackend = QDBusMessage::createMethodCall (QString(WNTR_DBUS_PLUGIN_NAME) + "." + l_apiUuid,WNTR_DBUS_PLUGIN_OBJNAME,WNTR_DBUS_PLUGIN_OBJPATH,"loadBackend");
                         l_callLoadBackend << p_plgnUuid;
                         const QDBusMessage l_replyLoadBackend = QDBusConnection::sessionBus ().call(l_callLoadBackend,QDBus::BlockWithGui);
@@ -103,29 +109,42 @@ namespace Wintermute {
                     return NULL;
                 }
 
-                if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ()){
+                if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ()) {
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
                     Core::exit(1,true);
                     return NULL;
                 }
 
-                if (!l_gnrcPlgn->loadPackages()){
+                if (!l_gnrcPlgn->loadPackages()) {
                     qWarning() << "(plugin) [Factory] Can't load dependency packages for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
                     return NULL;
                 }
 
-                if (!l_gnrcPlgn->loadPlugins()){
+                if (!l_gnrcPlgn->loadPlugins()) {
                     qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
                     return NULL;
                 }
 
-                if (!l_gnrcPlgn->loadLibrary()){
-                    qWarning() << "(plugin) [Factory] Can't load core library for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-                    return NULL;
-                }
+                l_gnrcPlgn->loadLibrary();
 
-                if ( l_gnrcPlgn->AbstractPlugin::m_loader->isLoaded() ) {
-                    l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->AbstractPlugin::m_loader->instance () );
+                if ( l_gnrcPlgn->isLoaded() ) {
+
+                    //try {
+                        l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
+#if 0
+                    } catch (std::bad_alloc& e) {
+                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Core object returned a NULL value.") << e.what();
+                        Core::exit(2,true);
+                        throw e;
+                        return 0;
+                    } catch (std::exception& e) {
+                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Unexpected exception caught.") << e.what();
+                        Core::exit(2,true);
+                        throw e;
+                        return 0;
+                    }
+#endif
+
                     l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
                     l_plgnBase->m_configuration = l_config;
                     l_plgnBase->m_settings = Factory::pluginSettings (p_plgnUuid);
@@ -146,14 +165,11 @@ namespace Wintermute {
                     l_plgnBase->start();
                     emit l_plgnBase->started();
 
-                    QObject::connect ( Core::instance (), SIGNAL(stopped()) ,
-                                       l_plgnBase       , SLOT(stop()) );
-                    QObject::connect ( Core::instance (), SIGNAL(stopped()) ,
-                                       l_plgnBase       , SIGNAL(stopped()) );
+                    QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT(stop()) );
+                    QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SIGNAL(stopped()) );
                 } else {
-                    qWarning() << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name();
-                    if (l_gnrcPlgn->m_loader)
-                        qDebug() << "(plugin) [Factory] Load error: " << l_gnrcPlgn->m_loader->errorString ();
+                    qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
+                    qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
 
                     emit Factory::instance ()->pluginCrashed (p_plgnUuid);
                     Core::exit(3,true);
@@ -163,10 +179,8 @@ namespace Wintermute {
                 emit Factory::instance ()->pluginLoaded (l_plgnBase->uuid ());
                 qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "loaded.";
                 return l_plgnBase;
-            } else {
-                Instance* l_inst = new Instance(p_plgnUuid,Factory::pluginSettings (p_plgnUuid));
-                Factory::instance ()->m_plgnPool.insert(p_plgnUuid,l_inst);
-            }
+            } else
+                Factory::instance ()->m_plgnPool.insert(p_plgnUuid,(new Instance(p_plgnUuid,Factory::pluginSettings (p_plgnUuid))));
 
             return NULL;
         }
@@ -174,7 +188,7 @@ namespace Wintermute {
         const QStringList Factory::loadedPlugins () {
             QStringList l_st;
             foreach (Instance* l_inst, Factory::instance ()->m_plgnPool)
-                l_st << l_inst->uuid();
+            l_st << l_inst->uuid();
 
             return l_st;
         }
@@ -197,8 +211,7 @@ namespace Wintermute {
         void Factory::unloadPlugin ( const QString& p_plgnUuid ) {
             doPluginUnload (p_plgnUuid);
 
-            //qDebug() << Factory::instance ()->m_plgnPool.count ();
-            if (Factory::instance ()->m_plgnPool.count () == 0){
+            if (Factory::instance ()->m_plgnPool.count () == 0) {
                 qWarning() << "(core) [Factory] No plug-ins running; exitting..";
                 Core::exit (0);
             }
@@ -242,14 +255,14 @@ namespace Wintermute {
         }
 
         void Factory::doPluginUnload (const QString &p_plgnUuid) {
-            if (Factory::loadedPlugins ().contains (p_plgnUuid)){
+            if (Factory::loadedPlugins ().contains (p_plgnUuid)) {
                 Instance* l_inst = Factory::instance ()->m_plgnPool.take (p_plgnUuid);
-                if (l_inst){
+                if (l_inst) {
                     l_inst->stop ();
                     emit Factory::instance ()->pluginUnloaded (p_plgnUuid);
                     qDebug() << "(core) [Factory] Plug-in" << Factory::attribute (p_plgnUuid,"Description/Name").toString () << "unloaded.";
                 }
-           }
+            }
         }
 
         /// @todo Unload every loaded plugin and free all resources using signals (we have the process, what's the point? just kill them.)
@@ -257,15 +270,15 @@ namespace Wintermute {
             qDebug() << "(core) [Factory] Unloading plugins..";
 
             foreach ( Instance* l_inst, s_factory->m_plgnPool )
-                unloadPlugin (l_inst->uuid ());
+            unloadPlugin (l_inst->uuid ());
 
             qDebug() << "(core) [Factory] Plugins unloaded.";
         }
 
-        QSettings* Factory::pluginSettings(const QString &p_plgnUuid){
+        QSettings* Factory::pluginSettings(const QString &p_plgnUuid) {
             const QString l_plgnSpecPath = QString(WNTR_PLUGINSPEC_PATH) + "/" + p_plgnUuid + ".spec";
 
-            if (!QFile::exists (l_plgnSpecPath)){
+            if (!QFile::exists (l_plgnSpecPath)) {
                 qWarning() << "(core) [Factory] Failed to load" << l_plgnSpecPath << "for reading!";
                 return NULL;
             }
@@ -273,10 +286,11 @@ namespace Wintermute {
             return new QSettings(l_plgnSpecPath,QSettings::IniFormat,Factory::instance ());
         }
 
-        QVariant Factory::attribute(const QString &p_plgnUuid, const QString &p_attrPth){
+        QVariant Factory::attribute(const QString &p_plgnUuid, const QString &p_attrPth) {
             QSettings* l_plgnSpec = pluginSettings (p_plgnUuid);
             QVariant l_val;
-            if (l_plgnSpec){
+
+            if (l_plgnSpec) {
                 l_val = l_plgnSpec->value (p_attrPth);
                 if (l_val.isNull() || !l_val.isValid())
                     l_val = l_plgnSpec->value("Configuration/" + const_cast<QString*>(&p_attrPth)->replace("/",":"));
@@ -294,25 +308,43 @@ namespace Wintermute {
         AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_loader(p_pl), m_settings(NULL) { }
 
         AbstractPlugin::AbstractPlugin(const AbstractPlugin &p_pb): QObject(p_pb.m_loader),
-                           m_loader(p_pb.m_loader), m_settings(p_pb.m_settings), m_configuration(p_pb.m_configuration) {  }
+                m_loader(p_pb.m_loader), m_settings(p_pb.m_settings), m_configuration(p_pb.m_configuration) {  }
 
-        const QString AbstractPlugin::author () const { return m_settings->value ("Description/Author").toString (); }
+        const QString AbstractPlugin::author () const {
+            return m_settings->value ("Description/Author").toString ();
+        }
 
-        const QString AbstractPlugin::name () const { return m_settings->value ("Description/Name").toString (); }
+        const QString AbstractPlugin::name () const {
+            return m_settings->value ("Description/Name").toString ();
+        }
 
-        const QString AbstractPlugin::vendorName () const { return m_settings->value ("Description/Vendor").toString (); }
+        const QString AbstractPlugin::vendorName () const {
+            return m_settings->value ("Description/Vendor").toString ();
+        }
 
-        const QString AbstractPlugin::uuid () const { return m_settings->value ("Version/UUID").toString (); }
+        const QString AbstractPlugin::uuid () const {
+            return m_settings->value ("Version/UUID").toString ();
+        }
 
-        const QString AbstractPlugin::description () const { return m_settings->value ("Description/Blurb").toString (); }
+        const QString AbstractPlugin::description () const {
+            return m_settings->value ("Description/Blurb").toString ();
+        }
 
-        const QString AbstractPlugin::webPage () const { return m_settings->value ("Description/WebPage").toString (); }
+        const QString AbstractPlugin::webPage () const {
+            return m_settings->value ("Description/WebPage").toString ();
+        }
 
-        const double AbstractPlugin::version () const { return m_settings->value ("Version/Plugin").toDouble (); }
+        const double AbstractPlugin::version () const {
+            return m_settings->value ("Version/Plugin").toDouble ();
+        }
 
-        const double AbstractPlugin::compatVersion () const { return m_settings->value ("Version/Compat",WNTR_VERSION).toDouble (); }
+        const double AbstractPlugin::compatVersion () const {
+            return m_settings->value ("Version/Compat",WNTR_VERSION).toDouble ();
+        }
 
-        const bool AbstractPlugin::isSupported () const { return WNTR_VERSION >= compatVersion (); }
+        const bool AbstractPlugin::isSupported () const {
+            return WNTR_VERSION >= compatVersion ();
+        }
 
         const QStringList AbstractPlugin::plugins () const {
             QStringList l_dep = m_settings->value ("Depends/Plugins").toStringList ();
@@ -325,7 +357,7 @@ namespace Wintermute {
             const QStringList l_plgnLst = this->plugins ();
             qDebug () << "(core) [AbstractPlugin] Loading plug-ins for" << name () << ";" << l_plgnLst.length () << "plugin(s) to be loaded.";
 
-            foreach (const QString l_plgn, l_plgnLst){
+            foreach (const QString l_plgn, l_plgnLst) {
                 const QString l_plgnUuid = l_plgn.split (" ").at (0);
                 if (Factory::loadedPlugins().contains(l_plgnUuid))
                     qDebug () << "(core) [AbstractPlugin] Dependency" << Factory::attribute(l_plgnUuid,"Description/Name").toString() << "already loaded.";
@@ -333,10 +365,10 @@ namespace Wintermute {
                     Factory::GenericPlugin* l_gnrc = new Factory::GenericPlugin(l_plgnUuid);
                     qDebug() << "(core) [AbstractPlugin] Loading dependency" << l_gnrc->name() << "...";
 
-                    if (l_gnrc->loadLibrary() && QFile::exists(l_gnrc->m_loader->fileName()))
+                    if (l_gnrc->loadLibrary())
                         qWarning() << "(core) [AbstractPlugin] Loaded symbols of plug-in" << Factory::attribute(l_plgnUuid,"Description/Name").toString() << ".";
                     else {
-                        qWarning() << "(core) [AbstractPlugin] Unable to load symbols of depedency" << l_gnrc->name() << ":" << l_gnrc->m_loader->errorString();
+                        qWarning() << "(core) [AbstractPlugin] Unable to load symbols of dependency" << l_gnrc->name() << ":" << l_gnrc->m_loader->errorString();
                         return false;
                     }
                 }
@@ -346,41 +378,41 @@ namespace Wintermute {
 
         const bool AbstractPlugin::hasPlugins () const {
             const QStringList l_deps = this->plugins ();
-            foreach (const QString l_dep, l_deps){
+            foreach (const QString l_dep, l_deps) {
                 const QString l_depName = l_dep.split (" ").at (0);
                 const QString l_depComparison = l_dep.split (" ").at (1);
                 const QString l_depVersion = l_dep.split (" ").at (2);
 
-                if (Factory::allPlugins ().contains (l_depName)){
+                if (Factory::allPlugins ().contains (l_depName)) {
                     if (!Factory::loadedPlugins ().contains (l_depName))
                         qDebug() << "(core) [AbstractPlugin] Dependency" << l_depName << "of" << this->name () << "isn't loaded.";
 
                     const AbstractPlugin* l_plgn = Factory::s_plugins.value (l_depName);
-                    if (l_depComparison == "=="){
-                        if (!(l_depVersion.toDouble () == l_plgn->version ())){
+                    if (l_depComparison == "==") {
+                        if (!(l_depVersion.toDouble () == l_plgn->version ())) {
                             qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version of" << l_depVersion;
                             return false;
                         }
-                    } else if (l_depComparison == ">"){
-                        if (!(l_depVersion.toDouble () > l_plgn->version ())){
+                    } else if (l_depComparison == ">") {
+                        if (!(l_depVersion.toDouble () > l_plgn->version ())) {
                             qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version greater than" << l_depVersion;
                             return false;
                         }
-                    } else if (l_depComparison == "<"){
-                        if (!(l_depVersion.toDouble () < l_plgn->version ())){
+                    } else if (l_depComparison == "<") {
+                        if (!(l_depVersion.toDouble () < l_plgn->version ())) {
                             qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version less than" << l_depVersion;
                             return false;
                         }
-                    } else if (l_depComparison == ">="){
-                        if (!(l_depVersion.toDouble () >= l_plgn->version ())){
+                    } else if (l_depComparison == ">=") {
+                        if (!(l_depVersion.toDouble () >= l_plgn->version ())) {
                             qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version of at least" << l_depVersion;
                             return false;
                         }
-                    } else if (l_depComparison == "=="){
-                        if (!(l_depVersion.toDouble () > l_plgn->version ())){
-                                qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version of at most" << l_depVersion;
-                                return false;
-                            }
+                    } else if (l_depComparison == "==") {
+                        if (!(l_depVersion.toDouble () > l_plgn->version ())) {
+                            qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version of at most" << l_depVersion;
+                            return false;
+                        }
                     } else {
                         qDebug() << "(core) [AbstractPlugin] <" << this->name () << "> : Invalid version string (" << l_depComparison << ").";
                     }
@@ -388,6 +420,10 @@ namespace Wintermute {
             }
 
             return true;
+        }
+
+        const bool AbstractPlugin::isLoaded() const {
+            return (m_loader) && m_loader->isLoaded();
         }
 
         const QStringList AbstractPlugin::packages () const {
@@ -402,7 +438,7 @@ namespace Wintermute {
         const bool AbstractPlugin::loadPackages() const {
             const QStringList l_deps = this->packages ();
             //qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << l_deps.length () << "package(s) to be loaded.";
-            foreach (const QString l_dep, l_deps){
+            foreach (const QString l_dep, l_deps) {
                 const QString l_depName = l_dep.split (" ").at (0);
             }
 
@@ -414,7 +450,7 @@ namespace Wintermute {
         const bool AbstractPlugin::hasPackages() const {
             const QStringList l_deps = this->packages ();
 
-            foreach (const QString l_dep, l_deps){
+            foreach (const QString l_dep, l_deps) {
                 const QString l_depName = l_dep.split (" ").at (0);
                 const QString l_depComparison = l_dep.split (" ").at (1);
                 const QString l_depVersion = l_dep.split (" ").at (2);
@@ -447,15 +483,20 @@ namespace Wintermute {
             QApplication::addLibraryPath(WNTR_PLUGIN_PATH);
             const QString l_plgnLibrary = m_settings->value("Version/Library").toString();
             const QString l_plgPth = QString(WNTR_PLUGIN_PATH) + "/lib" + l_plgnLibrary + ".so";
-            m_loader = new QPluginLoader ( l_plgPth , Factory::instance () );
-            m_loader->setLoadHints ( QLibrary::ResolveAllSymbolsHint );
-            m_loader->load ();
-            if (!m_loader->isLoaded())
-                qDebug() << "(plugin) [AbstractPlugin] Error loading library"  << l_plgPth << ":" << m_loader->errorString();
+
+            if (QLibrary::isLibrary(l_plgPth)) {
+                m_loader = new QPluginLoader ( l_plgPth , const_cast<AbstractPlugin*>(this) );
+                m_loader->setLoadHints(QLibrary::ExportExternalSymbolsHint | QLibrary::LoadArchiveMemberHint | QLibrary::ResolveAllSymbolsHint);
+                if (!m_loader->load ())
+                    qDebug() << "(plugin) [AbstractPlugin] Error loading plug-in library"  << l_plgPth << "."
+                    << "(plugin) [AbstractPlugin]" << m_loader->errorString();
+            } else
+                return false;
+
             return m_loader->isLoaded();
         }
 
-        AbstractPlugin::~AbstractPlugin (){
+        AbstractPlugin::~AbstractPlugin () {
             if (m_loader)
                 m_loader->unload ();
         }
@@ -463,7 +504,7 @@ namespace Wintermute {
         Instance::Instance() : m_uuid(), m_process(NULL), m_settings(NULL), QObject(Factory::instance()) { }
 
         Instance::Instance(const Instance &p_plgnInst) : m_uuid(p_plgnInst.m_uuid),
-            m_process(p_plgnInst.m_process), m_settings(p_plgnInst.m_settings), QObject(p_plgnInst.parent()) { }
+                m_process(p_plgnInst.m_process), m_settings(p_plgnInst.m_settings), QObject(p_plgnInst.parent()) { }
 
         Instance::Instance(const QString& p_plgnUuid, QSettings* p_settings) : m_uuid(p_plgnUuid),
                 m_settings(p_settings), m_process(NULL), QObject(Factory::instance ()) {
@@ -478,13 +519,13 @@ namespace Wintermute {
             this->stop ();
         }
 
-        void Instance::stop (){
+        void Instance::stop () {
             m_process->terminate ();
             m_process->close ();
         }
 
-        void Instance::start (){
-            if (!m_process){
+        void Instance::start () {
+            if (!m_process) {
                 m_process = new QProcess(Factory::instance ());
                 connect(m_process,SIGNAL(started()),this,SLOT(catchStart()));
                 connect(m_process,SIGNAL(error(QProcess::ProcessError)),this,SLOT(catchError(QProcess::ProcessError)));
@@ -500,57 +541,64 @@ namespace Wintermute {
             return (m_process != NULL && m_process->state () == QProcess::Running) && !m_uuid.isEmpty ();
         }
 
-        const QSettings* Instance::settings () { return m_settings; }
+        const QSettings* Instance::settings () {
+            return m_settings;
+        }
 
-        const QString Instance::uuid () { return m_uuid; }
+        const QString Instance::uuid () {
+            return m_uuid;
+        }
 
-        const QString Instance::name() { return m_settings->value("Description/Name").toString(); }
+        const QString Instance::name() {
+            return m_settings->value("Description/Name").toString();
+        }
 
-        void Instance::catchExit(int p_exitCode, const QProcess::ExitStatus& p_exitStatus){
-            switch (p_exitStatus){
-                case QProcess::NormalExit:
-                    if (p_exitCode == 0){
-                        //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
-                        emit stopped();
-                    } else
-                        catchExit(p_exitCode,QProcess::CrashExit);
+        void Instance::catchExit(int p_exitCode, const QProcess::ExitStatus& p_exitStatus) {
+            switch (p_exitStatus) {
+            case QProcess::NormalExit:
+                if (p_exitCode == 0) {
+                    //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
+                    emit stopped();
+                } else
+                    catchExit(p_exitCode,QProcess::CrashExit);
                 break;
 
-                case QProcess::CrashExit:
-                    if (p_exitCode != 0){
-                        qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted abnormally with code" << p_exitCode << ".";
-                        emit crashed();
-                    } else catchExit(p_exitCode,QProcess::NormalExit);
+            case QProcess::CrashExit:
+                if (p_exitCode != 0) {
+                    qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted abnormally with code" << p_exitCode << ".";
+                    emit crashed();
+                } else catchExit(p_exitCode,QProcess::NormalExit);
                 break;
 
-                default:
-                    qDebug() << p_exitCode << p_exitStatus;
+            default:
+                qDebug() << p_exitCode << p_exitStatus;
                 break;
             }
         }
 
-        void Instance::catchStart (){
+        void Instance::catchStart () {
             //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "running.";
             emit started();
         }
 
-        /// @todo Implement more efficient error-handling here (i.e.: what signal was sent, how it crashed, etc.).
-        void Instance::catchError (const QProcess::ProcessError &p_err){
-            switch (p_err){
-                case QProcess::Crashed:
-                    if (m_process->exitCode () != 0)
-                        qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has crashed.";
+        /// @todo Implement more efficient error-handling here (i.e.: what signal was sent, how it crashed, etc.) ...
+        void Instance::catchError (const QProcess::ProcessError &p_err) {
+            switch (p_err) {
+            case QProcess::Crashed:
+                if (m_process->exitCode () != 0)
+                    qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has crashed.";
                 break;
 
-                case QProcess::FailedToStart:
-                    qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has failed to start.";
+            case QProcess::FailedToStart:
+                qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has failed to start.";
                 break;
 
-                default:
-                    qDebug() << m_process->errorString ();
+            default:
+                qDebug() << m_process->errorString ();
                 break;
             }
         }
     }
 }
+
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

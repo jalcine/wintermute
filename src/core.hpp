@@ -24,152 +24,154 @@
 #define CORE_HPP
 
 #include "config.hpp"
+#include <QObject>
 #include <QVariantMap>
-#include <QtGui/QApplication>
+
+class QApplication;
 
 namespace Wintermute {
-    struct Core;
+struct Core;
+
+/**
+ * @brief The central management class of Wintermute.
+ *
+ * @c Wintermute::Core holds the vital activities of Wintermute's startup. It
+ * handles the actions from the outside system environment and, with a little
+ * Qt magic and hours of coding, transfers control to the parts of Wintermute
+ * that would be appropriate to be under control.
+ *
+ * @nonreentrant
+ * @class Core wintermute.hpp "include/wintermute/wintermute.hpp"
+ */
+class Core : public QObject {
+    Q_OBJECT
+
+public:
 
     /**
-     * @brief The central management class of Wintermute.
+     * @brief Default constructor.
      *
-     * @c Wintermute::Core holds the vital activities of Wintermute's startup. It
-     * handles the actions from the outside system environment and, with a little
-     * Qt magic and hours of coding, transfers control to the parts of Wintermute
-     * that would be appropriate to be under control.
+     * @attention This constructor should NEVER be used, it's called by the main()
+     * method of Wintermute, and needs never to be called again.
      *
-     * @nonreentrant
-     * @class Core wintermute.hpp "include/wintermute/wintermute.hpp"
+     * @fn Core
+     * @param argc The command line argument passed representing the number of given arguments.
+     * @param argv The command line argument passed representing the value of each argument.
+     * @badcode
      */
-    class Core : public QObject {
-        Q_OBJECT
+    explicit Core ( int&, char** );
 
-        public:
+    /**
+     * @brief Obtains an instance of the Core.
+     *
+     * Provided that a developer wishes to connect to the signals exposed by the core,
+     * this returns a pointer to the Core's only instance.
+     *
+     * @return A constant pointer to the Core.
+     * @fn instance
+     */
+    static Core* instance();
 
-            /**
-             * @brief Default constructor.
-             *
-             * @attention This constructor should NEVER be used, it's called by the main()
-             * method of Wintermute, and needs never to be called again.
-             *
-             * @fn Core
-             * @param argc The command line argument passed representing the number of given arguments.
-             * @param argv The command line argument passed representing the value of each argument.
-             * @badcode
-             */
-            explicit Core ( int&, char** );
+    /**
+     * @brief Obtains a pointer to the current arguments.
+     *
+     * This map contains a normalized list of the arguments that were passed on the
+     * command line. This is used mainly to save the ease of plug-ins having to check
+     * the string list given by Qt.
+     *
+     * @note This list only contains the qualified arguments in a list. Support for
+     *       arbitrary arguments is coming soon.
+     * @todo Add support for arbitrary arguments.
+     * @fn arguments
+     */
+    const static QVariantMap* arguments();
 
-            /**
-             * @brief Obtains an instance of the Core.
-             *
-             * Provided that a developer wishes to connect to the signals exposed by the core,
-             * this returns a pointer to the Core's only instance.
-             *
-             * @return A constant pointer to the Core.
-             * @fn instance
-             */
-            static Core* instance();
+    /**
+     * @brief Ends the program; with an optional exit code.
+     * @fn exit
+     */
+    static void exit(const int = 0, const bool = false);
 
-            /**
-             * @brief Obtains a pointer to the current arguments.
-             *
-             * This map contains a normalized list of the arguments that were passed on the
-             * command line. This is used mainly to save the ease of plug-ins having to check
-             * the string list given by Qt.
-             *
-             * @note This list only contains the qualified arguments in a list. Support for
-             *       arbitrary arguments is coming soon.
-             * @todo Add support for arbitrary arguments.
-             * @fn arguments
-             */
-            const static QVariantMap* arguments();
+signals:
+    /**
+     * @brief Raised once the core's ready to go.
+     *
+     * This signal is emitted when the core's done loading prerequisites.
+     * This is <b>after</b> all plug-ins have been loaded and the inter-
+     * process communication system is active.
+     *
+     * @fn initialized
+     * @see Wintermute::Core::Initialize()
+     */
+    void started() const;
 
-            /**
-             * @brief Ends the program; with an optional exit code.
-             * @fn endProgram
-             */
-            static void exit(const int = 0, const bool = false);
+    /**
+     * @brief Raised once the core's ready to shut down.
+     *
+     * This signal is emitted when the core's ready to shutdown the system.
+     * This is <b>before</b> any plug-ins are unloaded, but not before they're
+     * deinitialized.
+     *
+     * @fn deinitialized
+     */
+    void stopped() const;
 
-        signals:
-            /**
-             * @brief Raised once the core's ready to go.
-             *
-             * This signal is emitted when the core's done loading prerequisites.
-             * This is <b>after</b> all plug-ins have been loaded and the inter-
-             * process communication system is active.
-             *
-             * @fn initialized
-             * @see Wintermute::Core::Initialize()
-             */
-            void started() const;
+protected:
+    /**
+     * @brief Configures Wintermute's core.
+     *
+     * This method holds the instructions tos set-up some imperative command line arguments.
+     * It then parses each argument and saves it to the global cache of arguments for other
+     * utilities to use.
+     *
+     * @fn Configure
+     * @param argc The command line argument passed representing the number of given arguments.
+     * @param argv The command line argument passed representing the value of each argument.
+     * @see Wintermute::Core::Initialize()
+     */
+    static void Configure ( int& , char ** );
 
-            /**
-             * @brief Raised once the core's ready to shut down.
-             *
-             * This signal is emitted when the core's ready to shutdown the system.
-             * This is <b>before</b> any plug-ins are unloaded, but not before they're
-             * deinitialized.
-             *
-             * @fn deinitialized
-             */
-            void stopped() const;
+protected slots:
 
-        protected:
-            /**
-             * @brief Configures Wintermute's core.
-             *
-             * This method holds the instructions tos set-up some imperative command line arguments.
-             * It then parses each argument and saves it to the global cache of arguments for other
-             * utilities to use.
-             *
-             * @fn Configure
-             * @param argc The command line argument passed representing the number of given arguments.
-             * @param argv The command line argument passed representing the value of each argument.
-             * @see Wintermute::Core::Initialize()
-             */
-            static void Configure ( int& , char ** );
+    /**
+     * @brief Initializes the system.
+     *
+     * Does the first bit of initialization work for the core process of Wintermute by
+     * loading the plug-ins and then the data system.
+     *
+     * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
+     * @see Wintermute::Core::initialized
+     * @fn Initialize
+     */
+    static void start();
 
-            /**
-             * @brief Initializes the system.
-             *
-             * Does the first bit of initialization work for the core process of Wintermute by
-             * loading the plug-ins and then the data system.
-             *
-             * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
-             * @see Wintermute::Core::initialized
-             * @fn Initialize
-             */
-            static void start();
+    /**
+     * @brief Deinitializes the system.
+     *
+     * Cleans up all of the work for the core processes and runs the approriate disconnection methods.
+     *
+     * @see Wintermute::Core::deinitialized
+     * @fn Deinitialize
+     */
+    static void stop ();
 
-            /**
-             * @brief Deinitializes the system.
-             *
-             * Cleans up all of the work for the core processes and runs the approriate disconnection methods.
-             *
-             * @see Wintermute::Core::deinitialized
-             * @fn Deinitialize
-             */
-            static void stop ();
+private:
+    static QApplication* s_app; /**< Holds the object representing the current Q(Core)Application. */
+    static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
+    static Core* s_core; /**< The internal object that represents the core of Wintermute. */
 
-        private:
-            static QApplication* s_app; /**< Holds the object representing the current Q(Core)Application. */
-            static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
-            static Core* s_core; /**< The internal object that represents the core of Wintermute. */
+    /**
+     * @brief Processes the command line arguments.
+     *
+     * This method handles the nitty-gritty work of converting all of those command-line arguments
+     * to something less C-style-ish and more C++ workable.
+     *
+     * @fn configureCommandLine
+     */
+    static void configureCommandLine();
 
-            /**
-             * @brief Processes the command line arguments.
-             *
-             * This method handles the nitty-gritty work of converting all of those command-line arguments
-             * to something less C-style-ish and more C++ workable.
-             *
-             * @fn configureCommandLine
-             */
-            static void configureCommandLine();
-
-        private slots:
-            void doDeinit() const;
-            void unixSignal(int signal) const;
-    };
+    void unixSignal(const int&) const;
+};
 }
 
 #endif /* CORE_HPP */

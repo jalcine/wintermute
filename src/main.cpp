@@ -22,6 +22,7 @@
 
 #include "logging.hpp"
 #include "wintermute.hpp"
+#include <QApplication>
 
 using namespace Wintermute;
 

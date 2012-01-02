@@ -25,25 +25,27 @@
 #include <QTime>
 
 namespace Wintermute {
-    struct Logging;
+struct Logging;
 
-    /// @todo Allow triggering the saving of such logs to disc.
-    /// @todo Allow dynamic printing of certain flags (overriding build commands).
-    class Logging : public QObject {
-        Q_OBJECT
+/// @todo Allow triggering the saving of such logs to disc.
+/// @todo Allow dynamic printing of certain flags (overriding build commands).
+/// @todo Add a event filter for this into the application.
+class Logging : public QObject {
+    Q_OBJECT
+    Q_DISABLE_COPY(Logging)
 
-        signals:
-            void linePrinted(const QString& );
-            void warningEncountered(const QString& );
-            void criticalErrorEncountered(const QString& );
-            void fatalErrorEncountered(const QString& );
+signals:
+    void linePrinted(const QString& );
+    void warningEncountered(const QString& );
+    void criticalErrorEncountered(const QString& );
+    void fatalErrorEncountered(const QString& );
 
-        public:
-            static void catchQDebugMessage(QtMsgType, const char* );
-            static Logging* instance();
+public:
+    static void catchQDebugMessage(QtMsgType, const char* );
+    static Logging* instance();
 
-        private:
-            Logging();
-            static Logging* s_inst;
-    };
+private:
+    Logging();
+    static Logging* s_inst;
+};
 }
