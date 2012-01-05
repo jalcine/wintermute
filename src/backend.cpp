@@ -34,8 +34,8 @@ namespace Wintermute {
         AbstractFramework::AbstractFramework(AbstractPlugin* p_plgn, QObject *p_prnt) : QObject(p_prnt),
             m_bckndLst(), m_dfltBcknd(), m_plgn(p_plgn) {
 
-            connect(p_plgn,SIGNAL(started()),this,SLOT(start()));
-            connect(p_plgn,SIGNAL(stopped()),this,SLOT(stop()));
+            connect(p_plgn, SIGNAL(started()), this, SLOT(start()));
+            connect(p_plgn, SIGNAL(stopped()), this, SLOT(stop()));
 
             m_dfltBcknd = m_plgn->attribute("Framework/Defaults").toStringList();
             m_strtMd = (StartupMode) m_plgn->attribute("Framework/StartMode").toInt();

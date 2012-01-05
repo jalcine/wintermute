@@ -44,12 +44,12 @@ namespace Wintermute {
          * and optimized base for said transactions are required. The GenericAdaptor
          * serves as a base for communicating between multiple processes of Wintermute.
          *
-         * @see Plugins::PluginFactoryAdaptor, Plugins::PluginInstanceAdaptor, CoreAdaptor
+         * @see Plugins::PluginFactoryAdaptor, Plugins::PluginPluginHandleAdaptor, CoreAdaptor
          * @class GenericAdaptor adaptors.hpp "src/adaptors.hpp"
          */
         class GenericAdaptor : public QDBusAbstractAdaptor {
             Q_OBJECT
-            Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Adaptor")
+            Q_CLASSINFO("D-Bus Interface", "org.thesii.Wintermute.Adaptor")
 
             private:
                 QTimer *m_tmr;
@@ -118,7 +118,7 @@ namespace Wintermute {
          * @see Plugins::Factory
          * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
          */
-        class PluginFactoryAdaptor : public Adaptor {
+        class PluginFactoryAdaptor : public IPC::GenericAdaptor {
             Q_OBJECT
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Factory")
 
@@ -143,12 +143,15 @@ namespace Wintermute {
                 const QStringList loadedPlugins() const;
         };
 
-        class InstanceAdaptor : public Adaptor {
+        /**
+         *
+         */
+        class PluginHandleAdaptor : public IPC::GenericAdaptor {
             Q_OBJECT
-            Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.PluginInstance")
+            Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.PluginPluginHandle")
 
             public:
-                explicit InstanceAdaptor(Plugins::AbstractPlugin*);
+                explicit PluginHandleAdaptor(Plugins::AbstractPlugin *);
 
             signals:
                 void pluginLoaded(const QString&) const;
@@ -161,7 +164,7 @@ namespace Wintermute {
         };
     }
 
-    class CoreAdaptor : public Adaptor {
+    class CoreAdaptor : public IPC::GenericAdaptor {
         Q_OBJECT
         Q_PROPERTY(const QVariantMap Arguments READ arguments)
         Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Master")

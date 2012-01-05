@@ -26,8 +26,6 @@
 #ifndef _WNTR_CONFIG_HPP__
 #define _WNTR_CONFIG_HPP__
 
-#cmakedefine01 DEBUG
-
 // D-Bus Section
 #define WNTR_DBUS_SERVICE_NAME "org.thesii.Wintermute"
 

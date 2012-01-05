@@ -5,6 +5,10 @@ include(WintermuteMacros)
 
 file(GLOB WINTERMUTE_SOURCES "*.cpp")
 file(GLOB WINTERMUTE_HEADERS "*.hpp")
+file(GLOB plugins_SOURCES "plugins/*.cpp")
+file(GLOB plugins_HEADERS "plugins/*.hpp")
+list(APPEND WINTERMUTE_SOURCES ${plugins_SOURCES})
+list(APPEND WINTERMUTE_HEADERS ${plugins_HEADERS})
 QT4_WRAP_CPP(WINTERMUTE_SOURCES ${WINTERMUTE_HEADERS})
 
 ## Targets

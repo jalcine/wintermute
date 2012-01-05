@@ -19,11 +19,16 @@
  * @endlegalese
  */
 
+// Local
 #include "config.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
 #include "plugins.hpp"
+
+// Standard
 #include <iostream>
+
+// Qt
 #include <QtDebug>
 #include <QProcess>
 #include <QtDebug>
@@ -31,50 +36,59 @@
 #include <QVariantMap>
 #include <QSettings>
 #include <QDateTime>
+
+// Boost
 #include <boost/program_options.hpp>
 
 using namespace std;
-using namespace Wintermute;
 namespace po = boost::program_options;
 
 using boost::program_options::variables_map;
 using boost::program_options::variable_value;
 using boost::program_options::options_description;
-using std::cout;
-using std::endl;
 
 namespace Wintermute {
     QApplication* Core::s_app = NULL;
     QVariantMap* Core::s_args = NULL;
     Core* Core::s_core = NULL;
 
-    Core::Core ( int &p_argc, char **p_argv ) {
+    Core::Core(int &p_argc, char **p_argv)
+    {
         Core::s_core = this;
-        Core::Configure ( p_argc,p_argv );
+        Core::Configure(p_argc, p_argv);
+        Core::start();
     }
 
-    void Core::Configure ( int& p_argc, char** p_argv ) {
-        QString l_ipcMod = "master";
-        s_app = new QApplication ( p_argc, p_argv );
-        s_app->setApplicationName ( "Wintermute" );
-        s_app->setApplicationVersion ( QString::number ( WNTR_VERSION ) );
-        s_app->setOrganizationDomain ( "thesii.org" );
-        s_app->setOrganizationName ( "Synthetic Intellect Institute" );
-        connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT ( doDeinit() ) );
-        s_core->setParent (s_app);
+    void Core::Configure(int& p_argc, char** p_argv)
+    {
+        QString l_module = "master";
+        s_app = new QApplication(p_argc, p_argv);
+        s_app->setApplicationName("Wintermute");
+        s_app->setApplicationVersion(QString::number(WNTR_VERSION));
+        s_app->setOrganizationDomain("thesii.org");
+        s_app->setOrganizationName("Synthetic Intellect Institute");
+        connect(s_app, SIGNAL(aboutToQuit()), s_core, SLOT(doDeinit()));
+        s_core->setParent(s_app);
 
         configureCommandLine();
 
-        if ( s_args->count ( "ipc" ) != 0 )
-            l_ipcMod = s_args->value ( "ipc" ).toString ();
-
-        Core::start ();
+        if (s_args->count("ipc") != 0)
+            l_module = s_args->value("ipc").toString();
     }
 
-    const QVariantMap* Core::arguments () { return s_args; }
+    const QVariantMap* Core::arguments() 
+    { 
+        return s_args; 
+    }
+
+    Core* Core::instance()
+    {
+        return s_core;
+    }
 
     /// @todo Allow arbitrary arguments to be added into the system
-    void Core::configureCommandLine () {
+    void Core::configureCommandLine()
+    {
         variables_map l_vm;
         s_args = new QVariantMap;
         int l_argc = s_app->argc ();
@@ -157,32 +171,32 @@ namespace Wintermute {
             cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
     }
 
-    Core* Core::instance () {
-        return s_core;
-    }
-
-    void Core::unixSignal (int p_sig) const {
+    void Core::unixSignal(int p_sig) const
+    {
         qDebug() << "(core) Caught signal " << p_sig;
         switch (p_sig){
 
         }
     }
 
-    void Core::start () {
-        if (Core::arguments ()->value("ipc").toString () == "master"){
-            cout << qPrintable ( s_app->applicationName () ) << " "
-                 << qPrintable ( s_app->applicationVersion () )
-                 << " (pid " << s_app->applicationPid () << ") :: "
+    void Core::start()
+    {
+        if (Core::arguments()->value("ipc").toString() == "master")
+        {
+            cout << qPrintable(s_app->applicationName()) << " "
+                 << qPrintable(s_app->applicationVersion())
+                 << " (pid " << s_app->applicationPid() << ") :: "
                  << "Artificial intelligence for Common Man. (Licensed under the GPL3+)" << endl;
         }
 
-        IPC::System::start ();
+        IPC::System::start();
 
-        QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
+        QSettings* l_settings = new QSettings("Synthetic Intellect Institute", "Wintermute");
         QDateTime l_lstDate = l_settings->value("Statistics/StartupDate").toDateTime();
 
-        if (IPC::System::module() == "master"){
-            l_settings->setValue("Statistics/StartupDate",QDateTime::currentDateTime());
+        if (IPC::System::module() == "master")
+        {
+            l_settings->setValue("Statistics/StartupDate", QDateTime::currentDateTime());
             qDebug() << "(core) Last startup was at" << l_lstDate.toLocalTime().toString();
         }
 
@@ -190,20 +204,30 @@ namespace Wintermute {
         qDebug() << "(core) [Core] Started.";
     }
 
-    void Core::endProgram (int p_exitCode, bool p_killSystem){
-        qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
+    void Core::exit(int p_exitCode, bool p_killSystem)
+    {
+        qDebug() << "(core) [" << IPC::System::module() << "] Exitting...";
 
-        if (IPC::System::module () != "master" && arguments ()->value ("help") == "ignore" && p_killSystem){
-            QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
-            QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
-            if (l_reply.type () == QDBusMessage::ErrorMessage){
-                qDebug() << "(core) [" << IPC::System::module () << "] [module = " << IPC::System::module () << "] Can't terminate master module of Wintermute :"
-                         << l_reply.errorMessage ();
+        if (IPC::System::module () != "master"
+                && arguments()->value("help") == "ignore" && p_killSystem)
+        {
+            QDBusMessage l_msg = QDBusMessage::createMethodCall("org.thesii.Wintermute",
+                                                                "/Master", "org.thesii.Wintermute.Master", "quit");
+            QDBusMessage l_reply = IPC::System::bus()->call (l_msg,QDBus::Block);
+            if (l_reply.type() == QDBusMessage::ErrorMessage) {
+                qDebug() << "(core) [" << IPC::System::module() << "] [module = " << IPC::System::module()
+                         << "] Can't terminate master module of Wintermute :"
+                         << l_reply.errorMessage();
             }
         }
 
         QApplication::exit(p_exitCode);
         qDebug() << "(core) [" << IPC::System::module () << "] Exited.";
+    }
+
+    void Core::quit()
+    {
+        Core::exit(0);
     }
 
     void Core::stop () {

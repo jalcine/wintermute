@@ -23,7 +23,10 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
+// Local
 #include "config.hpp"
+
+// Qt
 #include <QVariantMap>
 #include <QtGui/QApplication>
 
@@ -31,7 +34,7 @@ namespace Wintermute {
     struct Core;
 
     /**
-     * @brief The central management class of Wintermute.
+     * @brief The central management class of Wintermute Core program.
      *
      * @c Wintermute::Core holds the vital activities of Wintermute's startup. It
      * handles the actions from the outside system environment and, with a little
@@ -85,10 +88,14 @@ namespace Wintermute {
             const static QVariantMap* arguments();
 
             /**
-             * @brief Ends the program; with an optional exit code.
-             * @fn endProgram
+             * @brief Ends the program; with an exit code.
              */
-            static void endProgram(const int = 0, const bool = false);
+            static void exit(const int, const bool = false);
+
+            /**
+             * @brief Ends the program with success exit code.
+             */
+            static void quit();
 
         signals:
             /**

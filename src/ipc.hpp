@@ -79,6 +79,14 @@ namespace Wintermute {
             Q_OBJECT
             Q_DISABLE_COPY(System)
             
+            private:
+                System(QObject* = 0);
+                ~System();
+                QString m_appMod;
+                QDBusConnection* m_cnntn;
+                Adaptor* m_adapt;
+                static System* s_inst;
+
             signals:            
                 /**
                  * @brief Does the work of adding user data-types (user PODs) as
@@ -106,7 +114,7 @@ namespace Wintermute {
                  * @fn currentModule
                  * @return The name of the running module.
                  */
-                static inline const QString module() { return instance()->m_appMod; }
+                static const QString module();
 
                 /**
                  * @brief Obtains the currently running bus.
@@ -129,14 +137,6 @@ namespace Wintermute {
                 static const bool registerObject(const QString&, QDBusAbstractAdaptor* );
                 
                 static System* instance();
-
-            private:
-                System(QObject* = 0);
-                ~System();
-                QString m_appMod;
-                QDBusConnection* m_cnntn;
-                Adaptor* m_adapt;
-                static System* s_inst;
         };
     }
 }

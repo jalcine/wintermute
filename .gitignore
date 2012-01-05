@@ -1,7 +1,6 @@
 *~
 *.kdev4
 *.patch
+.pc
 build
-lib
-CMakeLists.txt.user*
-src/config.hpp
+debian
