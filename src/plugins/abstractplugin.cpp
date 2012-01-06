@@ -1,3 +1,25 @@
+/**
+ * @file abstractplugin.cpp
+ * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ *
+ * @legalese
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ * @endlegalese
+ */
+
 // Local
 #include "config.hpp"
 #include "abstractplugin.hpp"
@@ -18,21 +40,21 @@ AbstractPlugin::AbstractPlugin(const AbstractPlugin &p_pb): QObject(p_pb.m_plgnL
                    m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {}
 
 // Access methods
-QString AbstractPlugin::author() const { return m_settings->value ("Description/Author").toString(); }
+QString AbstractPlugin::author() const { return m_settings->value("Description/Author").toString(); }
 
-QString AbstractPlugin::name() const { return m_settings->value ("Description/Name").toString(); }
+QString AbstractPlugin::name() const { return m_settings->value("Description/Name").toString(); }
 
-QString AbstractPlugin::vendorName() const { return m_settings->value ("Description/Vendor").toString(); }
+QString AbstractPlugin::vendorName() const { return m_settings->value("Description/Vendor").toString(); }
 
-QString AbstractPlugin::uuid() const { return m_settings->value ("Version/UUID").toString(); }
+QString AbstractPlugin::uuid() const { return m_settings->value("Version/UUID").toString(); }
 
-QString AbstractPlugin::description() const { return m_settings->value ("Description/Blurb").toString(); }
+QString AbstractPlugin::description() const { return m_settings->value("Description/Blurb").toString(); }
 
-QString AbstractPlugin::webPage() const { return m_settings->value ("Description/WebPage").toString(); }
+QString AbstractPlugin::webPage() const { return m_settings->value("Description/WebPage").toString(); }
 
-double AbstractPlugin::version() const { return m_settings->value ("Version/Plugin").toDouble(); }
+double AbstractPlugin::version() const { return m_settings->value("Version/Plugin").toDouble(); }
 
-double AbstractPlugin::compatVersion() const { return m_settings->value ("Version/Compat", WNTR_VERSION).toDouble(); }
+double AbstractPlugin::compatVersion() const { return m_settings->value("Version/Compat", WNTR_VERSION).toDouble(); }
 
 bool AbstractPlugin::isSupported() const { return WNTR_VERSION >= compatVersion(); }
 

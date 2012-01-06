@@ -4,3 +4,4 @@
 .pc
 build
 debian
+CMakeLists.txt.user
