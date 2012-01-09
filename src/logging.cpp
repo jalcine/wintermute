@@ -21,10 +21,11 @@
  */
 
 #include "logging.hpp"
-#include <QApplication>
-#include <stdio.h>
-#include <stdlib.h>
+#include "config.hpp"
+#include <cstdlib>
+#include <cstdio>
 #include <iostream>
+#include <QApplication>
 
 using namespace std;
 using std::string;
@@ -66,7 +67,6 @@ void Logging::catchQDebugMessage(QtMsgType p_typ, const char *p_msg) {
     }
 
     l_str += p_msg;
-
     fprintf(stderr, "%s\n", l_str.c_str());
 }
 }

@@ -32,6 +32,7 @@ struct Logging;
 /// @todo Add a event filter for this into the application.
 class Logging : public QObject {
     Q_OBJECT
+    Q_CLASSINFO("objectName","Logging Singleton")
     Q_DISABLE_COPY(Logging)
 
 signals:

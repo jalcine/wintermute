@@ -48,6 +48,7 @@ namespace Wintermute {
          */
         class GenericAdaptor : public QDBusAbstractAdaptor {
             Q_OBJECT
+            Q_CLASSINFO("objectName","Generic D-Bus Adaptor")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Adaptor")
 
         private:
@@ -102,7 +103,7 @@ namespace Wintermute {
         };
     }
 
-    typedef IPC::GenericAdaptor Adaptor;
+    typedef IPC::GenericAdaptor AbstractAdaptor;
 
     namespace Plugins {
         struct AbstractPlugin;
@@ -117,8 +118,9 @@ namespace Wintermute {
          * @see Plugins::Factory
          * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
          */
-        class PluginFactoryAdaptor : public Adaptor {
+        class PluginFactoryAdaptor : public AbstractAdaptor {
             Q_OBJECT
+            Q_CLASSINFO("objectName","D-Bus Adaptor for Plugins")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Factory")
 
         public:
@@ -142,8 +144,9 @@ namespace Wintermute {
             const QStringList loadedPlugins() const;
         };
 
-        class InstanceAdaptor : public Adaptor {
+        class InstanceAdaptor : public AbstractAdaptor {
             Q_OBJECT
+            Q_CLASSINFO("objectName","D-Bus Adaptor for Plug-in Instances")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.PluginInstance")
 
         public:
@@ -160,9 +163,10 @@ namespace Wintermute {
         };
     }
 
-    class CoreAdaptor : public Adaptor {
+    class CoreAdaptor : public AbstractAdaptor {
         Q_OBJECT
         Q_PROPERTY(const QVariantMap Arguments READ arguments)
+        Q_CLASSINFO("objectName","D-Bus Adaptor for Core Module")
         Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Master")
 
     public:

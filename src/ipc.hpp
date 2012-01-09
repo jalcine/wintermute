@@ -79,6 +79,7 @@ struct System;
 class System : public QObject {
     friend class Plugins::Factory;
     Q_OBJECT
+    Q_CLASSINFO("objectName","IPC Singelton")
     Q_DISABLE_COPY(System)
 
 signals:
@@ -122,7 +123,7 @@ public:
      * @brief Obtains the adaptor being used (most likely the SystemAdaptor).
      * @fn adaptor
      */
-    static Adaptor* adaptor();
+    static AbstractAdaptor* adaptor();
 
     /**
      * @brief Registers an Adaptor onto the current D-Bus bus.
@@ -139,7 +140,7 @@ private:
     ~System();
     QString m_appMod;
     QDBusConnection* m_cnntn;
-    Adaptor* m_adapt;
+    AbstractAdaptor* m_adapt;
     static System* s_inst;
 };
 }

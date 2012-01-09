@@ -24,6 +24,10 @@
 #include "ipc.hpp"
 #include "plugins.hpp"
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <execinfo.h>
+
 #include <QtDebug>
 #include <QtDebug>
 #include <QProcess>
@@ -187,7 +191,13 @@ void Core::start () {
         qDebug() << "(core) Last startup was at" << l_lstDate.toLocalTime().toString();
     }
 
-    emit s_core->started();
+    //try {
+        emit s_core->started();
+    /*} catch (std::exception& e ){
+        qDebug() << "Exception occured when starting module instance: " << e.what();
+        uncaught_exception();
+        throw e;
+    }*/
 
     qDebug() << "(core) [Core] Started.";
 }

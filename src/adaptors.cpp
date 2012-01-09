@@ -83,7 +83,7 @@ const QString GenericAdaptor::module () const {
 }
 
 namespace Plugins {
-PluginFactoryAdaptor::PluginFactoryAdaptor() : Adaptor(Factory::instance ()) {
+PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor(Factory::instance ()) {
     setAutoRelaySignals (true);
 }
 
@@ -107,7 +107,7 @@ void PluginFactoryAdaptor::quit () const {
     Factory::Shutdown ();
 }
 
-InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : Adaptor(Core::instance ()) {
+InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance ()) {
     if (p_plgn == NULL) {
         emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
         QApplication::quit ();
@@ -148,7 +148,7 @@ void InstanceAdaptor::loadBackend(const QString &p_uuid) {
 }
 }
 
-CoreAdaptor::CoreAdaptor() : Adaptor(Core::instance ()) { }
+CoreAdaptor::CoreAdaptor() : AbstractAdaptor(Core::instance ()) { }
 
 const QVariantMap CoreAdaptor::arguments () const {
     return *(Core::arguments ());

@@ -90,9 +90,8 @@ typedef QHash<QString, AbstractPlugin*> PluginList;
  * @todo Add conflicting plug-ins as a specification addition.
  */
 class AbstractPlugin : public QObject {
-    friend class Factory;
-    friend class InstanceAdaptor;
     Q_OBJECT
+    Q_CLASSINFO("objectName","Plug-in")
     Q_PROPERTY(const double Version READ version)
     Q_PROPERTY(const double CompatibleVersion READ compatVersion)
     Q_PROPERTY(const QString UUID READ uuid)
@@ -103,6 +102,8 @@ class AbstractPlugin : public QObject {
     Q_PROPERTY(const QString WebPage READ webPage)
     Q_PROPERTY(const QStringList Packages READ packages)
     Q_PROPERTY(const QStringList Plugins READ plugins)
+    friend class Factory;
+    friend class InstanceAdaptor;
 
 signals:
     /**
@@ -127,11 +128,12 @@ protected:
     const bool loadLibrary() const;
 
 public:
+    Q_DISABLE_COPY(AbstractPlugin)
     /**
      * @brief Empty, nullifying constructor.
      * @fn AbstractPlugin
      */
-    explicit AbstractPlugin() : QObject(NULL), m_loader(NULL), m_settings(NULL), m_configuration(NULL) { }
+    explicit AbstractPlugin() : QObject(0), m_loader(0), m_settings(0), m_configuration(0) { }
 
     /**
      * @brief Loads a plug-in based on the QPluginLoader.
@@ -139,13 +141,6 @@ public:
      * @param p_pl The plug-in to be loaded from disk.
      */
     AbstractPlugin(QPluginLoader* );
-
-    /**
-     * @brief Default copy constructor.
-     * @fn AbstractPlugin
-     * @param p_pb The plug-in to be copied.
-     */
-    AbstractPlugin(AbstractPlugin const &);
 
     /**
      * @brief Default deconstructor.
@@ -332,6 +327,7 @@ class Instance : public QObject {
     friend class Factory;
     Q_OBJECT
     Q_DISABLE_COPY(Instance)
+    Q_CLASSINFO("objectName","Factory Plug-in Instance")
     Q_PROPERTY(const bool Active READ isActive)
     Q_PROPERTY(const QString Name READ name)
 
@@ -440,6 +436,7 @@ private slots:
 class Factory : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY(Factory)
+    Q_CLASSINFO("objectName","Plug-in Factory Singleton")
     friend class AbstractPlugin;
 
 signals:

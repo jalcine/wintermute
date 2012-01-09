@@ -99,7 +99,7 @@ QDBusConnection* System::bus() {
     return instance()->m_cnntn;
 }
 
-Adaptor* System::adaptor () {
+AbstractAdaptor* System::adaptor () {
     return instance()->m_adapt;
 }
 

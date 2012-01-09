@@ -45,6 +45,7 @@ struct Core;
  */
 class Core : public QObject {
     Q_OBJECT
+    Q_CLASSINFO("objectName","Wintermute's Core")
 
 public:
 

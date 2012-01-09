@@ -128,22 +128,17 @@ namespace Wintermute {
                 l_gnrcPlgn->loadLibrary();
 
                 if ( l_gnrcPlgn->isLoaded() ) {
-
-                    //try {
+                    try {
                         l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
-#if 0
                     } catch (std::bad_alloc& e) {
                         qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Core object returned a NULL value.") << e.what();
-                        Core::exit(2,true);
                         throw e;
                         return 0;
                     } catch (std::exception& e) {
                         qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Unexpected exception caught.") << e.what();
-                        Core::exit(2,true);
                         throw e;
                         return 0;
                     }
-#endif
 
                     l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
                     l_plgnBase->m_configuration = l_config;
@@ -165,8 +160,8 @@ namespace Wintermute {
                     l_plgnBase->start();
                     emit l_plgnBase->started();
 
-                    QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT(stop()) );
-                    QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SIGNAL(stopped()) );
+                    //QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT(stop()) );
+                    //QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SIGNAL(stopped()) );
                 } else {
                     qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
                     qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
@@ -270,7 +265,7 @@ namespace Wintermute {
             qDebug() << "(core) [Factory] Unloading plugins..";
 
             foreach ( Instance* l_inst, s_factory->m_plgnPool )
-            unloadPlugin (l_inst->uuid ());
+                unloadPlugin (l_inst->uuid ());
 
             qDebug() << "(core) [Factory] Plugins unloaded.";
         }

@@ -52,6 +52,11 @@
 #define WNTR_LOCALE "@WINTERMUTE_LOCALE@"
 #define WNTR_DATA_DIR "@WINTER_DATA_INSTALL_DIR@"
 
+// Nifty debugging macros.
+#define TRACE_MSG fprintf(stderr, __FUNCTION__     \
+                                         "() [%s:%d] here I am\n", \
+                         __FILE__, __LINE__)
+
 #endif // __CONFIG_HPP__
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

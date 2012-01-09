@@ -37,6 +37,7 @@ namespace Wintermute {
 
         class AbstractFramework : public QObject {
             Q_OBJECT
+            Q_CLASSINFO("objectName","Abstract Framework")
             Q_DISABLE_COPY(AbstractFramework)
             Q_PROPERTY(const StartupMode Mode READ startMode WRITE setStartMode)
 
@@ -87,6 +88,7 @@ namespace Wintermute {
 
         class AbstractBackend : public QObject {
             Q_OBJECT
+            Q_CLASSINFO("objectName","Abstract Backend")
             Q_PROPERTY(const QString ID READ id)
             Q_PROPERTY(const bool Active READ isActive)
             friend class AbstractFramework;
