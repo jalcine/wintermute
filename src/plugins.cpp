@@ -85,7 +85,6 @@ namespace Wintermute {
             if (IPC::System::module () == "plugin" || p_forceLoad ) {
                 AbstractPlugin* l_plgnBase = 0;
                 const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
-                QSettings* l_config = new QSettings(QApplication::organizationName(),p_plgnUuid);
                 const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
 
                 if (Factory::attribute(p_plgnUuid,"Plugin/Type").toString() == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid) {
@@ -131,18 +130,18 @@ namespace Wintermute {
                     try {
                         l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
                     } catch (std::bad_alloc& e) {
-                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Core object returned a NULL value.") << e.what();
+                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in") << l_gnrcPlgn->name() << tr(": Core object returned a NULL value.") << e.what();
                         throw e;
                         return 0;
                     } catch (std::exception& e) {
-                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in: Unexpected exception caught.") << e.what();
+                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in") << l_gnrcPlgn->name() << tr(": Unexpected exception caught.") << e.what();
                         throw e;
                         return 0;
                     }
 
                     l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
-                    l_plgnBase->m_configuration = l_config;
-                    l_plgnBase->m_settings = Factory::pluginSettings (p_plgnUuid);
+                    l_plgnBase->m_configuration = l_gnrcPlgn->m_configuration;
+                    l_plgnBase->m_settings = l_gnrcPlgn->m_settings;
 
                     if (IPC::System::module() == "plugin" && !p_forceLoad)
                         s_plugin = l_plgnBase;
@@ -157,11 +156,8 @@ namespace Wintermute {
                     if (Factory::currentPlugin()->m_settings->value("Plugin/Type").toString() == "API")
                         Factory::s_plugins.insert ( l_plgnBase->uuid (), l_plgnBase );
 
-                    l_plgnBase->start();
-                    emit l_plgnBase->started();
-
-                    //QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SLOT(stop()) );
-                    //QObject::connect ( Core::instance (), SIGNAL(stopped()) , l_plgnBase, SIGNAL(stopped()) );
+                    l_plgnBase->doStart();
+                    QObject::connect( Core::instance(), SIGNAL(stopped()), l_plgnBase, SLOT(doStop()) );
                 } else {
                     qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
                     qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
@@ -300,10 +296,17 @@ namespace Wintermute {
                 l_plgnSpec->setValue (p_attrPth,p_attrVal);
         }
 
-        AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_loader(p_pl), m_settings(NULL) { }
+        AbstractPlugin::AbstractPlugin() : QObject(Core::instance()),
+            m_loader(0), m_settings(0), m_configuration(0) {
+        }
+
+        AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(Core::instance()),
+            m_loader(p_pl), m_settings(0), m_configuration(0) {
+        }
 
         AbstractPlugin::AbstractPlugin(const AbstractPlugin &p_pb): QObject(p_pb.m_loader),
-                m_loader(p_pb.m_loader), m_settings(p_pb.m_settings), m_configuration(p_pb.m_configuration) {  }
+                m_loader(p_pb.m_loader), m_settings(p_pb.m_settings), m_configuration(p_pb.m_configuration) {
+        }
 
         const QString AbstractPlugin::author () const {
             return m_settings->value ("Description/Author").toString ();
@@ -460,7 +463,7 @@ namespace Wintermute {
             l_val = m_configuration->value(p_attrPath);
 
             if (l_val.isNull() || !l_val.isValid())
-                l_val = m_configuration->value("Configuration/" + const_cast<QString*>(&p_attrPath)->replace("/",":"));
+                l_val = m_settings->value("Configuration/" + const_cast<QString*>(&p_attrPath)->replace("/",":"));
 
             return l_val;
         }
@@ -552,7 +555,7 @@ namespace Wintermute {
             switch (p_exitStatus) {
             case QProcess::NormalExit:
                 if (p_exitCode == 0) {
-                    //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
+                    qDebug() << "(core) [PluginInstance] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
                     emit stopped();
                 } else
                     catchExit(p_exitCode,QProcess::CrashExit);
@@ -572,7 +575,7 @@ namespace Wintermute {
         }
 
         void Instance::catchStart () {
-            //qDebug() << "(core) [PluginInstance] Plug-in" << name() << "running.";
+            qDebug() << "(core) [PluginInstance] Plug-in" << name() << "running.";
             emit started();
         }
 
@@ -592,6 +595,27 @@ namespace Wintermute {
                 qDebug() << m_process->errorString ();
                 break;
             }
+        }
+
+        Factory::GenericPlugin::GenericPlugin() : AbstractPlugin() {
+        }
+
+        Factory::GenericPlugin::GenericPlugin(const QString& p_uuid) : AbstractPlugin() {
+            AbstractPlugin::m_settings = Factory::pluginSettings(p_uuid);
+            AbstractPlugin::m_configuration = new QSettings("Synthetic Intellect Institute",p_uuid);
+        }
+
+        Factory::GenericPlugin::~GenericPlugin() { }
+
+        void AbstractPlugin::doStart()
+        {
+            start();
+            emit started();
+        }
+
+        void AbstractPlugin::doStop() {
+            stop();
+            emit stopped();
         }
     }
 }

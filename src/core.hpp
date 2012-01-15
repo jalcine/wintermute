@@ -28,6 +28,7 @@
 #include <QVariantMap>
 
 class QApplication;
+class QSocketNotifier;
 
 namespace Wintermute {
 struct Core;
@@ -41,8 +42,9 @@ struct Core;
  * that would be appropriate to be under control.
  *
  * @nonreentrant
- * @class Core wintermute.hpp "include/wintermute/wintermute.hpp"
+ * @class Core wintermute.hpp "core.hpp" 
  */
+/// @todo Implement a means of having this class catch the signals of the system.
 class Core : public QObject {
     Q_OBJECT
     Q_CLASSINFO("objectName","Wintermute's Core")
@@ -170,8 +172,6 @@ private:
      * @fn configureCommandLine
      */
     static void configureCommandLine();
-
-    void unixSignal(const int&) const;
 };
 }
 

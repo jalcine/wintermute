@@ -23,12 +23,17 @@
 #include "logging.hpp"
 #include "wintermute.hpp"
 #include <QApplication>
+#include <visual/api.hpp>
+#include <visual/plugin.hpp>
 
 using namespace Wintermute;
 
 int main ( int argc, char** argv ) {
     qInstallMsgHandler(Logging::catchQDebugMessage);
     Core l_core ( argc , argv );
+    Wintermute::Visual::Plugin* l_plgn = new Wintermute::Visual::Plugin;
+    Wintermute::Visual::Framework l_frmk;
+    l_frmk.start();
     return QApplication::exec();
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -133,7 +133,7 @@ public:
      * @brief Empty, nullifying constructor.
      * @fn AbstractPlugin
      */
-    explicit AbstractPlugin() : QObject(0), m_loader(0), m_settings(0), m_configuration(0) { }
+    explicit AbstractPlugin();
 
     /**
      * @brief Loads a plug-in based on the QPluginLoader.
@@ -315,6 +315,8 @@ protected slots:
 private slots:
     const bool loadPlugins() const;
     const bool loadPackages() const;
+    void doStart();
+    void doStop();
 };
 
 /**
@@ -492,11 +494,9 @@ public:
         friend class AbstractPlugin;
 
     public:
-        GenericPlugin() { }
-        GenericPlugin(const QString& p_plgnUuid) {
-            AbstractPlugin::m_settings = Factory::pluginSettings(p_plgnUuid);
-        }
-        ~GenericPlugin() { }
+        GenericPlugin();
+        GenericPlugin(const QString& );
+        ~GenericPlugin();
 
     private:
         virtual void start () const { }

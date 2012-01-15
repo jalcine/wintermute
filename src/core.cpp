@@ -27,6 +27,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <execinfo.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 #include <QtDebug>
 #include <QtDebug>
@@ -36,6 +40,7 @@
 #include <QVariantMap>
 #include <QLibraryInfo>
 #include <QApplication>
+#include <QSocketNotifier>
 #include <boost/program_options.hpp>
 
 using namespace std;
@@ -167,13 +172,6 @@ Core* Core::instance () {
     return s_core;
 }
 
-void Core::unixSignal (const int& p_sig) const {
-    qDebug() << "(core) Caught signal " << p_sig;
-    switch (p_sig) {
-
-    }
-}
-
 void Core::start () {
     if (Core::arguments ()->value("ipc").toString () == "master") {
         cout << qPrintable ( s_app->applicationName () ) << " "
@@ -191,14 +189,7 @@ void Core::start () {
         qDebug() << "(core) Last startup was at" << l_lstDate.toLocalTime().toString();
     }
 
-    //try {
-        emit s_core->started();
-    /*} catch (std::exception& e ){
-        qDebug() << "Exception occured when starting module instance: " << e.what();
-        uncaught_exception();
-        throw e;
-    }*/
-
+    emit s_core->started();
     qDebug() << "(core) [Core] Started.";
 }
 
@@ -222,5 +213,6 @@ void Core::stop () {
     emit s_core->stopped ();
     qDebug() << "(core) [" << IPC::System::module() << "] Process stopped.";
 }
+
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

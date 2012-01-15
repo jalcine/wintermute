@@ -91,23 +91,25 @@ namespace Wintermute {
         void AbstractFramework::start() {
             qDebug() << "(core) [AbstractFramework] Starting...";
             switch (m_strtMd) {
-            case Configuration: {
-                if (!m_dfltBcknd.empty()) {
-                    foreach (const QString& l_bcknd, m_dfltBcknd) {
-                        AbstractBackend* l_bck = AbstractBackend::obtainBackend(l_bcknd);
-                        if (l_bck)
-                            m_bckndLst.insert(l_bcknd,l_bck);
-                        else
-                            qDebug() << "(core) [AbstractFramework] Backend" << Factory::attribute(l_bcknd,"Description/Name").toString() << "couldn't be loaded.";
-                    }
-                } else
-                    qDebug() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
-            };
+                case Configuration: {
+                    if (!m_dfltBcknd.empty()) {
+                        foreach (const QString& l_bcknd, m_dfltBcknd) {
+                            AbstractBackend* l_bck = AbstractBackend::obtainBackend(l_bcknd);
+                            if (!l_bck){
+                                qDebug() << "(core) [AbstractFramework] Backend" << Factory::attribute(l_bcknd,"Description/Name").toString() << "couldn't be loaded.";
+                                return;
+                            }
 
-            default:
-            case Manual: {
-                // What's there to do? :P
-            };
+                            m_bckndLst.insert(l_bcknd,l_bck);
+                        }
+                    } else
+                        qDebug() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
+                };
+
+                default:
+                case Manual: {
+                    // What's there to do? :P
+                };
             }
 
 
@@ -153,6 +155,7 @@ namespace Wintermute {
         }
 
         /// @note Load the associated plug-in. On load, it should register its backend to the global list.
+        /// @note It should determine if the plug-in exists on the system (need addition of a method to Factory).
         AbstractBackend* AbstractBackend::obtainBackend(const QString& l_bcknd) {
             qDebug() << "(core) [AbstractBackend] Obtaining back-end" << l_bcknd << "...";
             if (!AbstractBackend::s_lst.contains(l_bcknd)) {
