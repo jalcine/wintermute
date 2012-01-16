@@ -127,7 +127,7 @@ namespace Wintermute {
 
         AbstractFramework* AbstractFramework::obtainFramework(const QString &p_uuid) {
             if (!s_frmk.contains(p_uuid))
-                return NULL;
+                return 0;
             return s_frmk.value(p_uuid);
         }
 
@@ -167,7 +167,7 @@ namespace Wintermute {
                 }
             }
 
-            return NULL;
+            return 0;
         }
 
         AbstractBackend::~AbstractBackend() {

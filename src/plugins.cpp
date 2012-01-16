@@ -116,7 +116,7 @@ namespace Wintermute {
                 if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ()) {
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
                     Core::exit(1,true);
-                    return NULL;
+                    return 0;
                 }
 
                 // Checks if this shouldn't be loaded in this module but rather in it's specified API module.
@@ -144,7 +144,7 @@ namespace Wintermute {
 
                     emit Factory::instance ()->pluginCrashed (p_plgnUuid);
                     Core::exit(3,true);
-                    return NULL;
+                    return 0;
                 }
 
                 emit Factory::instance ()->pluginLoaded (l_plgnBase->uuid ());
@@ -153,7 +153,7 @@ namespace Wintermute {
             } else
                 Factory::instance ()->m_plgnPool.insert(p_plgnUuid,(new Instance(p_plgnUuid,Factory::pluginSettings (p_plgnUuid))));
 
-            return NULL;
+            return 0;
         }
 
         const QStringList Factory::loadedPlugins () {
@@ -173,7 +173,7 @@ namespace Wintermute {
         }
 
         Factory* Factory::instance () {
-            if (s_fctry == NULL)
+            if (s_fctry == 0)
                 s_fctry = new Factory;
 
             return s_fctry;
@@ -205,11 +205,11 @@ namespace Wintermute {
                     return s_rtPlgn;
                 else {
                     qWarning() << "(core) [Factory] No plug-in has been loaded yet.";
-                    return NULL;
+                    return 0;
                 }
             } else {
                 qWarning() << "(core) [Factory] This isn't a plug-in instance; can't find the current plug-in!";
-                return NULL;
+                return 0;
             }
         }
 
@@ -256,7 +256,7 @@ namespace Wintermute {
 
             if (!QFile::exists (l_plgnSpecPath)) {
                 qWarning() << "(core) [Factory] Failed to load" << l_plgnSpecPath << "for reading!";
-                return NULL;
+                return 0;
             }
 
             return new QSettings(l_plgnSpecPath,QSettings::IniFormat,Factory::instance ());
@@ -522,13 +522,13 @@ namespace Wintermute {
                 m_loader->unload ();
         }
 
-        Instance::Instance() : m_uuid(), m_process(NULL), m_settings(NULL), QObject(Factory::instance()) { }
+        Instance::Instance() : m_uuid(), m_process(0), m_settings(0), QObject(Factory::instance()) { }
 
         Instance::Instance(const Instance &p_plgnInst) : m_uuid(p_plgnInst.m_uuid),
                 m_process(p_plgnInst.m_process), m_settings(p_plgnInst.m_settings), QObject(p_plgnInst.parent()) { }
 
         Instance::Instance(const QString& p_plgnUuid, QSettings* p_settings) : m_uuid(p_plgnUuid),
-                m_settings(p_settings), m_process(NULL), QObject(Factory::instance ()) {
+                m_settings(p_settings), m_process(0), QObject(Factory::instance ()) {
             connect(this,SIGNAL(destroyed(QObject*)),this,SLOT(stop()));
             connect(this,SIGNAL(crashed(QString)),Factory::instance (),SLOT(doPluginCrash(QString)));
             connect(this,SIGNAL(started(QString)),Factory::instance (),SLOT(doPluginLoad(QString)));
@@ -559,7 +559,7 @@ namespace Wintermute {
         }
 
         const bool Instance::isActive () {
-            return (m_process != NULL && m_process->state () == QProcess::Running) && !m_uuid.isEmpty ();
+            return (m_process != 0 && m_process->state () == QProcess::Running) && !m_uuid.isEmpty ();
         }
 
         const QSettings* Instance::settings () {

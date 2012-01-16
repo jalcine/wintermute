@@ -108,7 +108,7 @@ void PluginFactoryAdaptor::quit () const {
 }
 
 InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance ()) {
-    if (p_plgn == NULL) {
+    if (p_plgn == 0) {
         emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
         QApplication::quit ();
     } else {

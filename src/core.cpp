@@ -54,9 +54,9 @@ using std::cout;
 using std::endl;
 
 namespace Wintermute {
-QApplication* Core::s_app = NULL;
-QVariantMap* Core::s_args = NULL;
-Core* Core::s_core = NULL;
+QApplication* Core::s_app = 0;
+QVariantMap* Core::s_args = 0;
+Core* Core::s_core = 0;
 
 Core::Core ( int &p_argc, char **p_argv ) {
     Core::s_core = this;
@@ -197,6 +197,7 @@ void Core::exit (int p_exitCode, bool p_killSystem) {
     qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
 
     if ((IPC::System::module () != "master" && arguments ()->value ("help") == "ignore") && p_killSystem) {
+        qDebug() << "(core) [" << IPC::System::module () << "] Closing root appplication...";
         QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master", "org.thesii.Wintermute.Master","quit");
         QDBusMessage l_reply = IPC::System::bus ()->call (l_msg,QDBus::Block);
         if (l_reply.type () == QDBusMessage::ErrorMessage)
