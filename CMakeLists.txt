@@ -14,7 +14,6 @@ include(WintermuteMacros)
 
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
-find_package(WntrVisual REQUIRED)
 find_package(Boost COMPONENTS
     system
     program_options
@@ -40,10 +39,8 @@ set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIR}"
     ${Boost_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}
-    ${WNTRVISUAL_INCLUDE_DIRS}
     ${WINTER_PLUGIN_INCLUDE_INSTALL_DIR})
 set(WINTERMUTE_LIBRARIES
-    ${WNTRVISUAL_LIBRARIES}
     ${Boost_LIBRARIES}
     ${QT_LIBRARIES})
 set(WINTERMUTE_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")

@@ -24,6 +24,7 @@
 #include "core.hpp"
 #include "config.hpp"
 #include "plugins.hpp"
+#include "backend.hpp"
 #include <QDir>
 #include <QtDBus>
 #include <QtDebug>
@@ -34,9 +35,9 @@ using namespace std;
 
 namespace Wintermute {
     namespace Plugins {
-        PluginList Factory::s_plugins;
-        Factory* Factory::s_factory = 0;
-        AbstractPlugin* Factory::s_plugin = 0;
+        PluginList Factory::s_plgnLst;
+        Factory* Factory::s_fctry = 0;
+        AbstractPlugin* Factory::s_rtPlgn = 0;
 
         Factory::Factory() : QObject(Core::instance ()) { }
 
@@ -81,32 +82,36 @@ namespace Wintermute {
             }
         }
 
+        const bool Factory::loadBackendPlugin(const QString& p_plgnUuid){
+            const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
+
+            if (Factory::attribute(p_plgnUuid,"Plugin/Type").toString() == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid) {
+                const QDBusMessage l_callRunningList = QDBusMessage::createMethodCall (WNTR_DBUS_FACTORY_NAME,WNTR_DBUS_FACTORY_OBJNAME,WNTR_DBUS_FACTORY_OBJPATH,"loadedPlugins");
+                const QDBusMessage l_replyRunningList = QDBusConnection::sessionBus ().call(l_callRunningList,QDBus::BlockWithGui);
+
+                if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid)) {
+                    QDBusMessage l_callLoadBackend = QDBusMessage::createMethodCall (QString(WNTR_DBUS_PLUGIN_NAME) + "." + l_apiUuid,WNTR_DBUS_PLUGIN_OBJNAME,WNTR_DBUS_PLUGIN_OBJPATH,"loadBackend");
+                    l_callLoadBackend << p_plgnUuid;
+                    const QDBusMessage l_replyLoadBackend = QDBusConnection::sessionBus ().call(l_callLoadBackend,QDBus::BlockWithGui);
+
+                    if (!l_replyLoadBackend.arguments().at(0).toBool())
+                        qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "failed.";
+                    else
+                        qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "succeeded.";
+
+                } else
+                    qDebug() << "(plugin) [Factory] API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "isn't running for backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString();
+
+                Core::exit();
+                return true;
+            }
+
+            return false;
+        }
+
         AbstractPlugin* Factory::loadPlugin ( const QString &p_plgnUuid, const bool& p_forceLoad ) {
             if (IPC::System::module () == "plugin" || p_forceLoad ) {
                 AbstractPlugin* l_plgnBase = 0;
-                const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
-                const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
-
-                if (Factory::attribute(p_plgnUuid,"Plugin/Type").toString() == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid) {
-                    const QDBusMessage l_callRunningList = QDBusMessage::createMethodCall (WNTR_DBUS_FACTORY_NAME,WNTR_DBUS_FACTORY_OBJNAME,WNTR_DBUS_FACTORY_OBJPATH,"loadedPlugins");
-                    const QDBusMessage l_replyRunningList = QDBusConnection::sessionBus ().call(l_callRunningList,QDBus::BlockWithGui);
-
-                    if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid)) {
-                        QDBusMessage l_callLoadBackend = QDBusMessage::createMethodCall (QString(WNTR_DBUS_PLUGIN_NAME) + "." + l_apiUuid,WNTR_DBUS_PLUGIN_OBJNAME,WNTR_DBUS_PLUGIN_OBJPATH,"loadBackend");
-                        l_callLoadBackend << p_plgnUuid;
-                        const QDBusMessage l_replyLoadBackend = QDBusConnection::sessionBus ().call(l_callLoadBackend,QDBus::BlockWithGui);
-
-                        if (!l_replyLoadBackend.arguments().at(0).toBool())
-                            qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "failed.";
-                        else
-                            qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "succeeded.";
-
-                    } else
-                        qDebug() << "(plugin) [Factory] API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "isn't running for backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString();
-
-                    Core::exit();
-                    return NULL;
-                }
 
                 if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ()) {
                     qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
@@ -114,50 +119,25 @@ namespace Wintermute {
                     return NULL;
                 }
 
-                if (!l_gnrcPlgn->loadPackages()) {
-                    qWarning() << "(plugin) [Factory] Can't load dependency packages for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-                    return NULL;
-                }
+                // Checks if this shouldn't be loaded in this module but rather in it's specified API module.
+                if (loadBackendPlugin(p_plgnUuid))
+                    return 0;
 
-                if (!l_gnrcPlgn->loadPlugins()) {
-                    qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-                    return NULL;
-                }
+                const ShellPlugin* l_gnrcPlgn = new ShellPlugin(p_plgnUuid);
 
-                l_gnrcPlgn->loadLibrary();
+                if (!l_gnrcPlgn->loadRequiredComponents())
+                    return 0;
 
-                if ( l_gnrcPlgn->isLoaded() ) {
-                    try {
-                        l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
-                    } catch (std::bad_alloc& e) {
-                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in") << l_gnrcPlgn->name() << tr(": Core object returned a NULL value.") << e.what();
-                        throw e;
-                        return 0;
-                    } catch (std::exception& e) {
-                        qDebug() << "[AbstractPlugin] " << tr("Error initializing plug-in") << l_gnrcPlgn->name() << tr(": Unexpected exception caught.") << e.what();
-                        throw e;
-                        return 0;
-                    }
-
+                if ( l_gnrcPlgn->loadLibrary() ) {
+                    l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
                     l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
-                    l_plgnBase->m_configuration = l_gnrcPlgn->m_configuration;
-                    l_plgnBase->m_settings = l_gnrcPlgn->m_settings;
+                    l_plgnBase->loadSettings(p_plgnUuid);
 
+                    /// @note Shouldn't the first plug-in be the one loaded here?
                     if (IPC::System::module() == "plugin" && !p_forceLoad)
-                        s_plugin = l_plgnBase;
-
-                    if ( !l_plgnBase->isSupported () ) {
-                        qWarning() << "(plugin) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
-                        Core::exit(2,true);
-                        return NULL;
-                    } else
-                        qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
-
-                    if (Factory::currentPlugin()->m_settings->value("Plugin/Type").toString() == "API")
-                        Factory::s_plugins.insert ( l_plgnBase->uuid (), l_plgnBase );
+                        s_rtPlgn = l_plgnBase;
 
                     l_plgnBase->doStart();
-                    QObject::connect( Core::instance(), SIGNAL(stopped()), l_plgnBase, SLOT(doStop()) );
                 } else {
                     qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
                     qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
@@ -193,10 +173,10 @@ namespace Wintermute {
         }
 
         Factory* Factory::instance () {
-            if (s_factory == NULL)
-                s_factory = new Factory;
+            if (s_fctry == NULL)
+                s_fctry = new Factory;
 
-            return s_factory;
+            return s_fctry;
         }
 
         void Factory::unloadPlugin ( const QString& p_plgnUuid ) {
@@ -213,16 +193,21 @@ namespace Wintermute {
 
             //qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (l_plgnUuid,"Description/Name").toString () << "; uuid:" << l_plgnUuid << "...";
 
-            s_plugin = loadPlugin(l_plgnUuid);
-            InstanceAdaptor* l_adpt = new InstanceAdaptor(s_plugin);
+            loadPlugin(l_plgnUuid);
+            InstanceAdaptor* l_adpt = new InstanceAdaptor(Factory::currentPlugin());
             IPC::System::registerObject ("/Plugin",l_adpt);
             IPC::System::instance()->m_adapt = l_adpt;
         }
 
         AbstractPlugin* Factory::currentPlugin() {
-            if (IPC::System::module() == "plugin")
-                return s_plugin;
-            else {
+            if (IPC::System::module() == "plugin"){
+                if (s_rtPlgn)
+                    return s_rtPlgn;
+                else {
+                    qWarning() << "(core) [Factory] No plug-in has been loaded yet.";
+                    return NULL;
+                }
+            } else {
                 qWarning() << "(core) [Factory] This isn't a plug-in instance; can't find the current plug-in!";
                 return NULL;
             }
@@ -230,7 +215,7 @@ namespace Wintermute {
 
         void Factory::unloadStandardPlugin () {
             const QString l_plgnUuid = Core::arguments ()->value ("plugin").toString ();
-            //qDebug() << "(core) [Factory] Removing plug-in" << l_plgnUuid << "...";
+            qDebug() << "(core) [Factory] Removing plug-in" << l_plgnUuid << "...";
             unloadPlugin(l_plgnUuid);
         }
 
@@ -260,7 +245,7 @@ namespace Wintermute {
         void Factory::Shutdown () {
             qDebug() << "(core) [Factory] Unloading plugins..";
 
-            foreach ( Instance* l_inst, s_factory->m_plgnPool )
+            foreach ( Instance* l_inst, s_fctry->m_plgnPool )
                 unloadPlugin (l_inst->uuid ());
 
             qDebug() << "(core) [Factory] Plugins unloaded.";
@@ -360,7 +345,7 @@ namespace Wintermute {
                 if (Factory::loadedPlugins().contains(l_plgnUuid))
                     qDebug () << "(core) [AbstractPlugin] Dependency" << Factory::attribute(l_plgnUuid,"Description/Name").toString() << "already loaded.";
                 else {
-                    Factory::GenericPlugin* l_gnrc = new Factory::GenericPlugin(l_plgnUuid);
+                    Factory::ShellPlugin* l_gnrc = new Factory::ShellPlugin(l_plgnUuid);
                     qDebug() << "(core) [AbstractPlugin] Loading dependency" << l_gnrc->name() << "...";
 
                     if (l_gnrc->loadLibrary())
@@ -385,7 +370,7 @@ namespace Wintermute {
                     if (!Factory::loadedPlugins ().contains (l_depName))
                         qDebug() << "(core) [AbstractPlugin] Dependency" << l_depName << "of" << this->name () << "isn't loaded.";
 
-                    const AbstractPlugin* l_plgn = Factory::s_plugins.value (l_depName);
+                    const AbstractPlugin* l_plgn = Factory::s_plgnLst.value(l_depName);
                     if (l_depComparison == "==") {
                         if (!(l_depVersion.toDouble () == l_plgn->version ())) {
                             qDebug() << "(core) [AbstractPlugin] " << this->name () << "requires" << l_depName << "to have a version of" << l_depVersion;
@@ -475,6 +460,44 @@ namespace Wintermute {
         /// @todo Allow resetting of specific attributes.
         void AbstractPlugin::resetAttributes() {
             m_configuration->clear();
+        }
+
+        void AbstractPlugin::doStart()
+        {
+            connect( Core::instance(), SIGNAL(stopped()), this, SLOT(doStop()) );
+            start();
+            emit started();
+        }
+
+        void AbstractPlugin::doStop() {
+            stop();
+            emit stopped();
+        }
+
+        const bool AbstractPlugin::loadRequiredComponents() const
+        {
+            if ( !isSupported () ) {
+                qWarning() << "(plugin) [Factory] Plugin" << name () << "is incompatiable with this version of Wintermute.";
+                return false;
+            } else
+                qDebug() << "(plugin) [Factory] Plugin" << name () << "v." << version() << "is compatiable with this version of Wintermute.";
+
+            if (!loadPackages()) {
+                qWarning() << "(plugin) [Factory] Can't load dependency packages for plugin" << name() << ".";
+                return false;
+            }
+
+            if (!loadPlugins()) {
+                qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plugin" << name() << ".";
+                return false;
+            }
+
+            return true;
+        }
+
+        void AbstractPlugin::loadSettings(const QString& p_uuid) {
+            m_settings = Factory::pluginSettings(p_uuid);
+            m_configuration = new QSettings("Synthetic Intellect Institute",p_uuid);
         }
 
         const bool AbstractPlugin::loadLibrary () const {
@@ -597,27 +620,16 @@ namespace Wintermute {
             }
         }
 
-        Factory::GenericPlugin::GenericPlugin() : AbstractPlugin() {
+        Factory::ShellPlugin::ShellPlugin() : AbstractPlugin() {
         }
 
-        Factory::GenericPlugin::GenericPlugin(const QString& p_uuid) : AbstractPlugin() {
-            AbstractPlugin::m_settings = Factory::pluginSettings(p_uuid);
-            AbstractPlugin::m_configuration = new QSettings("Synthetic Intellect Institute",p_uuid);
+        Factory::ShellPlugin::ShellPlugin(const QString& p_uuid) : AbstractPlugin() {
+            loadSettings(p_uuid);
         }
 
-        Factory::GenericPlugin::~GenericPlugin() { }
-
-        void AbstractPlugin::doStart()
-        {
-            start();
-            emit started();
-        }
-
-        void AbstractPlugin::doStop() {
-            stop();
-            emit stopped();
-        }
+        Factory::ShellPlugin::~ShellPlugin() { }
     }
 }
+
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

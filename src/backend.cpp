@@ -33,12 +33,6 @@ namespace Wintermute {
 
         AbstractFramework::AbstractFramework(AbstractPlugin* p_plgn, QObject *p_prnt) : QObject(p_prnt),
                 m_bckndLst(), m_dfltBcknd(), m_plgn(p_plgn) {
-            Q_CHECK_PTR(p_plgn);
-            connect(p_plgn,SIGNAL(started()),this,SLOT(start()));
-            connect(p_plgn,SIGNAL(stopped()),this,SLOT(stop()));
-
-            m_dfltBcknd = m_plgn->attribute("Framework/Defaults").toStringList();
-            m_strtMd = (StartupMode) m_plgn->attribute("Framework/StartMode").toInt();
             AbstractFramework::s_frmk.insert(m_plgn->uuid(),this);
         }
 
@@ -90,6 +84,13 @@ namespace Wintermute {
 
         void AbstractFramework::start() {
             qDebug() << "(core) [AbstractFramework] Starting...";
+            m_dfltBcknd = m_plgn->attribute("Framework/Defaults").toStringList();
+            m_strtMd = (StartupMode) m_plgn->attribute("Framework/StartMode").toInt();
+            connect(m_plgn,SIGNAL(started()),this,SLOT(start()));
+            connect(m_plgn,SIGNAL(stopped()),this,SLOT(stop()));
+
+            qDebug() << "(core) [AbstractFramework] Startup mode is " << m_strtMd;
+
             switch (m_strtMd) {
                 case Configuration: {
                     if (!m_dfltBcknd.empty()) {
@@ -101,6 +102,7 @@ namespace Wintermute {
                             }
 
                             m_bckndLst.insert(l_bcknd,l_bck);
+                            connect(this,SIGNAL(started()),l_bck,SLOT(start()));
                         }
                     } else
                         qDebug() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";

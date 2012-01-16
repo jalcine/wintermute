@@ -125,7 +125,11 @@ private:
     QSettings* m_configuration;
 
 protected:
+    void loadSettings(const QString&);
     const bool loadLibrary() const;
+    const bool loadPlugins() const;
+    const bool loadPackages() const;
+    const bool loadRequiredComponents() const;
 
 public:
     Q_DISABLE_COPY(AbstractPlugin)
@@ -313,8 +317,6 @@ protected slots:
     virtual void stop() const = 0;
 
 private slots:
-    const bool loadPlugins() const;
-    const bool loadPackages() const;
     void doStart();
     void doStop();
 };
@@ -489,14 +491,14 @@ public slots:
     static void Shutdown();
 
 public:
-    class GenericPlugin : public AbstractPlugin {
+    class ShellPlugin : public AbstractPlugin {
         friend class Factory;
         friend class AbstractPlugin;
 
     public:
-        GenericPlugin();
-        GenericPlugin(const QString& );
-        ~GenericPlugin();
+        ShellPlugin();
+        ShellPlugin(const QString& );
+        ~ShellPlugin();
 
     private:
         virtual void start () const { }
@@ -544,11 +546,12 @@ public:
     static void setAttribute(const QString&, const QString&, const QVariant& );
 
 private:
-    static PluginList s_plugins; /**< Holds a list  */
-    static Factory* s_factory;
-    static AbstractPlugin* s_plugin;
+    static PluginList s_plgnLst; /**< Holds a list  */
+    static Factory* s_fctry;
+    static AbstractPlugin* s_rtPlgn;
     QHash<const QString, Instance*> m_plgnPool;
     static QSettings* pluginSettings(const QString& );
+    static const bool loadBackendPlugin(const QString& );
 
 private slots:
     /**
