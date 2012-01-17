@@ -43,10 +43,11 @@ namespace Wintermute {
          * and optimized base for said transactions are required. The GenericAdaptor
          * serves as a base for communicating between multiple processes of Wintermute.
          *
-         * @see Plugins::PluginFactoryAdaptor, Plugins::PluginInstanceAdaptor, CoreAdaptor
+         * @see Plugins::PluginFactoryAdaptor, Plugins::PluginPluginHandleAdaptor, CoreAdaptor
          * @class GenericAdaptor adaptors.hpp "src/adaptors.hpp"
          */
-        class GenericAdaptor : public QDBusAbstractAdaptor {
+        class GenericAdaptor : public QDBusAbstractAdaptor
+        {
             Q_OBJECT
             Q_CLASSINFO("objectName","Generic D-Bus Adaptor")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Adaptor")
@@ -118,7 +119,8 @@ namespace Wintermute {
          * @see Plugins::Factory
          * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
          */
-        class PluginFactoryAdaptor : public AbstractAdaptor {
+        class PluginFactoryAdaptor : public AbstractAdaptor
+        {
             Q_OBJECT
             Q_CLASSINFO("objectName","D-Bus Adaptor for Plugins")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.Factory")
@@ -144,13 +146,17 @@ namespace Wintermute {
             const QStringList loadedPlugins() const;
         };
 
-        class InstanceAdaptor : public AbstractAdaptor {
+        /**
+         *
+         */
+        class PluginHandleAdaptor : public AbstractAdaptor
+        {
             Q_OBJECT
             Q_CLASSINFO("objectName","D-Bus Adaptor for Plug-in Instances")
             Q_CLASSINFO("D-Bus Interface","org.thesii.Wintermute.PluginInstance")
 
         public:
-            explicit InstanceAdaptor(Plugins::AbstractPlugin*);
+            explicit PluginHandleAdaptor(Plugins::AbstractPlugin *);
 
         signals:
             void pluginLoaded(const QString&) const;
@@ -161,9 +167,10 @@ namespace Wintermute {
             virtual void quit() const;
             virtual void loadBackend(const QString&);
         };
-    }
+    } // namespace
 
-    class CoreAdaptor : public AbstractAdaptor {
+    class CoreAdaptor : public AbstractAdaptor
+    {
         Q_OBJECT
         Q_PROPERTY(const QVariantMap Arguments READ arguments)
         Q_CLASSINFO("objectName","D-Bus Adaptor for Core Module")
@@ -178,6 +185,6 @@ namespace Wintermute {
         const QVariantMap arguments() const;
         Q_INVOKABLE Q_NOREPLY void ping(const QString&);
     };
-}
+} // namespace
 
 #endif // WINTERMUTE_ADAPTORS_HPP

@@ -37,8 +37,12 @@ MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
 
       EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS ${_package} --variable ${_var} OUTPUT_VARIABLE ${_output_variable} )
 
+    ELSE(NOT _return_VALUE)
+      MESSAGE(WARNING "${_package} not found.")
     ENDIF(NOT _return_VALUE)
 
+  ELSE(PKGCONFIG_EXECUTABLE)
+    MESSAGE(ERROR "PkgConfig not found.")
   ENDIF(PKGCONFIG_EXECUTABLE)
 
 ENDMACRO(PKGCONFIG_GETVAR _package _var _output_variable)

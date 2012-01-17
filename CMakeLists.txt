@@ -12,6 +12,14 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
+## Default build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
+endif()
+
+## Install prefix
+set(CMAKE_INSTALL_PREFIX "/usr")
+
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
 find_package(Boost COMPONENTS
@@ -26,6 +34,7 @@ find_package(Qt4 COMPONENTS
 
 include("${QT_USE_FILE}")
 
+## Doxygen
 enable_doxygen()
 
 ## Files
@@ -58,21 +67,19 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
                "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake" @ONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-               "${PROJECT_SOURCE_DIR}/src/config.hpp" @ONLY)
+               "${PROJECT_BINARY_DIR}/src/config.hpp" @ONLY)
 
-dbus_add_activation_service(org.thesii.Wintermute.service.in)
+## D-Bus configuration
+dbus_add_activation_service(services/org.thesii.Wintermute.service.in)
 
 add_subdirectory(src)
 
 ## Installs
-
-install(FILES ${WINTER_CMAKE_MODULES}
-	DESTINATION "${CMAKE_MODULE_DIR}")
-
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
         DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
 ## @todo Add it to a system wide location.
 install(FILES "${PROJECT_SOURCE_DIR}/Wintermute.conf"
-	DESTINATION "~/.config/Synthetic Intellect Institute")
+        DESTINATION "~/.config/Synthetic Intellect Institute")
+

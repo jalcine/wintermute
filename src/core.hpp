@@ -23,7 +23,10 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
+// Local
 #include "config.hpp"
+
+// Qt
 #include <QObject>
 #include <QVariantMap>
 
@@ -45,7 +48,8 @@ struct Core;
  * @class Core wintermute.hpp "core.hpp" 
  */
 /// @todo Implement a means of having this class catch the signals of the system.
-class Core : public QObject {
+class Core : public QObject 
+{
     Q_OBJECT
     Q_CLASSINFO("objectName","Wintermute's Core")
 
@@ -173,7 +177,7 @@ private:
      */
     static void configureCommandLine();
 };
-}
+} // namespace
 
 #endif /* CORE_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -4,17 +4,14 @@
 ## Useful options and variables
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
+
 set(GENERIC_LIB_VERSION 0.0.1)
 set(GENERIC_LIB_SOVERSION 0)
-set(WINTER_NON_GENERIC_LIB_VERSION 0.0.1)
+set(WINTER_NON_GENERIC_LIB_VERSION 1.0.1)
 set(WINTER_NON_GENERIC_LIB_SOVERSION 1)
-set(WINTER_INSTALL_DIR "/usr" CACHE PATH "Base installation path for Wintermute installation files.")
 
-if(NOT CMAKE_INSTALL_PREFIX)
-    set(CMAKE_INSTALL_PREFIX "${WINTER_INSTALL_DIR}")
-else()
-    set(WINTER_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}")
-endif()
+set(WINTER_BUILD_TYPE "RelWithDebInfo")
+set(WINTER_INSTALL_DIR "/usr" CACHE PATH "Base installation path for Wintermute installation files.")
 
 set(WINTER_BIN_INSTALL_DIR "${WINTER_INSTALL_DIR}/bin" CACHE PATH "Binary installation path.")
 set(WINTER_LIB_INSTALL_DIR "${WINTER_INSTALL_DIR}/lib" CACHE PATH "Library installation path.")
