@@ -28,6 +28,7 @@
 #include "ipc.hpp"
 
 // Qt
+#include <QApplication>
 #include <QDebug>
 #include <QDir>
 

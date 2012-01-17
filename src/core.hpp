@@ -99,6 +99,11 @@ public:
      */
     static void exit(const int = 0, const bool = false);
 
+    /**
+     * @brief Ends the program with success code.
+     */
+    static void quit();
+
 signals:
     /**
      * @brief Raised once the core's ready to go.

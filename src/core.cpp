@@ -60,13 +60,6 @@ QApplication* Core::s_app = 0;
 QVariantMap* Core::s_args = 0;
 Core* Core::s_core = 0;
 
-Core::Core ( int &p_argc, char **p_argv ) {
-    Core::s_core = this;
-    Core::Configure ( p_argc,p_argv );
-    Core::start();
-}
-
-<<<<<<< HEAD
 Core::Core(int &p_argc, char **p_argv)
 {
     Core::s_core = this;
@@ -207,7 +200,8 @@ void Core::start()
     qDebug() << "(core) [Core] Started.";
 }
 
-void Core::exit (int p_exitCode, bool p_killSystem) {
+void Core::exit(int p_exitCode, bool p_killSystem)
+{
     qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
 
     if ((IPC::System::module () != "master" && arguments ()->value ("help") == "ignore") && p_killSystem) {
@@ -220,6 +214,11 @@ void Core::exit (int p_exitCode, bool p_killSystem) {
 
     qDebug() << "(core) [" << IPC::System::module () << "] Exitted.";
     QApplication::exit(p_exitCode);
+}
+
+void Core::quit()
+{
+    Core::exit(0);
 }
 
 void Core::stop () {

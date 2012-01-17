@@ -20,11 +20,14 @@
  * @endlegalese
  */
 
+// Local
 #include "logging.hpp"
 #include "wintermute.hpp"
+
+// Qt
 #include <QApplication>
-#include <visual/api.hpp>
-#include <visual/plugin.hpp>
+//#include <visual/api.hpp>
+//#include <visual/plugin.hpp>
 
 using namespace Wintermute;
 

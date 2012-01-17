@@ -24,6 +24,7 @@
 #include "backend.hpp"
 #include "ipc.hpp"
 
+#include "plugins/abstractplugin.hpp"
 #include "plugins/factory.hpp"
 #include "plugins/pluginhandle.hpp"
 
@@ -85,7 +86,7 @@ const QString GenericAdaptor::module() const { return IPC::System::module(); }
 } // namespace
 
 namespace Plugins {
-PluginFactoryAdaptor::PluginFactoryAdaptor() : Adaptor(Factory::instance())
+PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor(Factory::instance())
 {
     setAutoRelaySignals(true);
 }
@@ -115,7 +116,7 @@ void PluginFactoryAdaptor::quit() const
     Factory::Shutdown();
 }
 
-PluginHandleAdaptor::PluginHandleAdaptor(AbstractPlugin *p_plgn) : Adaptor(Core::instance())
+PluginHandleAdaptor::PluginHandleAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance())
 {
     if (p_plgn == NULL) {
         emit pluginCantLoad (Core::arguments()->value ("plugin").toString());
@@ -153,54 +154,13 @@ void PluginHandleAdaptor::loadBackend(const QString &p_uuid)
 {
     AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
     Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework(l_plgn->uuid());
-
-PluginHandleAdaptor::PluginHandleAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance())
-{
-    if (p_plgn == 0) {
-        emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
-        QApplication::quit ();
-    } else {
-        connect(QApplication::instance (),SIGNAL(aboutToQuit()),this,SIGNAL(aboutToQuit()));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginCantLoad",
-                                                this,SIGNAL(pluginCantLoad(QString)));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginLoaded",
-                                                this,SIGNAL(pluginLoaded(QString)));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginUnloaded",
-                                                this,SIGNAL(pluginUnloaded(QString)));
-
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","aboutToQuit",
-                                                this,SLOT(aboutToQuit()));
-
-        setParent(p_plgn);
-        setAutoRelaySignals (true);
-    }
 }
 
-void PluginHandleAdaptor::quit() const
-{
-    AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
-    emit aboutToQuit ();
-    l_plgn->stop();
-    emit pluginUnloaded (l_plgn->uuid());
-}
-
-void PluginHandleAdaptor::loadBackend(const QString &p_uuid)
-{
-    AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
-    Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework(l_plgn->uuid());
-
-    if (l_frmk)
-        l_frmk->addBackend(Backends::AbstractBackend::obtainBackend(p_uuid));
-}
-}
+} // namespace
 
 CoreAdaptor::CoreAdaptor() : AbstractAdaptor(Core::instance()) { }
 
-QVariantMap CoreAdaptor::arguments() const
+const QVariantMap CoreAdaptor::arguments() const
 {
     return *(Core::arguments());
 }

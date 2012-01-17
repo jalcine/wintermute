@@ -20,10 +20,13 @@
  * @endlegalese
  */
 
+// Local
+#include "plugins/plugins.hpp"
+
+// Qt
 #include <QMap>
 #include <QStringList>
 #include <QObject>
-#include "plugins.hpp"
 
 namespace Wintermute {
     namespace Backends {
