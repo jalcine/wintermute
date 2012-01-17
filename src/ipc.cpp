@@ -20,12 +20,14 @@
  * @endlegalese
  */
 
+// Local
 #include "ipc.hpp"
 #include "core.hpp"
 #include "config.hpp"
-#include "plugins.hpp"
 #include "adaptors.hpp"
+#include "plugins/plugins.hpp"
 
+// Qt
 #include <QtDBus>
 #include <QProcess>
 

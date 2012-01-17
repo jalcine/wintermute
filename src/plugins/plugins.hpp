@@ -1,4 +1,5 @@
 /**
+ * @file plugins.hpp
  * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
  *
  * @legalese
@@ -19,6 +20,12 @@
  * @endlegalese
  */
 
-#include "wintermute.hpp"
+#ifndef _PLUGINS_HPP_
+#define _PLUGINS_HPP_
 
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// Joint header
+#include "abstractplugin.hpp"
+#include "factory.hpp"
+#include "pluginhandle.hpp"
+
+#endif // _PLUGINS_HPP_

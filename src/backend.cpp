@@ -20,9 +20,12 @@
  * @endlegalese
  */
 
-#include <QDebug>
+// Local
 #include "backend.hpp"
-#include "plugins.hpp"
+#include "plugins/plugins.hpp"
+
+// Qt
+#include <QDebug>
 
 using namespace Wintermute::Plugins;
 

@@ -20,10 +20,10 @@
  */
 
 // Local
-#include "config.hpp"
 #include "core.hpp"
+#include "config.hpp"
 #include "ipc.hpp"
-#include "plugins.hpp"
+#include "plugins/plugins.hpp"
 
 // Standard
 #include <iostream>

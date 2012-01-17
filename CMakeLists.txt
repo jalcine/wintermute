@@ -18,7 +18,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
 endif()
 
-## Install path
+## Install prefix
 set(CMAKE_INSTALL_PREFIX "/usr")
 
 ## Packages

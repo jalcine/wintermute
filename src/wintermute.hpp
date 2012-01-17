@@ -39,10 +39,11 @@
 #ifndef WINTERMUTE_HPP
 #define WINTERMUTE_HPP
 
+// Joint header
 #include "config.hpp"
-#include "plugins.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
+#include "plugins/plugins.hpp"
 
 #endif /* WINTERMUTE_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
