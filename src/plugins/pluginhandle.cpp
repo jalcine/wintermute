@@ -88,7 +88,7 @@ void PluginHandle::catchExit(int p_exitCode, const QProcess::ExitStatus& p_exitS
     {
         case QProcess::NormalExit:
             if (p_exitCode == 0) {
-                //qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
+                qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
                 emit stopped();
             } else
                 catchExit(p_exitCode,QProcess::CrashExit);
@@ -109,7 +109,7 @@ void PluginHandle::catchExit(int p_exitCode, const QProcess::ExitStatus& p_exitS
 
 void PluginHandle::catchStart()
 {
-    //qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "running.";
+    qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "running.";
     emit started();
 }
 
