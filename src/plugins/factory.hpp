@@ -103,7 +103,7 @@ class Factory : public QObject
             public:
                 ShellPlugin();
                 ShellPlugin(const QString &);
-                ~ShellPlugin() {}
+                virtual ~ShellPlugin();
 
             private:
                 virtual void start () const { }
@@ -151,11 +151,12 @@ class Factory : public QObject
         static void setAttribute(const QString&, const QString&, const QVariant& );
 
     private:
-        static PluginTable s_plugins; /**< Holds a list  */
-        static Factory* s_factory;
-        static AbstractPlugin* s_plgn;
+        static PluginTable s_plgnLst; /**< Holds a list  */
+        static Factory* s_fctry;
+        static AbstractPlugin* s_rtPlgn;
         QHash<const QString, PluginHandle *> m_plgnPool;
         static QSettings* pluginSettings(const QString& );
+        static const bool loadBackendPlugin(const QString& );
 
     private slots:
         /**

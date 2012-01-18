@@ -24,6 +24,7 @@
 #include "config.hpp"
 #include "abstractplugin.hpp"
 #include "factory.hpp"
+#include "core.hpp"
 
 // Qt
 #include <QApplication>
@@ -34,33 +35,33 @@
 using namespace Wintermute::Plugins;
 
 // Constructors
-AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_plgnLdr(p_pl), m_settings(NULL) {}
+AbstractPlugin::AbstractPlugin(QPluginLoader *p_pl) : QObject(p_pl), m_plgnLdr(p_pl), m_sttngs(NULL) {}
 
 AbstractPlugin::AbstractPlugin(const AbstractPlugin &p_pb): QObject(p_pb.m_plgnLdr),
-                   m_plgnLdr(p_pb.m_plgnLdr), m_settings(p_pb.m_settings), m_config(p_pb.m_config) {}
+                   m_plgnLdr(p_pb.m_plgnLdr), m_sttngs(p_pb.m_sttngs), m_cnfg(p_pb.m_cnfg) {}
 
 // Access methods
-QString AbstractPlugin::author() const { return m_settings->value("Description/Author").toString(); }
+QString AbstractPlugin::author() const { return m_sttngs->value("Description/Author").toString(); }
 
-QString AbstractPlugin::name() const { return m_settings->value("Description/Name").toString(); }
+QString AbstractPlugin::name() const { return m_sttngs->value("Description/Name").toString(); }
 
-QString AbstractPlugin::vendorName() const { return m_settings->value("Description/Vendor").toString(); }
+QString AbstractPlugin::vendorName() const { return m_sttngs->value("Description/Vendor").toString(); }
 
-QString AbstractPlugin::uuid() const { return m_settings->value("Version/UUID").toString(); }
+QString AbstractPlugin::uuid() const { return m_sttngs->value("Version/UUID").toString(); }
 
-QString AbstractPlugin::description() const { return m_settings->value("Description/Blurb").toString(); }
+QString AbstractPlugin::description() const { return m_sttngs->value("Description/Blurb").toString(); }
 
-QString AbstractPlugin::webPage() const { return m_settings->value("Description/WebPage").toString(); }
+QString AbstractPlugin::webPage() const { return m_sttngs->value("Description/WebPage").toString(); }
 
-double AbstractPlugin::version() const { return m_settings->value("Version/Plugin").toDouble(); }
+double AbstractPlugin::version() const { return m_sttngs->value("Version/Plugin").toDouble(); }
 
-double AbstractPlugin::compatVersion() const { return m_settings->value("Version/Compat", WNTR_VERSION).toDouble(); }
+double AbstractPlugin::compatVersion() const { return m_sttngs->value("Version/Compat", WNTR_VERSION).toDouble(); }
 
 bool AbstractPlugin::isSupported() const { return WNTR_VERSION >= compatVersion(); }
 
 QStringList AbstractPlugin::plugins() const
 {
-    QStringList l_dep = m_settings->value("Depends/Plugins").toStringList();
+    QStringList l_dep = m_sttngs->value("Depends/Plugins").toStringList();
     l_dep.removeDuplicates();
     l_dep.removeAll("None");
     return l_dep;
@@ -81,7 +82,7 @@ bool AbstractPlugin::loadPlugins() const
                       << Factory::attribute(l_plgnUuid,"Description/Name").toString()
                       << "already loaded.";
         else {
-            Factory::GenericPlugin *l_gnrc = new Factory::GenericPlugin(l_plgnUuid);
+            Factory::ShellPlugin *l_gnrc = new Factory::ShellPlugin(l_plgnUuid);
             qDebug() << "(core) [AbstractPlugin] Loading dependency"
                      << l_gnrc->name() << "...";
 
@@ -112,7 +113,7 @@ bool AbstractPlugin::hasPlugins() const
                 qDebug() << "(core) [AbstractPlugin] Dependency" << l_depName
                          << "of" << this->name () << "isn't loaded.";
 
-            const AbstractPlugin *l_plgn = Factory::s_plugins.value(l_depName);
+            const AbstractPlugin *l_plgn = Factory::s_plgnLst.value(l_depName);
             if (l_depComparison == "==") {
                 if (!(l_depVersion.toDouble() == l_plgn->version())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name()
@@ -159,7 +160,7 @@ bool AbstractPlugin::hasPlugins() const
 
 QStringList AbstractPlugin::packages() const
 {
-    QStringList l_dep = m_settings->value("Depends/Packages").toStringList();
+    QStringList l_dep = m_sttngs->value("Depends/Packages").toStringList();
     l_dep.removeDuplicates();
     l_dep.removeAll("None");
     return l_dep;
@@ -198,29 +199,29 @@ bool AbstractPlugin::hasPackages() const
 /// @note This method searches the plug-in's configuration for default settings. \o/
 QVariant AbstractPlugin::attribute(const QString &p_attrPath) const
 {
-    QVariant l_val = m_config->value(p_attrPath);
+    QVariant l_val = m_cnfg->value(p_attrPath);
 
     if (l_val.isNull() || !l_val.isValid())
-        l_val = m_config->value("Configuration/" + const_cast<QString *>(&p_attrPath)->replace("/",":"));
+        l_val = m_cnfg->value("Configuration/" + const_cast<QString *>(&p_attrPath)->replace("/",":"));
 
     return l_val;
 }
 
 void AbstractPlugin::setAttribute(const QString &p_attrPath, const QVariant &p_attrVal)
 {
-    m_config->setValue(p_attrPath, p_attrVal);
+    m_cnfg->setValue(p_attrPath, p_attrVal);
 }
 
 /// @todo Allow resetting of specific attributes.
 void AbstractPlugin::resetAttributes()
 {
-    m_config->clear();
+    m_cnfg->clear();
 }
 
-bool AbstractPlugin::loadLibrary() const
+const bool AbstractPlugin::loadLibrary() const
 {
     QApplication::addLibraryPath(WNTR_PLUGIN_PATH);
-    const QString l_plgnLibrary = m_settings->value("Version/Library").toString();
+    const QString l_plgnLibrary = m_sttngs->value("Version/Library").toString();
     const QString l_plgPth = QString(WNTR_PLUGIN_PATH) + "/lib" + l_plgnLibrary + ".so";
     m_plgnLdr = new QPluginLoader ( l_plgPth, Factory::instance() );
     m_plgnLdr->setLoadHints( QLibrary::ResolveAllSymbolsHint );
@@ -272,5 +273,11 @@ AbstractPlugin::~AbstractPlugin()
 {
     m_plgnLdr->unload();
     m_plgnLdr->deleteLater();
-    m_settings->deleteLater();
+    m_sttngs->deleteLater();
+}
+
+void AbstractPlugin::loadSettings(const QString &p_uuid)
+{
+    m_sttngs = Factory::pluginSettings(p_uuid);
+    m_cnfg = new QSettings("Synthetic Intellect Institute",p_uuid);
 }

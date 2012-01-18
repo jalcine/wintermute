@@ -98,22 +98,25 @@ class AbstractPlugin : public QObject
 
     private:
         mutable QPluginLoader *m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
-        QSettings *m_settings;
-        QSettings *m_config;
+        QSettings *m_sttngs;
+        QSettings *m_cnfg;
 
     private slots:
         bool loadPlugins() const;
         bool loadPackages() const;
 	void loadSettings(const QString& );
+        void doStart();
+        void doStop();
 
-protected:
-        bool loadLibrary() const;
+    protected:
+        const bool loadLibrary() const;
+        const bool loadRequiredComponents() const;
 
     public:
         /**
          * @brief Empty, nullifying constructor.
          */
-        explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_settings(NULL), m_config(NULL) {}
+        explicit AbstractPlugin() : QObject(NULL), m_plgnLdr(NULL), m_sttngs(NULL), m_cnfg(NULL) {}
 
         /**
          * @brief Loads a plug-in based on the QPluginLoader.

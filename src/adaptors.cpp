@@ -169,7 +169,6 @@ void CoreAdaptor::ping(const QString &p_src)
     //qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
 }
 
-<<<<<<< HEAD
 void CoreAdaptor::quit () const
 {
     emit aboutToQuit ();

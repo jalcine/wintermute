@@ -35,9 +35,9 @@
 // Namespaces
 using namespace Wintermute::Plugins;
 
-PluginTable Factory::s_plugins;
-Factory* Factory::s_factory = NULL;
-AbstractPlugin* Factory::s_plgn = NULL;
+PluginTable Factory::s_plgnLst;
+Factory* Factory::s_fctry = 0;
+AbstractPlugin* Factory::s_rtPlgn = 0;
 
 Factory::Factory() : QObject(Core::instance()) {}
 
@@ -113,8 +113,8 @@ AbstractPlugin* Factory::loadPlugin(const QString &p_plgnUuid, const bool& p_for
 
     if ( l_gnrcPlgn->loadLibrary() )
     {
-      l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
-      l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
+      l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_plgnLdr->instance () );
+      l_plgnBase->m_plgnLdr = l_gnrcPlgn->m_plgnLdr;
       l_plgnBase->loadSettings(p_plgnUuid);
 
       /// @note Shouldn't the first plug-in be the one loaded here?
@@ -123,8 +123,8 @@ AbstractPlugin* Factory::loadPlugin(const QString &p_plgnUuid, const bool& p_for
 
       l_plgnBase->doStart();
     } else {
-      qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
-      qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
+      qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_plgnLdr->fileName() << ")";
+      qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_plgnLdr->errorString ();
 
       emit Factory::instance ()->pluginCrashed (p_plgnUuid);
       Core::exit(3,true);
@@ -135,7 +135,7 @@ AbstractPlugin* Factory::loadPlugin(const QString &p_plgnUuid, const bool& p_for
     qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "loaded.";
     return l_plgnBase;
   } else
-      Factory::instance ()->m_plgnPool.insert(p_plgnUuid,(new Instance(p_plgnUuid,Factory::pluginSettings (p_plgnUuid))));
+      Factory::instance ()->m_plgnPool.insert(p_plgnUuid,(new PluginHandle(p_plgnUuid,Factory::pluginSettings (p_plgnUuid))));
 
   return 0;
 }
@@ -159,10 +159,10 @@ const QStringList Factory::allPlugins () {
 
 Factory* Factory::instance()
 {
-    if (s_factory == NULL)
-        s_factory = new Factory;
+    if (s_fctry == NULL)
+        s_fctry = new Factory;
 
-    return s_factory;
+    return s_fctry;
 }
 
 void Factory::unloadPlugin ( const QString& p_plgnUuid ) {
@@ -180,15 +180,15 @@ void Factory::loadStandardPlugin () {
 
     //qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (l_plgnUuid,"Description/Name").toString () << "; uuid:" << l_plgnUuid << "...";
 
-    s_plgn = loadPlugin(l_plgnUuid);
-    PluginHandleAdaptor* l_adpt = new PluginHandleAdaptor(s_plgn);
+    s_rtPlgn = loadPlugin(l_plgnUuid);
+    PluginHandleAdaptor* l_adpt = new PluginHandleAdaptor(s_rtPlgn);
     IPC::System::registerObject ("/Plugin",l_adpt);
     IPC::System::instance()->m_adapt = l_adpt;
 }
 
 AbstractPlugin* Factory::currentPlugin() {
     if (IPC::System::module() == "plugin")
-        return s_plgn;
+        return s_rtPlgn;
     else {
         qWarning() << "(core) [Factory] This isn't a plug-in PluginHandle; can't find the current plug-in!";
         return NULL;
@@ -227,7 +227,7 @@ void Factory::doPluginUnload (const QString &p_plgnUuid) {
 void Factory::Shutdown () {
     qDebug() << "(core) [Factory] Unloading plugins..";
 
-    foreach ( PluginHandle* l_inst, s_factory->m_plgnPool )
+    foreach ( PluginHandle* l_inst, s_fctry->m_plgnPool )
         unloadPlugin (l_inst->uuid ());
 
     qDebug() << "(core) [Factory] Plugins unloaded.";
@@ -260,7 +260,7 @@ void Factory::setAttribute(const QString &p_plgnUuid, const QString &p_attrPth, 
 
 const bool Factory::loadBackendPlugin(const QString& p_plgnUuid){
   const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
-  const QString l_plgnTyp = Factory::attribute(p_plgnUuid,"Plugin/Type").toString()
+  const QString l_plgnTyp = Factory::attribute(p_plgnUuid,"Plugin/Type").toString();
 
   if ( l_plgnTyp == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid)
   {
