@@ -2,7 +2,7 @@
 ## Bunch of useful macros and functions
 ## @author Adrian Borcuki <adrian@thesii.org>
 ##
-include(UsePkgConfig)
+find_package(PkgConfig)
 
 macro(winter_make_absolute paths)
     foreach(in paths)
@@ -16,10 +16,17 @@ endmacro(winter_make_absolute)
 macro(enable_doxygen)
     find_package(Doxygen)
     if(DOXYGEN_FOUND)
+        find_program(HAVE_DOT dot)
+        if(HAVE_DOT)
+            message("Found 'dot' program, Doxygen will use it to generate graphs for documentation.")
+            set(HAVE_DOT YES)
+        else(HAVE_DOT)
+            set(HAVE_DOT NO)
+        endif(HAVE_DOT)
         configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${PROJECT_BINARY_DIR}/Doxyfile")
         add_custom_target(doxygen
             ${DOXYGEN_EXECUTABLE} Doxyfile
-            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/doc"
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
             COMMENT "Generating API documentation with Doxygen...")
     endif()
 endmacro()

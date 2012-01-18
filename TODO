@@ -1,4 +1,7 @@
 * Doxygen configuration to be polished + add automatic GraphViz checking.
+    o Make sure everything works correctly -- OK.
+    o Check if 'dot' program is present and enable it -- OK.
+    o Make sure project data are fed into Doxyfile -- OK.
+    o Project logo is to be provided.
+    o It would be nice to use custom stylesheet (optional, for now).
 * Correct headers installation - plugin-related stuff under plugins/ directory.
-* Consider moving application from QApplication to QCoreApplication (it is
-  console app, isn't it?).
