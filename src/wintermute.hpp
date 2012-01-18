@@ -43,6 +43,8 @@
 #include "config.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
+#include "backend.hpp"
+#include "adaptors.hpp"
 #include "plugins/plugins.hpp"
 
 #endif /* WINTERMUTE_HPP */
