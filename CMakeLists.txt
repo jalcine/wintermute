@@ -1,5 +1,6 @@
 project(Wintermute)
 set(PROJECT_LABEL "Wintermute Core")
+set(PROJECT_LOGO "${PROJECT_SOURCE_DIR}/WintermuteLogo.png")
 cmake_minimum_required(VERSION 2.8)
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
