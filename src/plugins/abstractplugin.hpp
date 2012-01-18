@@ -101,7 +101,12 @@ class AbstractPlugin : public QObject
         QSettings *m_settings;
         QSettings *m_config;
 
-    protected:
+    private slots:
+        bool loadPlugins() const;
+        bool loadPackages() const;
+	void loadSettings(const QString& );
+
+protected:
         bool loadLibrary() const;
 
     public:
@@ -265,10 +270,6 @@ class AbstractPlugin : public QObject
         * This is usually raised right before the Core begin to deinitialize.
         */
         void stopped() const;
-
-    private slots:
-        bool loadPlugins() const;
-        bool loadPackages() const;
 
     protected slots:
         /**

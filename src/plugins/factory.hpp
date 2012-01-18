@@ -95,17 +95,15 @@ class Factory : public QObject
         static void Shutdown();
 
     public:
-        class GenericPlugin : public AbstractPlugin
+        class ShellPlugin : public AbstractPlugin
         {
                 friend class Factory;
                 friend class AbstractPlugin;
 
             public:
-                GenericPlugin() {}
-                GenericPlugin(const QString &p_plgnUuid) {
-                    AbstractPlugin::m_settings = Factory::pluginSettings(p_plgnUuid);
-                }
-                ~GenericPlugin() {}
+                ShellPlugin();
+                ShellPlugin(const QString &);
+                ~ShellPlugin() {}
 
             private:
                 virtual void start () const { }

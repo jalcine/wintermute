@@ -43,7 +43,7 @@ Factory::Factory() : QObject(Core::instance()) {}
 
 void Factory::Startup()
 {
-    bool daemonMode = Core::arguments()->value("daemon").toBool();
+    const bool daemonMode = Core::arguments()->value("daemon").toBool();
     if (!daemonMode)
     {
         qDebug() << "(core) [Factory] Starting up...";
@@ -91,110 +91,53 @@ void Factory::Startup()
 
 AbstractPlugin* Factory::loadPlugin(const QString &p_plgnUuid, const bool& p_forceLoad)
 {
-    if (IPC::System::module() == "plugin" || p_forceLoad)
+  if (IPC::System::module () == "plugin" || p_forceLoad )
+  {
+    AbstractPlugin* l_plgnBase = 0;
+
+    if (!Factory::attribute(p_plgnUuid,"Plugin/Enabled").toBool ())
     {
-        AbstractPlugin* l_plgnBase = NULL;
-        const GenericPlugin* l_gnrcPlgn = new GenericPlugin(p_plgnUuid);
-        QSettings* l_config = new QSettings(QApplication::organizationName(), p_plgnUuid);
-        const QString l_apiUuid = Factory::attribute(p_plgnUuid, "Plugin/API").toString();
-
-        if (Factory::attribute(p_plgnUuid, "Plugin/Type").toString() == "Backend"
-                && Factory::currentPlugin()
-                && Factory::currentPlugin()->uuid() != l_apiUuid)
-        {
-            const QDBusMessage l_callRunningList = QDBusMessage::createMethodCall(WNTR_DBUS_FACTORY_NAME,
-                                                                                  WNTR_DBUS_FACTORY_OBJNAME,
-                                                                                  WNTR_DBUS_FACTORY_OBJPATH, "loadedPlugins");
-            const QDBusMessage l_replyRunningList = QDBusConnection::sessionBus().call(l_callRunningList, QDBus::BlockWithGui);
-
-            if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid))
-            {
-                QDBusMessage l_callLoadBackend = QDBusMessage::createMethodCall(QString(WNTR_DBUS_PLUGIN_NAME) + "." + l_apiUuid,WNTR_DBUS_PLUGIN_OBJNAME,WNTR_DBUS_PLUGIN_OBJPATH,"loadBackend");
-                l_callLoadBackend << p_plgnUuid;
-                const QDBusMessage l_replyLoadBackend = QDBusConnection::sessionBus ().call(l_callLoadBackend,QDBus::BlockWithGui);
-
-                if (!l_replyLoadBackend.arguments().at(0).toBool())
-                    qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "failed.";
-                else
-                    qDebug() << "(plugin) [Factory] Invoking load of backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "succeeded.";
-
-            } else
-                qDebug() << "(plugin) [Factory] API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "isn't running for backend" << Factory::attribute(p_plgnUuid,"Description/Name").toString();
-
-            Core::quit();
-            return NULL;
-        }
-
-        if (!Factory::attribute(p_plgnUuid, "Plugin/Enabled").toBool())
-        {
-            qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
-            Core::exit(1,true);
-            return NULL;
-        }
-
-        if (!l_gnrcPlgn->loadPackages())
-        {
-            qWarning() << "(plugin) [Factory] Can't load dependency packages for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-            return NULL;
-        }
-
-        if (!l_gnrcPlgn->loadPlugins())
-        {
-            qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-            return NULL;
-        }
-
-        if (!l_gnrcPlgn->loadLibrary())
-        {
-            qWarning() << "(plugin) [Factory] Can't load core library for plugin" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << ".";
-            return NULL;
-        }
-
-        if ( l_gnrcPlgn->AbstractPlugin::m_plgnLdr->isLoaded() ) {
-            l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->AbstractPlugin::m_plgnLdr->instance() );
-            l_plgnBase->m_plgnLdr = l_gnrcPlgn->m_plgnLdr;
-            l_plgnBase->m_config = l_config;
-            l_plgnBase->m_settings = Factory::pluginSettings (p_plgnUuid);
-
-            if (IPC::System::module() == "plugin" && !p_forceLoad)
-                s_plgn = l_plgnBase;
-
-            if ( !l_plgnBase->isSupported () ) {
-                qWarning() << "(plugin) [Factory] The plugin" << l_plgnBase->name () << "is incompatiable with this version of Wintermute.";
-                Core::exit(2, true);
-                return NULL;
-            } else
-                qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "v." << l_plgnBase->version() << "is compatiable with this version of Wintermute.";
-
-            if (Factory::currentPlugin()->m_settings->value("Plugin/Type").toString() == "API")
-                Factory::s_plugins.insert ( l_plgnBase->uuid (), l_plgnBase );
-
-            l_plgnBase->start();
-            emit l_plgnBase->started();
-
-            QObject::connect ( Core::instance(), SIGNAL(stopped()) ,
-                               l_plgnBase       , SLOT(stop()) );
-            QObject::connect ( Core::instance(), SIGNAL(stopped()) ,
-                               l_plgnBase       , SIGNAL(stopped()) );
-        } else {
-            qWarning() << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name();
-            if (l_gnrcPlgn->m_plgnLdr)
-                qDebug() << "(plugin) [Factory] Load error: " << l_gnrcPlgn->m_plgnLdr->errorString ();
-
-            emit Factory::instance()->pluginCrashed (p_plgnUuid);
-            Core::exit(3,true);
-            return NULL;
-        }
-
-        emit Factory::instance()->pluginLoaded(l_plgnBase->uuid());
-        qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name() << "loaded.";
-        return l_plgnBase;
-    } else {
-        PluginHandle* l_inst = new PluginHandle(p_plgnUuid, Factory::pluginSettings(p_plgnUuid));
-        Factory::instance()->m_plgnPool.insert(p_plgnUuid, l_inst);
+      qWarning() << "(plugin) [Factory] Plugin" << p_plgnUuid << "disabled.";
+      Core::exit(1,true);
+      return 0;
     }
 
-    return NULL;
+    // Checks if this shouldn't be loaded in this module but rather in it's specified API module.
+    if (loadBackendPlugin(p_plgnUuid))
+	return 0;
+
+    const ShellPlugin* l_gnrcPlgn = new ShellPlugin(p_plgnUuid);
+
+    if (!l_gnrcPlgn->loadRequiredComponents())
+	return 0;
+
+    if ( l_gnrcPlgn->loadLibrary() )
+    {
+      l_plgnBase = dynamic_cast<AbstractPlugin*> ( l_gnrcPlgn->m_loader->instance () );
+      l_plgnBase->m_loader = l_gnrcPlgn->m_loader;
+      l_plgnBase->loadSettings(p_plgnUuid);
+
+      /// @note Shouldn't the first plug-in be the one loaded here?
+      if (IPC::System::module() == "plugin" && !p_forceLoad)
+	  s_rtPlgn = l_plgnBase;
+
+      l_plgnBase->doStart();
+    } else {
+      qDebug()   << "(plugin) [Factory] Error loading plugin" << l_gnrcPlgn->name() << "(" << l_gnrcPlgn->m_loader->fileName() << ")";
+      qWarning() << "(plugin) [Factory] Error message:" << l_gnrcPlgn->m_loader->errorString ();
+
+      emit Factory::instance ()->pluginCrashed (p_plgnUuid);
+      Core::exit(3,true);
+      return 0;
+    }
+
+    emit Factory::instance ()->pluginLoaded (l_plgnBase->uuid ());
+    qDebug() << "(plugin) [Factory] Plugin" << l_plgnBase->name () << "loaded.";
+    return l_plgnBase;
+  } else
+      Factory::instance ()->m_plgnPool.insert(p_plgnUuid,(new Instance(p_plgnUuid,Factory::pluginSettings (p_plgnUuid))));
+
+  return 0;
 }
 
 QStringList Factory::loadedPlugins ()
@@ -314,3 +257,41 @@ void Factory::setAttribute(const QString &p_plgnUuid, const QString &p_attrPth, 
     if (l_plgnSpec)
         l_plgnSpec->setValue (p_attrPth,p_attrVal);
 }
+
+const bool Factory::loadBackendPlugin(const QString& p_plgnUuid){
+  const QString l_apiUuid = Factory::attribute(p_plgnUuid,"Plugin/API").toString();
+  const QString l_plgnTyp = Factory::attribute(p_plgnUuid,"Plugin/Type").toString()
+
+  if ( l_plgnTyp == "Backend" && Factory::currentPlugin() && Factory::currentPlugin()->uuid() != l_apiUuid)
+  {
+    const QDBusMessage l_callRunningList = QDBusMessage::createMethodCall (WNTR_DBUS_FACTORY_NAME,WNTR_DBUS_FACTORY_OBJNAME,WNTR_DBUS_FACTORY_OBJPATH,"loadedPlugins");
+    const QDBusMessage l_replyRunningList = QDBusConnection::sessionBus ().call(l_callRunningList,QDBus::BlockWithGui);
+
+    if (l_replyRunningList.arguments().at(0).toStringList().contains(l_apiUuid))
+    {
+      QDBusMessage l_callLoadBackend = QDBusMessage::createMethodCall (QString(WNTR_DBUS_PLUGIN_NAME) + "." + l_apiUuid,WNTR_DBUS_PLUGIN_OBJNAME,WNTR_DBUS_PLUGIN_OBJPATH,"loadBackend");
+      l_callLoadBackend << p_plgnUuid;
+      const QDBusMessage l_replyLoadBackend = QDBusConnection::sessionBus ().call(l_callLoadBackend,QDBus::BlockWithGui);
+
+      if (!l_replyLoadBackend.arguments().at(0).toBool())
+	  qDebug() << "(plugin) [Factory] Invoking load of back-end" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "failed.";
+      else
+	  qDebug() << "(plugin) [Factory] Invoking load of back-end" << Factory::attribute(p_plgnUuid,"Description/Name").toString() << "to API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "succeeded.";
+
+    } else
+	qDebug() << "(plugin) [Factory] API" << Factory::attribute(l_apiUuid,"Description/Name").toString() << "isn't running for back-end" << Factory::attribute(p_plgnUuid,"Description/Name").toString();
+
+    Core::exit();
+    return true;
+  }
+  return false;
+}
+
+Factory::ShellPlugin::ShellPlugin() : AbstractPlugin() {
+}
+
+Factory::ShellPlugin::ShellPlugin(const QString& p_uuid) : AbstractPlugin() {
+    loadSettings(p_uuid);
+}
+
+Factory::ShellPlugin::~ShellPlugin() { }

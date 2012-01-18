@@ -231,6 +231,43 @@ bool AbstractPlugin::loadLibrary() const
     return m_plgnLdr->isLoaded();
 }
 
+void AbstractPlugin::doStart()
+{
+  connect( Core::instance(), SIGNAL(stopped()), this, SLOT(doStop()) );
+  start();
+  emit started();
+}
+
+void AbstractPlugin::doStop()
+{
+  stop();
+  emit stopped();
+}
+
+const bool AbstractPlugin::loadRequiredComponents() const
+{
+  if ( !isSupported () )
+  {
+    qWarning() << "(plugin) [Factory] Plug-in" << name () << "is incompatible with this version of Wintermute.";
+    return false;
+  } else
+      qDebug() << "(plugin) [Factory] Plug-in" << name () << "v." << version() << "is compatible with this version of Wintermute.";
+
+  if ( !loadPackages() )
+  {
+    qWarning() << "(plugin) [Factory] Can't load dependency packages for plug-in" << name() << ".";
+    return false;
+  }
+
+  if ( !loadPlugins() )
+  {
+    qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plug-in" << name() << ".";
+    return false;
+  }
+
+  return true;
+}
+
 AbstractPlugin::~AbstractPlugin()
 {
     m_plgnLdr->unload();
