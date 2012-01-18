@@ -32,7 +32,6 @@
 namespace Wintermute {
 namespace IPC {
 GenericAdaptor::GenericAdaptor(QObject *parent) : QDBusAbstractAdaptor(parent), m_core(true) {
-    this->dumpObjectInfo ();
     if (IPC::System::module () != "master") {
         m_tmr = new QTimer(this);
         detect();
@@ -46,10 +45,10 @@ GenericAdaptor::GenericAdaptor(QObject *parent) : QDBusAbstractAdaptor(parent), 
 void GenericAdaptor::detect() const {
     m_tmr->stop ();
     const bool l_prv = m_core;
-    QDBusMessage l_ping = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master","org.thesii.Wintermute.Master","ping");
+    QDBusMessage l_ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Master",WNTR_DBUS_MASTER_NAME,"ping");
     l_ping << IPC::System::module ();
     l_ping.setAutoStartService (true);
-    /*QDBusMessage l_pingReply = IPC::System::bus ()->call (l_ping,QDBus::BlockWithGui);
+    QDBusMessage l_pingReply = IPC::System::bus ()->call (l_ping,QDBus::BlockWithGui);
     m_core = l_pingReply.type () != QDBusMessage::ErrorMessage;
 
     if (m_core != l_prv){
@@ -65,12 +64,11 @@ void GenericAdaptor::detect() const {
 
     if (l_pingReply.type () == QDBusMessage::ErrorMessage){
         //qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
-        if (!Core::arguments ()->value ("daemon").toBool ())
-            CoreAdaptor::haltSystem ();
+        /*if (!Core::arguments ()->value ("daemon").toBool ())
+            CoreAdaptor::haltSystem ();*/
     }
 
     m_tmr->start ();
-    */
 }
 
 const int GenericAdaptor::pid () const {
@@ -107,24 +105,24 @@ void PluginFactoryAdaptor::quit () const {
     Factory::Shutdown ();
 }
 
-InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance ()) {
+InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(p_plgn) {
     if (p_plgn == 0) {
         emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
         QApplication::quit ();
     } else {
         connect(QApplication::instance (),SIGNAL(aboutToQuit()),this,SIGNAL(aboutToQuit()));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginCantLoad",
+        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME,"/Factory",
+                                                WNTR_DBUS_FACTORY_NAME,"pluginCantLoad",
                                                 this,SIGNAL(pluginCantLoad(QString)));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginLoaded",
+        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME,"/Factory",
+                                                WNTR_DBUS_FACTORY_NAME,"pluginLoaded",
                                                 this,SIGNAL(pluginLoaded(QString)));
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","pluginUnloaded",
+        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME,"/Factory",
+                                                WNTR_DBUS_FACTORY_NAME,"pluginUnloaded",
                                                 this,SIGNAL(pluginUnloaded(QString)));
 
-        QDBusConnection::sessionBus ().connect ("org.thesii.Wintermute","/Factory",
-                                                "org.thesii.Wintermute.Factory","aboutToQuit",
+        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME,"/Factory",
+                                                WNTR_DBUS_FACTORY_NAME,"aboutToQuit",
                                                 this,SLOT(aboutToQuit()));
 
         setParent(p_plgn);
@@ -160,14 +158,14 @@ void CoreAdaptor::ping (const QString &p_src) {
 
 void CoreAdaptor::quit () const {
     emit aboutToQuit ();
-    QDBusMessage l_msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Factory", "org.thesii.Wintermute.Factory","quit");
+    QDBusMessage l_msg = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Factory", WNTR_DBUS_FACTORY_NAME,"quit");
     QDBusConnection::sessionBus ().call (l_msg,QDBus::NoBlock);
     haltSystem ();
 }
 
 void CoreAdaptor::haltSystem () {
     if (Core::arguments ()->value ("ipc").toString () != "master") {
-        QDBusMessage l_call = QDBusMessage::createMethodCall ("org.thesii.Wintermute","/Master","org.thesii.Wintermute.Master","haltSystem");
+        QDBusMessage l_call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Master",WNTR_DBUS_MASTER_NAME,"haltSystem");
         QDBusConnection::sessionBus ().send (l_call);
     }
 

@@ -63,12 +63,12 @@ void System::start ( ) {
     if (l_objectName != "master") l_serviceName += "." + l_objectName;
 
     if (!instance()->m_cnntn->registerService (l_serviceName) && l_objectName == "master") {
-        qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << l_serviceName << ")"
-        << "under the same user on the same computer";
+        qDebug() << "(core) Fatal: Cannot run more than one Wintermute service" << l_serviceName
+                 << "under the same user on the same computer";
         Core::exit(1);
     }
 
-    qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
+    qDebug() << "(core) [D-Bus] Service" << l_serviceName << "registered.";
     emit instance()->registerDataTypes();
 }
 
@@ -85,8 +85,10 @@ const bool System::registerObject(const QString& p_pth, QDBusAbstractAdaptor* p_
     if (instance()->m_cnntn->objectRegisteredAt (p_pth)) {
         qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << instance()->m_cnntn->interface ()->service ();
         return false;
-    } else
+    } else {
+        qDebug() << "(core) [D-Bus] Registered" << p_pth << "on" << instance()->m_cnntn->interface ()->connection().name() << "with" << p_obj->metaObject()->className() << ".";
         return instance()->m_cnntn->registerObject (p_pth , p_obj, l_opts);
+    }
 
     return false;
 }

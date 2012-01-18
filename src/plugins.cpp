@@ -169,7 +169,7 @@ namespace Wintermute {
             d->setFilter ( QDir::Files | QDir::Readable | QDir::NoSymLinks );
             d->setNameFilters (QString("*.spec").split (" "));
             d->setSorting ( QDir::Name );
-            return d->entryList().replaceInStrings (".spec","");
+            return d->entryList().replaceInStrings (".spec",QString::null);
         }
 
         Factory* Factory::instance () {
