@@ -43,7 +43,7 @@ add_subdirectory(plugins)
 EOF
 
 case "$1" in
-  "enable-patches")
+  "use-patches")
     diff -U 3 -dN -- CMakeLists.txt CMakeLists.new > CMakeLists.txt.patch
     rm CMakeLists.new
     ;;

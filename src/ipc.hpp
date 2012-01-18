@@ -143,7 +143,7 @@ private:
     AbstractAdaptor* m_adapt;
     static System* s_inst;
 };
-}
+} // namespaces
 }
 
 #endif

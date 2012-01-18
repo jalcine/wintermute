@@ -20,17 +20,21 @@
  * @endlegalese
  */
 
+// Local
 #include "logging.hpp"
 #include "wintermute.hpp"
+
+// Qt
 #include <QApplication>
-#include <visual/api.hpp>
-#include <visual/plugin.hpp>
+//#include <visual/api.hpp>
+//#include <visual/plugin.hpp>
 
 using namespace Wintermute;
 
-int main ( int argc, char** argv ) {
+int main(int argc, char** argv)
+{
     qInstallMsgHandler(Logging::catchQDebugMessage);
-    Core l_core ( argc , argv );
+    Core core(argc , argv);
     return QApplication::exec();
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

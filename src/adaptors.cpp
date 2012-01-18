@@ -18,12 +18,17 @@
  * Boston, MA  02110-1301  USA
  */
 
-#include "ipc.hpp"
-#include "core.hpp"
-#include "plugins.hpp"
+// Local
 #include "adaptors.hpp"
+#include "core.hpp"
 #include "backend.hpp"
+#include "ipc.hpp"
 
+#include "plugins/abstractplugin.hpp"
+#include "plugins/factory.hpp"
+#include "plugins/pluginhandle.hpp"
+
+// Qt
 #include <QTimer>
 #include <QtDebug>
 #include <QApplication>
@@ -31,19 +36,22 @@
 
 namespace Wintermute {
 namespace IPC {
-GenericAdaptor::GenericAdaptor(QObject *parent) : QDBusAbstractAdaptor(parent), m_core(true) {
-    if (IPC::System::module () != "master") {
+GenericAdaptor::GenericAdaptor(QObject *parent) : QDBusAbstractAdaptor(parent), m_core(true)
+{
+    this->dumpObjectInfo();
+    if (IPC::System::module() != "master") {
         m_tmr = new QTimer(this);
         detect();
-        connect(m_tmr,SIGNAL(timeout()),this,SLOT(detect()));
-        m_tmr->setInterval (1000);
-        m_tmr->start ();
+        connect(m_tmr, SIGNAL(timeout()), this, SLOT(detect()));
+        m_tmr->setInterval(1000);
+        m_tmr->start();
     }
 }
 
 /// @todo Find a means to send back an interface name instead of just the running module.
-void GenericAdaptor::detect() const {
-    m_tmr->stop ();
+void GenericAdaptor::detect() const
+{
+    m_tmr->stop();
     const bool l_prv = m_core;
     QDBusMessage l_ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Master",WNTR_DBUS_MASTER_NAME,"ping");
     l_ping << IPC::System::module ();
@@ -71,41 +79,44 @@ void GenericAdaptor::detect() const {
     m_tmr->start ();
 }
 
-const int GenericAdaptor::pid () const {
-    return QApplication::applicationPid ();
-}
+const int GenericAdaptor::pid() const { return QApplication::applicationPid(); }
 
-const QString GenericAdaptor::module () const {
-    return IPC::System::module ();
-}
-}
+const QString GenericAdaptor::module() const { return IPC::System::module(); }
+} // namespace
 
 namespace Plugins {
-PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor(Factory::instance ()) {
-    setAutoRelaySignals (true);
+PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor(Factory::instance())
+{
+    setAutoRelaySignals(true);
 }
 
-void PluginFactoryAdaptor::loadPlugin (const QString &p_plgnName) {
-    Factory::instance ()->loadPlugin (p_plgnName);
+void PluginFactoryAdaptor::loadPlugin(const QString &p_plgnName)
+{
+    Factory::instance()->loadPlugin (p_plgnName);
 }
 
-void PluginFactoryAdaptor::unloadPlugin (const QString &p_plgnName) {
-    Factory::instance ()->unloadPlugin (p_plgnName);
+void PluginFactoryAdaptor::unloadPlugin(const QString &p_plgnName)
+{
+    Factory::instance()->unloadPlugin (p_plgnName);
 }
 
-const QStringList PluginFactoryAdaptor::allPlugins () const {
-    return Factory::instance ()->allPlugins ();
+const QStringList PluginFactoryAdaptor::allPlugins() const
+{
+    return Factory::instance()->allPlugins();
 }
 
-const QStringList PluginFactoryAdaptor::loadedPlugins () const {
-    return Factory::instance ()->loadedPlugins ();
+const QStringList PluginFactoryAdaptor::loadedPlugins() const
+{
+    return Factory::instance()->loadedPlugins();
 }
-void PluginFactoryAdaptor::quit () const {
-    emit aboutToQuit ();
-    Factory::Shutdown ();
+void PluginFactoryAdaptor::quit() const
+{
+    emit aboutToQuit();
+    Factory::Shutdown();
 }
 
-InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(p_plgn) {
+PluginHandleAdaptor::PluginHandleAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(Core::instance())
+{
     if (p_plgn == 0) {
         emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
         QApplication::quit ();
@@ -130,40 +141,45 @@ InstanceAdaptor::InstanceAdaptor(AbstractPlugin *p_plgn) : AbstractAdaptor(p_plg
     }
 }
 
-void InstanceAdaptor::quit () const {
+void PluginHandleAdaptor::quit () const
+{
     AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
     emit aboutToQuit ();
     l_plgn->stop();
     emit pluginUnloaded (l_plgn->uuid());
 }
 
-void InstanceAdaptor::loadBackend(const QString &p_uuid) {
+void PluginHandleAdaptor::loadBackend(const QString &p_uuid)
+{
     AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*>(parent());
     Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework(l_plgn->uuid());
-
-    if (l_frmk)
-        l_frmk->addBackend(Backends::AbstractBackend::obtainBackend(p_uuid));
-}
 }
 
-CoreAdaptor::CoreAdaptor() : AbstractAdaptor(Core::instance ()) { }
+} // namespace
 
-const QVariantMap CoreAdaptor::arguments () const {
-    return *(Core::arguments ());
+CoreAdaptor::CoreAdaptor() : AbstractAdaptor(Core::instance()) { }
+
+const QVariantMap CoreAdaptor::arguments() const
+{
+    return *(Core::arguments());
 }
 
-void CoreAdaptor::ping (const QString &p_src) {
+void CoreAdaptor::ping(const QString &p_src)
+{
     //qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
 }
 
-void CoreAdaptor::quit () const {
+<<<<<<< HEAD
+void CoreAdaptor::quit () const
+{
     emit aboutToQuit ();
     QDBusMessage l_msg = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Factory", WNTR_DBUS_FACTORY_NAME,"quit");
     QDBusConnection::sessionBus ().call (l_msg,QDBus::NoBlock);
     haltSystem ();
 }
 
-void CoreAdaptor::haltSystem () {
+void CoreAdaptor::haltSystem ()
+{
     if (Core::arguments ()->value ("ipc").toString () != "master") {
         QDBusMessage l_call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME,"/Master",WNTR_DBUS_MASTER_NAME,"haltSystem");
         QDBusConnection::sessionBus ().send (l_call);
@@ -171,4 +187,4 @@ void CoreAdaptor::haltSystem () {
 
     QApplication::quit ();
 }
-}
+} // namespace

@@ -19,10 +19,13 @@
  * @endlegalese
  */
 
-#include "config.hpp"
+// Local
 #include "core.hpp"
+#include "config.hpp"
 #include "ipc.hpp"
-#include "plugins.hpp"
+#include "plugins/plugins.hpp"
+
+// Standard
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-
+// Qt
 #include <QtDebug>
 #include <QtDebug>
 #include <QProcess>
@@ -41,30 +44,31 @@
 #include <QLibraryInfo>
 #include <QApplication>
 #include <QSocketNotifier>
+
+// Boost
 #include <boost/program_options.hpp>
 
 using namespace std;
-using namespace Wintermute;
 namespace po = boost::program_options;
 
 using boost::program_options::variables_map;
 using boost::program_options::variable_value;
 using boost::program_options::options_description;
-using std::cout;
-using std::endl;
 
 namespace Wintermute {
 QApplication* Core::s_app = 0;
 QVariantMap* Core::s_args = 0;
 Core* Core::s_core = 0;
 
-Core::Core ( int &p_argc, char **p_argv ) {
+Core::Core(int &p_argc, char **p_argv)
+{
     Core::s_core = this;
-    Core::Configure ( p_argc,p_argv );
+    Core::Configure(p_argc, p_argv);
     Core::start();
 }
 
-void Core::Configure ( int& p_argc, char** p_argv ) {
+void Core::Configure(int& p_argc, char** p_argv)
+{
     QString l_ipcMod = "master";
     s_app = new QApplication ( p_argc, p_argv );
     s_app->setApplicationName ( "Wintermute" );
@@ -80,7 +84,8 @@ void Core::Configure ( int& p_argc, char** p_argv ) {
         l_ipcMod = s_args->value ( "ipc" ).toString ();
 }
 
-const QVariantMap* Core::arguments () {
+const QVariantMap* Core::arguments()
+{
     return s_args;
 }
 
@@ -168,11 +173,13 @@ void Core::configureCommandLine () {
         cout << "(core) [Core] Run this application with '--help' to get more information." << endl;
 }
 
-Core* Core::instance () {
+Core* Core::instance()
+{
     return s_core;
 }
 
-void Core::start () {
+void Core::start() 
+{
     if (Core::arguments ()->value("ipc").toString () == "master") {
         cout << qPrintable ( s_app->applicationName () ) << " "
              << qPrintable ( s_app->applicationVersion () )
@@ -193,7 +200,8 @@ void Core::start () {
     qDebug() << "(core) [Core] Started.";
 }
 
-void Core::exit (int p_exitCode, bool p_killSystem) {
+void Core::exit(int p_exitCode, bool p_killSystem)
+{
     qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
 
     if ((IPC::System::module () != "master" && arguments ()->value ("help") == "ignore") && p_killSystem) {
@@ -206,6 +214,11 @@ void Core::exit (int p_exitCode, bool p_killSystem) {
 
     qDebug() << "(core) [" << IPC::System::module () << "] Exitted.";
     QApplication::exit(p_exitCode);
+}
+
+void Core::quit()
+{
+    Core::exit(0);
 }
 
 void Core::stop () {

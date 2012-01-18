@@ -1,0 +1,4 @@
+* Doxygen configuration to be polished + add automatic GraphViz checking.
+* Correct headers installation - plugin-related stuff under plugins/ directory.
+* Consider moving application from QApplication to QCoreApplication (it is
+  console app, isn't it?).
