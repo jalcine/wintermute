@@ -34,7 +34,6 @@ class QApplication;
 class QSocketNotifier;
 
 namespace Wintermute {
-struct Core;
 
 /**
  * @brief The central management class of Wintermute.
@@ -132,7 +131,7 @@ protected:
     /**
      * @brief Configures Wintermute's core.
      *
-     * This method holds the instructions tos set-up some imperative command line arguments.
+     * This method holds the instructions to set-up some imperative command line arguments.
      * It then parses each argument and saves it to the global cache of arguments for other
      * utilities to use.
      *

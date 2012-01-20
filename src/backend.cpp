@@ -76,7 +76,7 @@ namespace Wintermute {
             m_plgn->setAttribute("Framework/StartMode",QVariant::fromValue<int>((int) p_strtMd));
         }
 
-        const bool AbstractFramework::isBackendListed(const AbstractBackend *p_cmpt) const {
+        bool AbstractFramework::isBackendListed(const AbstractBackend *p_cmpt) const {
             return m_bckndLst.contains(p_cmpt->id());
         }
 
@@ -186,7 +186,7 @@ namespace Wintermute {
     }
 }
 
-const QString Wintermute::Backends::AbstractBackend::id() const
+QString Wintermute::Backends::AbstractBackend::id() const
 {
     return m_id;
 }
