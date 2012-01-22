@@ -20,7 +20,6 @@
  * @endlegalese
  */
 #ifndef IPC_HPP
-#ifndef NCURSES_HPP
 #define IPC_HPP
 
 #include "config.hpp"
@@ -146,6 +145,5 @@ private:
 } // namespaces
 }
 
-#endif
 #endif /* IPC_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
