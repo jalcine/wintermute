@@ -1,14 +1,15 @@
 project(WintermuteCore)
-
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
 file(GLOB WINTERMUTE_SOURCES "*.cpp")
 file(GLOB WINTERMUTE_HEADERS "*.hpp")
-file(GLOB WINTERMUTE_PLUGIN_SOURCES "plugins/*.cpp")
-file(GLOB WINTERMUTE_PLUGIN_HEADERS "plugins/*.hpp")
+
 QT4_WRAP_CPP(WINTERMUTE_SOURCES ${WINTERMUTE_HEADERS})
-QT4_WRAP_CPP(WINTERMUTE_SOURCES ${WINTERMUTE_PLUGIN_HEADERS})
+
+add_subdirectory(plugins)
+
+include_directories("plugins")
 
 ## Targets
 add_executable(wintermute ${WINTERMUTE_SOURCES} ${WINTERMUTE_PLUGIN_SOURCES})
@@ -22,8 +23,3 @@ install(TARGETS wintermute
 install(FILES ${WINTERMUTE_HEADERS}
     DESTINATION "${WINTER_INCLUDE_INSTALL_DIR}"
     COMPONENT dev)
-
-install(FILES ${WINTERMUTE_PLUGIN_HEADERS}
-    DESTINATION "${WINTER_INCLUDE_INSTALL_DIR}/plugins"
-    COMPONENT dev)
-
