@@ -4,7 +4,6 @@ include(WintermuteMacros)
 
 file(GLOB WINTERMUTE_SOURCES "*.cpp")
 file(GLOB WINTERMUTE_HEADERS "*.hpp")
-
 QT4_WRAP_CPP(WINTERMUTE_SOURCES ${WINTERMUTE_HEADERS})
 
 add_subdirectory(plugins)

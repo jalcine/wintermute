@@ -22,8 +22,11 @@
 #ifndef IPC_HPP
 #define IPC_HPP
 
+// Local
 #include "config.hpp"
 #include "adaptors.hpp"
+
+// Qt
 #include <QtDBus/QDBusInterface>
 #include <QVariantMap>
 
@@ -75,7 +78,8 @@ struct System;
  * @see CoreAdaptor, PluginBase, PluginInstance, Factory
  * @class System ipc.hpp "src/ipc.hpp"
  */
-class System : public QObject {
+class System : public QObject
+{
     friend class Plugins::Factory;
     Q_OBJECT
     Q_CLASSINFO("objectName","IPC Singelton")

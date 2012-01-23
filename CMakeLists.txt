@@ -1,4 +1,6 @@
 project(Wintermute)
+set(PROJECT_LABEL "Wintermute Core")
+set(PROJECT_LOGO "${PROJECT_SOURCE_DIR}/res/WintermuteLogo.png")
 cmake_minimum_required(VERSION 2.8)
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
@@ -43,7 +45,6 @@ file(GLOB WINTER_CMAKE_MODULES "${PROJECT_SOURCE_DIR}/cmake/Modules/*.cmake")
 ## Main variables
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core")
-set(PROJECT_LABEL "Wintermute Core")
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIR}"
     ${Boost_INCLUDE_DIRS}

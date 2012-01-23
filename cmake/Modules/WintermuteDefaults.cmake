@@ -27,3 +27,4 @@ set(WINTERMUTE_LOCALE "en" CACHE STRING "The standard locale for Wintermute to u
 
 ## Standard CMake information.
 list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake-2.8/Modules")
+list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake/Modules")

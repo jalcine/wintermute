@@ -22,7 +22,6 @@
 
 /**
  * @mainpage Wintermute API Documentation
- * <img src="wintermute-profile.png" align="right" title="Wintermute logo"/>
  * @section intro Introduction
  * Wintermute is written mainly in C++. It features a plug-in system (see Wintermute::Plugins::PluginBase),
  * inter-process communication (see Wintermute::IPC) and a centralized system that switches
@@ -31,7 +30,7 @@
  * experience that people experience when using Wintermute. You can find more information
  * about the current development progress of Wintermute or want to join the development team,
  * visit <a href="http://www.thesii.org/wiki/Wintermute">Wintermute</a> on our Wiki and click
- * <b>Join the Team</b>. We hope to hear from you soon.
+ * <em>Join the Team</em>. We hope to hear from you soon.
  *
  * - If you're interested in building a plug-in for Wintermute, visit Wintermute::Plugins::PluginBase.
  * - Visit the <a href="http://www.thesii.org">Synthetic Intellect Institute</a>'s Wiki page for Wintermute!

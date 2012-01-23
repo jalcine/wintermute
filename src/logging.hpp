@@ -30,7 +30,8 @@ struct Logging;
 /// @todo Allow triggering the saving of such logs to disc.
 /// @todo Allow dynamic printing of certain flags (overriding build commands).
 /// @todo Add a event filter for this into the application.
-class Logging : public QObject {
+class Logging : public QObject
+{
     Q_OBJECT
     Q_CLASSINFO("objectName","Logging Singleton")
     Q_DISABLE_COPY(Logging)
@@ -49,4 +50,4 @@ private:
     Logging();
     static Logging* s_inst;
 };
-}
+} // namespace
