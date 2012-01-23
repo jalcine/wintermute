@@ -55,7 +55,8 @@ using boost::program_options::variables_map;
 using boost::program_options::variable_value;
 using boost::program_options::options_description;
 
-namespace Wintermute {
+using namespace Wintermute;
+
 QApplication* Core::s_app = 0;
 QVariantMap* Core::s_args = 0;
 Core* Core::s_core = 0;
@@ -70,18 +71,18 @@ Core::Core(int &p_argc, char **p_argv)
 void Core::Configure(int& p_argc, char** p_argv)
 {
     QString l_ipcMod = "master";
-    s_app = new QApplication ( p_argc, p_argv );
-    s_app->setApplicationName ( "Wintermute" );
-    s_app->setApplicationVersion ( QString::number ( WNTR_VERSION ) );
-    s_app->setOrganizationDomain ( "thesii.org" );
-    s_app->setOrganizationName ( "Synthetic Intellect Institute" );
-    connect ( s_app , SIGNAL ( aboutToQuit() ) , s_core , SLOT(stop()) );
-    s_core->setParent (s_app);
+    s_app = new QApplication(p_argc, p_argv);
+    s_app->setApplicationName("Wintermute");
+    s_app->setApplicationVersion(QString::number(WNTR_VERSION));
+    s_app->setOrganizationDomain("thesii.org");
+    s_app->setOrganizationName("Synthetic Intellect Institute");
+    connect(s_app, SIGNAL(aboutToQuit()), s_core, SLOT(stop()));
+    s_core->setParent(s_app);
 
     configureCommandLine();
 
-    if ( s_args->count ( "ipc" ) != 0 )
-        l_ipcMod = s_args->value ( "ipc" ).toString ();
+    if (s_args->count("ipc") != 0)
+        l_ipcMod = s_args->value("ipc").toString();
 }
 
 const QVariantMap* Core::arguments()
@@ -90,7 +91,8 @@ const QVariantMap* Core::arguments()
 }
 
 /// @todo Allow arbitrary arguments to be added into the system
-void Core::configureCommandLine () {
+void Core::configureCommandLine()
+{
     variables_map l_vm;
     s_args = new QVariantMap;
     int l_argc = s_app->argc ();
@@ -180,14 +182,14 @@ Core* Core::instance()
 
 void Core::start() 
 {
-    if (Core::arguments ()->value("ipc").toString () == "master") {
+    if (Core::arguments()->value("ipc").toString() == "master") {
         cout << qPrintable ( s_app->applicationName () ) << " "
              << qPrintable ( s_app->applicationVersion () )
              << " (pid " << s_app->applicationPid () << ") :: "
              << "Artificial intelligence for Common Man. (Licensed under the GPL3+)" << endl;
     }
 
-    IPC::System::start ();
+    IPC::System::start();
 
     if (IPC::System::module() == "master") {
         QSettings* l_settings = new QSettings("Synthetic Intellect Institute","Wintermute");
@@ -226,7 +228,5 @@ void Core::stop () {
     IPC::System::stop ();
     emit s_core->stopped ();
     qDebug() << "(core) [" << IPC::System::module() << "] Process stopped.";
-}
-
 }
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

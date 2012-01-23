@@ -1,19 +1,26 @@
 // Local
 #include "diagnoser.hpp"
 
+// Qt
+#include <QString>
+
 using namespace Wintermute::Diagnostics;
 
-Diagnoser *Diagnoser::coreDiagnoser = 0;
 QMap<QString, Diagnoser*> Diagnoser::diagnosers = QMap<QString, Diagnoser*>();
 
 Diagnoser::Diagnoser(QObject *parent) : QObject(parent)
-{}
+{
+}
 
 Diagnoser::Diagnoser(QString& newLabel, bool autoRegister, QObject *parent)
     : label(newLabel), QObject(parent)
 {
     if (autoRegister)
         Diagnoser::registerDiagnoser(this);
+}
+
+Diagnoser::~Diagnoser()
+{
 }
 
 QString Diagnoser::getLabel()
@@ -32,11 +39,6 @@ void Diagnoser::removeDiagnoser(QString& label)
     Diagnoser::diagnosers.remove(label);
     // By specification no diagnoser can exist beyond this register.
     delete pDiag;
-}
-
-Diagnoser* Diagnoser::getCoreDiagnoser()
-{
-    return coreDiagnoser;
 }
 
 Diagnoser* Diagnoser::getDiagnoser(QString& label)

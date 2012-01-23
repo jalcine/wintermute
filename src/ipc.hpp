@@ -37,7 +37,6 @@ namespace Plugins {
 struct Factory;    //forward class decl;
 }
 namespace IPC {
-struct System;
 
 /**
  * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
@@ -98,7 +97,6 @@ public:
     /**
      * Starts up the IPC system by storing the type of module that Wintermute's
      * running under and executing the code required to render that module.
-     * @fn Initialize
      */
     static void start ( );
 
@@ -110,7 +108,6 @@ public:
 
     /**
      * @brief Obtains the current module.
-     * @fn currentModule
      * @return The name of the running module.
      */
     static inline const QString module() {
