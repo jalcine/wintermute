@@ -53,31 +53,29 @@ class Factory : public QObject
          * @fn pluginLoaded
          * @param p_uuid The UUID of the loaded plug-in.
          */
-        void pluginLoaded(const QString& ) const;
+        void pluginLoaded(const QString&) const;
 
         /**
          * @brief Emitted when a plug-in has been successfully unloaded from the system.
          * @fn pluginUnloaded
          * @param p_uuid The UUID of the unloaded plug-in.
          */
-        void pluginUnloaded(const QString& ) const;
+        void pluginUnloaded(const QString&) const;
 
         /**
          * @brief Emitted when a plug-in experiences a sporadic crash.
          * @fn pluginCrashed
          * @param p_uuid The UUID of the faulty plug-in.
          */
-        void pluginCrashed(const QString& ) const;
+        void pluginCrashed(const QString&) const;
 
         /**
          * @brief Emitted when the factory's up and running.
-         * @fn initialized
          */
         void started() const;
 
         /**
          * @brief Emitted when the factory's down for the count.
-         * @fn deinitialized
          */
         void stopped() const;
 
@@ -95,6 +93,12 @@ class Factory : public QObject
         static void Shutdown();
 
     public:
+	/**
+	 * @brief A helper class for plug-ins.
+	 * Shell plug-ins allows the Factory to learn about a plug-in configuration
+	 * and setup without loading all of its libraries and dependencies. It's also
+	 * provided since AbstractPlugin is an abstract class.
+	 */
         class ShellPlugin : public AbstractPlugin
         {
                 friend class Factory;
@@ -116,13 +120,15 @@ class Factory : public QObject
          * @fn loadPlugin
          * @param
          */
-        static AbstractPlugin* loadPlugin ( const QString&, const bool& = false );
+        static AbstractPlugin* loadPlugin(const QString&);
+
         /**
          * @brief Unloads a plug-in from the system.
          * @fn unloadPlugin
          * @param
          */
         static void unloadPlugin(const QString& );
+
         /**
          * @brief Returns a list of all currently plug-ins with meta-data information.
          * @fn loadedPlugins
@@ -135,7 +141,7 @@ class Factory : public QObject
          * @fn allPlugins
          * @return const QStringList
          */
-        static const QStringList allPlugins();
+        static QStringList allPlugins();
 
         /**
          * @brief Obtains an instance of the Factory.
@@ -152,45 +158,55 @@ class Factory : public QObject
 
     private:
         static PluginTable s_plgnLst; /**< Holds a list  */
-        static Factory* s_fctry;
+        static Factory* s_fctry; /**< Holds the Factory's instance. */
         static AbstractPlugin* s_rtPlgn;
         QHash<const QString, PluginHandle *> m_plgnPool;
-        static QSettings* pluginSettings(const QString& );
-        static const bool loadBackendPlugin(const QString& );
+
+	/**
+	 * @brief Obtains the specification options (not the configuration used by the plug-in).
+	 * @param string The UUID of the plug-in in question.
+	 * @return A pointer to a QSettings object or NULL if the UUID doesn't refer to a plug-in.
+	 */
+	static QSettings* getPluginSettings(const QString& );
+
+	/**
+	 * @brief
+	 * @param string The UUID of the plug-in in question.
+	 * @return True if the plug-in has been loaded successfully, false otherwise.
+	 */
+	static const bool loadBackendPlugin(const QString& );
 
     private slots:
         /**
-         * @brief
-         *
+         * @brief Loads the plug-in defined to be executed from the command-line.
          * @fn loadStandardPlugin
          */
         static void loadStandardPlugin();
 
         /**
-         * @brief
-         *
+         * @brief Unloads the plug-in defined to be executed from the command-line.
          * @fn unloadStandardPlugin
          */
         static void unloadStandardPlugin();
+
         /**
-         * @brief
-         *
+         * @brief Represents the notifying of a plug-in's loading into the plug-in pool.
          * @fn doPluginLoad
-         * @param
+         * @param string The UUID of the plug-in.
          */
         static void doPluginLoad(const QString&);
+
         /**
-         * @brief
-         *
+         * @brief Represents the notifying of a plug-in's unloading from the plug-in pool.
          * @fn doPluginUnload
-         * @param
+         * @param string The UUID of the plug-in.
          */
         static void doPluginUnload(const QString&);
+
         /**
-         * @brief
-         *
+         * @brief Represents the notifying of a plug-in's crash.
          * @fn doPluginCrash
-         * @param
+         * @param string The UUID of the plug-in.
          */
         static void doPluginCrash(const QString&);
 };

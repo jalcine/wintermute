@@ -21,7 +21,7 @@
  */
 
 // Local
-#include "plugins/plugins.hpp"
+#include "plugins.hpp"
 
 // Qt
 #include <QMap>

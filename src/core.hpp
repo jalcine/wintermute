@@ -25,6 +25,7 @@
 
 // Local
 #include "config.hpp"
+#include "diagnoser.hpp"
 
 // Qt
 #include <QObject>

@@ -22,7 +22,7 @@
 
 // Local
 #include "backend.hpp"
-#include "plugins/plugins.hpp"
+#include "plugins.hpp"
 
 // Qt
 #include <QDebug>
@@ -171,7 +171,7 @@ namespace Wintermute {
         AbstractBackend* AbstractBackend::obtainBackend(const QString& l_bcknd) {
             qDebug() << "(core) [AbstractBackend] Obtaining back-end" << l_bcknd << "...";
             if (!AbstractBackend::s_lst.contains(l_bcknd)) {
-                if (Factory::loadPlugin(l_bcknd,true)) {
+                if (Factory::loadPlugin(l_bcknd)) {
                     qDebug() << "(core) [AbstractBackend] Back-end" << l_bcknd << "obtained.";
                     return AbstractBackend::s_lst.value(l_bcknd);
                 }

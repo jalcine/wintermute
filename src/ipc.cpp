@@ -25,7 +25,8 @@
 #include "core.hpp"
 #include "config.hpp"
 #include "adaptors.hpp"
-#include "plugins/plugins.hpp"
+#include "plugins.hpp"
+#include "factory.hpp"
 
 // Qt
 #include <QtDBus>
@@ -39,39 +40,47 @@ System::System(QObject* p_obj) : QObject(p_obj) { }
 
 System::~System() { }
 
-void System::start ( ) {
-    instance()->m_cnntn = new QDBusConnection(QDBusConnection::sessionBus ().connectToBus (QDBusConnection::SessionBus,"Wintermute"));
-    instance()->m_appMod = Core::arguments ()->value ("ipc").toString ().toLower ();
-    QString l_serviceName = WNTR_DBUS_SERVICE_NAME, l_objectName;
-    qDebug() << instance()->m_appMod;
+void System::start()
+{
+    instance()->m_cnntn = new QDBusConnection(QDBusConnection::sessionBus().connectToBus(QDBusConnection::SessionBus,"Wintermute"));
+    instance()->m_appMod = Core::arguments()->value("ipc").toString().toLower();
+    QString l_serviceName = WNTR_DBUS_SERVICE_NAME,
+            l_objectName;
+    qDebug() << "(core) [IPC::System]" << "Mode:" << instance()->m_appMod;
 
     if ( instance()->m_appMod == "master") {
         l_objectName = "master";
-        connect(Core::instance (),SIGNAL(started()), Plugins::Factory::instance (), SLOT(Startup()));
-        connect(Core::instance (),SIGNAL(stopped()), Plugins::Factory::instance (), SLOT(Shutdown()));
+        connect(Core::instance(), SIGNAL(started()), Plugins::Factory::instance(), SLOT(Startup()));
+        connect(Core::instance(), SIGNAL(stopped()), Plugins::Factory::instance(), SLOT(Shutdown()));
 
-        CoreAdaptor* l_adpt = new CoreAdaptor;
-        Plugins::PluginFactoryAdaptor* l_adpt2 = new Plugins::PluginFactoryAdaptor;
+        CoreAdaptor* l_coreAdaptor = new CoreAdaptor;
+        Plugins::PluginFactoryAdaptor* l_pluginFactoryAdaptor = new Plugins::PluginFactoryAdaptor;
 
-        registerObject ("/Master" , l_adpt);
-        registerObject ("/Factory" , l_adpt2);
-        instance()->m_adapt = l_adpt;
+        registerObject("/Master", l_coreAdaptor);
+        registerObject("/Factory", l_pluginFactoryAdaptor);
+        instance()->m_adapt = l_coreAdaptor;
     } else if (instance()->m_appMod == "plugin" ) {
-        const QString l_plgn = Core::arguments ()->value ("plugin").toString ();
+        const QString l_plgn = Core::arguments()->value("plugin").toString();
         l_objectName = "Plugin." + l_plgn;
-        connect(Core::instance (),SIGNAL(started()),Plugins::Factory::instance (),SLOT(loadStandardPlugin()));
-        connect(Core::instance (),SIGNAL(stopped()),Plugins::Factory::instance (),SLOT(unloadStandardPlugin()));
+        connect(Core::instance(), SIGNAL(started()), Plugins::Factory::instance(), SLOT(loadStandardPlugin()));
+        connect(Core::instance(), SIGNAL(stopped()), Plugins::Factory::instance(), SLOT(unloadStandardPlugin()));
     }
 
     if (l_objectName != "master") l_serviceName += "." + l_objectName;
 
-    if (!instance()->m_cnntn->registerService (l_serviceName) && l_objectName == "master") {
-        qDebug() << "(core) Fatal: Cannot run more than one Wintermute service" << l_serviceName
-                 << "under the same user on the same computer";
+    bool serviceRegistered = false;
+    if (instance()->m_cnntn->registerService(l_serviceName))
+        serviceRegistered = true;
+
+    if (!serviceRegistered && l_objectName == "master") {
+        qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << l_serviceName << ")"
+        << "under the same user on the same computer";
         Core::exit(1);
     }
 
-    qDebug() << "(core) [D-Bus] Service" << l_serviceName << "registered.";
+    if (serviceRegistered)
+        qDebug() << "(core) [D-Bus] Service" << l_serviceName << "running.";
+
     emit instance()->registerDataTypes();
 }
 
@@ -97,7 +106,7 @@ const bool System::registerObject(const QString& p_pth, QDBusAbstractAdaptor* p_
 }
 
 void System::stop () {
-    instance()->m_cnntn->disconnectFromBus (instance()->m_cnntn->name ());
+    instance()->m_cnntn->disconnectFromBus(instance()->m_cnntn->name());
 }
 
 QDBusConnection* System::bus() {

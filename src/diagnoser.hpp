@@ -20,7 +20,6 @@ class Diagnoser : public QObject
     Q_OBJECT
 
 private:
-    static Diagnoser* coreDiagnoser; /// Diagnoser responsible for Core monitoring.
     static QMap<QString, Diagnoser*> diagnosers; /// Other diagnosers, responsible mainly for plug-ins.
 
 protected:
@@ -36,6 +35,8 @@ public:
      * @param parent QObject parent.
      */
     Diagnoser(QString&, bool = true, QObject* = 0);
+
+    virtual ~Diagnoser();
 
     /**
      * @brief Get diagnoser's label
@@ -54,12 +55,6 @@ public:
      * @param label Label of a diagnoser you want to remove.
      */
     static void removeDiagnoser(QString&);
-
-    /**
-     * @brief Get pointer to the Core Diagnoser
-     * @returns Pointer to the Core Diagnoser.
-     */
-    static Diagnoser* getCoreDiagnoser();
 
     /**
      * @brief Get pointer to a diagnoser with given label

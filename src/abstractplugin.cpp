@@ -167,9 +167,7 @@ QStringList AbstractPlugin::packages() const
 }
 
 /// @note This method requires code from QPackageKit.
-/// @todo Add code using QPackageKit's API to detect if packages are installed on a system and if not, install them.
-/// @todo Decide if we should use triples of (QString, ConstrType, Int) or (QString, ConstrType, QString) for dependency name, constraint
-/// type and version, respectively.
+/// @note issue #0000029
 bool AbstractPlugin::loadPackages() const
 {
     const QStringList l_deps = this->packages();
@@ -182,7 +180,7 @@ bool AbstractPlugin::loadPackages() const
 }
 
 /// @note This method requires code from QPackageKit.
-/// @todo Add code using QPackageKit's API to detect if packages are installed on a system.
+/// @note issue #0000029
 bool AbstractPlugin::hasPackages() const
 {
     const QStringList l_deps = this->packages();
@@ -196,7 +194,6 @@ bool AbstractPlugin::hasPackages() const
     return true;
 }
 
-/// @note This method searches the plug-in's configuration for default settings. \o/
 QVariant AbstractPlugin::attribute(const QString &p_attrPath) const
 {
     QVariant l_val = m_cnfg->value(p_attrPath);
@@ -212,7 +209,7 @@ void AbstractPlugin::setAttribute(const QString &p_attrPath, const QVariant &p_a
     m_cnfg->setValue(p_attrPath, p_attrVal);
 }
 
-/// @todo Allow resetting of specific attributes.
+/// @note issue #0000030
 void AbstractPlugin::resetAttributes()
 {
     m_cnfg->clear();
@@ -234,7 +231,7 @@ const bool AbstractPlugin::loadLibrary() const
 
 void AbstractPlugin::doStart()
 {
-  connect( Core::instance(), SIGNAL(stopped()), this, SLOT(doStop()) );
+  connect ( Core::instance(), SIGNAL(stopped()) , this , SLOT(doStop()) );
   start();
   emit started();
 }
@@ -278,6 +275,6 @@ AbstractPlugin::~AbstractPlugin()
 
 void AbstractPlugin::loadSettings(const QString &p_uuid)
 {
-    m_sttngs = Factory::pluginSettings(p_uuid);
+    m_sttngs = Factory::getPluginSettings(p_uuid);
     m_cnfg = new QSettings("Synthetic Intellect Institute",p_uuid);
 }

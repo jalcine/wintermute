@@ -74,13 +74,14 @@ configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
 dbus_add_activation_service(services/org.thesii.Wintermute.service.in)
 
 add_subdirectory(src)
+add_subdirectory(cmake/Modules)
 
 ## Installs
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
         DESTINATION "${WINTERMUTE_CMAKE_DIR}")
 
-## @todo Add it to a system wide location.
+## @todo Add it to a system-wide location.
 install(FILES "${PROJECT_SOURCE_DIR}/Wintermute.conf"
         DESTINATION "~/.config/Synthetic Intellect Institute")
 

@@ -24,9 +24,9 @@
 #include "backend.hpp"
 #include "ipc.hpp"
 
-#include "plugins/abstractplugin.hpp"
-#include "plugins/factory.hpp"
-#include "plugins/pluginhandle.hpp"
+#include "abstractplugin.hpp"
+#include "factory.hpp"
+#include "pluginhandle.hpp"
 
 // Qt
 #include <QTimer>

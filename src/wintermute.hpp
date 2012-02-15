@@ -44,7 +44,8 @@
 #include "ipc.hpp"
 #include "backend.hpp"
 #include "adaptors.hpp"
-#include "plugins/plugins.hpp"
+#include "factory.hpp"
+#include "plugins.hpp"
 
 #endif /* WINTERMUTE_HPP */
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

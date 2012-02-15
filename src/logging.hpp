@@ -20,12 +20,15 @@
  * @endlegalese
  */
 
+#ifndef WNTR_LOGGING_HPP
+#define WNTR_LOGGING_HPP
+
 #include <QObject>
 #include <QDebug>
 #include <QTime>
 
 namespace Wintermute {
-struct Logging;
+class Logging;
 
 /// @todo Allow triggering the saving of such logs to disc.
 /// @todo Allow dynamic printing of certain flags (overriding build commands).
@@ -51,3 +54,5 @@ private:
     static Logging* s_inst;
 };
 } // namespace
+
+#endif
