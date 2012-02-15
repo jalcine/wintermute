@@ -1,6 +1,5 @@
 project(Wintermute)
 set(PROJECT_LABEL "Wintermute Core")
-set(PROJECT_LOGO "${PROJECT_SOURCE_DIR}/res/WintermuteLogo.png")
 cmake_minimum_required(VERSION 2.8)
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
@@ -36,17 +35,16 @@ find_package(Qt4 COMPONENTS
 
 include("${QT_USE_FILE}")
 
-## Doxygen
-enable_doxygen()
-
 ## Files
 file(GLOB WINTER_CMAKE_MODULES "${PROJECT_SOURCE_DIR}/cmake/Modules/*.cmake")
 
 ## Main variables
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Core")
+set(PROJECT_LOGO    "${PROJECT_SOURCE_DIR}/res/WintermuteLogo.png")
+set(PROJECT_DOC_CSS "${PROJECT_SOURCE_DIR}/res/doc.css")
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
-set(WINTERMUTE_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIR}"
+set(WINTERMUTE_INCLUDE_DIRS
     ${Boost_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}
     ${WINTER_PLUGIN_INCLUDE_INSTALL_DIR})
@@ -59,6 +57,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O1")
 ## Include directories
 include_directories(${WINTERMUTE_INCLUDE_DIRS})
 include_directories(${PROJECT_BINARY_DIR})
+
+list(APPEND WINTERMUTE_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 ## Configs
 configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfig.cmake.in"
@@ -76,6 +76,9 @@ dbus_add_activation_service(services/org.thesii.Wintermute.service.in)
 add_subdirectory(src)
 add_subdirectory(cmake/Modules)
 
+## Doxygen
+enable_doxygen("${PROJECT_BINARY_DIR}/doc")
+
 ## Installs
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
@@ -84,4 +87,3 @@ install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
 ## @todo Add it to a system-wide location.
 install(FILES "${PROJECT_SOURCE_DIR}/Wintermute.conf"
         DESTINATION "~/.config/Synthetic Intellect Institute")
-
