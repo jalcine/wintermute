@@ -7,7 +7,7 @@ set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 set(GENERIC_LIB_VERSION 0.0.1)
 set(GENERIC_LIB_SOVERSION 0)
-set(WINTER_NON_GENERIC_LIB_VERSION 1.0.1)
+set(WINTER_NON_GENERIC_LIB_VERSION 0.0.1)
 set(WINTER_NON_GENERIC_LIB_SOVERSION 1)
 
 set(WINTER_BUILD_TYPE "RelWithDebInfo")
@@ -26,5 +26,7 @@ set(WINTERMUTE_IS_PLUGIN OFF CACHE STRING "The status of this project (is it a p
 set(WINTERMUTE_LOCALE "en" CACHE STRING "The standard locale for Wintermute to use.")
 
 ## Standard CMake information.
-list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake-2.8/Modules")
-list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake/Modules")
+list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake-2.8/Modules"
+                             "${WINTER_INSTALL_DIR}/share/cmake/Modules")
+
+add_definitions("-Wall")
