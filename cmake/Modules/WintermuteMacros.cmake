@@ -13,7 +13,7 @@ macro(winter_make_absolute paths)
     endforeach()
 endmacro(winter_make_absolute)
 
-macro(enable_doxygen doc_directory)
+macro(enable_doxygen)
     find_package(Doxygen)
     if(DOXYGEN_FOUND)
         find_program(HAVE_DOT dot)
@@ -24,9 +24,9 @@ macro(enable_doxygen doc_directory)
             set(HAVE_DOT NO)
         endif(HAVE_DOT)
         configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${PROJECT_BINARY_DIR}/Doxyfile")
-        add_custom_target(doxygen
+        add_custom_target(doxygen ALL
             ${DOXYGEN_EXECUTABLE} Doxyfile
-            WORKING_DIRECTORY "${doc_directory}"
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
             COMMENT "Generating API documentation with Doxygen...")
     endif()
 endmacro()

@@ -1,7 +1,10 @@
-project(WintermuteCore)
+project(WintermuteApplication)
 
 include(WintermuteDefaults)
 include(WintermuteMacros)
+
+configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
+               "${PROJECT_SOURCE_DIR}/config.hpp" @ONLY)
 
 file(GLOB WINTERMUTE_SOURCES "*.cpp")
 file(GLOB WINTERMUTE_HEADERS "*.hpp")
@@ -13,9 +16,9 @@ target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 ## Installs
 install(TARGETS wintermute
-    RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
-    COMPONENT bin)
+  RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
+  COMPONENT bin)
 
 install(FILES ${WINTERMUTE_HEADERS}
-    DESTINATION "${WINTER_INCLUDE_INSTALL_DIR}"
-    COMPONENT dev)
+  DESTINATION "${WINTER_INCLUDE_INSTALL_DIR}"
+  COMPONENT dev)
