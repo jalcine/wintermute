@@ -1,9 +1,10 @@
 *~
-*bak
 *.kdev4
 *.patch
 debian
 .pc
 build
+debian
+doc
 CMakeLists.txt.user
 src/config.hpp
