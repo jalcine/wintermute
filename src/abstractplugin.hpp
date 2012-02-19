@@ -104,7 +104,7 @@ class AbstractPlugin : public QObject
     private slots:
         bool loadPlugins() const;
         bool loadPackages() const;
-	void loadSettings(const QString& );
+        void loadSettings(const QString& );
         void doStart();
         void doStop();
 

@@ -1,4 +1,5 @@
 project(WintermuteCore)
+
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
