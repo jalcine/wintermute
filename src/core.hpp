@@ -45,10 +45,10 @@ namespace Wintermute {
  * that would be appropriate to be under control.
  *
  * @nonreentrant
- * @class Core wintermute.hpp "core.hpp" 
+ * @class Core wintermute.hpp "core.hpp"
  */
 /// @todo Implement a means of having this class catch the signals of the system.
-class Core : public QObject 
+class Core : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("objectName","Wintermute's Core")

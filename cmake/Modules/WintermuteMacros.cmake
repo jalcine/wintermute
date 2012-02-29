@@ -24,7 +24,7 @@ macro(enable_doxygen)
             set(HAVE_DOT NO)
         endif(HAVE_DOT)
         configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${PROJECT_BINARY_DIR}/Doxyfile")
-        add_custom_target(doxygen ALL
+        add_custom_target(doxygen
             ${DOXYGEN_EXECUTABLE} Doxyfile
             WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
             COMMENT "Generating API documentation with Doxygen...")

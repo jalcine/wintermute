@@ -1,0 +1,3 @@
+[D-Bus Service]
+Name=org.thesii.Wintermute
+Exec=$<TARGET_FILE:wintermute> --daemon true --ipc master

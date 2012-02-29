@@ -50,11 +50,7 @@ include_directories(${WINTERMUTE_INCLUDE_DIRS})
 
 add_subdirectory(src)
 add_subdirectory(cmake)
-add_subdirectory(services)
+add_subdirectory(data)
 
 ## Doxygen
 enable_doxygen("${PROJECT_BINARY_DIR}/doc")
-
-## @todo Add it to a system-wide location.
-install(FILES "${PROJECT_SOURCE_DIR}/Wintermute.conf"
-        DESTINATION "~/.config/Synthetic Intellect Institute")

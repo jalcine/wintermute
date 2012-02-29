@@ -1,3 +1,0 @@
-[D-Bus Service]
-Name=org.thesii.Wintermute
-Exec=@CMAKE_INSTALL_PREFIX@/bin/wintermute --daemon true --ipc master
