@@ -1,6 +1,6 @@
 /**
  * @file core.hpp
- * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @author Wintermute Developement <wntr-devel@thesii.org>
  *
  * @legalese
  * This program is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ namespace Wintermute {
 /**
  * @brief The central management class of Wintermute.
  *
- * @c Wintermute::Core holds the vital activities of Wintermute's startup. It
+ * The Core holds the vital activities of Wintermute's startup. It
  * handles the actions from the outside system environment and, with a little
  * Qt magic and hours of coding, transfers control to the parts of Wintermute
  * that would be appropriate to be under control.
@@ -48,10 +48,9 @@ namespace Wintermute {
  * @class Core wintermute.hpp "core.hpp"
  */
 /// @todo Implement a means of having this class catch the signals of the system.
-class Core : public QObject
-{
+class Core : public QObject {
     Q_OBJECT
-    Q_CLASSINFO("objectName","Wintermute's Core")
+    Q_CLASSINFO ( "objectName","Wintermute's Core" )
 
 public:
 
@@ -64,9 +63,9 @@ public:
      * @fn Core
      * @param argc The command line argument passed representing the number of given arguments.
      * @param argv The command line argument passed representing the value of each argument.
-     * @badcode
+     * @internal
      */
-    explicit Core ( int&, char** );
+    explicit Core ( int& p_argv, char** p_argc );
 
     /**
      * @brief Obtains an instance of the Core.
@@ -97,7 +96,7 @@ public:
      * @brief Ends the program; with an optional exit code.
      * @fn exit
      */
-    static void exit(const int = 0, const bool = false);
+    static void exit ( const int = 0, const bool = false );
 
     /**
      * @brief Ends the program with success code.
@@ -151,7 +150,6 @@ protected slots:
      * Does the first bit of initialization work for the core process of Wintermute by
      * loading the plug-ins and then the data system.
      *
-     * @todo Consider testing whether or not Wintermute's running as a daemon and invoke a sub process.
      * @see Wintermute::Core::initialized
      * @fn Initialize
      */
@@ -185,4 +183,4 @@ private:
 } // namespace
 
 #endif /* CORE_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

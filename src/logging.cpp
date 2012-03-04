@@ -1,5 +1,5 @@
 /**
- * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @author Wintermute Developement <wntr-devel@thesii.org>
  * @file logging.hpp
  *
  * @legalese
@@ -39,34 +39,35 @@ Logging* Logging::instance() {
     return s_inst;
 }
 
-void Logging::catchQDebugMessage(QtMsgType p_typ, const char *p_msg) {
+void Logging::catchQDebugMessage ( QtMsgType p_typ, const char *p_msg ) {
     const QTime l_tm = QTime::currentTime();
-    string l_str = "[ T+" + l_tm.toString().toStdString() + ":" + QString::number(l_tm.msec()).toStdString()  +" ] ";
+    string l_str = "[ T+" + l_tm.toString().toStdString() + ":" + QString::number ( l_tm.msec() ).toStdString()  +" ] ";
 
-    switch (p_typ) {
+    switch ( p_typ ) {
     case QtDebugMsg:
         l_str += "DEBUG: ";
         break;
 
     case QtWarningMsg:
         l_str += "WARN:  ";
-        emit instance()->warningEncountered(p_msg);
+        emit instance()->warningEncountered ( p_msg );
         break;
 
     case QtCriticalMsg:
         l_str += "CRIT:  ";
         qApp->beep();
-        emit instance()->criticalErrorEncountered(p_msg);
+        emit instance()->criticalErrorEncountered ( p_msg );
         break;
 
     case QtFatalMsg:
         l_str += "FATAL: ";
         qApp->beep();
-        emit instance()->fatalErrorEncountered(p_msg);
+        emit instance()->fatalErrorEncountered ( p_msg );
         break;
     }
 
     l_str += p_msg;
-    fprintf(stderr, "%s\n", l_str.c_str());
+    fprintf ( stderr, "%s\n", l_str.c_str() );
 }
 }
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

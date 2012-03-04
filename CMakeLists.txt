@@ -43,7 +43,6 @@ set(WINTERMUTE_INCLUDE_DIRS
 set(WINTERMUTE_LIBRARIES
     ${Boost_LIBRARIES}
     ${QT_LIBRARIES})
-set(WINTERMUTE_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/Wintermute" CACHE PATH "CMake directory.")
 
 ## Include directories
 include_directories(${WINTERMUTE_INCLUDE_DIRS})

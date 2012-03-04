@@ -1,6 +1,6 @@
-/**
+/***
  * @file main.cpp
- * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @author Jacky Alcine <jacky.alcine@thesii.org>
  *
  * @legalese
  * This library is free software; you can redistribute it and/or
@@ -26,15 +26,12 @@
 
 // Qt
 #include <QApplication>
-//#include <visual/api.hpp>
-//#include <visual/plugin.hpp>
 
 using namespace Wintermute;
 
-int main(int argc, char** argv)
-{
-    qInstallMsgHandler(Logging::catchQDebugMessage);
-    Core core(argc, argv);
+int main ( int p_argc, char** p_argv ) {
+    qInstallMsgHandler ( Logging::catchQDebugMessage );
+    Core l_core ( p_argc, p_argv );
     return QApplication::exec();
 }
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

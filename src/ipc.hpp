@@ -1,5 +1,5 @@
 /**
- * @author Wintermute Developers <wintermute-devel@lists.launchpad.net>
+ * @author Wintermute Developement <wntr-devel@thesii.org>
  * @file ipc.hpp
  *
  * @legalese
@@ -77,12 +77,11 @@ namespace IPC {
  * @see CoreAdaptor, PluginBase, PluginInstance, Factory
  * @class System ipc.hpp "src/ipc.hpp"
  */
-class System : public QObject
-{
+class System : public QObject {
     friend class Plugins::Factory;
     Q_OBJECT
-    Q_CLASSINFO("objectName","IPC Singelton")
-    Q_DISABLE_COPY(System)
+    Q_CLASSINFO ( "objectName","IPC Singelton" )
+    Q_DISABLE_COPY ( System )
 
 signals:
     /**
@@ -131,12 +130,12 @@ public:
      * @param QString The name of the Adaptor.
      * @param Adaptor* The Adaptor to be added.
      */
-    static const bool registerObject(const QString&, QDBusAbstractAdaptor* );
+    static bool registerObject ( const QString&, QDBusAbstractAdaptor* );
 
     static System* instance();
 
 private:
-    System(QObject* = 0);
+    System ( QObject* = 0 );
     ~System();
     QString m_appMod;
     QDBusConnection* m_cnntn;
@@ -147,4 +146,4 @@ private:
 }
 
 #endif /* IPC_HPP */
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

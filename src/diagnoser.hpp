@@ -15,8 +15,7 @@ namespace Diagnostics {
  * & reporter. Its role is to provide statistics about system's vitality and
  * its used for reporting and self-assesment.
  */
-class Diagnoser : public QObject
-{
+class Diagnoser : public QObject {
     Q_OBJECT
 
 private:
@@ -26,7 +25,12 @@ protected:
     QString label;
 
 public:
-    Diagnoser(QObject* = 0);
+    /**
+     * @brief ...
+     *
+     * @param  ... Defaults to 0.
+     **/
+    Diagnoser ( QObject* = 0 );
 
     /**
      * @brief Construct a diagnoser using label
@@ -34,7 +38,7 @@ public:
      * @param autoRegister If true, automatically registers itself.
      * @param parent QObject parent.
      */
-    Diagnoser(QString&, bool = true, QObject* = 0);
+    Diagnoser ( QString&, bool = true, QObject* = 0 );
 
     virtual ~Diagnoser();
 
@@ -48,21 +52,22 @@ public:
      * @brief Register new diagnoser
      * @param pDiag Pointer to the diagnoser.
      */
-    static void registerDiagnoser(Diagnoser*);
+    static void registerDiagnoser ( Diagnoser* );
 
     /**
      * @brief Remove diagnoser
      * @param label Label of a diagnoser you want to remove.
      */
-    static void removeDiagnoser(QString&);
+    static void removeDiagnoser ( QString& );
 
     /**
      * @brief Get pointer to a diagnoser with given label
      * @param label Label of the wanted diagnoser.
      * @returns Pointer to the diagnoser with the given label.
      */
-    static Diagnoser* getDiagnoser(QString&);
+    static Diagnoser* getDiagnoser ( QString& );
 };
 } // namespaces
 }
 #endif // _DIAGNOSER_HPP_
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

@@ -1,4 +1,4 @@
-/**
+/***
  * @author Jacky Alciné <jackyalcine@gmail.com>
  * @date 01/24/12 11:23:01 AM
  *
@@ -24,26 +24,23 @@
 
 using Wintermute::Debug;
 
-Debug::Debug ( QIODevice* device ) : QDebug(device)
-{
+Debug::Debug ( QIODevice* p_device ) : QDebug ( p_device ) {
 
 }
 
-Debug::Debug ( QString* string ) : QDebug(string)
-{
+Debug::Debug ( QString* string ) : QDebug ( string ) {
 
 }
 
-Debug::Debug ( QtMsgType t ) : QDebug(t)
-{
+Debug::Debug ( QtMsgType t ) : QDebug ( t ) {
 
 }
 
-Debug::Debug ( const QDebug& other ) : QDebug(other)
-{
+Debug::Debug ( const QDebug& other ) : QDebug ( other ) {
 
 }
 
 Debug::~Debug() {
 
 }
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

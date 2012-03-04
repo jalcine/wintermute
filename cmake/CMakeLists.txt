@@ -11,5 +11,6 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
 ## Installs
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
-        DESTINATION "${WINTERMUTE_CMAKE_DIR}")
- 
+              "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+        DESTINATION "${WINTER_CMAKE_DIR}")
+
