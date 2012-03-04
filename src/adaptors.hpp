@@ -1,6 +1,6 @@
 /**
  * @file    adaptors.hpp
- * @author  Wintermute Developement <wntr-devel@thesii.org>
+ * @author  Wintermute Development <wntr-devel@thesii.org>
  *
  *
  *

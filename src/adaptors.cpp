@@ -1,6 +1,6 @@
 /**
  * @file    adaptors.cpp
- * @author  Wintermute Developement <wntr-devel@thesii.org>
+ * @author  Wintermute Development <wntr-devel@thesii.org>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,4 +176,4 @@ void CoreAdaptor::haltSystem () {
     QApplication::quit ();
 }
 } // namespace
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

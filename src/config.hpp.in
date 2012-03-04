@@ -2,7 +2,7 @@
  * @author Jacky Alcine <jacky.alcine@thesii.org>
  * @file   config.hpp
  *
- * @legalese
+ * @section lcns Licensing
  * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
@@ -17,10 +17,9 @@
  * License along with Wintermute; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- * @endlegalese
  *
- * File providing compile-time data about runtime-configuration.
- * Required for the core of Wintermute.
+ *
+ * @brief File providing compile-time data about runtime-configuration. Required for the core of Wintermute.
  */
 
 #ifndef _WNTR_CONFIG_HPP__
@@ -55,6 +54,9 @@
                                          "() [%s:%d] here I am\n", \
                          __FILE__, __LINE__)
 
+// Build-time configurations
+#define WNTR_WITH_GUI @WITH_GUI_SUPPORT@
+
 #endif // __CONFIG_HPP__
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

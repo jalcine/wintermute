@@ -2,7 +2,7 @@
  * @file main.cpp
  * @author Jacky Alcine <jacky.alcine@thesii.org>
  *
- * @legalese
+ * @section lcns Licensing
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- * @endlegalese
+ *
  */
 
 // Local
@@ -34,4 +34,4 @@ int main ( int p_argc, char** p_argv ) {
     Core l_core ( p_argc, p_argv );
     return QApplication::exec();
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

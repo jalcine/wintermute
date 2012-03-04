@@ -21,8 +21,10 @@ set(WINTER_PLUGIN_INSTALL_DIR "${WINTER_LIB_INSTALL_DIR}/wintermute" CACHE PATH 
 set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR "${WINTER_INCLUDE_INSTALL_DIR}/plugins" CACHE PATH "Plugin header installation path.")
 set(WINTER_PLUGIN_DATA_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/plugins" CACHE PATH "Plugin data installation path.")
 set(WINTER_PLUGINSPEC_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/specs" CACHE PATH "Plugin specification installation path.")
-
 set(WINTERMUTE_LOCALE "en" CACHE STRING "The standard locale for Wintermute to use.")
+
+set(WINTERMUTE_COMPILE_DEFINITIONS )
+set(WINTERMUTE_COMPILE_FLAGS "--std=c++0x -Wall -Wextra -Wabi -ggdb -Wctor-dtor-privacy -Wformat -Wunused")
 
 ## Standard CMake information.
 list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake-2.8/Modules"
@@ -33,6 +35,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
 endif()
 
+## Set up uninstallation.
 if (NOT _wntr_set_uninstall)
     set(_wntr_set_uninstall true)
     set(_prefix)
@@ -47,3 +50,44 @@ if (NOT _wntr_set_uninstall)
                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
     add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
 endif (NOT _wntr_set_uninstall)
+
+## Set up documentation.
+if (NOT _wntr_set_docs)
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        find_program(HAVE_DOT dot)
+        if(HAVE_DOT)
+            message(STATUS "Found 'dot' program, Doxygen will use it to generate graphs for documentation.")
+            set(HAVE_DOT YES)
+        else(HAVE_DOT)
+            set(HAVE_DOT NO)
+        endif(HAVE_DOT)
+
+        set(_wntr_set_docs true)
+        set(_prefix)
+        set(_docfile_prefix)
+
+        if (PROJECT_LABEL STREQUAL "Wintermute Core")
+            set(_prefix "${CMAKE_SOURCE_DIR}/cmake")
+            set(_docfile_prefix "${CMAKE_SOURCE_DIR}/data/res")
+            set(_docfile_logo "${_docfile_prefix}/wintermute.png")
+        else (PROJECT_LABEL STREQUAL "Wintermute Core")
+            set(_prefix "${WINTER_CMAKE_DIR}")
+            set(_docfile_prefix "${WINTER_CMAKE_DIR}/doc")
+            set(_docfile_logo "${WINTER_CMAKE_DIR}/res/wintermute.png")
+        endif(PROJECT_LABEL STREQUAL "Wintermute Core")
+
+        configure_file("${_prefix}/Doxyfile.in"
+                    "${CMAKE_BINARY_DIR}/Doxyfile" @ONLY)
+
+        add_custom_target(docs
+            ${DOXYGEN_EXECUTABLE} Doxyfile
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+            COMMENT "Generating API documentation with Doxygen...")
+    endif(DOXYGEN_FOUND)
+
+    macro(wntr_install_docs _path)
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html/
+                DESTINATION ${_path})
+    endmacro(wntr_install_docs _path)
+endif (NOT _wntr_set_docs)
