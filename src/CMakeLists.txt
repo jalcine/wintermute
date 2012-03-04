@@ -4,7 +4,7 @@ include(WintermuteDefaults)
 include(WintermuteMacros)
 
 set(WINTERMUTE_COMPILE_DEFINITIONS )
-set(WINTERMUTE_COMPILE_FLAGS "--std=c++0x -Wall -Wextra -Wabi")
+set(WINTERMUTE_COMPILE_FLAGS "--std=c++0x -Wall -Wextra -Wabi -ggdb")
 configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
                "${PROJECT_SOURCE_DIR}/config.hpp" @ONLY)
 
