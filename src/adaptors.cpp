@@ -157,6 +157,7 @@ const QVariantMap CoreAdaptor::arguments() const {
 }
 
 void CoreAdaptor::ping ( const QString &p_src ) {
+    (p_src.length() == 0) + 0;
     //qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
 }
 
@@ -176,4 +177,4 @@ void CoreAdaptor::haltSystem () {
     QApplication::quit ();
 }
 } // namespace
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

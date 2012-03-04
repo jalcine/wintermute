@@ -40,11 +40,11 @@ if (NOT _wntr_set_uninstall)
     set(_wntr_set_uninstall true)
     set(_prefix)
 
-    if (PROJECT_LABEL STREQUAL "Wintermute Core")
+    if (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
         set(_prefix "${CMAKE_SOURCE_DIR}/cmake")
-    else (PROJECT_LABEL STREQUAL "Wintermute Core")
+    else (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
         set(_prefix "${WINTER_CMAKE_DIR}")
-    endif(PROJECT_LABEL STREQUAL "Wintermute Core")
+    endif (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
 
     configure_file("${_prefix}/cmake_uninstall.cmake.in"
                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
@@ -67,15 +67,15 @@ if (NOT _wntr_set_docs)
         set(_prefix)
         set(_docfile_prefix)
 
-        if (PROJECT_LABEL STREQUAL "Wintermute Core")
+        if (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
             set(_prefix "${CMAKE_SOURCE_DIR}/cmake")
             set(_docfile_prefix "${CMAKE_SOURCE_DIR}/data/res")
             set(_docfile_logo "${_docfile_prefix}/wintermute.png")
-        else (PROJECT_LABEL STREQUAL "Wintermute Core")
+        else (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
             set(_prefix "${WINTER_CMAKE_DIR}")
             set(_docfile_prefix "${WINTER_CMAKE_DIR}/doc")
             set(_docfile_logo "${WINTER_CMAKE_DIR}/res/wintermute.png")
-        endif(PROJECT_LABEL STREQUAL "Wintermute Core")
+        endif (CMAKE_PROJECT_NAME STREQUAL "Wintermute")
 
         configure_file("${_prefix}/Doxyfile.in"
                     "${CMAKE_BINARY_DIR}/Doxyfile" @ONLY)
