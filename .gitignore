@@ -1,6 +1,8 @@
 *~
 *.kdev4
 *.patch
+.directory
+*.kate-swp*
 debian
 .pc
 build
