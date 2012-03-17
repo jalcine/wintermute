@@ -32,6 +32,8 @@ about building Wintermute on your system.
 We've currently added the ability to integrate and build plug-ins into
 Wintermute's core libraries. We're working on adding support for other language
 support to amplify the capabilities of Wintermute and its range of developers.
+Right now, the core APIs are available and ready for extenstion. Refer to
+current bindings for the APIs for more information.
 
 5. Documentation
 
@@ -39,7 +41,7 @@ Practically all of the documentation that's done for Wintermute is stored
   on-line at <http://www.thesii.org/wiki>. Feel free to not only search that
 site, but also enter our IRC channel (#sii or #sii-dev, both on
 FreeNode) to ask questions about Wintermute and how you can assist. Check out
-<http://www.thesii.org/wiki/Wintermute:Techbase:GettingStarted>.
+<http://www.thesii.org/wiki/Development>.
 
 6. Reporting and Contributing to the Cause
 
