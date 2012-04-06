@@ -88,37 +88,37 @@ bool AbstractPlugin::isSupported() const
 
 QStringList AbstractPlugin::plugins() const
 {
-    QStringList l_dep = m_sttngs->value ("Depends/Plugins").toStringList();
-    l_dep.removeDuplicates();
-    l_dep.removeAll ("None");
-    return l_dep;
+    QStringList dep = m_sttngs->value ("Depends/Plugins").toStringList();
+    dep.removeDuplicates();
+    dep.removeAll ("None");
+    return dep;
 }
 
 bool AbstractPlugin::loadPlugins() const
 {
-    const QStringList l_plgnLst = this->plugins();
+    const QStringList plgnLst = this->plugins();
     qDebug () << "(core) [AbstractPlugin] Loading plug-ins for"
               << name () << ";"
-              << l_plgnLst.length () << "plugin(s) to be loaded.";
+              << plgnLst.length () << "plugin(s) to be loaded.";
 
-    foreach (const QString l_plgn, l_plgnLst) {
-        const QString l_plgnUuid = l_plgn.split (" ").at (0);
+    foreach (const QString plgn, plgnLst) {
+        const QString plgnUuid = plgn.split (" ").at (0);
 
-        if (Factory::loadedPlugins().contains (l_plgnUuid))
+        if (Factory::loadedPlugins().contains (plgnUuid))
             qDebug () << "(core) [AbstractPlugin] Dependency"
-                      << Factory::attribute (l_plgnUuid, "Description/Name").toString()
+                      << Factory::attribute (plgnUuid, "Description/Name").toString()
                       << "already loaded.";
         else {
-            Factory::ShellPlugin* l_gnrc = new Factory::ShellPlugin (l_plgnUuid);
+            Factory::ShellPlugin* gnrc = new Factory::ShellPlugin (plgnUuid);
             qDebug() << "(core) [AbstractPlugin] Loading dependency"
-                     << l_gnrc->name() << "...";
+                     << gnrc->name() << "...";
 
-            if (l_gnrc->loadLibrary() && QFile::exists (l_gnrc->m_plgnLdr->fileName()))
+            if (gnrc->loadLibrary() && QFile::exists (gnrc->m_plgnLdr->fileName()))
                 qWarning() << "(core) [AbstractPlugin] Loaded symbols of plug-in"
-                           << Factory::attribute (l_plgnUuid, "Description/Name").toString() << ".";
+                           << Factory::attribute (plgnUuid, "Description/Name").toString() << ".";
             else {
                 qWarning() << "(core) [AbstractPlugin] Unable to load symbols of depedency"
-                           << l_gnrc->name() << ":" << l_gnrc->m_plgnLdr->errorString();
+                           << gnrc->name() << ":" << gnrc->m_plgnLdr->errorString();
                 return false;
             }
         }
@@ -128,61 +128,61 @@ bool AbstractPlugin::loadPlugins() const
 
 bool AbstractPlugin::hasPlugins() const
 {
-    const QStringList l_deps = this->plugins();
-    foreach (const QString l_dep, l_deps) {
-        const QString l_depName = l_dep.split (" ").at (0);
-        const QString l_depComparison = l_dep.split (" ").at (1);
-        const QString l_depVersion = l_dep.split (" ").at (2);
+    const QStringList deps = this->plugins();
+    foreach (const QString dep, deps) {
+        const QString depName = dep.split (" ").at (0);
+        const QString depComparison = dep.split (" ").at (1);
+        const QString depVersion = dep.split (" ").at (2);
 
-        if (Factory::allPlugins().contains (l_depName)) {
-            if (!Factory::loadedPlugins().contains (l_depName))
-                qDebug() << "(core) [AbstractPlugin] Dependency" << l_depName
+        if (Factory::allPlugins().contains (depName)) {
+            if (!Factory::loadedPlugins().contains (depName))
+                qDebug() << "(core) [AbstractPlugin] Dependency" << depName
                          << "of" << this->name () << "isn't loaded.";
 
-            const AbstractPlugin* l_plgn = Factory::s_plgnLst.value (l_depName);
+            const AbstractPlugin* plgn = Factory::s_plgnLst.value (depName);
 
-            if (l_depComparison == "==") {
-                if (! (l_depVersion.toDouble() == l_plgn->version())) {
+            if (depComparison == "==") {
+                if (! (depVersion.toDouble() == plgn->version())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name()
-                             << "requires" << l_depName
-                             << "to have a version of" << l_depVersion;
+                             << "requires" << depName
+                             << "to have a version of" << depVersion;
                     return false;
                 }
             }
-            else if (l_depComparison == ">") {
-                if (! (l_depVersion.toDouble () > l_plgn->version())) {
+            else if (depComparison == ">") {
+                if (! (depVersion.toDouble () > plgn->version())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name ()
-                             << "requires" << l_depName
-                             << "to have a version greater than" << l_depVersion;
+                             << "requires" << depName
+                             << "to have a version greater than" << depVersion;
                     return false;
                 }
             }
-            else if (l_depComparison == "<") {
-                if (! (l_depVersion.toDouble () < l_plgn->version ())) {
+            else if (depComparison == "<") {
+                if (! (depVersion.toDouble () < plgn->version ())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name()
-                             << "requires" << l_depName << "to have a version less than" << l_depVersion;
+                             << "requires" << depName << "to have a version less than" << depVersion;
                     return false;
                 }
             }
-            else if (l_depComparison == ">=") {
-                if (! (l_depVersion.toDouble () >= l_plgn->version ())) {
+            else if (depComparison == ">=") {
+                if (! (depVersion.toDouble () >= plgn->version ())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name()
-                             << "requires" << l_depName
-                             << "to have a version of at least" << l_depVersion;
+                             << "requires" << depName
+                             << "to have a version of at least" << depVersion;
                     return false;
                 }
             }
-            else if (l_depComparison == "==") {
-                if (! (l_depVersion.toDouble () > l_plgn->version ())) {
+            else if (depComparison == "==") {
+                if (! (depVersion.toDouble () > plgn->version ())) {
                     qDebug() << "(core) [AbstractPlugin] " << this->name()
-                             << "requires" << l_depName << "to have a version of at most" << l_depVersion;
+                             << "requires" << depName << "to have a version of at most" << depVersion;
                     return false;
                 }
             }
             else {
                 qDebug() << "(core) [AbstractPlugin] <" << this->name()
                          << "> : Invalid version string ("
-                         << l_depComparison << ").";
+                         << depComparison << ").";
             }
         }
     }
@@ -192,20 +192,20 @@ bool AbstractPlugin::hasPlugins() const
 
 QStringList AbstractPlugin::packages() const
 {
-    QStringList l_dep = m_sttngs->value ("Depends/Packages").toStringList();
-    l_dep.removeDuplicates();
-    l_dep.removeAll ("None");
-    return l_dep;
+    QStringList dep = m_sttngs->value ("Depends/Packages").toStringList();
+    dep.removeDuplicates();
+    dep.removeAll ("None");
+    return dep;
 }
 
 /// @note This method requires code from QPackageKit.
 /// @note issue #0000029
 bool AbstractPlugin::loadPackages() const
 {
-    const QStringList l_deps = this->packages();
-    //qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << l_deps.length () << "package(s) to be loaded.";
-    foreach (const QString l_dep, l_deps) {
-        const QString l_depName = l_dep.split (" ").at (0);
+    const QStringList deps = this->packages();
+    //qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << deps.length () << "package(s) to be loaded.";
+    foreach (const QString dep, deps) {
+        const QString depName = dep.split (" ").at (0);
     }
 
     return true;
@@ -215,12 +215,12 @@ bool AbstractPlugin::loadPackages() const
 /// @note issue #0000029
 bool AbstractPlugin::hasPackages() const
 {
-    const QStringList l_deps = this->packages();
+    const QStringList deps = this->packages();
 
-    foreach (const QString l_dep, l_deps) {
-        const QString l_depName = l_dep.split (" ").at (0);
-        const QString l_depComparison = l_dep.split (" ").at (1);
-        const QString l_depVersion = l_dep.split (" ").at (2);
+    foreach (const QString dep, deps) {
+        const QString depName = dep.split (" ").at (0);
+        const QString depComparison = dep.split (" ").at (1);
+        const QString depVersion = dep.split (" ").at (2);
     }
 
     return true;
@@ -228,12 +228,12 @@ bool AbstractPlugin::hasPackages() const
 
 QVariant AbstractPlugin::attribute (const QString& p_attrPath) const
 {
-    QVariant l_val = m_cnfg->value (p_attrPath);
+    QVariant val = m_cnfg->value (p_attrPath);
 
-    if (l_val.isNull() || !l_val.isValid())
-        l_val = m_cnfg->value ("Configuration/" + const_cast<QString*> (&p_attrPath)->replace ("/", ":"));
+    if (val.isNull() || !val.isValid())
+        val = m_cnfg->value ("Configuration/" + const_cast<QString*> (&p_attrPath)->replace ("/", ":"));
 
-    return l_val;
+    return val;
 }
 
 void AbstractPlugin::setAttribute (const QString& p_attrPath, const QVariant& p_attrVal)
@@ -250,15 +250,15 @@ void AbstractPlugin::resetAttributes()
 bool AbstractPlugin::loadLibrary() const
 {
     QApplication::addLibraryPath (WNTR_PLUGIN_PATH);
-    const QString l_plgnLibrary = m_sttngs->value ("Version/Library").toString();
-    const QString l_plgPth = QString (WNTR_PLUGIN_PATH) + "/lib" + l_plgnLibrary + ".so";
-    m_plgnLdr = new QPluginLoader (l_plgPth, Factory::instance());
+    const QString plgnLibrary = m_sttngs->value ("Version/Library").toString();
+    const QString plgPth = QString (WNTR_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
+    m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
     m_plgnLdr->setLoadHints (QLibrary::ResolveAllSymbolsHint);
     m_plgnLdr->load();
 
     if (!m_plgnLdr->isLoaded())
         qDebug() << "(plugin) [AbstractPlugin] Error loading library"
-                 << l_plgPth << ":" << m_plgnLdr->errorString();
+                 << plgPth << ":" << m_plgnLdr->errorString();
 
     return m_plgnLdr->isLoaded();
 }

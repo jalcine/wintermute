@@ -40,34 +40,34 @@ Logging* Logging::instance() {
 }
 
 void Logging::catchQDebugMessage ( QtMsgType p_typ, const char *p_msg ) {
-    const QTime l_tm = QTime::currentTime();
-    string l_str = "[ T+" + l_tm.toString().toStdString() + ":" + QString::number ( l_tm.msec() ).toStdString()  +" ] <p:" + QString::number ( QApplication::applicationPid() ).toStdString() + "> ";
+    const QTime tm = QTime::currentTime();
+    string str = "[ T+" + tm.toString().toStdString() + ":" + QString::number ( tm.msec() ).toStdString()  +" ] <p:" + QString::number ( QApplication::applicationPid() ).toStdString() + "> ";
 
     switch ( p_typ ) {
     case QtDebugMsg:
-        l_str += "DEBUG: ";
+        str += "DEBUG: ";
         break;
 
     case QtWarningMsg:
-        l_str += "WARN:  ";
+        str += "WARN:  ";
         emit instance()->warningEncountered ( p_msg );
         break;
 
     case QtCriticalMsg:
-        l_str += "CRIT:  ";
+        str += "CRIT:  ";
         qApp->beep();
         emit instance()->criticalErrorEncountered ( p_msg );
         break;
 
     case QtFatalMsg:
-        l_str += "FATAL: ";
+        str += "FATAL: ";
         qApp->beep();
         emit instance()->fatalErrorEncountered ( p_msg );
         break;
     }
 
-    l_str += p_msg;
-    fprintf ( stderr, "%s\n", l_str.c_str() );
+    str += p_msg;
+    fprintf ( stderr, "%s\n", str.c_str() );
 }
 }
 

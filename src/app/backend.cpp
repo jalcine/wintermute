@@ -89,11 +89,11 @@ const AbstractFramework::StartupMode& AbstractFramework::startMode() const {
 }
 
 QList<AbstractBackend*> AbstractFramework::defaultBackend() const {
-    QList<AbstractBackend*> l_lst;
-    foreach ( const QString& l_bcknd, m_dfltBcknd )
-    l_lst << m_bckndLst.value ( l_bcknd );
+    QList<AbstractBackend*> lst;
+    foreach ( const QString& bcknd, m_dfltBcknd )
+    lst << m_bckndLst.value ( bcknd );
 
-    return l_lst;
+    return lst;
 }
 
 void AbstractFramework::start() {
@@ -108,15 +108,15 @@ void AbstractFramework::start() {
     switch ( m_strtMd ) {
     case Configuration: {
         if ( !m_dfltBcknd.empty() ) {
-            foreach ( const QString& l_bcknd, m_dfltBcknd ) {
-                AbstractBackend* l_bck = AbstractBackend::obtainBackend ( l_bcknd );
-                if ( !l_bck ) {
-                    qDebug() << "(core) [AbstractFramework] Backend" << Factory::attribute ( l_bcknd,"Description/Name" ).toString() << "couldn't be loaded.";
+            foreach ( const QString& bcknd, m_dfltBcknd ) {
+                AbstractBackend* bck = AbstractBackend::obtainBackend ( bcknd );
+                if ( !bck ) {
+                    qDebug() << "(core) [AbstractFramework] Backend" << Factory::attribute ( bcknd,"Description/Name" ).toString() << "couldn't be loaded.";
                     return;
                 }
 
-                m_bckndLst.insert ( l_bcknd,l_bck );
-                connect ( this,SIGNAL ( started() ),l_bck,SLOT ( start() ) );
+                m_bckndLst.insert ( bcknd,bck );
+                connect ( this,SIGNAL ( started() ),bck,SLOT ( start() ) );
             }
         } else
             qDebug() << "(core) [AbstractFramework] No back-ends to be automatically loaded from configuration!";
@@ -172,12 +172,12 @@ void AbstractBackend::stop() {
 
 /// @note Load the associated plug-in. On load, it should register its backend to the global list.
 /// @note It should determine if the plug-in exists on the system (need addition of a method to Factory).
-AbstractBackend* AbstractBackend::obtainBackend ( const QString& l_bcknd ) {
-    qDebug() << "(core) [AbstractBackend] Obtaining back-end" << l_bcknd << "...";
-    if ( !AbstractBackend::s_lst.contains ( l_bcknd ) ) {
-        if ( Factory::loadPlugin ( l_bcknd ) ) {
-            qDebug() << "(core) [AbstractBackend] Back-end" << l_bcknd << "obtained.";
-            return AbstractBackend::s_lst.value ( l_bcknd );
+AbstractBackend* AbstractBackend::obtainBackend ( const QString& bcknd ) {
+    qDebug() << "(core) [AbstractBackend] Obtaining back-end" << bcknd << "...";
+    if ( !AbstractBackend::s_lst.contains ( bcknd ) ) {
+        if ( Factory::loadPlugin ( bcknd ) ) {
+            qDebug() << "(core) [AbstractBackend] Back-end" << bcknd << "obtained.";
+            return AbstractBackend::s_lst.value ( bcknd );
         }
     }
 

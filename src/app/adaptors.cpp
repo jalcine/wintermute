@@ -55,14 +55,14 @@ GenericAdaptor::GenericAdaptor (QObject* parent) : QDBusAbstractAdaptor (parent)
 void GenericAdaptor::detect() const
 {
     m_tmr->stop();
-    const bool l_prv = m_core;
-    QDBusMessage l_ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "ping");
-    l_ping << IPC::System::module ();
-    l_ping.setAutoStartService (true);
-    QDBusMessage l_pingReply = IPC::System::bus ()->call (l_ping, QDBus::BlockWithGui);
-    m_core = l_pingReply.type () != QDBusMessage::ErrorMessage;
+    const bool prv = m_core;
+    QDBusMessage ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "ping");
+    ping << IPC::System::module ();
+    ping.setAutoStartService (true);
+    QDBusMessage pingReply = IPC::System::bus ()->call (ping, QDBus::BlockWithGui);
+    m_core = pingReply.type () != QDBusMessage::ErrorMessage;
 
-    if (m_core != l_prv) {
+    if (m_core != prv) {
         if (m_core) {
             qDebug() << "(core) [D-Bus] Core module found.";
             emit coreModuleLoaded ();
@@ -73,8 +73,8 @@ void GenericAdaptor::detect() const
         }
     }
 
-    if (l_pingReply.type () == QDBusMessage::ErrorMessage) {
-        //qDebug() << "(core) [D-Bus] Pong from core module:" << l_pingReply.errorMessage ();
+    if (pingReply.type () == QDBusMessage::ErrorMessage) {
+        //qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
         /*if (!Core::arguments ()->value ("daemon").toBool ())
             CoreAdaptor::haltSystem ();*/
     }
@@ -154,17 +154,17 @@ PluginHandleAdaptor::PluginHandleAdaptor (AbstractPlugin* p_plgn) : AbstractAdap
 
 void PluginHandleAdaptor::quit () const
 {
-    AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*> (parent());
+    AbstractPlugin* plgn = qobject_cast<AbstractPlugin*> (parent());
     emit aboutToQuit ();
-    l_plgn->stop();
-    emit pluginUnloaded (l_plgn->uuid());
+    plgn->stop();
+    emit pluginUnloaded (plgn->uuid());
 }
 
 void PluginHandleAdaptor::loadBackend (const QString& p_uuid)
 {
-    AbstractPlugin* l_plgn = qobject_cast<AbstractPlugin*> (parent());
-    Backends::AbstractFramework* l_frmk = Backends::AbstractFramework::obtainFramework (l_plgn->uuid());
-    l_frmk->isBackendListed (p_uuid);
+    AbstractPlugin* plgn = qobject_cast<AbstractPlugin*> (parent());
+    Backends::AbstractFramework* frmk = Backends::AbstractFramework::obtainFramework (plgn->uuid());
+    frmk->isBackendListed (p_uuid);
 }
 
 } // namespace
@@ -185,16 +185,16 @@ void CoreAdaptor::ping (const QString& p_src)
 void CoreAdaptor::quit () const
 {
     emit aboutToQuit ();
-    QDBusMessage l_msg = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Factory", WNTR_DBUS_FACTORY_NAME, "quit");
-    QDBusConnection::sessionBus ().call (l_msg, QDBus::NoBlock);
+    QDBusMessage msg = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Factory", WNTR_DBUS_FACTORY_NAME, "quit");
+    QDBusConnection::sessionBus ().call (msg, QDBus::NoBlock);
     haltSystem ();
 }
 
 void CoreAdaptor::haltSystem ()
 {
     if (Core::arguments ()->value ("ipc").toString () != "master") {
-        QDBusMessage l_call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "haltSystem");
-        QDBusConnection::sessionBus ().send (l_call);
+        QDBusMessage call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "haltSystem");
+        QDBusConnection::sessionBus ().send (call);
     }
 
     QApplication::quit ();
