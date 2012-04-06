@@ -1,0 +1,14 @@
+Installing Wintermute's Network API
+-----------------------------------------------------------------------------
+
+0. Prerequisties
+
+You'll need a few things for this library, typically everything that Wintermu
+te's core needs and the following:
+
+	- QJSON
+	- Qt Cryptography Library
+
+You'll need to download a few libraries. A simple script would pull them all:
+
+	# apt-get install libqca2-dev libqjson-dev libboost-python-dev

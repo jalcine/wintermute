@@ -1,0 +1,23 @@
+Wintermute Networking Plug-In (WntrNtwk)
+----------------------------
+
+1. Introduction
+
+This plug-in contains the networking ability of Wintermute. It allows it to
+connect to networks and also emit one of its one, called an Angelnet. The
+specification for the AngelNet, and thus WntrNtwk, is still under heavy
+revision. The code you see in this branch is subject to *drastically* change
+without notice.
+
+2. About the Specification
+
+The specification to WntrNtwk can be found on the Synthetic Intellect
+Institute's Wiki at <http://www.thesii.org/wiki>.
+
+3. Reporting and Contributing to the Cause
+
+We here at the Synthetic Intellect Institute, the makers and maintainers
+of Wintermute, welcome all. If you want to chat with the guys responsible
+for Wintermute or the Institute, drop us a message at <contact@thesii.org> or
+send us a message to our mailing list at <sii@lists.launchpad.net>. We hope to
+hear (or see or read) from you soon.
