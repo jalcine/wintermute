@@ -10,9 +10,6 @@ option(WITH_GUI_SUPPORT     "Determines if Wintermute is built with QtGui suppor
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
-## Install prefix
-set(CMAKE_INSTALL_PREFIX "/usr")
-
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
 find_package(Boost COMPONENTS
@@ -29,8 +26,8 @@ include("${QT_USE_FILE}")
 
 ## Main variables
 set(VS_KEYWORD Qt4VSv1.0)
-set(VS_SCC_PROJECTNAME "Wintermute Core")
-set(PROJECT_LABEL "Wintermute Core")
+set(VS_SCC_PROJECTNAME "Wintermute")
+set(PROJECT_LABEL "Wintermute")
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
 set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}")
