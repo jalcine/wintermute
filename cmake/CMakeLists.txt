@@ -11,5 +11,4 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/WintermuteConfigVersion.cmake.in"
 ## Installs
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfig.cmake"
               "${PROJECT_BINARY_DIR}/InstallFiles/WintermuteConfigVersion.cmake"
-              "${PROJECT_SOURCE_DIR}/cmake/Doxyfile.in"
         DESTINATION "${WINTER_CMAKE_DIR}")
