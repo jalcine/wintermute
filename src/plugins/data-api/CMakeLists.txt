@@ -9,22 +9,18 @@ set(WNTRDATA_UUID "a9b6b020-f4f2-11e0-be50-0800200c9a66")
 set(WNTRDATA_VERSION ${WNTRDATA_MAJOR_VERSION}.${WNTRDATA_MINOR_VERSION})
 
 ## Custom modules
-list(APPEND CMAKE_MODULE_PATH "cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 ## Packages
 find_package(Wintermute 0.1 REQUIRED)
-find_package(QJson REQUIRED)
-find_package(PythonLibs 2.7 REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(Boost 1.46 COMPONENTS
-    python
-    REQUIRED)
-find_package(Qt4 COMPONENTS
+find_package(Soprano REQUIRED)
+find_package(QJson REQUIRED)
+find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtXml
     QtDBus
     REQUIRED)
-pkg_search_module(SOPRANO REQUIRED soprano)
 
 include("${QT_USE_FILE}")
 include(WintermuteMacros)
