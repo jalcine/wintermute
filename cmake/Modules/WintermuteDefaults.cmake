@@ -22,6 +22,7 @@ set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR "${WINTER_INCLUDE_INSTALL_DIR}/plugins" CA
 set(WINTER_PLUGIN_DATA_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/plugins" CACHE PATH "Plugin data installation path.")
 set(WINTER_PLUGINSPEC_INSTALL_DIR "${WINTER_DATA_INSTALL_DIR}/specs" CACHE PATH "Plugin specification installation path.")
 set(WINTERMUTE_LOCALE "en" CACHE STRING "The standard locale for Wintermute to use.")
+set(WINTER_QT_VERSION "4.7.4")
 
 set(WINTERMUTE_COMPILE_DEFINITIONS )
 set(WINTERMUTE_COMPILE_FLAGS "--std=c++0x -Wall -Wextra -Wabi -ggdb -Wctor-dtor-privacy -Wformat -Wunused")
