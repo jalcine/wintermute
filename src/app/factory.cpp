@@ -309,4 +309,6 @@ Factory::ShellPlugin::ShellPlugin ( const QString& p_uuid ) : AbstractPlugin() {
 }
 
 Factory::ShellPlugin::~ShellPlugin() { }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "factory.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

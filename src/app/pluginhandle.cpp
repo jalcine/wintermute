@@ -136,4 +136,6 @@ void PluginHandle::catchError ( const QProcess::ProcessError &p_err ) {
     }
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "pluginhandle.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

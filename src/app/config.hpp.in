@@ -25,6 +25,8 @@
 #ifndef _WNTR_CONFIG_HPP__
 #define _WNTR_CONFIG_HPP__
 
+#include <QtCore/QtGlobal>
+
 // D-Bus Section
 #define WNTR_DBUS_SERVICE_NAME "org.thesii.Wintermute"
 
@@ -56,6 +58,70 @@
 
 // Build-time configurations
 #define WNTR_WITH_GUI @WITH_GUI_SUPPORT@
+
+/**
+ * @def WNTR_DEPRECATED
+ * @ingroup SpeechControlMacros
+ *
+ * The WNTR_DEPRECATED macro can be used to trigger compile-time warnings
+ * with newer compilers when deprecated functions are used.
+ *
+ * For non-inline functions, the macro gets inserted at front of the
+ * function declaration, right before the return type:
+ *
+ * \code
+ * WNTR_DEPRECATED void deprecatedFunctionA();
+ * WNTR_DEPRECATED int deprecatedFunctionB() const;
+ * \endcode
+ *
+ * For functions which are implemented inline,
+ * the WNTR_DEPRECATED macro is inserted at the front, right before the return
+ * type, but after "static", "inline" or "virtual":
+ *
+ * \code
+ * WNTR_DEPRECATED void deprecatedInlineFunctionA() { .. }
+ * virtual WNTR_DEPRECATED int deprecatedInlineFunctionB() { .. }
+ * static WNTR_DEPRECATED bool deprecatedInlineFunctionC() { .. }
+ * inline WNTR_DEPRECATED bool deprecatedInlineFunctionD() { .. }
+ * \endcode
+ *
+ * You can also mark whole structs or classes as deprecated, by inserting the
+ * WNTR_DEPRECATED macro after the struct/class keyword, but before the
+ * name of the struct/class:
+ *
+ * \code
+ * class WNTR_DEPRECATED DeprecatedClass { };
+ * struct WNTR_DEPRECATED DeprecatedStruct { };
+ * \endcode
+ *
+ * \note
+ * WNTR_DEPRECATED cannot be used for constructors,
+ * use WNTR__CONSTRUCTOR_DEPRECATED instead.
+ */
+
+#ifdef __cplusplus
+# include <QtCore/qglobal.h>
+# ifndef WNTR_DEPRECATED
+#  ifdef WNTR_DEPRECATED_WARNINGS
+#   define WNTR_DEPRECATED Q_DECL_DEPRECATED
+#  else
+#   define WNTR_DEPRECATED
+#  endif
+# endif
+#endif
+
+#ifndef WNTR_CONSTRUCTOR_DEPRECATED
+# ifdef __GNUC__
+#  if __GNUC__ == 3 && __GNUC_MINOR__ <= 3
+/* GCC 3.3.x cannot handle Qt 4.1.2's definition of Q_DECL_CONSTRUCTOR_DEPRECATED */
+#   define WNTR_CONSTRUCTOR_DEPRECATED
+#  else
+#   define WNTR_CONSTRUCTOR_DEPRECATED Q_DECL_CONSTRUCTOR_DEPRECATED
+#  endif
+# else
+#  define WNTR_CONSTRUCTOR_DEPRECATED Q_DECL_CONSTRUCTOR_DEPRECATED
+# endif
+#endif
 
 #endif // __CONFIG_HPP__
 

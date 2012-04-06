@@ -223,4 +223,5 @@ void Core::stop () {
     qDebug() << "(core) [" << IPC::System::module() << "] Process stopped.";
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#include "core.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

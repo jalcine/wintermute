@@ -1,9 +1,5 @@
-/**
- * @file backend.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- *
- * @section lcns Licensing
- * This program is free software; you can redistribute it and/or
+/*
+ * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -19,6 +15,14 @@
  * Boston, MA 02111-1307, USA.
  *
  */
+
+/**
+ * @file backend.hpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ */
+
+#ifndef WNTR_APP_BACKEND_HPP_
+#define WNTR_APP_BACKEND_HPP_
 
 // Local
 #include "plugins.hpp"
@@ -199,4 +203,6 @@ private:
 
 } // namespaces
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#endif
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

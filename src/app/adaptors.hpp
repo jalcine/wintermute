@@ -33,8 +33,10 @@ class QTimer;
 class QSettings;
 class QDBusMessage;
 
-namespace Wintermute {
-namespace IPC {
+namespace Wintermute
+{
+namespace IPC
+{
 /**
  * @brief The foundational adaptor for Wintermute's IPC.
  *
@@ -46,13 +48,14 @@ namespace IPC {
  * @see Plugins::PluginFactoryAdaptor, Plugins::PluginPluginHandleAdaptor, CoreAdaptor
  * @class GenericAdaptor adaptors.hpp "src/adaptors.hpp"
  */
-class GenericAdaptor : public QDBusAbstractAdaptor {
+class GenericAdaptor : public QDBusAbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","Generic D-Bus Adaptor" )
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.Adaptor" )
+    Q_CLASSINFO ("objectName", "Generic D-Bus Adaptor")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Adaptor")
 
 private:
-    QTimer *m_tmr;
+    QTimer* m_tmr;
     mutable bool m_core;
     Q_SLOT void detect() const;
 
@@ -62,7 +65,7 @@ public:
      * @fn GenericAdaptor
      * @param The QObject to set as this parent.
      */
-    explicit GenericAdaptor ( QObject* = 0 );
+    explicit GenericAdaptor (QObject* = 0);
 
     /**
      * @brief Obtains the module's name.
@@ -105,7 +108,8 @@ public slots:
 
 typedef IPC::GenericAdaptor AbstractAdaptor;
 
-namespace Plugins {
+namespace Plugins
+{
 struct AbstractPlugin;
 
 /**
@@ -118,10 +122,11 @@ struct AbstractPlugin;
  * @see Plugins::Factory
  * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
  */
-class PluginFactoryAdaptor : public AbstractAdaptor {
+class PluginFactoryAdaptor : public AbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","D-Bus Adaptor for Plugins" )
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.Factory" )
+    Q_CLASSINFO ("objectName", "D-Bus Adaptor for Plugins")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Factory")
 
 public:
     /**
@@ -131,15 +136,15 @@ public:
     explicit PluginFactoryAdaptor();
 
 signals:
-    void pluginLoaded ( const QString& ) const;
-    void pluginUnloaded ( const QString& ) const;
-    void pluginCantLoad ( const QString& ) const;
-    void pluginCrashed ( const QString& ) const;
+    void pluginLoaded (const QString&) const;
+    void pluginUnloaded (const QString&) const;
+    void pluginCantLoad (const QString&) const;
+    void pluginCrashed (const QString&) const;
 
 public slots:
     virtual void quit() const;
-    void loadPlugin ( const QString& );
-    void unloadPlugin ( const QString& );
+    void loadPlugin (const QString&);
+    void unloadPlugin (const QString&);
     const QStringList allPlugins() const;
     const QStringList loadedPlugins() const;
 };
@@ -147,30 +152,32 @@ public slots:
 /**
  *
  */
-class PluginHandleAdaptor : public AbstractAdaptor {
+class PluginHandleAdaptor : public AbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","D-Bus Adaptor for Plug-in Instances" )
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.PluginInstance" )
+    Q_CLASSINFO ("objectName", "D-Bus Adaptor for Plug-in Instances")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.PluginInstance")
 
 public:
-    explicit PluginHandleAdaptor ( Plugins::AbstractPlugin * );
+    explicit PluginHandleAdaptor (Plugins::AbstractPlugin*);
 
 signals:
-    void pluginLoaded ( const QString& ) const;
-    void pluginUnloaded ( const QString& ) const;
-    void pluginCantLoad ( const QString& ) const;
+    void pluginLoaded (const QString&) const;
+    void pluginUnloaded (const QString&) const;
+    void pluginCantLoad (const QString&) const;
 
 public slots:
     virtual void quit() const;
-    virtual void loadBackend ( const QString& );
+    virtual void loadBackend (const QString&);
 };
 } // namespace
 
-class CoreAdaptor : public AbstractAdaptor {
+class CoreAdaptor : public AbstractAdaptor
+{
     Q_OBJECT
-    Q_PROPERTY ( const QVariantMap Arguments READ arguments )
-    Q_CLASSINFO ( "objectName","D-Bus Adaptor for Core Module" )
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.Master" )
+    Q_PROPERTY (const QVariantMap Arguments READ arguments)
+    Q_CLASSINFO ("objectName", "D-Bus Adaptor for Core Module")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Master")
 
 public:
     explicit CoreAdaptor();
@@ -179,9 +186,9 @@ public slots:
     virtual void quit() const;
     static void haltSystem();
     const QVariantMap arguments() const;
-    Q_INVOKABLE Q_NOREPLY void ping ( const QString& );
+    Q_INVOKABLE Q_NOREPLY void ping (const QString&);
 };
 } // namespace
 
 #endif // WINTERMUTE_ADAPTORS_HPP
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

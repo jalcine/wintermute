@@ -1,4 +1,4 @@
-/***
+/**
  * @file plugins.hpp
  * @author Jacky Alcine <jacky.alcine@thesii.org>
  *
@@ -29,4 +29,4 @@
 #include "pluginhandle.hpp"
 
 #endif // _PLUGINS_HPP_
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

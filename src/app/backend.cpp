@@ -193,4 +193,6 @@ AbstractBackend::~AbstractBackend() {
 QString Wintermute::Backends::AbstractBackend::id() const {
     return m_id;
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "backend.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

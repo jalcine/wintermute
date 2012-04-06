@@ -122,4 +122,5 @@ System* System::instance() {
 }
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#include "ipc.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

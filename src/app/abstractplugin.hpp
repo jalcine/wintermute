@@ -31,8 +31,10 @@
 #include <QSettings>
 #include <QPluginLoader>
 
-namespace Wintermute {
-namespace Plugins {
+namespace Wintermute
+{
+namespace Plugins
+{
 
 // Forward declarations
 class Factory;
@@ -79,31 +81,32 @@ class Factory;
  * @class AbstractPlugin plugins.hpp "plugins.hpp"
  * @todo Add conflicting plug-ins as a specification addition.
  */
-class AbstractPlugin : public QObject {
+class AbstractPlugin : public QObject
+{
     friend class Factory;
     friend class PluginHandleAdaptor;
 
     Q_OBJECT
-    Q_PROPERTY ( const double Version READ version )
-    Q_PROPERTY ( const double CompatibleVersion READ compatVersion )
-    Q_PROPERTY ( const QString UUID READ uuid )
-    Q_PROPERTY ( const QString Name READ name )
-    Q_PROPERTY ( const QString Author READ author )
-    Q_PROPERTY ( const QString VendorName READ vendorName )
-    Q_PROPERTY ( const QString Description READ description )
-    Q_PROPERTY ( const QString WebPage READ webPage )
-    Q_PROPERTY ( const QStringList Packages READ packages )
-    Q_PROPERTY ( const QStringList Plugins READ plugins )
+    Q_PROPERTY (const double Version READ version)
+    Q_PROPERTY (const double CompatibleVersion READ compatVersion)
+    Q_PROPERTY (const QString UUID READ uuid)
+    Q_PROPERTY (const QString Name READ name)
+    Q_PROPERTY (const QString Author READ author)
+    Q_PROPERTY (const QString VendorName READ vendorName)
+    Q_PROPERTY (const QString Description READ description)
+    Q_PROPERTY (const QString WebPage READ webPage)
+    Q_PROPERTY (const QStringList Packages READ packages)
+    Q_PROPERTY (const QStringList Plugins READ plugins)
 
 private:
-    mutable QPluginLoader *m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
-    QSettings *m_sttngs;
-    QSettings *m_cnfg;
+    mutable QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
+    QSettings* m_sttngs;
+    QSettings* m_cnfg;
 
 private slots:
     bool loadPlugins() const;
     bool loadPackages() const;
-    void loadSettings ( const QString& );
+    void loadSettings (const QString&);
     void doStart();
     void doStop();
 
@@ -115,19 +118,19 @@ public:
     /**
      * @brief Empty, nullifying constructor.
      */
-    explicit AbstractPlugin() : QObject ( NULL ), m_plgnLdr ( NULL ), m_sttngs ( NULL ), m_cnfg ( NULL ) {}
+    explicit AbstractPlugin() : QObject (NULL), m_plgnLdr (NULL), m_sttngs (NULL), m_cnfg (NULL) {}
 
     /**
      * @brief Loads a plug-in based on the QPluginLoader.
      * @param p_pl The plug-in to be loaded from disk.
      */
-    AbstractPlugin ( QPluginLoader *p_pl );
+    AbstractPlugin (QPluginLoader* p_pl);
 
     /**
      * @brief Default copy constructor.
      * @param p_pb The plug-in to be copied.
      */
-    AbstractPlugin ( AbstractPlugin const &p_pb );
+    AbstractPlugin (AbstractPlugin const& p_pb);
 
     /**
      * @brief Default deconstructor.
@@ -243,7 +246,7 @@ public:
      * @todo Allow pulling of attributes from other plug-ins.
      * @see setAttribute
      */
-    QVariant attribute ( const QString &p_attrPath ) const;
+    QVariant attribute (const QString& p_attrPath) const;
 
     /**
      * @brief Changes an attribute at p_attrPath to p_attrVal to the plug-in's configuration option set.
@@ -253,7 +256,7 @@ public:
      * @todo Allow a scoping of attributes (user-level, system-level).
      * @todo Allow saving of attribute to other plug-ins.
      */
-    void setAttribute ( const QString &p_attrPath, const QVariant &p_attrVal );
+    void setAttribute (const QString& p_attrPath, const QVariant& p_attrVal);
 
     /**
      * @brief Resets the attributes of the plug-in to default.
@@ -294,7 +297,7 @@ typedef QHash<QString, AbstractPlugin*> PluginTable;
 
 } // namespaces
 }
-Q_DECLARE_INTERFACE ( Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin" )
+Q_DECLARE_INTERFACE (Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin")
 
 #endif // _ABSTRACTPLUGIN_HPP_
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

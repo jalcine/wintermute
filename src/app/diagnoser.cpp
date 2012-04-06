@@ -38,4 +38,6 @@ void Diagnoser::removeDiagnoser ( QString& label ) {
 Diagnoser* Diagnoser::getDiagnoser ( QString& label ) {
     return Diagnoser::diagnosers.value ( label );
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "diagnoser.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

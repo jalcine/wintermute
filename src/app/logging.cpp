@@ -70,4 +70,6 @@ void Logging::catchQDebugMessage ( QtMsgType p_typ, const char *p_msg ) {
     fprintf ( stderr, "%s\n", l_str.c_str() );
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "logging.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
