@@ -6,7 +6,5 @@
 debian
 .pc
 build
-debian
-doc
 CMakeLists.txt.user
-src/config.hpp
+config.hpp
