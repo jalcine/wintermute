@@ -1,0 +1,3 @@
+[D-Bus Service]
+Name=org.thesii.Wintermute.Plugin.@WNTRDATA_UUID@
+Exec=@CMAKE_INSTALL_PREFIX@/bin/wintermute --daemon true --ipc plugin --plugin @WNTRDATA_UUID@

@@ -1,0 +1,21 @@
+## Wintermute's Data API
+
+[Plugin]
+Enabled=true
+Type=API
+
+[Version]
+Plugin=@WNTRDATA_VERSION@
+UUID=@WNTRDATA_UUID@
+Compat=@Wintermute_VERSION@
+Library=wapi-data
+
+[Description]
+Name=Data API
+Author=Wintermute Development <wntr-devel@thesii.org>
+Vendor=Synthetic Intellect Institute <sii@lists.launchpad.net>
+Blurb=This plug-in holds the entire functionality and API of Wintermute Data.
+WebPage=http://www.thesii.org/wiki/Wintermute
+
+[Dependencies]
+Packages=libsoprano4 >= 2.5.2

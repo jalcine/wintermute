@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 2.8)
+
+file(GLOB WNTRDATA_SYNTAX_CPP "*.cpp")
+file(GLOB WNTRDATA_SYNTAX_HPP "*.hpp")
+
+list(APPEND WNTRDATA_SOURCES ${WNTRDATA_SYNTAX_CPP})
+
+## Installs
+install(FILES ${WNTRDATA_SYNTAX_HPP}
+    DESTINATION "${WNTRDATA_INCLUDE_DIR}/syntax"
+    COMPONENT dev)

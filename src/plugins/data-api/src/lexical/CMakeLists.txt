@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 2.8)
+
+file(GLOB WNTRDATA_LEXICAL_CPP "*.cpp")
+file(GLOB WNTRDATA_LEXICAL_HPP "*.hpp")
+
+list(APPEND WNTRDATA_SOURCES ${WNTRDATA_LEXICAL_CPP})
+
+## Installs
+install(FILES ${WNTRDATA_LEXICAL_HPP}
+    DESTINATION "${WNTRDATA_INCLUDE_DIR}/lexical"
+    COMPONENT dev)
