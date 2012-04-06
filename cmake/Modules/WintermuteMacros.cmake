@@ -1,17 +1,53 @@
 ##
 ## Bunch of useful macros and functions
 ## @author Adrian Borcuki <adrian@thesii.org>
+## @author Jacky Alcine <jacky.alcine@thesii.org>
 ##
+
 find_package(PkgConfig)
 
-macro(winter_make_absolute paths)
-    foreach(in paths)
-        set(p ${PROJECT_CAPITAL_NAME}_${in}_DIR)
-        if(NOT IS_ABSOLUTE "${${p}}")
-            set(${p} "${CMAKE_INSTALL_PREFIX}/${${p}}")
-        endif()
-    endforeach()
-endmacro(winter_make_absolute)
+## Set up an installation target.
+if (NOT TARGET uninstall)
+    configure_file("${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
+    add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
+endif(NOT TARGET uninstall)
+
+## Set up documentation.
+macro(wntr_install_docs _path)
+    if (NOT _wntr_set_docs)
+        find_package(Doxygen)
+        if(DOXYGEN_FOUND)
+            find_program(HAVE_DOT dot)
+            if(HAVE_DOT)
+                message(STATUS "Found 'dot' program, Doxygen will use it to generate graphs for documentation.")
+                set(HAVE_DOT YES)
+            else(HAVE_DOT)
+                set(HAVE_DOT NO)
+            endif(HAVE_DOT)
+
+            set(_wntr_set_docs true)
+            set(_prefix)
+            set(_docfile_prefix)
+
+            set(_prefix "${CMAKE_SOURCE_DIR}/cmake")
+            set(_docfile_prefix "${CMAKE_SOURCE_DIR}/data/res")
+            set(_docfile_logo "${_docfile_prefix}/wintermute.png")
+
+            configure_file("${CMAKE_SOURCE_DIR}/doc/Doxyfile.in"
+                        "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
+
+            add_custom_target(docs
+                ${DOXYGEN_EXECUTABLE} Doxyfile
+                WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+                COMMENT "Generating API documentation with Doxygen...")
+
+            install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html/
+                    DESTINATION ${_path})
+
+        endif(DOXYGEN_FOUND)
+    endif (NOT _wntr_set_docs)
+endmacro(wntr_install_docs _path)
 
 MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
   SET(${_output_variable})
