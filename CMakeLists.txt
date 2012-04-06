@@ -16,7 +16,7 @@ find_package(Boost COMPONENTS
     system
     program_options
     REQUIRED)
-find_package(Qt4 COMPONENTS
+find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtGui
     QtDBus
