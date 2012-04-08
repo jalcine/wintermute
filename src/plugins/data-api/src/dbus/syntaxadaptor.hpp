@@ -28,45 +28,48 @@
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 
-class SyntaxAdaptor: public QDBusAbstractAdaptor {
+class SyntaxAdaptor: public QDBusAbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "D-Bus Interface", "org.thesii.Wintermute.Data.Rules" )
-    Q_CLASSINFO ( "D-Bus Introspection", ""
-                  "  <interface name=\"org.thesii.Wintermute.Data.Rules\">\n"
-                  "    <signal name=\"ruleCreated\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "    </signal>\n"
-                  "    <method name=\"write\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"read\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"exists\">\n"
-                  "      <arg direction=\"out\" type=\"b\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"quit\"/>\n"
-                  "  </interface>\n"
-                  "" )
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Data.Rules")
+    Q_CLASSINFO ("D-Bus Introspection", ""
+                 "  <interface name=\"org.thesii.Wintermute.Data.Rules\">\n"
+                 "    <signal name=\"ruleCreated\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "    </signal>\n"
+                 "    <method name=\"write\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"read\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"exists\">\n"
+                 "      <arg direction=\"out\" type=\"b\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"quit\"/>\n"
+                 "  </interface>\n"
+                 "")
 public:
     SyntaxAdaptor();
     virtual ~SyntaxAdaptor();
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
-    bool exists ( const QString &in0, const QString &in1 );
+    bool exists (const QString& in0, const QString& in1);
     void quit();
-    QString read ( QString in0 );
-    QString write ( QString in0 );
+    QString read (QString in0);
+    QString write (QString in0);
 Q_SIGNALS: // SIGNALS
-    void ruleCreated ( const QString &in0 );
+    void ruleCreated (const QString& in0);
 };
 
 }

@@ -27,62 +27,65 @@
 // Wintermute includes
 #include <adaptors.hpp>
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 
-class NodeAdaptor : public QDBusAbstractAdaptor {
+class NodeAdaptor : public QDBusAbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "D-Bus Interface", "org.thesii.Wintermute.Data.Nodes" )
-    Q_CLASSINFO ( "D-Bus Introspection", ""
-                  "  <interface name=\"org.thesii.Wintermute.Data.Nodes\">\n"
-                  "    <signal name=\"nodeCreated\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "    </signal>\n"
-                  "    <method name=\"generate\">\n"
-                  "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"quit\"/>\n"
-                  "    <method name=\"read\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"write\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"pseudo\">\n"
-                  "      <arg direction=\"out\" type=\"s\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"exists\">\n"
-                  "      <arg direction=\"out\" type=\"b\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"isPseudo\">\n"
-                  "      <arg direction=\"out\" type=\"b\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "  </interface>\n"
-                  "" )
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Data.Nodes")
+    Q_CLASSINFO ("D-Bus Introspection", ""
+                 "  <interface name=\"org.thesii.Wintermute.Data.Nodes\">\n"
+                 "    <signal name=\"nodeCreated\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "    </signal>\n"
+                 "    <method name=\"generate\">\n"
+                 "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"quit\"/>\n"
+                 "    <method name=\"read\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"write\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"pseudo\">\n"
+                 "      <arg direction=\"out\" type=\"s\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"exists\">\n"
+                 "      <arg direction=\"out\" type=\"b\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"isPseudo\">\n"
+                 "      <arg direction=\"out\" type=\"b\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "  </interface>\n"
+                 "")
 public:
     NodeAdaptor();
     virtual ~NodeAdaptor();
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
-    bool exists ( QString in0 );
+    bool exists (QString in0);
     void generate();
-    bool isPseudo ( QString in0 );
-    QString pseudo ( QString in0 );
+    bool isPseudo (QString in0);
+    QString pseudo (QString in0);
     void quit();
-    QString read ( QString in0 );
-    QString write ( QString in0 );
+    QString read (QString in0);
+    QString write (QString in0);
 Q_SIGNALS: // SIGNALS
-    void nodeCreated ( const QString &in0 );
+    void nodeCreated (const QString& in0);
 };
 
 }
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

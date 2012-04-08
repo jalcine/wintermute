@@ -32,9 +32,11 @@
 using Wintermute::Data::SystemInterface;
 
 SystemInterface::SystemInterface()
-    : QDBusAbstractInterface ( WNTRDATA_DBUS_SERVICE, "/System", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin() ) {
+    : QDBusAbstractInterface (WNTRDATA_DBUS_SERVICE, "/System", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin())
+{
 }
 
-SystemInterface::~SystemInterface() {
+SystemInterface::~SystemInterface()
+{
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

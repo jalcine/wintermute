@@ -33,10 +33,14 @@
 #include "bond.hpp"
 #include "model.hpp"
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Syntax {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Syntax
+{
 
 class DomBackend;
 class DomSaveModel;
@@ -48,7 +52,8 @@ class DomStorage;
  *
  * @class DomBackend models.hpp "src/models.hpp"
  */
-class DomBackend : public AbstractBackend {
+class DomBackend : public AbstractBackend
+{
 public:
     /**
      * @brief
@@ -62,14 +67,14 @@ public:
      * @fn DomBackend
      * @param
      */
-    DomBackend ( const DomBackend& );
+    DomBackend (const DomBackend&);
     /**
      * @brief
      *
      * @fn DomBackend
      * @param
      */
-    explicit DomBackend ( QDomElement* );
+    explicit DomBackend (QDomElement*);
     /**
      * @brief
      *
@@ -86,7 +91,8 @@ protected:
  *
  * @class DomLoadModel models.hpp "src/models.hpp"
  */
-class DomLoadModel : public AbstractLoadModel, public DomBackend {
+class DomLoadModel : public AbstractLoadModel, public DomBackend
+{
     Q_OBJECT
 public:
     /**
@@ -101,14 +107,14 @@ public:
      * @fn DomLoadModel
      * @param
      */
-    DomLoadModel ( const DomLoadModel& );
+    DomLoadModel (const DomLoadModel&);
     /**
      * @brief
      *
      * @fn DomLoadModel
      * @param
      */
-    DomLoadModel ( QDomElement* );
+    DomLoadModel (QDomElement*);
     /**
      * @brief
      *
@@ -127,7 +133,7 @@ public:
      * @fn loadTo
      * @param
      */
-    virtual void loadTo ( Chain & ) const;
+    virtual void loadTo (Chain&) const;
 private:
     /**
      * @brief
@@ -135,7 +141,7 @@ private:
      * @fn obtainType
      * @param QDomElement
      */
-    virtual const QString obtainType ( const QDomElement* ) const;
+    virtual const QString obtainType (const QDomElement*) const;
     /**
      * @brief
      *
@@ -143,7 +149,7 @@ private:
      * @param
      * @param QDomElement
      */
-    virtual void obtainBonds ( BondList*, const QDomElement* ) const;
+    virtual void obtainBonds (BondList*, const QDomElement*) const;
 };
 
 /**
@@ -151,7 +157,8 @@ private:
  *
  * @class DomSaveModel models.hpp "src/models.hpp"
  */
-class DomSaveModel : public AbstractSaveModel, public DomBackend {
+class DomSaveModel : public AbstractSaveModel, public DomBackend
+{
     Q_OBJECT
 public:
     /**
@@ -166,14 +173,14 @@ public:
      * @fn DomSaveModel
      * @param
      */
-    DomSaveModel ( const DomSaveModel& );
+    DomSaveModel (const DomSaveModel&);
     /**
      * @brief
      *
      * @fn DomSaveModel
      * @param
      */
-    DomSaveModel ( QDomElement* );
+    DomSaveModel (QDomElement*);
     /**
      * @brief
      *
@@ -192,7 +199,7 @@ public:
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Chain & );
+    virtual void saveFrom (const Chain&);
 
 private:
     /**
@@ -201,7 +208,7 @@ private:
      * @fn obtainType
      * @param QDomElement
      */
-    virtual void setType ( const QString& );
+    virtual void setType (const QString&);
     /**
      * @brief
      *
@@ -209,7 +216,7 @@ private:
      * @param
      * @param QDomElement
      */
-    virtual void setBonds ( const BondList& );
+    virtual void setBonds (const BondList&);
 
 };
 
@@ -218,7 +225,8 @@ private:
  *
  * @class DomStorage models.hpp "src/models.hpp"
  */
-class DomStorage : public AbstractStorage {
+class DomStorage : public AbstractStorage
+{
 public:
     /**
      * @brief
@@ -232,7 +240,7 @@ public:
      * @fn DomStorage
      * @param
      */
-    DomStorage ( const AbstractStorage& );
+    DomStorage (const AbstractStorage&);
     /**
      * @brief
      *
@@ -245,27 +253,27 @@ public:
      * @fn loadTo
      * @param
      */
-    virtual void loadTo ( Chain & ) const;
+    virtual void loadTo (Chain&) const;
     /**
      * @brief
      *
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Chain & );
+    virtual void saveFrom (const Chain&);
     /**
      * @brief
      *
      * @fn exists
      * @param
      */
-    virtual const bool exists ( const QString , const QString ) const;
+    virtual bool exists (const QString& p_flg, const QString& p_lcl) const;
     /**
      * @brief
      *
      * @fn type
      */
-    virtual const QString type () const;
+    virtual QString type () const;
 
 private:
     mutable double m_min; /**< Represents the strength of matching. */
@@ -276,7 +284,7 @@ private:
      * @param
      * @param
      */
-    static const double matches ( const QString&, const QString& );
+    static double matches (const QString&, const QString&);
     /**
      * @brief
      *
@@ -284,7 +292,7 @@ private:
      * @param
      * @param QDomElement
      */
-    QDomElement findElement ( const Chain&, QDomElement ) const;
+    QDomElement findElement (const Chain&, QDomElement) const;
     /**
      * @brief
      *
@@ -292,21 +300,21 @@ private:
      * @param
      * @param QString
      */
-    QDomElement findElement ( const Chain&, QDomElement , QString ) const;
+    QDomElement findElement (const Chain&, QDomElement , QString) const;
     /**
      * @brief
      *
      * @fn getPath
      * @param
      */
-    static const QString getPath ( const Chain& );
+    static const QString getPath (const Chain&);
     /**
      * @brief
      *
      * @fn loadDom
      * @param
      */
-    static QDomDocument* loadDom ( const Chain& );
+    static QDomDocument* loadDom (const Chain&);
 };
 
 }
@@ -315,4 +323,4 @@ private:
 }
 
 #endif /* WNTRDATA_SYNTAX_DOM_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

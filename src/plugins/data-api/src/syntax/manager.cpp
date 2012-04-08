@@ -34,26 +34,32 @@ using Wintermute::Data::System;
 
 Manager* Manager::s_inst = 0;
 
-Manager::Manager() : QObject ( System::instance() ) { }
+Manager::Manager() : QObject (System::instance()) { }
 
-Manager::Manager ( const Manager& p_other ) : QObject(p_other.parent()) {
+Manager::Manager (const Manager& p_other) : QObject (p_other.parent())
+{
 
 }
 
-const bool Manager::exists ( const QString &p_1, const QString &p_2 ) const {
-    return Cache::exists ( p_1,p_2 );
+bool Manager::exists (const QString& p_1, const QString& p_2) const
+{
+    return Cache::exists (p_1, p_2);
 }
 
-void Manager::read ( ::Chain &p_chn ) {
-    Cache::read ( p_chn );
+void Manager::read (::Chain& p_chn)
+{
+    Cache::read (p_chn);
 }
 
-void Manager::write ( ::Chain &p_chn ) {
-    Cache::write ( p_chn );
+void Manager::write (::Chain& p_chn)
+{
+    Cache::write (p_chn);
 }
 
-Manager* Manager::instance() {
-    if ( !s_inst ) s_inst = new Manager;
+Manager* Manager::instance()
+{
+    if (!s_inst) s_inst = new Manager;
+
     return s_inst;
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -33,45 +33,53 @@ using Wintermute::Data::NodeAdaptor;
 using Wintermute::Data::Linguistics::Lexical::Manager;
 
 NodeAdaptor::NodeAdaptor()
-    : QDBusAbstractAdaptor ( Manager::instance() ) {
+    : QDBusAbstractAdaptor (Manager::instance())
+{
     // constructor
-    setAutoRelaySignals ( true );
+    setAutoRelaySignals (true);
 }
 
 NodeAdaptor::~NodeAdaptor() { }
 
-bool NodeAdaptor::exists ( QString in0 ) {
-    return Manager::instance()->exists ( Lexical::Data::fromString ( in0 ) );
+bool NodeAdaptor::exists (QString in0)
+{
+    return Manager::instance()->exists (Lexical::Data::fromString (in0));
 }
 
-void NodeAdaptor::generate() {
-    QMetaObject::invokeMethod ( parent(), "generate" );
+void NodeAdaptor::generate()
+{
+    QMetaObject::invokeMethod (parent(), "generate");
 }
 
-bool NodeAdaptor::isPseudo ( QString in0 ) {
+bool NodeAdaptor::isPseudo (QString in0)
+{
     bool out0;
-    QMetaObject::invokeMethod ( parent(), "isPseudo", Q_RETURN_ARG ( bool, out0 ), Q_ARG ( Lexical::Data , Lexical::Data::fromString ( in0 ) ) );
+    QMetaObject::invokeMethod (parent(), "isPseudo", Q_RETURN_ARG (bool, out0), Q_ARG (Lexical::Data , Lexical::Data::fromString (in0)));
     return out0;
 }
 
-QString NodeAdaptor::pseudo ( QString in0 ) {
-    Lexical::Data  dt = Lexical::Data::fromString ( in0 );
-    return Manager::instance()->pseudo ( dt );
+QString NodeAdaptor::pseudo (QString in0)
+{
+    Lexical::Data  dt = Lexical::Data::fromString (in0);
+    return Manager::instance()->pseudo (dt);
 }
 
-void NodeAdaptor::quit() {
-    QMetaObject::invokeMethod ( parent(), "quit" );
+void NodeAdaptor::quit()
+{
+    QMetaObject::invokeMethod (parent(), "quit");
 }
 
-QString NodeAdaptor::read ( QString in0 ) {
+QString NodeAdaptor::read (QString in0)
+{
     Lexical::Data  out0;
-    QMetaObject::invokeMethod ( parent(), "read", Q_RETURN_ARG ( Lexical::Data , out0 ), Q_ARG ( Lexical::Data , Lexical::Data::fromString ( in0 ) ) );
+    QMetaObject::invokeMethod (parent(), "read", Q_RETURN_ARG (Lexical::Data , out0), Q_ARG (Lexical::Data , Lexical::Data::fromString (in0)));
     return out0;
 }
 
-QString NodeAdaptor::write ( QString in0 ) {
+QString NodeAdaptor::write (QString in0)
+{
     Lexical::Data  out0;
-    QMetaObject::invokeMethod ( parent(), "write", Q_RETURN_ARG ( Lexical::Data , out0 ), Q_ARG ( Lexical::Data , Lexical::Data::fromString ( in0 ) ) );
+    QMetaObject::invokeMethod (parent(), "write", Q_RETURN_ARG (Lexical::Data , out0), Q_ARG (Lexical::Data , Lexical::Data::fromString (in0)));
     return out0;
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

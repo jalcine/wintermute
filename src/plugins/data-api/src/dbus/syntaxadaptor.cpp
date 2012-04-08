@@ -31,31 +31,36 @@ using namespace Wintermute::Data::Linguistics;
 using Wintermute::Data::Linguistics::Syntax::Manager;
 
 SyntaxAdaptor::SyntaxAdaptor()
-    : QDBusAbstractAdaptor ( Manager::instance() ) {
-    setAutoRelaySignals ( true );
+    : QDBusAbstractAdaptor (Manager::instance())
+{
+    setAutoRelaySignals (true);
 }
 
 SyntaxAdaptor::~SyntaxAdaptor() { }
 
-bool SyntaxAdaptor::exists ( const QString &in0, const QString &in1 ) {
+bool SyntaxAdaptor::exists (const QString& in0, const QString& in1)
+{
     bool out0;
-    QMetaObject::invokeMethod ( parent(), "exists", Q_RETURN_ARG ( bool, out0 ), Q_ARG ( QString, in0 ), Q_ARG ( QString, in1 ) );
+    QMetaObject::invokeMethod (parent(), "exists", Q_RETURN_ARG (bool, out0), Q_ARG (QString, in0), Q_ARG (QString, in1));
     return out0;
 }
 
-void SyntaxAdaptor::quit() {
-    QMetaObject::invokeMethod ( parent(), "quit" );
+void SyntaxAdaptor::quit()
+{
+    QMetaObject::invokeMethod (parent(), "quit");
 }
 
-QString SyntaxAdaptor::read ( QString in0 ) {
-    Syntax::Chain chn = Syntax::Chain::fromString ( in0 );
-    Manager::instance()->read ( chn );
+QString SyntaxAdaptor::read (QString in0)
+{
+    Syntax::Chain chn = Syntax::Chain::fromString (in0);
+    Manager::instance()->read (chn);
     return chn.toString();
 }
 
-QString SyntaxAdaptor::write ( QString in0 ) {
-    Syntax::Chain chn = Syntax::Chain::fromString ( in0 );
-    Manager::instance()->write ( chn );
+QString SyntaxAdaptor::write (QString in0)
+{
+    Syntax::Chain chn = Syntax::Chain::fromString (in0);
+    Manager::instance()->write (chn);
     return chn.toString();
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

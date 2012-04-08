@@ -31,10 +31,14 @@
 #include <QMetaType>
 #include <QDBusArgument>
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Lexical {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Lexical
+{
 
 /**
  * @brief The lexical POD (plain ol' data) format of linguistics parsing.
@@ -50,10 +54,11 @@ namespace Lexical {
  * @class Data models.hpp "models.hpp"
  * @see QVariantMap
  */
-class Data : public QObject {
+class Data : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( QString ID READ id WRITE setID )
-    friend const QDBusArgument& operator>> ( const QDBusArgument &argument, Wintermute::Data::Linguistics::Lexical::Data &structure ) {
+    Q_PROPERTY (QString ID READ id WRITE setID)
+    friend const QDBusArgument& operator>> (const QDBusArgument& argument, Wintermute::Data::Linguistics::Lexical::Data& structure) {
         argument.beginStructure();
         argument >> structure.m_id >> structure.m_locale >> structure.m_symbol;
         argument >> structure.m_flags;
@@ -61,7 +66,7 @@ class Data : public QObject {
         return argument;
     }
 
-    friend QDBusArgument &operator<< ( QDBusArgument &argument, const Data &structure ) {
+    friend QDBusArgument& operator<< (QDBusArgument& argument, const Data& structure) {
         argument.beginStructure();
         argument << structure.m_id << structure.m_locale << structure.m_locale << structure.m_flags;
         argument.endStructure();
@@ -77,7 +82,7 @@ public:
      * @param p_symbol The symbol of the Data.
      * @param p_flags The flags of the Data.
      */
-    Data ( const QString p_id , const QString p_locale , const QString p_symbol = QString::null , const QVariantMap p_flags = QVariantMap() );
+    Data (const QString p_id , const QString p_locale , const QString p_symbol = QString::null , const QVariantMap p_flags = QVariantMap());
 
     /**
      * @brief Null constructor.
@@ -90,7 +95,7 @@ public:
      * @fn Data
      * @param Data The Data to be copied.
      */
-    Data ( const Data& p_other );
+    Data (const Data& p_other);
 
     /**
      * @brief Deconstructor.
@@ -98,7 +103,7 @@ public:
      */
     virtual ~Data();
 
-    static Data fromString ( const QString& p_string );
+    static Data fromString (const QString& p_string);
 
     /**
      * @brief Returns the ID of the node.
@@ -133,14 +138,14 @@ public:
      *       MD5 hash of a lower-case representation of the symbol string.
      * @see idFromString(const QString)
      */
-    void setSymbol ( const QString& p_symbol );
+    void setSymbol (const QString& p_symbol);
 
     /**
      * @brief Sets the flags of the Data.
      * @fn setFlags
      * @param p_flags The flags for the Data to hold now.
      */
-    void setFlags ( const QVariantMap& p_flags );
+    void setFlags (const QVariantMap& p_flags);
 
     /**
      * @brief ...
@@ -148,7 +153,7 @@ public:
      * @param p_locale ...
      * @return void
      **/
-    void setLocale ( const QString& p_locale );
+    void setLocale (const QString& p_locale);
     /**
      * @brief ...
      *
@@ -156,20 +161,20 @@ public:
      * @return void
      **/
 
-    void setID ( const QString& p_id );
+    void setID (const QString& p_id);
 
     /**
      * @brief Determines if this Data is equivalent to a null Data object.
      * @fn isNull
      */
-    const bool isValid() const;
+    bool isValid() const;
 
     /**
      * @brief Obtains the ID from a said QString.
      * @fn idFromString
      * @param QString The text to be transformed into its proper ID.
      */
-    static const QString idFromString ( const QString );
+    static const QString idFromString (const QString);
 
     static const Data Empty; /**< Represents an empty set of data. */
     /**
@@ -177,14 +182,14 @@ public:
      * @fn operator==
      * @param The Data to be equated against.
      */
-    bool operator== ( const Data& ) const;
+    bool operator== (const Data&) const;
 
     /**
      * @brief Assignment operator.
      * @fn operator=
      * @param The Data to be copied.
      */
-    void operator= ( const Data& );
+    void operator= (const Data&);
 
     operator QString() const;
 
@@ -200,8 +205,8 @@ private:
 }
 }
 
-Q_DECLARE_TYPEINFO ( Wintermute::Data::Linguistics::Lexical::Data, Q_MOVABLE_TYPE );
-Q_DECLARE_METATYPE ( Wintermute::Data::Linguistics::Lexical::Data )
+Q_DECLARE_TYPEINFO (Wintermute::Data::Linguistics::Lexical::Data, Q_MOVABLE_TYPE);
+Q_DECLARE_METATYPE (Wintermute::Data::Linguistics::Lexical::Data)
 
 #endif /* WNTRDATA_LEXICAL_DATA_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

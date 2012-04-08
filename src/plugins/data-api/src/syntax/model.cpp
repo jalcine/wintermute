@@ -35,90 +35,100 @@ Cache::StorageList Cache::s_stores;
 
 AbstractModel::AbstractModel() { }
 
-AbstractModel::AbstractModel ( const AbstractModel &p_mod ) : m_chn ( p_mod.m_chn ) { }
+AbstractModel::AbstractModel (const AbstractModel& p_mod) : m_chn (p_mod.m_chn) { }
 
 AbstractLoadModel::AbstractLoadModel() : AbstractModel() { }
 
-AbstractLoadModel::AbstractLoadModel ( const AbstractModel &p_mdl ) : AbstractModel ( p_mdl ) { }
+AbstractLoadModel::AbstractLoadModel (const AbstractModel& p_mdl) : AbstractModel (p_mdl) { }
 
 AbstractLoadModel::~AbstractLoadModel() { }
 
 AbstractSaveModel::AbstractSaveModel() : AbstractModel() { }
 
-AbstractSaveModel::AbstractSaveModel ( const AbstractModel &p_mdl ) : AbstractModel ( p_mdl ) { }
+AbstractSaveModel::AbstractSaveModel (const AbstractModel& p_mdl) : AbstractModel (p_mdl) { }
 
 AbstractSaveModel::~AbstractSaveModel() { }
 
 AbstractStorage::AbstractStorage() { }
 
-AbstractStorage::AbstractStorage ( const QString& p_lcl, const QString& p_flg ) : m_flg ( p_flg ), m_lcl ( p_lcl ) { }
+AbstractStorage::AbstractStorage (const QString& p_lcl, const QString& p_flg) : m_flg (p_flg), m_lcl (p_lcl) { }
 
-AbstractStorage::AbstractStorage ( const AbstractStorage &p_str ) : m_flg ( p_str.m_flg ), m_lcl ( p_str.m_lcl ) { }
+AbstractStorage::AbstractStorage (const AbstractStorage& p_str) : m_flg (p_str.m_flg), m_lcl (p_str.m_lcl) { }
 
-bool AbstractStorage::operator == ( const AbstractStorage& p_str ) {
+bool AbstractStorage::operator == (const AbstractStorage& p_str)
+{
     return type() == this->type ();
 }
 
-const QString AbstractStorage::flag () const {
+QString AbstractStorage::flag () const
+{
     return m_flg;
 }
 
-const QString AbstractStorage::locale() const {
+QString AbstractStorage::locale() const
+{
     return m_lcl;
 }
 
 AbstractStorage::~AbstractStorage () { }
 
-void AbstractModel::setChain ( const Chain &p_chn ) {
+void AbstractModel::setChain (const Chain& p_chn)
+{
     m_chn = p_chn;
 }
 
-const Chain AbstractModel::chain () const {
+const Chain AbstractModel::chain () const
+{
     return m_chn;
 }
 
 AbstractModel::~AbstractModel () { }
 
-const bool Cache::read ( Chain &p_chn ) {
-    foreach ( AbstractStorage* str, Cache::s_stores ) {
-        if ( str->exists ( p_chn.locale (),p_chn.type () ) ) {
-            str->loadTo ( p_chn );
+bool Cache::read (Chain& p_chn)
+{
+    foreach (AbstractStorage * str, Cache::s_stores) {
+        if (str->exists (p_chn.locale (), p_chn.type ())) {
+            str->loadTo (p_chn);
             return true;
-        } else continue;
+        }
+        else continue;
     }
 
     return false;
 }
 
-void Cache::write ( const Chain& p_chn ) {
+void Cache::write (const Chain& p_chn)
+{
     AbstractStorage* fdStr;
-    foreach ( AbstractStorage* str, Cache::s_stores ) {
-        if ( str->exists ( p_chn.locale (),p_chn.type () ) )
+    foreach (AbstractStorage * str, Cache::s_stores) {
+        if (str->exists (p_chn.locale (), p_chn.type ()))
             fdStr = str;
         else continue;
     }
 
-    if ( fdStr )
-        fdStr->saveFrom ( p_chn );
+    if (fdStr)
+        fdStr->saveFrom (p_chn);
     else {
         // save this locally. We consider the DOM AbstractStorage to be local.
         fdStr = new DomStorage;
-        fdStr->saveFrom ( p_chn );
+        fdStr->saveFrom (p_chn);
     }
 
 }
 
-const bool Cache::exists ( const QString& p_lcl, const QString& p_flg ) {
-    foreach ( AbstractStorage* str, Cache::s_stores ) {
-        if ( str->exists ( p_lcl,p_flg ) )
+bool Cache::exists (const QString& p_lcl, const QString& p_flg)
+{
+    foreach (AbstractStorage * str, Cache::s_stores) {
+        if (str->exists (p_lcl, p_flg))
             return true;
     }
 
     return false;
 }
 
-AbstractStorage* Cache::addStorage ( AbstractStorage *p_str ) {
-    if ( !hasStorage ( p_str->type () ) ) {
+AbstractStorage* Cache::addStorage (AbstractStorage* p_str)
+{
+    if (!hasStorage (p_str->type ())) {
         s_stores << p_str;
         qDebug() << "(data) [Cache] Added rules cache backend" << p_str->type() << ".";
     }
@@ -126,26 +136,29 @@ AbstractStorage* Cache::addStorage ( AbstractStorage *p_str ) {
     return p_str;
 }
 
-void Cache::clearStorage() {
-    foreach ( AbstractStorage* str, s_stores )
+void Cache::clearStorage()
+{
+    foreach (AbstractStorage * str, s_stores)
     delete str;
 
     s_stores.clear ();
 }
 
 
-const bool Cache::hasStorage ( const QString& p_strName ) {
-    foreach ( AbstractStorage* str, s_stores ) {
-        if ( str->type () == p_strName )
+bool Cache::hasStorage (const QString& p_strName)
+{
+    foreach (AbstractStorage * str, s_stores) {
+        if (str->type () == p_strName)
             return true;
     }
 
     return false;
 }
 
-AbstractStorage* Cache::storage ( const QString& p_strName ) {
-    foreach ( AbstractStorage* str, s_stores ) {
-        if ( str->type () == p_strName )
+AbstractStorage* Cache::storage (const QString& p_strName)
+{
+    foreach (AbstractStorage * str, s_stores) {
+        if (str->type () == p_strName)
             return str;
     }
 

@@ -34,16 +34,19 @@
 #include "syntax/bond.hpp"
 #include "syntax/chain.hpp"
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 
 using namespace Wintermute::Data::Linguistics;
 
-class SyntaxInterface: public QDBusAbstractInterface {
+class SyntaxInterface: public QDBusAbstractInterface
+{
     Q_OBJECT
 
 public:
-    static inline const char *staticInterfaceName() {
+    static inline const char* staticInterfaceName() {
         return "org.thesii.Wintermute.Data.Rules";
     }
 
@@ -51,36 +54,36 @@ public:
     ~SyntaxInterface();
 
 public slots:
-    inline QDBusPendingReply<bool> exists ( const QString &in0, const QString &in1 ) {
+    inline QDBusPendingReply<bool> exists (const QString& in0, const QString& in1) {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue ( in0 ) << qVariantFromValue ( in1 );
-        return asyncCallWithArgumentList ( QLatin1String ( "exists" ), argumentList );
+        argumentList << qVariantFromValue (in0) << qVariantFromValue (in1);
+        return asyncCallWithArgumentList (QLatin1String ("exists"), argumentList);
     }
 
     inline QDBusPendingReply<> quit() {
         QList<QVariant> argumentList;
-        return asyncCallWithArgumentList ( QLatin1String ( "quit" ), argumentList );
+        return asyncCallWithArgumentList (QLatin1String ("quit"), argumentList);
     }
 
-    inline QDBusPendingReply<Syntax::Chain> read ( Syntax::Chain in0 ) {
+    inline QDBusPendingReply<Syntax::Chain> read (Syntax::Chain in0) {
         QList<QVariant> argumentList;
         qDebug() << in0.toString();
         argumentList << in0.toString();
-        return asyncCallWithArgumentList ( QLatin1String ( "read" ), argumentList );
+        return asyncCallWithArgumentList (QLatin1String ("read"), argumentList);
     }
 
-    inline QDBusPendingReply<Syntax::Chain> write ( Syntax::Chain in0 ) {
+    inline QDBusPendingReply<Syntax::Chain> write (Syntax::Chain in0) {
         QList<QVariant> argumentList;
         argumentList << in0.toString();
-        return asyncCallWithArgumentList ( QLatin1String ( "write" ), argumentList );
+        return asyncCallWithArgumentList (QLatin1String ("write"), argumentList);
     }
 
 signals:
-    void ruleCreated ( const QString &in0 );
+    void ruleCreated (const QString& in0);
 };
 
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
 
 #endif

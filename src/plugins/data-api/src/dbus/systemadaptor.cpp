@@ -29,37 +29,44 @@ using Wintermute::Data::System;
 using Wintermute::Data::SystemAdaptor;
 
 SystemAdaptor::SystemAdaptor()
-    : QDBusAbstractAdaptor ( System::instance() ) {
+    : QDBusAbstractAdaptor (System::instance())
+{
     // constructor
-    setAutoRelaySignals ( true );
+    setAutoRelaySignals (true);
 }
 
 SystemAdaptor::~SystemAdaptor() { }
 
-QString SystemAdaptor::directory() const {
-    return qvariant_cast< QString > ( parent()->property ( "Directory" ) );
+QString SystemAdaptor::directory() const
+{
+    return qvariant_cast< QString > (parent()->property ("Directory"));
 }
 
-void SystemAdaptor::setDirectory ( const QString &value ) {
-    parent()->setProperty ( "Directory", qVariantFromValue ( value ) );
+void SystemAdaptor::setDirectory (const QString& value)
+{
+    parent()->setProperty ("Directory", qVariantFromValue (value));
 }
 
-bool SystemAdaptor::localeExists ( const QString &in0 ) {
+bool SystemAdaptor::localeExists (const QString& in0)
+{
     bool out0;
-    QMetaObject::invokeMethod ( parent(), "localeExists", Q_RETURN_ARG ( bool, out0 ), Q_ARG ( QString, in0 ) );
+    QMetaObject::invokeMethod (parent(), "localeExists", Q_RETURN_ARG (bool, out0), Q_ARG (QString, in0));
     return out0;
 }
 
-void SystemAdaptor::quit() {
-    QMetaObject::invokeMethod ( parent(), "quit" );
+void SystemAdaptor::quit()
+{
+    QMetaObject::invokeMethod (parent(), "quit");
 }
 
-void SystemAdaptor::start() {
-    QMetaObject::invokeMethod ( parent(), "start" );
+void SystemAdaptor::start()
+{
+    QMetaObject::invokeMethod (parent(), "start");
 }
 
-void SystemAdaptor::stop() {
-    QMetaObject::invokeMethod ( parent(), "stop" );
+void SystemAdaptor::stop()
+{
+    QMetaObject::invokeMethod (parent(), "stop");
 }
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
