@@ -1,0 +1,26 @@
+Wintermute Linguistics (WntrLing)
+============================================
+
+1. About WntrLing
+
+This set of code represents the very unique and very intricately designed code
+portraying Wintermute's ability to understand and interpret language. Being that
+there isn't only one language known to human beings, the system set in place by
+this NLP engine is capable of handling multiple languages, possibly
+simultaneously as well. This is the future of natural language processing.
+
+2. Current Status
+
+The current, live status of WntrLing is mainly known to Jacky Alcine
+<jacky.alcine@thesii.org>. It's because he works on this sect of code extremely
+closely as well as tying loose ends with WntrData to ensure everything flows
+nicely. Contact him if you're interested in finding out the latest update on
+this branch. Information is typically available in the commit message.
+
+3. Reporting and Contributing to the Cause
+
+ We here at the Synthetic Intellect Institute, the makers and maintainers
+of Wintermute, welcome all. If you want to chat with the guys responsible
+for Wintermute or the Institute, drop us a message at <contact@thesii.org> or
+send us a message to our mailing list at <sii@lists.launchpad.net>. We hope to
+hear (or see or read) from you soon.
