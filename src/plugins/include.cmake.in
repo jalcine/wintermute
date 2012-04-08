@@ -1,0 +1,11 @@
+# Inclusion file for @__api_name@.
+
+if (NOT DEFINED @__api@_INCLUDED)
+    set(@__api@_INCLUDED ON)
+    add_subdirectory("@__api@")
+endif(NOT DEFINED @__api@_INCLUDED)
+
+if (NOT DEFINED @__api_name@_DIR)
+    message(STATUS "Building API @__api_name@...")
+    set(@__api_name@_DIR "@__api_path@" CACHE INTERNAL "Configuration data for @__api_name@." FORCE)
+endif (NOT DEFINED @__api_name@_DIR)
