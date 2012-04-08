@@ -2,9 +2,9 @@ project(Wintermute)
 cmake_minimum_required(VERSION 2.8)
 
 ## Modules
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
-option(WITH_GUI_SUPPORT  "Build Wintermute with QtGui support."         OFF)
+option(WITH_GUI          "Build Wintermute with QtGui support."         ON)
 option(WITH_PLUGINS      "Build the plug-ins packaged with Wintermute." OFF)
 
 ## Wintermute-specific macros
@@ -20,6 +20,8 @@ find_package(Boost COMPONENTS
 find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtGui
+    QtXml
+    QtNetwork
     QtDBus
     REQUIRED)
 
