@@ -30,16 +30,20 @@
 using namespace Wintermute;
 using namespace Wintermute::Network;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 Interface* Interface::s_ints = 0;
 
-Interface::Interface() {
+Interface::Interface()
+{
     Interface::s_ints = this;
 }
 
-Interface* Interface::instance() {
-    if ( s_ints == 0 ) {
+Interface* Interface::instance()
+{
+    if (s_ints == 0) {
         s_ints = new Interface;
         qDebug() << "(ntwk) [Interface] Created core interface.";
     }
@@ -47,50 +51,56 @@ Interface* Interface::instance() {
     return s_ints;
 }
 
-Interface::~Interface() {
+Interface::~Interface()
+{
     qDebug() << "(ntwk) [Interface] Destroyed core interface.";
 }
 
-void Interface::start() const {
+void Interface::start() const
+{
     System::start();
-    Broadcast::load ( );
+    Broadcast::load ();
 
     emit started();
 }
 
-void Interface::stop() const {
+void Interface::stop() const
+{
     System::stop ();
     Broadcast::unload ();
     emit stopped();
 }
 
-const bool Interface::isActive() {
+const bool Interface::isActive()
+{
     return System::isActive();
 }
 
-void Plugin::start () const {
-    connect ( this,SIGNAL ( started() ),Wintermute::Network::Interface::instance (),SLOT ( start() ) );
-    connect ( this,SIGNAL ( stopped() ),Wintermute::Network::Interface::instance (),SLOT ( stop() ) );
+void Plugin::start () const
+{
+    connect (this, SIGNAL (started()), Wintermute::Network::Interface::instance (), SLOT (start()));
+    connect (this, SIGNAL (stopped()), Wintermute::Network::Interface::instance (), SLOT (stop()));
 
     qDBusRegisterMetaType<Network::Message>();
 
     Network::SystemAdaptor* adpt = new Network::SystemAdaptor;
     Network::BroadcastAdaptor* adpt2 = new Network::BroadcastAdaptor;
 
-    if ( !Wintermute::IPC::System::registerObject ( "/System",    adpt ) ||
-            !Wintermute::IPC::System::registerObject ( "/Broadcast", adpt2 ) )
+    if (!Wintermute::IPC::System::registerObject ("/System",    adpt) ||
+            !Wintermute::IPC::System::registerObject ("/Broadcast", adpt2))
         qDebug() << "(ntwk) [Plugin] Failed to register D-Bus objects.";
 }
 
 void Plugin::stop () const { }
 
-QObject* Plugin::instance () const {
+QObject* Plugin::instance () const
+{
     return System::instance();
 }
 }
 }
 
-Q_EXPORT_PLUGIN2 ( WntrNtwk, Wintermute::Network::Plugin )
+Q_EXPORT_PLUGIN2 (WntrNtwk, Wintermute::Network::Plugin)
 
 #include "wntrntwk.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

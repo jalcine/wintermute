@@ -25,84 +25,103 @@
 #include <qjson/serializer.h>
 #include <QtDebug>
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 long Message::s_count = 0;
 
-Message::Message () : m_attr() {
-    __init ( );
+Message::Message () : m_attr()
+{
+    __init ();
 }
 
-Message::Message ( const Message &p_msg ) : m_attr ( p_msg.m_attr ) { }
+Message::Message (const Message& p_msg) : m_attr (p_msg.m_attr) { }
 
-Message::Message ( const QVariantMap& p_attr ) : m_attr ( p_attr ) {
+Message::Message (const QVariantMap& p_attr) : m_attr (p_attr)
+{
     __init();
 }
 
-Message::Message ( const QString& property, const QVariant& value ) {
-    __init ( );
-    this->setAttribute ( property.toStdString().c_str(),value );
+Message::Message (const QString& property, const QVariant& value)
+{
+    __init ();
+    this->setAttribute (property.toStdString().c_str(), value);
 }
 
 Message::~Message () { }
 
-void Message::__init () {
+void Message::__init ()
+{
     QDateTime now = QDateTime::currentDateTimeUtc ();
     qDebug() << "(ntwk) [Message] Generated message #" << Message::s_count << "; created on" << now << ".";
-    this->setAttribute ( "TimeStamp" , now );
+    this->setAttribute ("TimeStamp" , now);
     Message::s_count++;
 }
 
-const QDateTime Message::creationTime () const {
-    QVariant vrt = this->attribute ( "TimeStamp" ).toDateTime();
-    if ( vrt.isValid () ) return vrt.toDateTime ();
+const QDateTime Message::creationTime () const
+{
+    QVariant vrt = this->attribute ("TimeStamp").toDateTime();
+
+    if (vrt.isValid ()) return vrt.toDateTime ();
     else QDateTime::currentDateTimeUtc();
 }
 
-const QString Message::type () const {
-    QVariant vrt = this->attribute ( "MessageType" ).toDateTime();
-    if ( vrt.isValid () ) return vrt.toString ();
+const QString Message::type () const
+{
+    QVariant vrt = this->attribute ("MessageType").toDateTime();
+
+    if (vrt.isValid ()) return vrt.toString ();
     else return "Invalid";
 }
 
-const QString Message::toString () const {
-    QVariant thisVrnt = qVariantFromValue ( *this );
+const QString Message::toString () const
+{
+    QVariant thisVrnt = qVariantFromValue (*this);
     return thisVrnt.toString();
 }
 
-QVariant& Message::attribute ( const QString &p_attr ) const {
-    return * ( new QVariant ( m_attr.value ( p_attr ) ) );
+QVariant& Message::attribute (const QString& p_attr) const
+{
+    return * (new QVariant (m_attr.value (p_attr)));
 }
 
-void Message::setAttribute ( const QString &p_attrPth, const QVariant &p_attrVal ) {
-    m_attr.insert ( p_attrPth,p_attrVal );
+void Message::setAttribute (const QString& p_attrPth, const QVariant& p_attrVal)
+{
+    m_attr.insert (p_attrPth, p_attrVal);
 }
 
-QDataStream & operator >> ( QDataStream &p_strm, Message &p_msg ) {
+QDataStream& operator >> (QDataStream& p_strm, Message& p_msg)
+{
     p_strm >> p_msg.m_attr;
     return p_strm;
 }
 
-QDataStream & operator << ( QDataStream &p_strm, const Message &p_msg ) {
+QDataStream& operator << (QDataStream& p_strm, const Message& p_msg)
+{
     p_strm << p_msg.m_attr;
     return p_strm;
 }
 
-QDBusArgument& operator << ( QDBusArgument &p_arg, const Message& p_msg ) {
+QDBusArgument& operator << (QDBusArgument& p_arg, const Message& p_msg)
+{
 }
 
-QDBusArgument& operator >> ( const QDBusArgument& p_arg, Message& p_msg ) {
+QDBusArgument& operator >> (const QDBusArgument& p_arg, Message& p_msg)
+{
 }
 
-Message* Message::fromString ( const QString& serializedText ) {
-    return new Message ( QVariant::fromValue ( serializedText ).toMap() );
+Message* Message::fromString (const QString& serializedText)
+{
+    return new Message (QVariant::fromValue (serializedText).toMap());
 }
 
-Message* Message::fromVariantMap ( const QVariantMap& p_attr ) {
-    return new Message ( p_attr );
+Message* Message::fromVariantMap (const QVariantMap& p_attr)
+{
+    return new Message (p_attr);
 }
 }
 }
 
 #include "message.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
