@@ -13,3 +13,8 @@ set(WNTRDATA_LIBRARY_DIRS "@WNTRDATA_LIB_DIR@")
 
 # These are IMPORTED targets created by WntrDataLibraryDepends.cmake
 set(WNTRDATA_LIBRARIES "@WNTRDATA_LIBRARIES@" wapi-data)
+
+## Check if we're building Wintermute from source.
+if (WINTER_PLUGINS_BUILDING)
+    list(APPEND WNTRDATA_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/plugins/data-api/src")
+endif (WINTER_PLUGINS_BUILDING)
