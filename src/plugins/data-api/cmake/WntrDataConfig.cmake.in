@@ -9,7 +9,7 @@ set(WNTRDATA_INCLUDE_DIRS "@WNTRDATA_INCLUDE_DIRS@" "@WNTRDATA_INCLUDE_DIR@")
 set(WNTRDATA_LIBRARY_DIRS "@WNTRDATA_LIB_DIR@")
 
 # Our library dependencies (contains definitions for IMPORTED targets)
-include("@CMAKE_INSTALL_PREFIX@/share/cmake/WntrData/WntrDataLibraryDepends.cmake")
+#include("@CMAKE_INSTALL_PREFIX@/share/cmake/WntrData/WntrDataLibraryDepends.cmake")
 
 # These are IMPORTED targets created by WntrDataLibraryDepends.cmake
 set(WNTRDATA_LIBRARIES "@WNTRDATA_LIBRARIES@" wapi-data)
