@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 ## Modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
-option(WITH_GUI_SUPPORT     "Determines if Wintermute is built with QtGui support." ON)
+option(WITH_GUI_SUPPORT  "Build Wintermute with QtGui support."         OFF)
+option(WITH_PLUGINS      "Build the plug-ins packaged with Wintermute." OFF)
 
 ## Wintermute-specific macros
 include(WintermuteDefaults)
@@ -40,14 +41,11 @@ set(WINTERMUTE_LIBRARIES
     ${Boost_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTDBUS_LIBRARY})
+set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+    "${PROJECT_BINARY_DIR}/src/app"
+    "${PROJECT_SOURCE_DIR}/src/app")
+include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 
-if (WITH_GUI_SUPPORT)
-    list(APPEND WINTERMUTE_LIBRARIES ${QT_QTGUI_LIBRARY})
-    message(STATUS "Enabled GUI support in Wintermute.")
-else (WITH_GUI_SUPPORT)
-    list(REMOVE_ITEM WINTERMUTE_LIBRARIES ${QT_QTGUI_LIBRARY})
-    message(STATUS "Disabled GUI support in Wintermute.")
-endif (WITH_GUI_SUPPORT)
 
 ## Include directories
 include_directories(${WINTERMUTE_INCLUDE_DIRS})
