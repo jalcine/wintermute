@@ -30,44 +30,47 @@
 using namespace std;
 using std::string;
 
-namespace Wintermute {
+namespace Wintermute
+{
 Logging* Logging::s_inst = new Logging;
 
 Logging::Logging() : QObject() { }
 
-Logging* Logging::instance() {
+Logging* Logging::instance()
+{
     return s_inst;
 }
 
-void Logging::catchQDebugMessage ( QtMsgType p_typ, const char *p_msg ) {
+void Logging::catchQDebugMessage (QtMsgType p_typ, const char* p_msg)
+{
     const QTime tm = QTime::currentTime();
-    string str = "[ T+" + tm.toString().toStdString() + ":" + QString::number ( tm.msec() ).toStdString()  +" ] <p:" + QString::number ( QApplication::applicationPid() ).toStdString() + "> ";
+    string str = "[ T+" + tm.toString (Qt::ISODate).toStdString() + ":" + QString::number (tm.msec()).toStdString()  + " ] <p:" + QString::number (QApplication::applicationPid()).toStdString() + "> ";
 
-    switch ( p_typ ) {
+    switch (p_typ) {
     case QtDebugMsg:
-        str += "DEBUG: ";
+        str += "D: ";
         break;
 
     case QtWarningMsg:
-        str += "WARN:  ";
-        emit instance()->warningEncountered ( p_msg );
+        str += "W:  ";
+        emit instance()->warningEncountered (p_msg);
         break;
 
     case QtCriticalMsg:
-        str += "CRIT:  ";
+        str += "C:  ";
         qApp->beep();
-        emit instance()->criticalErrorEncountered ( p_msg );
+        emit instance()->criticalErrorEncountered (p_msg);
         break;
 
     case QtFatalMsg:
-        str += "FATAL: ";
+        str += "F: ";
         qApp->beep();
-        emit instance()->fatalErrorEncountered ( p_msg );
+        emit instance()->fatalErrorEncountered (p_msg);
         break;
     }
 
     str += p_msg;
-    fprintf ( stderr, "%s\n", str.c_str() );
+    fprintf (stderr, "%s\n", str.c_str());
 }
 }
 

@@ -31,11 +31,14 @@
 #include <QVariantMap>
 
 
-namespace Wintermute {
-namespace Plugins {
+namespace Wintermute
+{
+namespace Plugins
+{
 struct Factory;    //forward class decl;
 }
-namespace IPC {
+namespace IPC
+{
 
 /**
  * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
@@ -77,11 +80,12 @@ namespace IPC {
  * @see CoreAdaptor, PluginBase, PluginInstance, Factory
  * @class System ipc.hpp "src/ipc.hpp"
  */
-class System : public QObject {
+class System : public QObject
+{
     friend class Plugins::Factory;
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","IPC Singelton" )
-    Q_DISABLE_COPY ( System )
+    Q_CLASSINFO ("objectName", "IPC Singelton")
+    Q_DISABLE_COPY (System)
 
 signals:
     /**
@@ -96,7 +100,7 @@ public:
      * Starts up the IPC system by storing the type of module that Wintermute's
      * running under and executing the code required to render that module.
      */
-    static void start ( );
+    static void start ();
 
     /**
      * Stops all of the work of the IPC system and then exits Wintermute.
@@ -130,12 +134,12 @@ public:
      * @param QString The name of the Adaptor.
      * @param Adaptor* The Adaptor to be added.
      */
-    static bool registerObject ( const QString&, QDBusAbstractAdaptor* );
+    static bool registerObject (const QString&, QDBusAbstractAdaptor*);
 
     static System* instance();
 
 private:
-    System ( QObject* = 0 );
+    System (QObject* = 0);
     ~System();
     QString m_appMod;
     QDBusConnection* m_cnntn;

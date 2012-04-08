@@ -27,25 +27,27 @@
 #include <QDebug>
 #include <QTime>
 
-namespace Wintermute {
+namespace Wintermute
+{
 class Logging;
 
 /// @todo Allow triggering the saving of such logs to disc.
 /// @todo Allow dynamic printing of certain flags (overriding build commands).
 /// @todo Add a event filter for this into the application.
-class Logging : public QObject {
+class Logging : public QObject
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","Logging Singleton" )
-    Q_DISABLE_COPY ( Logging )
+    Q_CLASSINFO ("objectName", "Logging Singleton")
+    Q_DISABLE_COPY (Logging)
 
 signals:
-    void linePrinted ( const QString& );
-    void warningEncountered ( const QString& );
-    void criticalErrorEncountered ( const QString& );
-    void fatalErrorEncountered ( const QString& );
+    void linePrinted (const QString&);
+    void warningEncountered (const QString&);
+    void criticalErrorEncountered (const QString&);
+    void fatalErrorEncountered (const QString&);
 
 public:
-    static void catchQDebugMessage ( QtMsgType, const char* );
+    static void catchQDebugMessage (QtMsgType, const char*);
     static Logging* instance();
 
 private:

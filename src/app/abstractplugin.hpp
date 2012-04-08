@@ -300,4 +300,4 @@ typedef QHash<QString, AbstractPlugin*> PluginTable;
 Q_DECLARE_INTERFACE (Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin")
 
 #endif // _ABSTRACTPLUGIN_HPP_
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

@@ -34,7 +34,8 @@
 class QApplication;
 class QSocketNotifier;
 
-namespace Wintermute {
+namespace Wintermute
+{
 
 /**
  * @brief The central management class of Wintermute.
@@ -48,9 +49,10 @@ namespace Wintermute {
  * @class Core wintermute.hpp "core.hpp"
  */
 /// @todo Implement a means of having this class catch the signals of the system.
-class Core : public QObject {
+class Core : public QObject
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","Wintermute's Core" )
+    Q_CLASSINFO ("objectName", "Wintermute's Core")
 
 public:
 
@@ -65,7 +67,7 @@ public:
      * @param argv The command line argument passed representing the value of each argument.
      * @internal
      */
-    explicit Core ( int& p_argv, char** p_argc );
+    explicit Core (int& p_argv, char** p_argc);
 
     /**
      * @brief Obtains an instance of the Core.
@@ -96,7 +98,7 @@ public:
      * @brief Ends the program; with an optional exit code.
      * @fn exit
      */
-    static void exit ( const int = 0, const bool = false );
+    static void exit (const int = 0, const bool = false);
 
     /**
      * @brief Ends the program with success code.
@@ -140,7 +142,7 @@ protected:
      * @param argv The command line argument passed representing the value of each argument.
      * @see Wintermute::Core::Initialize()
      */
-    static void Configure ( int& , char ** );
+    static void Configure (int& , char**);
 
 protected slots:
 

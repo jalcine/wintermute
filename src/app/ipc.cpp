@@ -32,95 +32,106 @@
 #include <QtDBus>
 #include <QProcess>
 
-namespace Wintermute {
-namespace IPC {
+namespace Wintermute
+{
+namespace IPC
+{
 System* System::s_inst = new System;
 
-System::System ( QObject* p_obj ) : QObject ( p_obj ) { }
+System::System (QObject* p_obj) : QObject (p_obj) { }
 
 System::~System() { }
 
-void System::start() {
-    instance()->m_cnntn = new QDBusConnection ( QDBusConnection::sessionBus().connectToBus ( QDBusConnection::SessionBus,"Wintermute" ) );
-    instance()->m_appMod = Core::arguments()->value ( "ipc" ).toString().toLower();
+void System::start()
+{
+    instance()->m_cnntn = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
+    instance()->m_appMod = Core::arguments()->value ("ipc").toString().toLower();
     QString serviceName = WNTR_DBUS_SERVICE_NAME,
             objectName;
     qDebug() << "(core) [IPC::System]" << "Mode:" << instance()->m_appMod;
 
-    if ( instance()->m_appMod == "master" ) {
+    if (instance()->m_appMod == "master") {
         objectName = "master";
-        connect ( Core::instance(), SIGNAL ( started() ), Plugins::Factory::instance(), SLOT ( Startup() ) );
-        connect ( Core::instance(), SIGNAL ( stopped() ), Plugins::Factory::instance(), SLOT ( Shutdown() ) );
+        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (Startup()));
+        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (Shutdown()));
 
         CoreAdaptor* coreAdaptor = new CoreAdaptor;
         Plugins::PluginFactoryAdaptor* pluginFactoryAdaptor = new Plugins::PluginFactoryAdaptor;
 
-        registerObject ( "/Master", coreAdaptor );
-        registerObject ( "/Factory", pluginFactoryAdaptor );
+        registerObject ("/Master", coreAdaptor);
+        registerObject ("/Factory", pluginFactoryAdaptor);
         instance()->m_adapt = coreAdaptor;
-    } else if ( instance()->m_appMod == "plugin" ) {
-        const QString plgn = Core::arguments()->value ( "plugin" ).toString();
+    }
+    else if (instance()->m_appMod == "plugin") {
+        const QString plgn = Core::arguments()->value ("plugin").toString();
         objectName = "Plugin." + plgn;
-        connect ( Core::instance(), SIGNAL ( started() ), Plugins::Factory::instance(), SLOT ( loadStandardPlugin() ) );
-        connect ( Core::instance(), SIGNAL ( stopped() ), Plugins::Factory::instance(), SLOT ( unloadStandardPlugin() ) );
+        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (loadStandardPlugin()));
+        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (unloadStandardPlugin()));
     }
 
-    if ( objectName != "master" ) serviceName += "." + objectName;
+    if (objectName != "master") serviceName += "." + objectName;
 
     bool serviceRegistered = false;
-    if ( instance()->m_cnntn->registerService ( serviceName ) )
+
+    if (instance()->m_cnntn->registerService (serviceName))
         serviceRegistered = true;
 
-    if ( !serviceRegistered && objectName == "master" ) {
+    if (!serviceRegistered && objectName == "master") {
         qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << serviceName << ")"
                  << "under the same user on the same computer";
-        Core::exit ( 1 );
+        Core::exit (1);
     }
 
-    if ( serviceRegistered )
+    if (serviceRegistered)
         qDebug() << "(core) [D-Bus] Service" << serviceName << "running.";
 
     emit instance()->registerDataTypes();
 }
 
 /// @todo Find a way to expose adaptors _properly_ over D-Bus.
-bool System::registerObject ( const QString& p_pth, QDBusAbstractAdaptor* p_obj ) {
+bool System::registerObject (const QString& p_pth, QDBusAbstractAdaptor* p_obj)
+{
     QDBusConnection::RegisterOptions opts = QDBusConnection::ExportAllContents
-            | QDBusConnection::ExportAllSignals
-            | QDBusConnection::ExportAllSlots
-            | QDBusConnection::ExportAllProperties
-            | QDBusConnection::ExportAllInvokables
-            | QDBusConnection::ExportChildObjects
-            | QDBusConnection::ExportAdaptors;
+                                            | QDBusConnection::ExportAllSignals
+                                            | QDBusConnection::ExportAllSlots
+                                            | QDBusConnection::ExportAllProperties
+                                            | QDBusConnection::ExportAllInvokables
+                                            | QDBusConnection::ExportChildObjects
+                                            | QDBusConnection::ExportAdaptors;
 
-    if ( instance()->m_cnntn->objectRegisteredAt ( p_pth ) ) {
+    if (instance()->m_cnntn->objectRegisteredAt (p_pth)) {
         qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << instance()->m_cnntn->interface ()->service ();
         return false;
-    } else {
+    }
+    else {
         qDebug() << "(core) [D-Bus] Registered" << p_pth << "on" << instance()->m_cnntn->interface ()->connection().name() << "with" << p_obj->metaObject()->className() << ".";
-        return instance()->m_cnntn->registerObject ( p_pth , p_obj, opts );
+        return instance()->m_cnntn->registerObject (p_pth , p_obj, opts);
     }
 
     return false;
 }
 
-void System::stop () {
-    instance()->m_cnntn->disconnectFromBus ( instance()->m_cnntn->name() );
+void System::stop ()
+{
+    instance()->m_cnntn->disconnectFromBus (instance()->m_cnntn->name());
 }
 
-QDBusConnection* System::bus() {
+QDBusConnection* System::bus()
+{
     return instance()->m_cnntn;
 }
 
-AbstractAdaptor* System::adaptor () {
+AbstractAdaptor* System::adaptor ()
+{
     return instance()->m_adapt;
 }
 
-System* System::instance() {
+System* System::instance()
+{
     return s_inst;
 }
 }
 }
 
 #include "ipc.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

@@ -29,9 +29,10 @@
 
 using namespace Wintermute;
 
-int main ( int p_argc, char** p_argv ) {
-    qInstallMsgHandler ( Logging::catchQDebugMessage );
-    Core core ( p_argc, p_argv );
+int main (int p_argc, char** p_argv)
+{
+    qInstallMsgHandler (Logging::catchQDebugMessage);
+    Core core (p_argc, p_argv);
     return QApplication::exec();
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

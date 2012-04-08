@@ -32,31 +32,34 @@
 #include <QStringList>
 #include <QObject>
 
-namespace Wintermute {
-namespace Backends {
+namespace Wintermute
+{
+namespace Backends
+{
 class AbstractFramework;
 class AbstractBackend;
 
-typedef QMap<QString, AbstractBackend *> BackendList;
-typedef QMap<QString, AbstractFramework *> FrameworkList;
+typedef QMap<QString, AbstractBackend*> BackendList;
+typedef QMap<QString, AbstractFramework*> FrameworkList;
 
 using Wintermute::Plugins::AbstractPlugin;
 
-class AbstractFramework : public QObject {
+class AbstractFramework : public QObject
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","Abstract Framework" )
-    Q_DISABLE_COPY ( AbstractFramework )
-    Q_PROPERTY ( const StartupMode Mode READ startMode WRITE setStartMode )
+    Q_CLASSINFO ("objectName", "Abstract Framework")
+    Q_DISABLE_COPY (AbstractFramework)
+    Q_PROPERTY (const StartupMode Mode READ startMode WRITE setStartMode)
 
 signals:
     void started();
     void stopped();
 
     void added();
-    void added ( AbstractBackend * );
+    void added (AbstractBackend*);
 
     void removed();
-    void removed ( AbstractBackend * );
+    void removed (AbstractBackend*);
 
 public:
     enum StartupMode {
@@ -69,7 +72,7 @@ public:
      * @param p Pointer to the AbstractPlugin.
      * @param parent Parent of the object.
      */
-    AbstractFramework ( AbstractPlugin* = Plugins::Factory::currentPlugin(), QObject* = 0 );
+    AbstractFramework (AbstractPlugin* = Plugins::Factory::currentPlugin(), QObject* = 0);
 
     /**
      * @brief Destructor
@@ -80,37 +83,37 @@ public:
      * @brief Add new backend to the framework
      * @param p Pointer to the backend.
      */
-    void addBackend ( AbstractBackend * );
+    void addBackend (AbstractBackend*);
 
     /**
      * @brief Remove backend from the framework
      * @param p Pointer to the backend.
      */
-    void removeBackend ( AbstractBackend * );
+    void removeBackend (AbstractBackend*);
 
     /**
      * @brief Make the chosen backend default one
      * @param p Pointer to the backend.
      */
-    void setDefaultBackend ( AbstractBackend * );
+    void setDefaultBackend (AbstractBackend*);
 
     /**
      * @brief Set start mode for the framework
      * @param mode Mode in which framework should start.
      */
-    void setStartMode ( const StartupMode& );
+    void setStartMode (const StartupMode&);
 
     /**
      * @brief Check if given backend is listed
      * @param p Pointer to the backend.
      */
-    bool isBackendListed ( const AbstractBackend * ) const;
-    bool isBackendListed ( const QString& ) const;
+    bool isBackendListed (const AbstractBackend*) const;
+    bool isBackendListed (const QString&) const;
 
     /**
      * @brief Return pointer to the default backend
      */
-    QList<AbstractBackend *> defaultBackend() const;
+    QList<AbstractBackend*> defaultBackend() const;
 
     /**
      * @brief Return startup mode of the framework
@@ -123,7 +126,7 @@ public:
      * @param id QString identifier of the framework.
      * @returns Pointer to the framework from FrameworkList.
      */
-    static AbstractFramework* obtainFramework ( const QString& );
+    static AbstractFramework* obtainFramework (const QString&);
 
     /**
      * @brief Get the number of frameworks
@@ -147,11 +150,12 @@ private:
     static FrameworkList s_frmk;
 };
 
-class AbstractBackend : public QObject {
+class AbstractBackend : public QObject
+{
     Q_OBJECT
-    Q_CLASSINFO ( "objectName","Abstract Backend" )
-    Q_PROPERTY ( const QString ID READ id )
-    Q_PROPERTY ( const bool Active READ isActive )
+    Q_CLASSINFO ("objectName", "Abstract Backend")
+    Q_PROPERTY (const QString ID READ id)
+    Q_PROPERTY (const bool Active READ isActive)
     friend class AbstractFramework;
 
 signals:
@@ -162,7 +166,7 @@ public:
     /**
      * @brief Constructor
      */
-    AbstractBackend ( AbstractPlugin *, QObject* = 0 );
+    AbstractBackend (AbstractPlugin*, QObject* = 0);
 
     /**
      * @brief Destructor
@@ -185,7 +189,7 @@ public:
      * @param id Id of the backend.
      * @returns Pointer to the backend with given id.
      */
-    static AbstractBackend* obtainBackend ( const QString& );
+    static AbstractBackend* obtainBackend (const QString&);
 
 public slots:
     virtual void start();
@@ -205,4 +209,4 @@ private:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

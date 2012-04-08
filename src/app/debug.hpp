@@ -25,36 +25,38 @@
 
 #include <QDebug>
 
-namespace Wintermute {
+namespace Wintermute
+{
 /**
  * @brief ...
  **/
-class Debug : public QDebug {
+class Debug : public QDebug
+{
 public:
     /**
      * @brief ...
      *
      * @param device ...
      **/
-    Debug ( QIODevice* device );
+    Debug (QIODevice* device);
     /**
      * @brief ...
      *
      * @param string ...
      **/
-    Debug ( QString* string );
+    Debug (QString* string);
     /**
      * @brief ...
      *
      * @param t ...
      **/
-    Debug ( QtMsgType t );
+    Debug (QtMsgType t);
     /**
      * @brief ...
      *
      * @param  ...
      **/
-    Debug ( const QDebug& );
+    Debug (const QDebug&);
     /**
      * @brief ...
      *

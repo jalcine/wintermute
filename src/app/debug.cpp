@@ -24,24 +24,29 @@
 
 using Wintermute::Debug;
 
-Debug::Debug ( QIODevice* p_device ) : QDebug ( p_device ) {
+Debug::Debug (QIODevice* p_device) : QDebug (p_device)
+{
 
 }
 
-Debug::Debug ( QString* string ) : QDebug ( string ) {
+Debug::Debug (QString* string) : QDebug (string)
+{
 
 }
 
-Debug::Debug ( QtMsgType t ) : QDebug ( t ) {
+Debug::Debug (QtMsgType t) : QDebug (t)
+{
 
 }
 
-Debug::Debug ( const QDebug& other ) : QDebug ( other ) {
+Debug::Debug (const QDebug& other) : QDebug (other)
+{
 
 }
 
-Debug::~Debug() {
+Debug::~Debug()
+{
 
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
