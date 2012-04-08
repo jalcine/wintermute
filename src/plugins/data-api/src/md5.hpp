@@ -45,17 +45,18 @@
  * !! assumes that char is 8 bit and int is 32 bit !!
  */
 
-class MD5 {
+class MD5
+{
 public:
     typedef unsigned int size_type; // must be 32bit
 
     MD5();
-    MD5 ( const std::string& text );
-    void update ( const unsigned char *buf, size_type length );
-    void update ( const char *buf, size_type length );
+    MD5 (const std::string& text);
+    void update (const unsigned char* buf, size_type length);
+    void update (const char* buf, size_type length);
     MD5& finalize();
     std::string hexdigest() const;
-    friend std::ostream & operator<< ( std::ostream&, MD5 md5 );
+    friend std::ostream& operator<< (std::ostream&, MD5 md5);
 
 private:
     void init();
@@ -66,9 +67,9 @@ private:
         blocksize = 64
     }; // VC6 won't eat a const static int here
 
-    void transform ( const uint1 block[blocksize] );
-    static void decode ( uint4 output[], const uint1 input[], size_type len );
-    static void encode ( uint1 output[], const uint4 input[], size_type len );
+    void transform (const uint1 block[blocksize]);
+    static void decode (uint4 output[], const uint1 input[], size_type len);
+    static void encode (uint1 output[], const uint4 input[], size_type len);
 
     bool finalized;
     uint1 buffer[blocksize]; // bytes that didn't fit in last 64 byte chunk
@@ -77,18 +78,18 @@ private:
     uint1 digest[16]; // the result
 
     // low level logic operations
-    static  uint4 F ( uint4 x, uint4 y, uint4 z );
-    static  uint4 G ( uint4 x, uint4 y, uint4 z );
-    static  uint4 H ( uint4 x, uint4 y, uint4 z );
-    static  uint4 I ( uint4 x, uint4 y, uint4 z );
-    static  uint4 rotate_left ( uint4 x, int n );
-    static  void FF ( uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac );
-    static  void GG ( uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac );
-    static  void HH ( uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac );
-    static  void II ( uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac );
+    static  uint4 F (uint4 x, uint4 y, uint4 z);
+    static  uint4 G (uint4 x, uint4 y, uint4 z);
+    static  uint4 H (uint4 x, uint4 y, uint4 z);
+    static  uint4 I (uint4 x, uint4 y, uint4 z);
+    static  uint4 rotate_left (uint4 x, int n);
+    static  void FF (uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+    static  void GG (uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+    static  void HH (uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+    static  void II (uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
 };
 
-std::string md5 ( const std::string str );
+std::string md5 (const std::string str);
 
 #endif /* BZF_MD5_H */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

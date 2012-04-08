@@ -27,11 +27,14 @@
 // Wintermute includes
 #include <plugins.hpp>
 
-namespace Wintermute {
-namespace Data {
-class Plugin : public Plugins::AbstractPlugin {
+namespace Wintermute
+{
+namespace Data
+{
+class Plugin : public Plugins::AbstractPlugin
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( Plugin )
+    Q_DISABLE_COPY (Plugin)
 public:
     Plugin() : AbstractPlugin() { }
     ~Plugin() { }

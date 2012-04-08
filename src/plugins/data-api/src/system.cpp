@@ -44,42 +44,50 @@ using Wintermute::Data::Linguistics::Syntax::Chain;
 
 System* System::s_inst = 0;
 
-System::System() : m_dir ( WNTRDATA_DATA_DIR ) {
-    connect ( this,SIGNAL ( started() ),this,SLOT ( registerDataTypes() ) );
+System::System() : m_dir (WNTRDATA_DATA_DIR)
+{
+    connect (this, SIGNAL (started()), this, SLOT (registerDataTypes()));
 }
 
-void System::registerDataTypes() {
+void System::registerDataTypes()
+{
     qDBusRegisterMetaType<QVariantMap>();
     qDBusRegisterMetaType<Wintermute::Data::Linguistics::Lexical::Data>();
     qDBusRegisterMetaType<Bond>();
     qDBusRegisterMetaType<Chain>();
 }
 
-void System::start ( ) {
-    Linguistics::System::setLocale ( Core::arguments ()->value ( "locale" ).toString () );
-    Linguistics::System::load ( System::directory() + QString ( "/" ) + QString ( WNTRDATA_LING_DIR ) );
+void System::start ()
+{
+    Linguistics::System::setLocale (Core::arguments ()->value ("locale").toString ());
+    Linguistics::System::load (System::directory() + QString ("/") + QString (WNTRDATA_LING_DIR));
     Ontology::System::load();
     emit s_inst->started();
 }
 
-void System::stop ( ) {
+void System::stop ()
+{
     Wintermute::Data::Ontology::System::unload();
     Wintermute::Data::Linguistics::System::unload();
     emit s_inst->stopped();
 }
 
-const QString System::directory () {
+const QString System::directory ()
+{
     return s_inst->m_dir;
 }
 
-void System::setDirectory ( const QString& p_dir ) {
+void System::setDirectory (const QString& p_dir)
+{
     stop();
     s_inst->m_dir = p_dir;
     start();
 }
 
-System* System::instance () {
-    if ( !s_inst ) s_inst = new System;
+System* System::instance ()
+{
+    if (!s_inst) s_inst = new System;
+
     return s_inst;
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

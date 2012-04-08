@@ -27,16 +27,21 @@
 // Qt includes
 #include <QObject>
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Syntax {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Syntax
+{
 
 class Chain;
 
-class Manager : public QObject {
+class Manager : public QObject
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( Manager )
+    Q_DISABLE_COPY (Manager)
 
 private:
     static Manager* s_inst;
@@ -44,9 +49,9 @@ private:
 
 public slots:
     static Manager* instance();
-    void read ( Chain& );
-    void write ( Chain& );
-    const bool exists ( const QString&, const QString& ) const;
+    void read (Chain&);
+    void write (Chain&);
+    bool exists (const QString& p_1, const QString& p_2) const;
 };
 
 }
@@ -55,4 +60,4 @@ public slots:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

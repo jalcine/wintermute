@@ -31,9 +31,12 @@
 #include <QStringList>
 
 
-namespace Wintermute {
-namespace Data {
-namespace Ontology {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Ontology
+{
 
 /**
  * \brief SPARQL query container class
@@ -42,7 +45,8 @@ namespace Ontology {
  * which later can be extracted as a QString using \c getContents()
  * function.
  */
-class Query : public QObject {
+class Query : public QObject
+{
     Q_OBJECT
 
 private:
@@ -55,7 +59,7 @@ private:
     bool blockOpened;
 
 public:
-    explicit Query ( QObject *parent = 0 );
+    explicit Query (QObject* parent = 0);
 
     /**
      * \brief Return string with a SPARQL query
@@ -69,7 +73,7 @@ public:
      *
      * \param baseIRI QUrl with base's IRI
      */
-    void setBase ( const QUrl& baseIRI );
+    void setBase (const QUrl& baseIRI);
 
     /**
      * \brief Add prefix to the query
@@ -77,14 +81,14 @@ public:
      * \param pxName name of the prefix
      * \param pxIRI IRI that the prefix substitutes
      */
-    void addPrefix ( QString const& pxName, QUrl const& pxIRI );
+    void addPrefix (QString const& pxName, QUrl const& pxIRI);
 
     /**
      * \brief Add source to the query
      *
      * \param eURL URL of the ontology endpoint to use
      */
-    void addEndpoint ( QUrl const& eURL );
+    void addEndpoint (QUrl const& eURL);
 
     /**
      * \brief Add variables to the query
@@ -92,7 +96,7 @@ public:
      * \param form query form to use
      * \param vars list of variables to add
      */
-    void addVariables ( QString form, QStringList const& vars );
+    void addVariables (QString form, QStringList const& vars);
 
     /**
      * \brief Add one triple to the query
@@ -101,7 +105,7 @@ public:
      * \param predicate
      * \param object
      */
-    void addTriple ( QString subject, QString predicate, QString object );
+    void addTriple (QString subject, QString predicate, QString object);
 
     /**
      * \brief Close the query

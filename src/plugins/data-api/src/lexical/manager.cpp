@@ -33,45 +33,56 @@ using Lexical::Manager;
 
 Manager* Manager::s_inst = 0;
 
-Manager::Manager ( const Manager& p_other ) : QObject(p_other.parent()) {
+Manager::Manager (const Manager& p_other) : QObject (p_other.parent())
+{
 
 }
 
-Manager::Manager() : QObject ( Wintermute::Data::System::instance() ) {
+Manager::Manager() : QObject (Wintermute::Data::System::instance())
+{
 }
 
-void Manager::generate() {
+void Manager::generate()
+{
     Lexical::Cache::generate();
 }
 
-Data& Manager::pseudo ( Data &p_dt ) const {
-    Lexical::Cache::pseudo ( p_dt );
+Data& Manager::pseudo (Data& p_dt) const
+{
+    Lexical::Cache::pseudo (p_dt);
     return p_dt;
 }
 
 /// @todo Should this return a pseudo node of the passed data if the said node doesn't exist?
-Data& Manager::read ( Data &p_dt ) const {
-    if ( !Lexical::Cache::read ( p_dt ) )
-        Lexical::Cache::pseudo ( p_dt );
+Data& Manager::read (Data& p_dt) const
+{
+    if (!Lexical::Cache::read (p_dt))
+        Lexical::Cache::pseudo (p_dt);
+
     return p_dt;
 }
 
-const Data& Manager::write ( const Data &p_dt ) {
-    Lexical::Cache::write ( p_dt );
+const Data& Manager::write (const Data& p_dt)
+{
+    Lexical::Cache::write (p_dt);
     return p_dt;
 }
 
-const bool Manager::exists ( const Data &p_dt ) const {
-    qDebug() << "(data) [Manager] Exists? " << p_dt.id() << Lexical::Cache::exists ( p_dt );
-    return Lexical::Cache::exists ( p_dt );
+bool Manager::exists (const Data& p_dt) const
+{
+    qDebug() << "(data) [Manager] Exists? " << p_dt.id() << Lexical::Cache::exists (p_dt);
+    return Lexical::Cache::exists (p_dt);
 }
 
-const bool Manager::isPseudo ( const Data &p_dt ) const {
-    return Lexical::Cache::isPseudo ( p_dt );
+bool Manager::isPseudo (const Data& p_dt) const
+{
+    return Lexical::Cache::isPseudo (p_dt);
 }
 
-Manager* Manager::instance() {
-    if ( !s_inst ) s_inst = new Manager;
+Manager* Manager::instance()
+{
+    if (!s_inst) s_inst = new Manager;
+
     return s_inst;
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

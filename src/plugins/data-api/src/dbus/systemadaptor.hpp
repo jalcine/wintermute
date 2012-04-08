@@ -28,40 +28,43 @@
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 
-namespace Wintermute {
-namespace Data {
-class SystemAdaptor: public QDBusAbstractAdaptor {
+namespace Wintermute
+{
+namespace Data
+{
+class SystemAdaptor: public QDBusAbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "D-Bus Interface", "org.thesii.Wintermute.Data.System" )
-    Q_CLASSINFO ( "D-Bus Introspection", ""
-                  "  <interface name=\"org.thesii.Wintermute.Data.System\">\n"
-                  "    <property access=\"readwrite\" type=\"s\" name=\"Directory\"/>\n"
-                  "    <signal name=\"stopped\"/>\n"
-                  "    <signal name=\"started\"/>\n"
-                  "    <method name=\"quit\"/>\n"
-                  "    <method name=\"stop\">\n"
-                  "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"start\">\n"
-                  "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"localeExists\">\n"
-                  "      <arg direction=\"out\" type=\"b\"/>\n"
-                  "      <arg direction=\"in\" type=\"s\"/>\n"
-                  "    </method>\n"
-                  "  </interface>\n"
-                  "" )
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Data.System")
+    Q_CLASSINFO ("D-Bus Introspection", ""
+                 "  <interface name=\"org.thesii.Wintermute.Data.System\">\n"
+                 "    <property access=\"readwrite\" type=\"s\" name=\"Directory\"/>\n"
+                 "    <signal name=\"stopped\"/>\n"
+                 "    <signal name=\"started\"/>\n"
+                 "    <method name=\"quit\"/>\n"
+                 "    <method name=\"stop\">\n"
+                 "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"start\">\n"
+                 "      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"localeExists\">\n"
+                 "      <arg direction=\"out\" type=\"b\"/>\n"
+                 "      <arg direction=\"in\" type=\"s\"/>\n"
+                 "    </method>\n"
+                 "  </interface>\n"
+                 "")
 public:
     SystemAdaptor();
     virtual ~SystemAdaptor();
 
 public: // PROPERTIES
-    Q_PROPERTY ( QString Directory READ directory WRITE setDirectory )
+    Q_PROPERTY (QString Directory READ directory WRITE setDirectory)
     QString directory() const;
-    void setDirectory ( const QString &value );
+    void setDirectory (const QString& value);
 
 public Q_SLOTS: // METHODS
-    bool localeExists ( const QString &in0 );
+    bool localeExists (const QString& in0);
     void quit();
     Q_NOREPLY void start();
     Q_NOREPLY void stop();

@@ -93,5 +93,4 @@ const QStringList System::locales()
     return locale;
 }
 
-#include "linguistics.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

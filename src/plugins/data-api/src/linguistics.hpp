@@ -22,7 +22,7 @@
  */
 
 #ifndef WNTRDATA_LINGUISTICS_HPP
-#define	WNTRDATA_LINGUISTICS_HPP
+#define WNTRDATA_LINGUISTICS_HPP
 
 // Qt includes
 #include <QString>
@@ -33,16 +33,20 @@
 #include "lexical/lexical.hpp"
 #include "syntax/syntax.hpp"
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
 
 /**
  * @brief An abstract static class representing the current configuration of the linguistics data.
  * All configuration variables and their access methods specific for linguistic part of WntrData
  * are defined here.
  */
-class System {
+class System
+{
 private:
     static QString s_dir; /**< Holds the location of the linguistic info. */
     static QString s_lcl; /**< Holds the current locale in use. */
@@ -53,14 +57,14 @@ public:
      * Sets the default locale to be used as the standard locale.
      * @param locale The locale to set.
      */
-    static void setLocale ( const QString );
+    static void setLocale (const QString);
 
     /**
      * @brief Changes root directory.
      * Sets the root directory to find data for linguistics from.
      * @param root The root directory.
      */
-    static void setDirectory ( const QString );
+    static void setDirectory (const QString);
 
     /**
      * @brief Gets current locale used.
@@ -92,7 +96,7 @@ public:
      * @brief Loads the system with a specific storage directory and locale.
      * @fn load
      */
-    static void load ( const QString = s_dir, const QString = s_lcl );
+    static void load (const QString = s_dir, const QString = s_lcl);
 
     /**
      * @brief Unloads all information from the system.
@@ -104,5 +108,5 @@ public:
 }
 }
 }
-#endif	/* LINGUISTICS_HPP */
+#endif  /* LINGUISTICS_HPP */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

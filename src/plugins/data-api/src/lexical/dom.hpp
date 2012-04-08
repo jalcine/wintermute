@@ -30,10 +30,14 @@
 class QDomElement;
 class QDomDocument;
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Lexical {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Lexical
+{
 
 class Data;
 class DomLoadModel;
@@ -45,7 +49,8 @@ class DomBackend;
  * @brief
  * @class DomBackend models.hpp "src/models.hpp"
  */
-class DomBackend : public AbstractBackend {
+class DomBackend : public AbstractBackend
+{
 public:
     /**
      * @brief
@@ -59,7 +64,7 @@ public:
      * @fn DomBackend
      * @param
      */
-    DomBackend ( QDomElement* );
+    DomBackend (QDomElement*);
 
 protected:
     mutable QDomElement* m_ele; /**< Represents the Dom data of the object. */
@@ -70,14 +75,15 @@ protected:
  *
  * @class DomLoadModel models.hpp "src/models.hpp"
  */
-class DomLoadModel : public AbstractLoadModel, public DomBackend {
+class DomLoadModel : public AbstractLoadModel, public DomBackend
+{
 public:
     DomLoadModel();
-    DomLoadModel ( QDomElement* );
-    DomLoadModel ( const DomLoadModel& );
+    DomLoadModel (QDomElement*);
+    DomLoadModel (const DomLoadModel&);
     virtual ~DomLoadModel();
     virtual const Data load() const;
-    virtual bool loadTo ( Data& ) const;
+    virtual bool loadTo (Data&) const;
 
 };
 
@@ -86,7 +92,8 @@ public:
  *
  * @class DomSaveModel models.hpp "src/models.hpp"
  */
-class DomSaveModel : public AbstractSaveModel, public DomBackend {
+class DomSaveModel : public AbstractSaveModel, public DomBackend
+{
 public:
     /**
      * @brief
@@ -100,14 +107,14 @@ public:
      * @fn DomSaveModel
      * @param
      */
-    DomSaveModel ( QDomElement* );
+    DomSaveModel (QDomElement*);
     /**
      * @brief
      *
      * @fn DomSaveModel
      * @param
      */
-    DomSaveModel ( const DomSaveModel& );
+    DomSaveModel (const DomSaveModel&);
     /**
      * @brief
      *
@@ -127,7 +134,7 @@ public:
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Data& );
+    virtual void saveFrom (const Data&);
 };
 
 /**
@@ -135,7 +142,8 @@ public:
  *
  * @class DomStorage models.hpp "src/models.hpp"
  */
-class DomStorage : public Storage {
+class DomStorage : public Storage
+{
     friend class DomLoadModel;
     friend class DomSaveModel;
 
@@ -146,7 +154,7 @@ private:
      * @fn getPath
      * @param
      */
-    static const QString getPath ( const Data& );
+    static const QString getPath (const Data&);
 
     /**
      * @brief
@@ -154,14 +162,14 @@ private:
      * @fn spawnDoc
      * @param
      */
-    static QDomDocument* getSpawnDoc ( const Data& );
+    static QDomDocument* getSpawnDoc (const Data&);
     /**
      * @brief
      *
      * @fn spawn
      * @param
      */
-    static void spawn ( const QDomDocument& );
+    static void spawn (const QDomDocument&);
 
 public:
     /**
@@ -176,7 +184,7 @@ public:
      * @fn DomStorage
      * @param
      */
-    DomStorage ( const DomStorage& );
+    DomStorage (const DomStorage&);
     /**
      * @brief
      *
@@ -189,7 +197,7 @@ public:
      * @fn exists
      * @param
      */
-    virtual const bool exists ( const Data & ) const;
+    virtual bool exists (const Wintermute::Data::Linguistics::Lexical::Data& p_dt) const;
     /**
      * @brief
      *
@@ -202,14 +210,14 @@ public:
      * @fn loadTo
      * @param
      */
-    virtual void loadTo ( Data & ) const;
+    virtual void loadTo (Data&) const;
     /**
      * @brief
      *
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Data & );
+    virtual void saveFrom (const Data&);
     /**
      * @brief
      *
@@ -222,14 +230,14 @@ public:
      * @fn hasPseudo
      * @param
      */
-    virtual const bool hasPseudo ( const Data & ) const;
+    virtual bool hasPseudo (const Wintermute::Data::Linguistics::Lexical::Data& p_dt) const;
     /**
      * @brief
      *
      * @fn loadPseduo
      * @param
      */
-    virtual void loadPseudo ( Data& ) const;
+    virtual void loadPseudo (Data&) const;
 
     /**
      * @brief
@@ -238,21 +246,21 @@ public:
      * @param
      * @param
      */
-    virtual const QString obtainFullSuffix ( const QString &, const QString & ) const;
+    virtual const QString obtainFullSuffix (const QString&, const QString&) const;
 
     /**
      * @brief
      *
      * @fn countFlags
      */
-    static const int countFlags();
+    static int countFlags();
 
     /**
      * @brief
      *
      * @fn countSymbols
      */
-    static const int countSymbols();
+    static int countSymbols();
 };
 
 }
@@ -261,4 +269,4 @@ public:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
