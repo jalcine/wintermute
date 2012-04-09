@@ -1,8 +1,4 @@
-/**
- * @file abstractplugin.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- *
- * @section lcns Licensing
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -20,24 +16,27 @@
  *
  */
 
-#ifndef _ABSTRACTPLUGIN_HPP_
-#define _ABSTRACTPLUGIN_HPP_
+/**
+ * @file plugin.hpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ */
 
-// Local
-#include "adaptors.hpp"
+#ifndef WINTERMUTE_PLUGIN_HPP_
+#define WINTERMUTE_PLUGIN_HPP_
 
-// Qt
 #include <QHash>
 #include <QSettings>
 #include <QPluginLoader>
+
+#include <app/adaptors.hpp>
 
 namespace Wintermute
 {
 namespace Plugins
 {
 
-// Forward declarations
 class Factory;
+struct AbstractPluginPrivate;
 
 /**
  * @brief Abstract class representing the outlining information of a plug-in.
@@ -53,7 +52,7 @@ class Factory;
  * @code
  * #include <QObject>
  * #include <QtPlugin>
- * #include <wntr/plugins.hpp>
+ * #include <app/plugins.hpp>
  *
  * using namespace Wintermute::Plugins;
  * using Wintermute::Plugins::AbstractPlugin;
@@ -78,7 +77,6 @@ class Factory;
  * @attention It's important to note that you must define the Q_EXPORT_PLUGIN2() macro <i>outside</i>
  * the scope of any namespace declarations.
  *
- * @class AbstractPlugin plugins.hpp "plugins.hpp"
  * @todo Add conflicting plug-ins as a specification addition.
  */
 class AbstractPlugin : public QObject
@@ -99,18 +97,10 @@ class AbstractPlugin : public QObject
     Q_PROPERTY (const QStringList Plugins READ plugins)
 
 private:
-    mutable QPluginLoader* m_plgnLdr; /**< Holds the plug-in loader object; it's hidden to inherited objects, but it's needed for the base object to operate. */
-    QSettings* m_sttngs;
-    QSettings* m_cnfg;
-
-private slots:
-    bool loadPlugins() const;
-    bool loadPackages() const;
-    void loadSettings (const QString&);
-    void doStart();
-    void doStop();
+    QScopedPointer<AbstractPluginPrivate> d_ptr;
 
 protected:
+    Q_DECLARE_PRIVATE(AbstractPlugin)
     bool loadLibrary() const;
     bool loadRequiredComponents() const;
 
@@ -118,19 +108,19 @@ public:
     /**
      * @brief Empty, nullifying constructor.
      */
-    explicit AbstractPlugin() : QObject (NULL), m_plgnLdr (NULL), m_sttngs (NULL), m_cnfg (NULL) {}
+    explicit AbstractPlugin();
 
     /**
      * @brief Loads a plug-in based on the QPluginLoader.
-     * @param p_pl The plug-in to be loaded from disk.
+     * @param p_pluginLoader The plug-in to be loaded from disk.
      */
-    AbstractPlugin (QPluginLoader* p_pl);
+    AbstractPlugin (QPluginLoader* p_pluginLoader);
 
     /**
      * @brief Default copy constructor.
-     * @param p_pb The plug-in to be copied.
+     * @param p_other The plug-in to be copied.
      */
-    AbstractPlugin (AbstractPlugin const& p_pb);
+    AbstractPlugin (AbstractPlugin const& p_other);
 
     /**
      * @brief Default deconstructor.
@@ -241,27 +231,28 @@ public:
 
     /**
      * @brief Obtains an attribute from p_attrPath in the plug-in's configuration option set.
-     * @param p_attrPath The name of the attribute.
+     * @param p_attributePath The name of the attribute.
      * @todo Allow a scoping of attributes (user-level, system-level).
      * @todo Allow pulling of attributes from other plug-ins.
      * @see setAttribute
      */
-    QVariant attribute (const QString& p_attrPath) const;
+    QVariant attribute (const QString& p_attributePath) const;
 
     /**
      * @brief Changes an attribute at p_attrPath to p_attrVal to the plug-in's configuration option set.
-     * @param p_attrPath The name of the attribute.
-     * @param p_attrVal The new value of the attribute.
+     * @param p_attributePath The name of the attribute.
+     * @param p_attributeValue The new value of the attribute.
      * @see attribute
      * @todo Allow a scoping of attributes (user-level, system-level).
      * @todo Allow saving of attribute to other plug-ins.
      */
-    void setAttribute (const QString& p_attrPath, const QVariant& p_attrVal);
+    void setAttribute (const QString& p_attributePath, const QVariant& p_attributeValue);
 
     /**
      * @brief Resets the attributes of the plug-in to default.
      */
     void resetAttributes();
+    void obtainPlugin (QString depName);
 
 signals:
     /**
@@ -275,6 +266,9 @@ signals:
     * This is usually raised right before the Core begin to deinitialize.
     */
     void stopped() const;
+
+private:
+    AbstractPlugin* obtainInstance() const;
 
 protected slots:
     /**
@@ -293,11 +287,12 @@ protected slots:
 /**
  * @brief Represents a named set of plugins.
  */
-typedef QHash<QString, AbstractPlugin*> PluginTable;
+typedef QHash<const QString, AbstractPlugin*> PluginTable;
 
 } // namespaces
 }
+
 Q_DECLARE_INTERFACE (Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin")
 
 #endif // _ABSTRACTPLUGIN_HPP_
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

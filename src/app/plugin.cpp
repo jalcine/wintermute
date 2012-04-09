@@ -1,8 +1,4 @@
-/**
- * @file abstractplugin.cpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- *
- * @section lcns Licensing
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -20,65 +16,90 @@
  *
  */
 
-// Local
-#include "config.hpp"
-#include "abstractplugin.hpp"
-#include "factory.hpp"
-#include "core.hpp"
+/**
+ * @file plugin.cpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ *
+ */
 
-// Qt
-#include <QApplication>
-#include <QDebug>
 #include <QFile>
+#include <QDebug>
+#include <QApplication>
 
-// Namespaces
+#include <app/core.hpp>
+#include <app/config.hpp>
+#include <app/factory.hpp>
+#include <app/plugin.hxx>
+#include <app/plugin.hpp>
+
 using namespace Wintermute::Plugins;
 
-// Constructors
-AbstractPlugin::AbstractPlugin (QPluginLoader* p_pl) : QObject (p_pl), m_plgnLdr (p_pl), m_sttngs (NULL) {}
+AbstractPlugin::AbstractPlugin() : QObject(),
+    d_ptr (new AbstractPluginPrivate (this))
+{
 
-AbstractPlugin::AbstractPlugin (const AbstractPlugin& p_pb) : QObject (p_pb.m_plgnLdr),
-    m_plgnLdr (p_pb.m_plgnLdr), m_sttngs (p_pb.m_sttngs), m_cnfg (p_pb.m_cnfg) {}
+}
 
-// Access methods
+AbstractPlugin::AbstractPlugin (QPluginLoader* p_pluginLoader) :
+    QObject (p_pluginLoader), d_ptr (new AbstractPluginPrivate (this))
+{
+    Q_D (AbstractPlugin);
+    d->m_plgnLdr = p_pluginLoader;
+}
+
+AbstractPlugin::AbstractPlugin (const AbstractPlugin& p_other) : QObject (p_other.parent()),
+    d_ptr (const_cast<AbstractPluginPrivate*> (p_other.d_ptr.data()))
+{
+    Q_D (AbstractPlugin);
+    d->q_ptr = this;
+}
+
 QString AbstractPlugin::author() const
 {
-    return m_sttngs->value ("Description/Author").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Description/Author").toString();
 }
 
 QString AbstractPlugin::name() const
 {
-    return m_sttngs->value ("Description/Name").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Description/Name").toString();
 }
 
 QString AbstractPlugin::vendorName() const
 {
-    return m_sttngs->value ("Description/Vendor").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Description/Vendor").toString();
 }
 
 QString AbstractPlugin::uuid() const
 {
-    return m_sttngs->value ("Version/UUID").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Version/UUID").toString();
 }
 
 QString AbstractPlugin::description() const
 {
-    return m_sttngs->value ("Description/Blurb").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Description/Blurb").toString();
 }
 
 QString AbstractPlugin::webPage() const
 {
-    return m_sttngs->value ("Description/WebPage").toString();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Description/WebPage").toString();
 }
 
 double AbstractPlugin::version() const
 {
-    return m_sttngs->value ("Version/Plugin").toDouble();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Version/Plugin").toDouble();
 }
 
 double AbstractPlugin::compatVersion() const
 {
-    return m_sttngs->value ("Version/Compat", WNTR_VERSION).toDouble();
+    Q_D (const AbstractPlugin);
+    return d->m_sttngs->value ("Version/Compat", WNTR_VERSION).toDouble();
 }
 
 bool AbstractPlugin::isSupported() const
@@ -88,42 +109,11 @@ bool AbstractPlugin::isSupported() const
 
 QStringList AbstractPlugin::plugins() const
 {
-    QStringList dep = m_sttngs->value ("Depends/Plugins").toStringList();
+    Q_D (const AbstractPlugin);
+    QStringList dep = d->m_sttngs->value ("Depends/Plugins").toStringList();
     dep.removeDuplicates();
     dep.removeAll ("None");
     return dep;
-}
-
-bool AbstractPlugin::loadPlugins() const
-{
-    const QStringList plgnLst = this->plugins();
-    qDebug () << "(core) [AbstractPlugin] Loading plug-ins for"
-              << name () << ";"
-              << plgnLst.length () << "plugin(s) to be loaded.";
-
-    foreach (const QString plgn, plgnLst) {
-        const QString plgnUuid = plgn.split (" ").at (0);
-
-        if (Factory::loadedPlugins().contains (plgnUuid))
-            qDebug () << "(core) [AbstractPlugin] Dependency"
-                      << Factory::attribute (plgnUuid, "Description/Name").toString()
-                      << "already loaded.";
-        else {
-            Factory::ShellPlugin* gnrc = new Factory::ShellPlugin (plgnUuid);
-            qDebug() << "(core) [AbstractPlugin] Loading dependency"
-                     << gnrc->name() << "...";
-
-            if (gnrc->loadLibrary() && QFile::exists (gnrc->m_plgnLdr->fileName()))
-                qWarning() << "(core) [AbstractPlugin] Loaded symbols of plug-in"
-                           << Factory::attribute (plgnUuid, "Description/Name").toString() << ".";
-            else {
-                qWarning() << "(core) [AbstractPlugin] Unable to load symbols of depedency"
-                           << gnrc->name() << ":" << gnrc->m_plgnLdr->errorString();
-                return false;
-            }
-        }
-    }
-    return true;
 }
 
 bool AbstractPlugin::hasPlugins() const
@@ -139,7 +129,7 @@ bool AbstractPlugin::hasPlugins() const
                 qDebug() << "(core) [AbstractPlugin] Dependency" << depName
                          << "of" << this->name () << "isn't loaded.";
 
-            const AbstractPlugin* plgn = Factory::s_plgnLst.value (depName);
+            const AbstractPlugin* plgn = Factory::obtainPlugin (depName);
 
             if (depComparison == "==") {
                 if (! (depVersion.toDouble() == plgn->version())) {
@@ -192,23 +182,11 @@ bool AbstractPlugin::hasPlugins() const
 
 QStringList AbstractPlugin::packages() const
 {
-    QStringList dep = m_sttngs->value ("Depends/Packages").toStringList();
+    Q_D (const AbstractPlugin);
+    QStringList dep = d->m_sttngs->value ("Depends/Packages").toStringList();
     dep.removeDuplicates();
     dep.removeAll ("None");
     return dep;
-}
-
-/// @note This method requires code from QPackageKit.
-/// @note issue #0000029
-bool AbstractPlugin::loadPackages() const
-{
-    const QStringList deps = this->packages();
-    //qDebug () << "(core) [AbstractPlugin] Loading packages for" << name () << ";" << deps.length () << "package(s) to be loaded.";
-    foreach (const QString dep, deps) {
-        const QString depName = dep.split (" ").at (0);
-    }
-
-    return true;
 }
 
 /// @note This method requires code from QPackageKit.
@@ -226,58 +204,51 @@ bool AbstractPlugin::hasPackages() const
     return true;
 }
 
-QVariant AbstractPlugin::attribute (const QString& p_attrPath) const
+QVariant AbstractPlugin::attribute (const QString& p_attributePath) const
 {
-    QVariant val = m_cnfg->value (p_attrPath);
+    Q_D (const AbstractPlugin);
+    QVariant val = d->m_cnfg->value (p_attributePath);
 
     if (val.isNull() || !val.isValid())
-        val = m_cnfg->value ("Configuration/" + const_cast<QString*> (&p_attrPath)->replace ("/", ":"));
+        val = d->m_cnfg->value ("Configuration/" + QString (p_attributePath).replace ("/", ":"));
 
     return val;
 }
 
-void AbstractPlugin::setAttribute (const QString& p_attrPath, const QVariant& p_attrVal)
+void AbstractPlugin::setAttribute (const QString& p_attributePath, const QVariant& p_attributeValue)
 {
-    m_cnfg->setValue (p_attrPath, p_attrVal);
+    Q_D (AbstractPlugin);
+    d->m_cnfg->setValue (p_attributePath, p_attributeValue);
 }
 
 /// @note issue #0000030
 void AbstractPlugin::resetAttributes()
 {
-    m_cnfg->clear();
+    Q_D (AbstractPlugin);
+    d->m_cnfg->clear();
 }
 
 bool AbstractPlugin::loadLibrary() const
 {
+    Q_D (const AbstractPlugin);
     QApplication::addLibraryPath (WNTR_PLUGIN_PATH);
-    const QString plgnLibrary = m_sttngs->value ("Version/Library").toString();
+    const QString plgnLibrary = d->m_sttngs->value ("Version/Library").toString();
     const QString plgPth = QString (WNTR_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
-    m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
-    m_plgnLdr->setLoadHints (QLibrary::ResolveAllSymbolsHint);
-    m_plgnLdr->load();
+    d->m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
+    d->m_plgnLdr->setLoadHints (QLibrary::ResolveAllSymbolsHint);
+    d->m_plgnLdr->load();
 
-    if (!m_plgnLdr->isLoaded())
+    if (!d->m_plgnLdr->isLoaded())
         qDebug() << "(plugin) [AbstractPlugin] Error loading library"
-                 << plgPth << ":" << m_plgnLdr->errorString();
+                 << plgPth << ":" << d->m_plgnLdr->errorString();
 
-    return m_plgnLdr->isLoaded();
-}
-
-void AbstractPlugin::doStart()
-{
-    connect (Core::instance(), SIGNAL (stopped()) , this , SLOT (doStop()));
-    start();
-    emit started();
-}
-
-void AbstractPlugin::doStop()
-{
-    stop();
-    emit stopped();
+    return d->m_plgnLdr->isLoaded();
 }
 
 bool AbstractPlugin::loadRequiredComponents() const
 {
+    Q_D (const AbstractPlugin);
+
     if (!isSupported ()) {
         qWarning() << "(plugin) [Factory] Plug-in" << name () << "is incompatible with this version of Wintermute.";
         return false;
@@ -285,12 +256,12 @@ bool AbstractPlugin::loadRequiredComponents() const
     else
         qDebug() << "(plugin) [Factory] Plug-in" << name () << "v." << version() << "is compatible with this version of Wintermute.";
 
-    if (!loadPackages()) {
+    if (!d->loadPackages()) {
         qWarning() << "(plugin) [Factory] Can't load dependency packages for plug-in" << name() << ".";
         return false;
     }
 
-    if (!loadPlugins()) {
+    if (!d->loadPlugins()) {
         qWarning() << "(plugin) [Factory] Can't load dependency plug-ins for plug-in" << name() << ".";
         return false;
     }
@@ -298,18 +269,23 @@ bool AbstractPlugin::loadRequiredComponents() const
     return true;
 }
 
+AbstractPlugin* AbstractPlugin::obtainInstance() const
+{
+    Q_D (const AbstractPlugin);
+
+    if (d->m_plgnLdr->isLoaded())
+        return qobject_cast< AbstractPlugin* > (d->m_plgnLdr->instance());
+
+    return 0;
+}
+
 AbstractPlugin::~AbstractPlugin()
 {
-    m_plgnLdr->unload();
-    m_plgnLdr->deleteLater();
-    m_sttngs->deleteLater();
+    Q_D (AbstractPlugin);
+    d->m_plgnLdr->unload();
+    d->m_plgnLdr->deleteLater();
+    d->m_sttngs->deleteLater();
 }
 
-void AbstractPlugin::loadSettings (const QString& p_uuid)
-{
-    m_sttngs = Factory::getPluginSettings (p_uuid);
-    m_cnfg = new QSettings ("Synthetic Intellect Institute", p_uuid);
-}
-
-#include "abstractplugin.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#include "plugin.hpp.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
