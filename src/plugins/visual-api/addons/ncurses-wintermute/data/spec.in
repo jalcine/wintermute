@@ -1,0 +1,19 @@
+## nCurses command-line interface
+
+[Plugin]
+Enabled=true
+Type=Backend
+API=5f0741d0-026b-11e1-8f4e-5999c633b9c0
+
+[Version]
+Plugin=@NCURSES_WINTERMUTE_VERSION@
+UUID=@NCURSES_WINTERMUTE_UUID@
+Compat=@Wintermute_VERSION@
+Library=ncurses-wintermute
+
+[Description]
+Name=nCurses Command-line Interface
+Author=Jacky Alcine <jacky.alcine@thesii.org>
+Vendor=Synthetic Intellect Institute <sii@lists.launchpad.net>
+Blurb=A plug-in providing a nCurses command-line interface for Wintermute.
+WebPage=http://www.thesii.org/wiki/Wintermute:Plugin:NCursesWintermute
