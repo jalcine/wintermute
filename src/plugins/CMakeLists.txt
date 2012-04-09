@@ -13,7 +13,14 @@ macro(include_api _api __api_name)
     include(${_include_path})
 endmacro(include_api _api __api_name)
 
+macro(wntrplugin_add_data _api)
+    add_subdirectory("${CMAKE_SOURCE_DIR}/cmake/plugins/${_api}" "${CMAKE_BINARY_DIR}/cmake/plugins/${_api}")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/data/plugins/${_api}" "${CMAKE_BINARY_DIR}/data/plugins/${_api}")
+endmacro(wntrplugin_add_data _api)
+
 set(Wintermute_DIR "${CMAKE_BINARY_DIR}/InstallFiles")
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 option(BUILD_DATA_API         "Build the Data API."         ON)
 option(BUILD_NETWORK_API      "Build the Network API."      ON)
@@ -26,13 +33,13 @@ if (BUILD_DATA_API)
 endif(BUILD_DATA_API)
 
 if (BUILD_NETWORK_API)
-    include_api("ntwk-api" "WntrNtwk")
+    include_api("network-api" "WntrNtwk")
 endif(BUILD_NETWORK_API)
 
 if (BUILD_LINGUISTICS_API)
     set(BUILD_DATA_API ON)
     include_api("data-api" "WntrData")
-    include_api("ling-api" "WntrLing")
+    include_api("linguistics-api" "WntrLing")
 endif(BUILD_LINGUISTICS_API)
 
 if (BUILD_VISUAL_API)
