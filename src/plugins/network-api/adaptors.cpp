@@ -1,10 +1,8 @@
 /**
  * @file    adaptors.cpp
  * @author  Wintermute Development <wntr-devel@thesii.org>
- *
- *
- *
- *
+ */
+/*
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -21,9 +19,10 @@
  * Boston, MA  02110-1301  USA
  */
 
-#include "adaptors.hpp"
-#include "wntrntwk.hpp"
 #include <QDBusConnection>
+#include <app/adaptors.hxx>
+#include <network-api/adaptors.hpp>
+#include <network-api/wntrntwk.hpp>
 
 namespace Wintermute
 {
@@ -95,4 +94,4 @@ void BroadcastAdaptor::quit () const
 }
 
 #include "adaptors.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
