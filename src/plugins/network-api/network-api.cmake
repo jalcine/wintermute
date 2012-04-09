@@ -15,21 +15,21 @@ QT4_AUTOMOC(${WNTRNTWK_SCPP})
 configure_file("config.hpp.in" "config.hpp" @ONLY)
 
 ## Targets
-add_library(wapi-ntwk SHARED
+add_library(wapi-network SHARED
     ${WNTRNTWK_SCPP})
 
-set_target_properties(wapi-ntwk PROPERTIES
+set_target_properties(wapi-network PROPERTIES
     COMPILE_DEFINITIONS "${WNTRNTWK_COMPILE_DEFINTIONS}"
     COMPILE_FLAGS "${WNTRNTWK_COMPILE_FLAGS}"
     DEFINE_SYMBOL "WNTRNTWK_EXPORT"
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION})
 
-target_link_libraries(wapi-ntwk
+target_link_libraries(wapi-network
     ${WNTRNTWK_LIBRARIES})
 
 ## Installs
-install(TARGETS wapi-ntwk
+install(TARGETS wapi-network
     EXPORT WntrNtwkLibraryDepends
     LIBRARY DESTINATION "${WNTRNTWK_LIB_DIR}")
 
