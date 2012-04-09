@@ -25,7 +25,7 @@
 
 #include <QtPlugin>
 #include <QString>
-#include <wintermute/abstractplugin.hpp>
+#include <app/plugin.hpp>
 #include "config.hpp"
 
 namespace Wintermute
@@ -51,4 +51,4 @@ public:
 }
 
 #endif /** _PLUGIN_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
