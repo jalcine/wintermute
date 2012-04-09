@@ -20,6 +20,7 @@
  */
 
 // Local
+#include "adaptors.hxx"
 #include "adaptors.hpp"
 #include "core.hpp"
 #include "backend.hpp"
@@ -39,48 +40,18 @@ namespace Wintermute
 {
 namespace IPC
 {
-GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (parent), m_core (true)
+GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (p_parent),
+    d_ptr(new GenericAdaptorPrivate)
 {
-    this->dumpObjectInfo();
+    Q_D(GenericAdaptor);
 
     if (IPC::System::module() != "master") {
-        m_tmr = new QTimer (this);
-        detect();
-        connect (m_tmr, SIGNAL (timeout()), this, SLOT (detect()));
-        m_tmr->setInterval (1000);
-        m_tmr->start();
+        d->m_tmr = new QTimer (this);
+        d->detect();
+        connect (d->m_tmr, SIGNAL (timeout()), this, SLOT (detect()));
+        d->m_tmr->setInterval (1000);
+        d->m_tmr->start();
     }
-}
-
-/// @todo Find a means to send back an interface name instead of just the running module.
-void GenericAdaptor::detect() const
-{
-    m_tmr->stop();
-    const bool prv = m_core;
-    QDBusMessage ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "ping");
-    ping << IPC::System::module ();
-    ping.setAutoStartService (true);
-    QDBusMessage pingReply = IPC::System::bus ()->call (ping, QDBus::BlockWithGui);
-    m_core = pingReply.type () != QDBusMessage::ErrorMessage;
-
-    if (m_core != prv) {
-        if (m_core) {
-            qDebug() << "(core) [D-Bus] Core module found.";
-            emit coreModuleLoaded ();
-        }
-        else {
-            qDebug() << "(core) [D-Bus] Core module lost.";
-            emit coreModuleUnloaded ();
-        }
-    }
-
-    if (pingReply.type () == QDBusMessage::ErrorMessage) {
-        //qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
-        /*if (!Core::arguments().value ("daemon").toBool ())
-            CoreAdaptor::haltSystem ();*/
-    }
-
-    m_tmr->start ();
 }
 
 int GenericAdaptor::pid() const
