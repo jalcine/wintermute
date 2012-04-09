@@ -8,7 +8,7 @@ Type=API
 Plugin=@WNTRNTWK_VERSION@
 UUID=@WNTRNTWK_UUID@
 Compat=@Wintermute_VERSION@
-Library=wapi-ntwk
+Library=wapi-network
 
 [Description]
 Name=Networking API
