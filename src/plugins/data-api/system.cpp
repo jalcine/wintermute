@@ -2,8 +2,8 @@
  * @file rules.hpp
  * @author Wintermute Development <wntr-devel@thesii.org>
  * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+ */
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -28,12 +28,13 @@
 #include <core.hpp>
 
 // local includes
-#include "config.hpp"
-#include "system.hpp"
 #include "linguistics.hpp"
 #include "ontology/ontology.hpp"
 #include "lexical/data.hpp"
 #include "syntax/bond.hpp"
+#include "app/global.hpp"
+#include "system.hxx"
+#include "system.hpp"
 
 using namespace Wintermute;
 using namespace Wintermute::Data;
@@ -42,10 +43,12 @@ using Wintermute::Data::Linguistics::Lexical::Data;
 using Wintermute::Data::Linguistics::Syntax::Bond;
 using Wintermute::Data::Linguistics::Syntax::Chain;
 
-System* System::s_inst = 0;
+WINTER_SINGLETON_DEFINE(System)
 
-System::System() : m_dir (WNTRDATA_DATA_DIR)
+System::System() : d_ptr(new SystemPrivate)
 {
+    Q_D(System);
+    d->m_dir = WNTRDATA_DATA_DIR;
     connect (this, SIGNAL (started()), this, SLOT (registerDataTypes()));
 }
 
@@ -59,35 +62,29 @@ void System::registerDataTypes()
 
 void System::start ()
 {
-    Linguistics::System::setLocale (Core::arguments ()->value ("locale").toString ());
+    Linguistics::System::setLocale (Core::arguments ().value ("locale").toString ());
     Linguistics::System::load (System::directory() + QString ("/") + QString (WNTRDATA_LING_DIR));
     Ontology::System::load();
-    emit s_inst->started();
+    emit instance()->started();
 }
 
 void System::stop ()
 {
     Wintermute::Data::Ontology::System::unload();
     Wintermute::Data::Linguistics::System::unload();
-    emit s_inst->stopped();
+    emit instance()->stopped();
 }
 
 const QString System::directory ()
 {
-    return s_inst->m_dir;
+    return instance()->d_func()->m_dir;
 }
 
 void System::setDirectory (const QString& p_dir)
 {
     stop();
-    s_inst->m_dir = p_dir;
+    instance()->d_func()->m_dir = p_dir;
     start();
 }
 
-System* System::instance ()
-{
-    if (!s_inst) s_inst = new System;
-
-    return s_inst;
-}
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

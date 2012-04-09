@@ -24,25 +24,26 @@
 #ifndef WNTRDATA_SYSTEM_HPP
 #define WNTRDATA_SYSTEM_HPP
 
-// Qt includes
 #include <QObject>
+#include <app/global.hpp>
 
 namespace Wintermute
 {
 namespace Data
 {
 
-class System : public QObject
+struct SystemPrivate;
+class WNTR_EXPORT System : public QObject
 {
     friend class SystemAdaptor;
     friend class SystemInterface;
     Q_OBJECT
+    Q_DECLARE_PRIVATE(System)
     Q_DISABLE_COPY (System)
+    WINTER_SINGLETON(System)
 
 private:
-    static System* s_inst;
-    QString m_dir;
-    System();
+    QScopedPointer<SystemPrivate> d_ptr;
 
 public:
     /**
@@ -58,13 +59,6 @@ public:
      * @param const QString
      */
     static void setDirectory (const QString&);
-
-    /**
-     * @brief Obtains an instance of the data system object.
-     * @fn instance
-     * @return const Configuration
-     */
-    static System* instance();
 
 signals:
     /**
@@ -101,4 +95,4 @@ public slots:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
