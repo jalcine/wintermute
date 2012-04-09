@@ -23,6 +23,7 @@ namespace Wintermute
 {
 namespace IPC
 {
+    class GenericAdaptor;
 struct GenericAdaptorPrivate {
     Q_DECLARE_PUBLIC(GenericAdaptor)
     GenericAdaptorPrivate(GenericAdaptor* p_qPtr);
