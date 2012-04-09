@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- * 
+ *
  *
  * File providing compile-time data about runtime-configuration.
  * Required for the Wintermute database module.
@@ -25,7 +25,7 @@
 #ifndef __WNTRLING_CONFIG_HPP__
 #define __WNTRLING_CONFIG_HPP__
 
-#include <wintermute/config.hpp>
+#include <app/config.hpp>
 #cmakedefine01 DEBUG
 
 #define WNTRLING_UUID "@WNTRLING_UUID@"

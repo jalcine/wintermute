@@ -20,7 +20,7 @@
  * @endlegalese
  */
 
-#include <data/syntax/bond.hpp>
+#include <data-api/syntax/bond.hpp>
 
 #include "rule.hpp"
 #include "binding.hpp"

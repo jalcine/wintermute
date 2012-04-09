@@ -37,24 +37,24 @@ configure_file("config.hpp.in" "config.hpp" @ONLY)
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 ## Library
-add_library(wapi-ling SHARED
+add_library(wapi-linguistics SHARED
     ${WNTRLING_SOURCES})
 
-set_target_properties(wapi-ling PROPERTIES
+set_target_properties(wapi-linguistics PROPERTIES
     COMPILE_DEFINITIONS "${WNTRLING_COMPILE_DEFINTIONS}"
     COMPILE_FLAGS "${WNTRLING_COMPILE_FLAGS}"
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION})
 
-target_link_libraries(wapi-ling ${WNTRLING_LIBRARIES})
+target_link_libraries(wapi-linguistics ${WNTRLING_LIBRARIES})
 
 ## Installs
-install(TARGETS wapi-ling
+install(TARGETS wapi-linguistics
     EXPORT WntrLingLibraryDepends
     LIBRARY DESTINATION "${WNTRLING_LIB_DIR}")
 
-install(EXPORT WntrLingLibraryDepends
-    DESTINATION "${WNTRLING_CMAKE_DIR}")
+#install(EXPORT WntrLingLibraryDepends
+#    DESTINATION "${WNTRLING_CMAKE_DIR}")
 
 install(FILES ${WNTRLING_HEADERS}
     DESTINATION "${WNTRLING_INCLUDE_DIR}"

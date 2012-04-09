@@ -24,11 +24,11 @@
 #include <QDBusPendingReply>
 
 // wntrdata includes
-#include <wntrdata.hpp>
+#include <data-api/wntrdata.hpp>
+#include <data-api/dbus/nodeinterface.hpp>
 
 // local includes
 #include "node.hpp"
-#include "dbus/nodeinterface.hpp"
 
 using Wintermute::Linguistics::Node;
 using Wintermute::Linguistics::NodeList;
@@ -174,4 +174,4 @@ QDebug operator<< (QDebug dbg, const Node* p_nd)
     return dbg.space();
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

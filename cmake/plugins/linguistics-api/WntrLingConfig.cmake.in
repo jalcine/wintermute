@@ -12,7 +12,7 @@ set(WNTRLING_LIBRARY_DIRS "@WNTRLING_LIB_DIR@")
 include("@WNTRLING_CMAKE_DIR@/WntrLingLibraryDepends.cmake")
 
 # These are IMPORTED targets created by WntrDataLibraryDepends.cmake
-set(WNTRLING_LIBRARIES wplugin-linguistics)
+set(WNTRLING_LIBRARIES wapi-linguistics)
 
 if (WINTER_PLUGINS_BUILDING)
     list(APPEND WNTRLING_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/plugins/ling-api/src")

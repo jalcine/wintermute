@@ -28,7 +28,7 @@
 #include <QStringList>
 
 // WntrData includes
-#include <linguistics.hpp>
+#include <data-api/linguistics.hpp>
 
 // local includes
 #include "syntax/node.hpp"
@@ -325,4 +325,4 @@ signals:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -25,7 +25,7 @@
 #include <iostream>
 
 // WntrData includes
-#include <ontology/ontology.hpp>
+#include <data-api/ontology/ontology.hpp>
 
 // local includes
 #include "syntax/node.hpp"
@@ -283,4 +283,4 @@ const QString Meaning::toText () const
 Meaning::~Meaning () { }
 
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
