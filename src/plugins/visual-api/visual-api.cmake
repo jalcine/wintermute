@@ -14,6 +14,7 @@ include_directories(${WNTRVISUAL_INCLUDE_DIRS})
 add_library(wapi-visual SHARED ${WNTRVISUAL_SCPP} ${WNTRVISUAL_SQRC})
 
 set_target_properties(wapi-visual PROPERTIES
+    DEFINE_SYMBOL "WNTR_EXPORT_SYMBOLS"
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION})
 
