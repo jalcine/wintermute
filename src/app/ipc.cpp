@@ -45,7 +45,7 @@ System::~System() { }
 void System::start()
 {
     instance()->m_cnntn = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
-    instance()->m_appMod = Core::arguments()->value ("ipc").toString().toLower();
+    instance()->m_appMod = Core::arguments().value ("ipc").toString().toLower();
     QString serviceName = WNTR_DBUS_SERVICE_NAME,
             objectName;
     qDebug() << "(core) [IPC::System]" << "Mode:" << instance()->m_appMod;
@@ -63,7 +63,7 @@ void System::start()
         instance()->m_adapt = coreAdaptor;
     }
     else if (instance()->m_appMod == "plugin") {
-        const QString plgn = Core::arguments()->value ("plugin").toString();
+        const QString plgn = Core::arguments().value ("plugin").toString();
         objectName = "Plugin." + plgn;
         connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (loadStandardPlugin()));
         connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (unloadStandardPlugin()));
@@ -134,4 +134,4 @@ System* System::instance()
 }
 
 #include "ipc.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

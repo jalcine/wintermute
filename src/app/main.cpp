@@ -21,8 +21,9 @@
  */
 
 // Local
-#include "logging.hpp"
-#include "wintermute.hpp"
+#include "app/logging.hpp"
+#include "app/core.hpp"
+#include "app/core.hxx"
 
 // Qt
 #include <QApplication>
@@ -35,4 +36,4 @@ int main (int p_argc, char** p_argv)
     Core core (p_argc, p_argv);
     return QApplication::exec();
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

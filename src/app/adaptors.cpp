@@ -1,7 +1,8 @@
 /**
  * @file    adaptors.cpp
  * @author  Wintermute Development <wntr-devel@thesii.org>
- *
+ */
+/*
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -75,7 +76,7 @@ void GenericAdaptor::detect() const
 
     if (pingReply.type () == QDBusMessage::ErrorMessage) {
         //qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
-        /*if (!Core::arguments ()->value ("daemon").toBool ())
+        /*if (!Core::arguments().value ("daemon").toBool ())
             CoreAdaptor::haltSystem ();*/
     }
 
@@ -128,7 +129,7 @@ void PluginFactoryAdaptor::quit() const
 PluginHandleAdaptor::PluginHandleAdaptor (AbstractPlugin* p_plgn) : AbstractAdaptor (Core::instance())
 {
     if (p_plgn == 0) {
-        emit pluginCantLoad (Core::arguments ()->value ("plugin").toString ());
+        emit pluginCantLoad (Core::arguments().value ("plugin").toString ());
         QApplication::quit ();
     }
     else {
@@ -173,7 +174,7 @@ CoreAdaptor::CoreAdaptor() : AbstractAdaptor (Core::instance()) { }
 
 const QVariantMap CoreAdaptor::arguments() const
 {
-    return * (Core::arguments());
+    return Core::arguments();
 }
 
 void CoreAdaptor::ping (const QString& p_src)
@@ -192,7 +193,7 @@ void CoreAdaptor::quit () const
 
 void CoreAdaptor::haltSystem ()
 {
-    if (Core::arguments ()->value ("ipc").toString () != "master") {
+    if (Core::arguments().value ("ipc").toString () != "master") {
         QDBusMessage call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "haltSystem");
         QDBusConnection::sessionBus ().send (call);
     }
@@ -202,4 +203,4 @@ void CoreAdaptor::haltSystem ()
 } // namespace
 
 #include "adaptors.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

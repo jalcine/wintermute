@@ -1,9 +1,4 @@
-/***
- * @file factory.cpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
- * @author Adrian Borucki <adrian@thesii.org>
- *
- * @section lcns Licensing
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -19,6 +14,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
+ */
+/**
+ * @file factory.cpp
+ * @author Jacky Alcine <jacky.alcine@thesii.org>
+ * @author Adrian Borucki <adrian@thesii.org>
  */
 
 // Local
@@ -49,7 +49,7 @@ Factory::Factory() : QObject (Core::instance())
 /// @bug #00000
 void Factory::Startup()
 {
-    const bool isDaemon = Core::arguments()->value ("daemon").toBool();
+    const bool isDaemon = Core::arguments().value ("daemon").toBool();
 
     if (!isDaemon) {
         qDebug() << "(core) [Factory] Starting up...";
@@ -204,7 +204,7 @@ void Factory::unloadPlugin (const QString& p_plgnUuid)
 
 void Factory::loadStandardPlugin()
 {
-    const QString plgnUuid = Core::arguments()->value ("plugin").toString();
+    const QString plgnUuid = Core::arguments().value ("plugin").toString();
 
     qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (plgnUuid, "Description/Name").toString() << "UUID:" << plgnUuid << "...";
 
@@ -226,8 +226,8 @@ AbstractPlugin* Factory::currentPlugin()
 
 void Factory::unloadStandardPlugin ()
 {
-    const QString plgnUuid = Core::arguments ()->value ("plugin").toString ();
-    //qDebug() << "(core) [Factory] Removing plug-in" << plgnUuid << "...";
+    const QString plgnUuid = Core::arguments ().value ("plugin").toString ();
+    qDebug() << "(core) [Factory] Removing plug-in" << plgnUuid << "...";
     unloadPlugin (plgnUuid);
 }
 
@@ -345,4 +345,4 @@ Factory::ShellPlugin::ShellPlugin (const QString& p_uuid) : AbstractPlugin()
 Factory::ShellPlugin::~ShellPlugin() { }
 
 #include "factory.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

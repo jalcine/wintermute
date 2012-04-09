@@ -1,7 +1,4 @@
-/**
- * @file core.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- *
+/*
  * @section lcns Licensing
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,19 +14,23 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ */
+/**
+ * @file core.hpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
  *
  */
 
-#ifndef CORE_HPP
-#define CORE_HPP
-
-// Local
-#include "config.hpp"
-#include "diagnoser.hpp"
+#ifndef WINTERMUTE_CORE_HPP
+#define WINTERMUTE_CORE_HPP
 
 // Qt
 #include <QObject>
 #include <QVariantMap>
+
+// Local
+#include <app/global.hpp>
+#include <app/diagnoser.hpp>
 
 class QApplication;
 class QSocketNotifier;
@@ -37,6 +38,7 @@ class QSocketNotifier;
 namespace Wintermute
 {
 
+struct CorePrivate;
 /**
  * @brief The central management class of Wintermute.
  *
@@ -52,7 +54,8 @@ namespace Wintermute
 class Core : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO ("objectName", "Wintermute's Core")
+    Q_DECLARE_PRIVATE(Core)
+    WINTER_SINGLETON(Core)
 
 public:
 
@@ -70,17 +73,6 @@ public:
     explicit Core (int& p_argv, char** p_argc);
 
     /**
-     * @brief Obtains an instance of the Core.
-     *
-     * Provided that a developer wishes to connect to the signals exposed by the core,
-     * this returns a pointer to the Core's only instance.
-     *
-     * @return A constant pointer to the Core.
-     * @fn instance
-     */
-    static Core* instance();
-
-    /**
      * @brief Obtains a pointer to the current arguments.
      *
      * This map contains a normalized list of the arguments that were passed on the
@@ -92,13 +84,16 @@ public:
      * @todo Add support for arbitrary arguments.
      * @fn arguments
      */
-    const static QVariantMap* arguments();
+    static QVariantMap arguments();
 
     /**
      * @brief Ends the program; with an optional exit code.
+     * @param p_exitCode The exit code to report to the system.
+     * @param p_closeRootApplication Whether or not ALL Wintermute instances should be closed.
      * @fn exit
      */
-    static void exit (const int = 0, const bool = false);
+    static void exit (const int p_exitCode = 0,
+                      const bool p_closeRootApplication = false);
 
     /**
      * @brief Ends the program with success code.
@@ -138,11 +133,11 @@ protected:
      * utilities to use.
      *
      * @fn Configure
-     * @param argc The command line argument passed representing the number of given arguments.
-     * @param argv The command line argument passed representing the value of each argument.
+     * @param p_argc The command line argument passed representing the number of given arguments.
+     * @param p_argv The command line argument passed representing the value of each argument.
      * @see Wintermute::Core::Initialize()
      */
-    static void Configure (int& , char**);
+    static void configure (int& p_argc, char** p_argv);
 
 protected slots:
 
@@ -168,21 +163,9 @@ protected slots:
     static void stop ();
 
 private:
-    static QApplication* s_app; /**< Holds the object representing the current Q(Core)Application. */
-    static QVariantMap* s_args; /**< Holds the map containing the arguments passed to Wintermute in a normalized format. */
-    static Core* s_core; /**< The internal object that represents the core of Wintermute. */
-
-    /**
-     * @brief Processes the command line arguments.
-     *
-     * This method handles the nitty-gritty work of converting all of those command-line arguments
-     * to something less C-style-ish and more C++ workable.
-     *
-     * @fn configureCommandLine
-     */
-    static void configureCommandLine();
+    QScopedPointer<CorePrivate> d_ptr;
 };
 } // namespace
 
-#endif /* CORE_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#endif /* WINTERMUTE_CORE_HPP */
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
