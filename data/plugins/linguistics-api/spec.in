@@ -8,7 +8,7 @@ Type=API
 Plugin=@WNTRLING_VERSION@
 UUID=@WNTRLING_UUID@
 Compat=@Wintermute_VERSION@
-Library=wapi-ling
+Library=wapi-linguistics
 
 [Description]
 Name=Linguistics API
