@@ -21,43 +21,62 @@
  *
  */
 
-#ifndef WNTRDATA_DBUS_SYNTAX_HPP
-#define WNTRDATA_DBUS_SYNTAX_HPP
+#ifndef WNTRLING_DBUS_NODEINTERFACE_HPP
+#define WNTRLING_DBUS_NODEINTERFACE_HPP
 
 // Qt includes
 #include <QObject>
-#include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusAbstractInterface>
 
 // local includes
-#include "syntax/bond.hpp"
-#include "syntax/chain.hpp"
+#include <data-api/lexical/data.hpp>
 
 namespace Wintermute
 {
 namespace Data
 {
 
-using namespace Wintermute::Data::Linguistics;
+using Linguistics::Lexical::Data;
 
-class SyntaxInterface: public QDBusAbstractInterface
+class NodeInterface: public QDBusAbstractInterface
 {
     Q_OBJECT
 
 public:
     static inline const char* staticInterfaceName() {
-        return "org.thesii.Wintermute.Data.Rules";
+        return "org.thesii.Wintermute.Data.Nodes";
     }
+    NodeInterface();
 
-    SyntaxInterface();
-    ~SyntaxInterface();
+    ~NodeInterface();
 
 public slots:
-    inline QDBusPendingReply<bool> exists (const QString& in0, const QString& in1) {
+    inline QDBusPendingReply<bool> exists (Data in0) {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0) << qVariantFromValue (in1);
+        argumentList << qVariantFromValue (in0);
+
+        if (in0.id() == "d41d8cd98f00b204e9800998ecf8427e")
+            qFatal ("WOAH BUDDY!");
+
         return asyncCallWithArgumentList (QLatin1String ("exists"), argumentList);
+    }
+
+    inline Q_NOREPLY void generate() {
+        QList<QVariant> argumentList;
+        callWithArgumentList (QDBus::NoBlock, QLatin1String ("generate"), argumentList);
+    }
+
+    inline QDBusPendingReply<bool> isPseudo (Data in0) {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue (in0);
+        return asyncCallWithArgumentList (QLatin1String ("isPseudo"), argumentList);
+    }
+
+    inline QDBusPendingReply<Data> pseudo (Data in0) {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue (in0);
+        return asyncCallWithArgumentList (QLatin1String ("pseudo"), argumentList);
     }
 
     inline QDBusPendingReply<> quit() {
@@ -65,25 +84,24 @@ public slots:
         return asyncCallWithArgumentList (QLatin1String ("quit"), argumentList);
     }
 
-    inline QDBusPendingReply<Syntax::Chain> read (Syntax::Chain in0) {
+    inline QDBusPendingReply<Data> read (Data in0) {
         QList<QVariant> argumentList;
-        qDebug() << in0.toString();
-        argumentList << in0.toString();
+        argumentList << qVariantFromValue (in0);
         return asyncCallWithArgumentList (QLatin1String ("read"), argumentList);
     }
 
-    inline QDBusPendingReply<Syntax::Chain> write (Syntax::Chain in0) {
+    inline QDBusPendingReply<Data> write (Data in0) {
         QList<QVariant> argumentList;
-        argumentList << in0.toString();
+        argumentList << qVariantFromValue (in0);
         return asyncCallWithArgumentList (QLatin1String ("write"), argumentList);
     }
 
-signals:
-    void ruleCreated (const QString& in0);
+Q_SIGNALS: // SIGNALS
+    void nodeCreated (const QString& in0);
 };
 
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
 
 #endif

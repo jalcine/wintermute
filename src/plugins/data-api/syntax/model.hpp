@@ -27,10 +27,9 @@
 // Qt includes
 #include <QObject>
 
-// local includes
-#include "dbus/syntaxadaptor.hpp"
-#include "syntax/bond.hpp"
-#include "syntax/chain.hpp"
+#include <data-api/dbus/syntaxadaptor.hpp>
+#include <data-api/syntax/bond.hpp>
+#include <data-api/syntax/chain.hpp>
 
 namespace Wintermute
 {
