@@ -1,10 +1,4 @@
-/**
- * @file    adaptors.hpp
- * @author  Wintermute Development <wntr-devel@thesii.org>
- *
- *
- *
- *
+/*
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -19,6 +13,11 @@
  * along with Wintermute Linguistics; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA  02110-1301  USA
+ */
+
+/**
+ * @file    adaptors.hpp
+ * @author  Wintermute Development <wntr-devel@thesii.org>
  */
 
 #ifndef WINTERMUTE_ADAPTORS_HPP
@@ -37,16 +36,18 @@ namespace Wintermute
 {
 namespace IPC
 {
+struct GenericAdaptorPrivate;
 /**
  * @brief The foundational adaptor for Wintermute's IPC.
  *
- * Wintermute uses D-Bus on Linux systems as its means of achieveing a
+ * Wintermute uses D-Bus on Linux systems as its means of achieving a
  * stabilized layer of inter-process communication. In doing so, a foundational
  * and optimized base for said transactions are required. The GenericAdaptor
  * serves as a base for communicating between multiple processes of Wintermute.
  *
- * @see Plugins::PluginFactoryAdaptor, Plugins::PluginPluginHandleAdaptor, CoreAdaptor
- * @class GenericAdaptor adaptors.hpp "src/adaptors.hpp"
+ * @see Plugins::PluginFactoryAdaptor
+ * @see Plugins::PluginPluginHandleAdaptor
+ * @see CoreAdaptor
  */
 class GenericAdaptor : public QDBusAbstractAdaptor
 {
@@ -55,9 +56,10 @@ class GenericAdaptor : public QDBusAbstractAdaptor
     Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Adaptor")
 
 private:
-    QTimer* m_tmr;
-    mutable bool m_core;
-    Q_SLOT void detect() const;
+    QScopedPointer<GenericAdaptorPrivate> d_ptr;
+
+protected:
+    Q_DECLARE_PRIVATE(GenericAdaptor)
 
 public:
     /**
@@ -65,7 +67,7 @@ public:
      * @fn GenericAdaptor
      * @param The QObject to set as this parent.
      */
-    explicit GenericAdaptor (QObject* = 0);
+    explicit GenericAdaptor (QObject* p_parent = 0);
 
     /**
      * @brief Obtains the module's name.
@@ -120,7 +122,6 @@ struct AbstractPlugin;
  * for the Factory interfacing class.
  *
  * @see Plugins::Factory
- * @class PluginFactoryAdaptor adaptors.hpp "src/adaptors.hpp"
  */
 class PluginFactoryAdaptor : public AbstractAdaptor
 {
@@ -191,4 +192,4 @@ public slots:
 } // namespace
 
 #endif // WINTERMUTE_ADAPTORS_HPP
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

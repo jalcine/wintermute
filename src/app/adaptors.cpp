@@ -39,7 +39,7 @@ namespace Wintermute
 {
 namespace IPC
 {
-GenericAdaptor::GenericAdaptor (QObject* parent) : QDBusAbstractAdaptor (parent), m_core (true)
+GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (parent), m_core (true)
 {
     this->dumpObjectInfo();
 
