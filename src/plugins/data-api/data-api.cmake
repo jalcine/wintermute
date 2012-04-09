@@ -2,16 +2,16 @@ project(WntrDataLibrary)
 cmake_minimum_required(VERSION 2.8)
 
 ## Files
-file(GLOB WNTRDATA_HDRS "*.hpp")
-file(GLOB WNTRDATA_SRCS "*.cpp")
-file(GLOB WNTRDATA_DBUS_HDRS "dbus/*.hpp")
-file(GLOB WNTRDATA_DBUS_SRCS "dbus/*.cpp")
-file(GLOB WNTRDATA_LEXICAL_HDRS "lexical/*.hpp")
-file(GLOB WNTRDATA_LEXICAL_SRCS "lexical/*.cpp")
-file(GLOB WNTRDATA_ONTOLOGY_HDRS "ontology/*.hpp")
-file(GLOB WNTRDATA_ONTOLOGY_SRCS "ontology/*.cpp")
-file(GLOB WNTRDATA_SYNTAX_HDRS "syntax/*.hpp")
-file(GLOB WNTRDATA_SYNTAX_SRCS "syntax/*.cpp")
+file(GLOB WNTRDATA_HDRS "*.hpp" "*.hxx")
+file(GLOB WNTRDATA_SRCS "*.cpp" "*.cxx")
+file(GLOB WNTRDATA_DBUS_HDRS "dbus/*.hpp" "dbus/*.hxx")
+file(GLOB WNTRDATA_DBUS_SRCS "dbus/*.cpp" "dbus/*.cxx")
+file(GLOB WNTRDATA_LEXICAL_HDRS "lexical/*.hpp" "lexical/*.hxx")
+file(GLOB WNTRDATA_LEXICAL_SRCS "lexical/*.cpp" "lexical/*.cxx")
+file(GLOB WNTRDATA_ONTOLOGY_HDRS "ontology/*.hpp" "ontology/*.hxx")
+file(GLOB WNTRDATA_ONTOLOGY_SRCS "ontology/*.cpp" "ontology/*.cxx")
+file(GLOB WNTRDATA_SYNTAX_HDRS "syntax/*.hpp" "syntax/*.hxx")
+file(GLOB WNTRDATA_SYNTAX_SRCS "syntax/*.cpp" "syntax/*.cxx")
 
 set(WNTRDATA_HEADERS ${WNTRDATA_HDRS}
                      ${WNTRDATA_DBUS_HDRS}
@@ -37,7 +37,6 @@ configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
 foreach(WNTRDATA_SOURCE_DIRECTORY ${WNTRDATA_SOURCE_DIRECTORIES})
     add_subdirectory("${WNTRDATA_SOURCE_DIRECTORY}")
 endforeach(WNTRDATA_SOURCE_DIRECTORY)
-
 include_directories(${WNTRDATA_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
                     "${PROJECT_BINARY_DIR}")
