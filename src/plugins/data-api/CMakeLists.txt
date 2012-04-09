@@ -25,19 +25,15 @@ set(WNTRDATA_DATA_DIR "${WINTER_PLUGIN_DATA_INSTALL_DIR}/data-api" CACHE PATH "T
 set(WNTRDATA_LING_DIR "ling" CACHE PATH "The name of the folder that contains the linguistics information. There should be no trailing or leading slashes.")
 set(WNTRDATA_ONTO_DIR "onto" CACHE PATH "The name of the folder that contains the ontology information. There should be no trailing or leading slashes.")
 set(WNTRDATA_INCLUDE_DIR "${WINTER_PLUGIN_INCLUDE_INSTALL_DIR}/data")
-set(WNTRDATA_INCLUDE_DIRS ${PYTHON_INCLUDE_DIR}
-        ${qjson_INCLUDE_DIR}
-        ${WINTERMUTE_INCLUDE_DIRS}
-        ${QT_INCLUDE_DIR}
+set(WNTRDATA_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+        ${QT_QTXML_INCLUDE_DIR}
         ${SOPRANO_INCLUDE_DIR}
-        ${Boost_INCLUDE_DIRS})
+        ${qjson_INCLUDE_DIR})
 set(WNTRDATA_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/WntrData")
-set(WNTRDATA_LIBRARIES "${PYTHON_LIBRARIES}"
+set(WNTRDATA_LIBRARIES ${WINTERMUTE_LIBRARIES}
         ${QT_QTXML_LIBRARY}
-        ${qjson_LIBRARIES}
         ${SOPRANO_LIBRARIES}
-        ${WINTERMUTE_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${qjson_LIBRARIES})
 set(WNTRDATA_COMPILE_DEFINTIONS ${WINTERMUTE_COMPILE_DEFINITIONS})
 set(WNTRDATA_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
 
