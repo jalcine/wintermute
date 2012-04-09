@@ -8,7 +8,8 @@ core
 wapi-network
 wapi-data
 wapi-linguistics
-wapi-visual"
+wapi-visual
+master"
 
 function mergeWithBranches {
     for branch in $BRANCHES
