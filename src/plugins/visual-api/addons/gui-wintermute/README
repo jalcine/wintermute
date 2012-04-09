@@ -1,0 +1,38 @@
+Wintermute Graphics
+=======================
+
+0. Preface
+
+Wintermute is designed to be a 'plug-and-play' sort of system. Systems designed
+as such tend to run into serious design issues. Fortunately for Wintermute's
+developers; Qt has managed to take care most of the naughty work when dealing
+with plug-in control and administering. This plug-in merely represents a hook
+being made into the control system and allowing a front-end of sorts to be
+implemented.
+
+1. Introduction
+
+This plug-in for Wintermute is designed to provide a graphical user interface
+(GUI) to Wintermute. Based mainly on Qt, this plug-in allows end-users to drop
+the command line approach of using Wintermute and utilize a visual means of
+commandeering their desktop to employ Wintermute's abilities.
+
+2. Current Status
+
+The graphical user interface now harbors a primary interface (although you will
+still need to view the console for input/output) with an 'About' dialog
+providing links to more information about Wintermute to new users. We currently
+dis-encourage any adding of new features unless it's been discussed and
+approved by Dante Ashton on the wintermute-devel mailing list at
+  <wintermute-devel@lists.launchpad.net>. You can reach Dante Ashton at
+    <dante.ashton@thesii.org> if you wish to present a design approach, but
+it's recommended that you use the mailing list; this way the team can assist in
+designing and developing. 
+
+3. Reporting and Contributing to the Cause
+
+We here at the Synthetic Intellect Institute, the makers and maintainers
+of Wintermute, welcome all. If you want to chat with the guys responsible
+for Wintermute or the Institute, drop us a message at <contact@thesii.org> or
+send us a message to our mailing list at <sii@lists.launchpad.net>. We hope to
+hear (or see or read) from you soon.

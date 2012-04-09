@@ -1,0 +1,22 @@
+## Wintermute Visual API
+
+[Plugin]
+Enabled=true
+Type=API
+
+[Version]
+Plugin=@WNTRVISUAL_VERSION@
+UUID=@WNTRVISUAL_UUID@
+Compat=@Wintermute_VERSION@
+Library=wapi-visual
+
+[Description]
+Name=Visual API
+Author=Jacky Alcine <jacky.alcine@thesii.org>
+Vendor=Synthetic Intellect Institute <sii@lists.launchpad.net>
+Blurb=A plug-in providing the underlying framework for introducing visual interactions with Wintermute.
+WebPage=http://www.thesii.org/wiki/Wintermute:Plugin:VisualAPI
+
+[Configuration]
+Factory:Defaults=78345566-cb12-11e0-b159-f51bb9111288
+Factory:StartMode=0

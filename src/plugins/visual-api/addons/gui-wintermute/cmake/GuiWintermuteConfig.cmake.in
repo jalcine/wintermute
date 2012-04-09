@@ -1,0 +1,15 @@
+# - Config file for the WntrGui package
+# It defines the following variables
+#  WNTRGUI_INCLUDE_DIRS - include directories for WntrGui
+#  WNTRGUI_LIBRARY_DIRS - library directories for WntrGui (normally not used!)
+#  WNTRGUI_LIBRARIES    - libraries to link against
+
+# Tell the user project where to find our headers and libraries
+set(WNTRGUI_INCLUDE_DIRS "@WNTRGUI_INCLUDE_DIRS@")
+set(WNTRGUI_LIBRARY_DIRS "@WNTRGUI_LIB_DIR@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("@WNTRGUI_CMAKE_DIR@/WntrGuiLibraryDepends.cmake")
+
+# These are IMPORTED targets created by WntrGuiLibraryDepends.cmake
+set(WNTRGUI_LIBRARIES wntr-gui)

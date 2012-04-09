@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 2.8)
+
+install(FILES ${WNTRVISUAL_UI_FILES}
+    DESTINATION "${WINTER_PLUGIN_DATA_INSTALL_DIR}/visual")

@@ -1,0 +1,15 @@
+# - Config file for the WntrNlui package
+# It defines the following variables
+#  WNTRNLUI_INCLUDE_DIRS - include directories for WntrNlui
+#  WNTRNLUI_LIBRARY_DIRS - library directories for WntrNlui (normally not used!)
+#  WNTRNLUI_LIBRARIES    - libraries to link against
+
+# Tell the user project where to find our headers and libraries
+set(WNTRNLUI_INCLUDE_DIRS "@WNTRNLUI_INCLUDE_DIRS@")
+set(WNTRNLUI_LIBRARY_DIRS "@WNTRNLUI_LIB_DIR@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("@WNTRNLUI_CMAKE_DIR@/WntrGuiLibraryDepends.cmake")
+
+# These are IMPORTED targets created by WntrGuiLibraryDepends.cmake
+set(WNTRNLUI_LIBRARIES nlui-wintermute)

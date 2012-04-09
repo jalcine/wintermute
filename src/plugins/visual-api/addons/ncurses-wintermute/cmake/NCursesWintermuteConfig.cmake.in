@@ -1,0 +1,15 @@
+# - Config file for the NCursesWintermute package
+# It defines the following variables
+#  NCURSESWINTERMUTE_INCLUDE_DIRS - include directories for NCursesWintermute
+#  NCURSESWINTERMUTE_LIBRARY_DIRS - library directories for NCursesWintermute (normally not used!)
+#  NCURSESWINTERMUTE_LIBRARIES    - libraries to link against
+
+# Tell the user project where to find our headers and libraries
+set(NCURSESWINTERMUTE_INCLUDE_DIRS "@NCURSESWINTERMUTE_INCLUDE_DIRS@")
+set(NCURSESWINTERMUTE_LIBRARY_DIRS "@NCURSESWINTERMUTE_LIB_DIR@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("@NCURSESWINTERMUTE_CMAKE_DIR@/NCursesWintermuteLibraryDepends.cmake")
+
+# These are IMPORTED targets created by NCursesWintermuteLibraryDepends.cmake
+set(NCURSESWINTERMUTE_LIBRARIES ncurses-wintermute)

@@ -1,0 +1,18 @@
+## Natural Language User Interface for Wintermute.
+
+[Plugin]
+Enabled=true
+Type=Backend
+
+[Version]
+Plugin=@WNTRNLUI_VERSION@
+UUID=@WNTRNLUI_UUID@
+Compat=@Wintermute_VERSION@
+Library=nlui-wintermute
+
+[Description]
+Name=Natural Language User Interface for Wintermute
+Author=Wintermute Development <wntr-devel@thesii.org>
+Vendor=Synthetic Intellect Institute <sii@lists.launchpad.net>
+Blurb=A plug-in providing a natural language user interface for Wintermute's users.
+WebPage=http://www.thesii.org/wiki/
