@@ -8,8 +8,8 @@ set(WNTRNTWK_BUILD_INCLUDE_DIRS ${WNTRNTWK_INCLUDE_DIRS}
 include_directories(${WNTRNTWK_BUILD_INCLUDE_DIRS})
 
 ## Files
-file(GLOB WNTRNTWK_SHPP "*.hpp")
-file(GLOB WNTRNTWK_SCPP "*.cpp")
+file(GLOB WNTRNTWK_SHPP "*.hpp" "*.hxx")
+file(GLOB WNTRNTWK_SCPP "*.cpp" "*.cxx")
 QT4_AUTOMOC(${WNTRNTWK_SCPP})
 
 configure_file("config.hpp.in" "config.hpp" @ONLY)
