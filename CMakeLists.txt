@@ -44,13 +44,9 @@ set(WINTERMUTE_LIBRARIES
     ${QT_QTCORE_LIBRARY}
     ${QT_QTDBUS_LIBRARY})
 set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-    "${PROJECT_BINARY_DIR}/src/app"
-    "${PROJECT_SOURCE_DIR}/src/app")
+    "${PROJECT_BINARY_DIR}/src" "${PROJECT_BINARY_DIR}/src/app"
+    "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/src/app")
 include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
-
-
-## Include directories
-include_directories(${WINTERMUTE_INCLUDE_DIRS})
 
 add_subdirectory(cmake)
 add_subdirectory(src)
