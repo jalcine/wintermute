@@ -35,95 +35,113 @@ using namespace Wintermute::Data::Linguistics::Syntax;
 
 Bond::Bond() { }
 
-Bond::Bond ( const Bond &p_bnd ) : m_props ( p_bnd.m_props ) { }
+Bond::Bond (const Bond& p_bnd) : QObject (p_bnd.parent()),
+    m_props (p_bnd.m_props) { }
 
-void Bond::setWith ( QString& p_value ) {
-    setAttribute ( "with",p_value );
+void Bond::setWith (QString& p_value)
+{
+    setAttribute ("with", p_value);
 }
 
-void Bond::setAttribute ( const QString& p_attr, QString& p_val ) {
-    m_props.insert ( p_attr,p_val );
+void Bond::setAttribute (const QString& p_attr, QString& p_val)
+{
+    m_props.insert (p_attr, p_val);
 }
 
-const QString Bond::attribute ( const QString& p_attr ) const {
-    return m_props.value ( p_attr );
+const QString Bond::attribute (const QString& p_attr) const
+{
+    return m_props.value (p_attr);
 }
 
-void Bond::setAttributes ( const StringMap& p_props ) {
+void Bond::setAttributes (const StringMap& p_props)
+{
     m_props = p_props;
 }
 
-const bool Bond::hasAttribute ( const QString& p_attr ) const {
-    return m_props.contains ( p_attr );
+bool Bond::hasAttribute (const QString& p_attribute) const
+{
+    return m_props.contains (p_attribute);
 }
 
-const QString Bond::with() const {
-    return attribute ( "with" );
+const QString Bond::with() const
+{
+    return attribute ("with");
 }
 
-const StringMap Bond::attributes() const {
+const StringMap Bond::attributes() const
+{
     return m_props;
 }
 
 /// @note This might be the crowning jewel of the linking system.
-const double Bond::matches ( const QString& p_query, const QString& p_regex ) {
-    const QStringList regexList = p_regex.split ( "," );
+double Bond::matches (const QString& p_regex, const QString& p_query)
+{
+    const QStringList regexList = p_regex.split (",");
     QList<double> rslts;
 
-    foreach ( const QString regex, regexList ) {
-        const double max = ( double ) regex.length ();
+    foreach (const QString regex, regexList) {
+        const double max = (double) regex.length ();
         double cnt = 0.0;
 
-        if ( p_query.at ( 0 ) == regex.at ( 0 ) ) {
+        if (p_query.at (0) == regex.at (0)) {
             cnt += 1.0;
-            for ( int i = 1; i < p_query.length (); i++ ) {
-                QChar chr = p_query.at ( i );
-                if ( p_regex.contains ( chr,Qt::CaseSensitive ) )
+
+            for (int i = 1; i < p_query.length (); i++) {
+                QChar chr = p_query.at (i);
+
+                if (p_regex.contains (chr, Qt::CaseSensitive))
                     cnt += 1.0;
             }
         }
 
-        rslts.push_back ( ( cnt / max ) );
+        rslts.push_back ( (cnt / max));
     }
 
-    qSort ( rslts.begin (),rslts.end () );
+    qSort (rslts.begin (), rslts.end ());
 
-    if ( !rslts.isEmpty () && !p_regex.isEmpty () )
+    if (!rslts.isEmpty () && !p_regex.isEmpty ())
         return rslts.last ();
     else
         return 0.0;
 }
 
-void Bond::operator= ( const Bond& p_bnd ) {
+void Bond::operator= (const Bond& p_bnd)
+{
     m_props = p_bnd.m_props;
 }
 
-const bool Bond::operator == ( const Bond& p_bnd ) const {
-    return m_props == p_bnd.m_props;
+bool Bond::operator == (const Bond& p_bond) const
+{
+    return m_props == p_bond.m_props;
 }
 
-Bond* Bond::fromString ( const QString &p_str ) {
+Bond* Bond::fromString (const QString& p_str)
+{
     Bond* bnd = new Bond;
     QJson::Parser* parser = new QJson::Parser;
-    QVariantMap map = parser->parse ( p_str.toAscii() ).toMap();
+    QVariantMap map = parser->parse (p_str.toAscii()).toMap();
     QVariantMap::ConstIterator itr = map.constBegin(), end = map.constEnd();
 
-    for ( ; itr != end; ++itr )
-        bnd->m_props.insert ( itr.key(),itr.value().toString() );
+    for (; itr != end; ++itr)
+        bnd->m_props.insert (itr.key(), itr.value().toString());
 
     return bnd;
 }
 
-QString Bond::toString() const {
+QString Bond::toString() const
+{
     QJson::Serializer* serializer = new QJson::Serializer;
     QVariantMap map;
     StringMap::ConstIterator itr = m_props.constBegin(), end = m_props.constEnd();
-    for ( ; itr != end; ++itr )
-        map.insert ( itr.key(),itr.value() );
-    return QString ( serializer->serialize ( map ) );
+
+    for (; itr != end; ++itr)
+        map.insert (itr.key(), itr.value());
+
+    return QString (serializer->serialize (map));
 }
 
-QDebug operator<< ( QDebug p_dbg, const Bond& p_bnd ) {
+QDebug operator<< (QDebug p_dbg, const Bond& p_bnd)
+{
     //p_dbg << p_bnd.m_props;
     return p_dbg;
 }

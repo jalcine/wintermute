@@ -25,101 +25,119 @@
 
 using namespace std;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 Broadcast* Broadcast::s_brdcst = 0;
 
-Broadcast::Broadcast() {
+Broadcast::Broadcast()
+{
     Broadcast::s_brdcst = this;
 }
 
-Broadcast::~Broadcast() {
-    System::instance()->disconnect ( s_brdcst,SLOT ( readSignal ( Message ) ) );
+Broadcast::~Broadcast()
+{
+    System::instance()->disconnect (s_brdcst, SLOT (readSignal (Message)));
 }
 
-void Broadcast::load( ) {
-    connect ( System::instance (),SIGNAL ( messageRecieved ( Message ) ), s_brdcst,SLOT ( readSignal ( Message ) ) );
+void Broadcast::load()
+{
+    connect (System::instance (), SIGNAL (messageRecieved (Message)), s_brdcst, SLOT (readSignal (Message)));
     start();
     qDebug() << "(ntwk) [Broadcast] Loaded.";
 }
 
-void Broadcast::unload( ) {
+void Broadcast::unload()
+{
     stop();
     qDebug() << "(ntwk) [Broadcast] Unloaded.";
 }
 
-void Broadcast::start() {
-    if ( !Broadcast::isActive () ) {
+void Broadcast::start()
+{
+    if (!Broadcast::isActive ()) {
         s_brdcst->sendSignal ();
         qDebug() << "(ntwk) [Broadcast] Started broadcasting activity.";
     }
 }
 
-void Broadcast::stop() {
-    if ( Broadcast::isActive () ) {
+void Broadcast::stop()
+{
+    if (Broadcast::isActive ()) {
         s_brdcst->deleteLater ();
         qDebug() << "(ntwk) [Broadcast] Stopped broadcasting activity.";
     }
 }
 
-void Broadcast::sendSignal() {
+void Broadcast::sendSignal()
+{
     qDebug() << "(ntwk) [Broadcast] Attempting to send broadcast...";
-    System::send ( BroadcastMessage ( BroadcastMessage::Online ) );
-    QTimer::singleShot ( WNTRNTWK_BROADCAST_INTERVAL, s_brdcst, SLOT ( sendSignal() ) );
+    System::send (BroadcastMessage (BroadcastMessage::Online));
+    QTimer::singleShot (WNTRNTWK_BROADCAST_INTERVAL, s_brdcst, SLOT (sendSignal()));
 }
 
-void Broadcast::readSignal ( const Message& p_msg ) {
+void Broadcast::readSignal (const Message& p_msg)
+{
     qDebug() << "(ntwk) [Broadcast] Attempting to read any messages..";
 
-    if ( p_msg.type() == "Broadcast" ) {
-        BroadcastMessage msg ( p_msg );
+    if (p_msg.type() == "Broadcast") {
+        BroadcastMessage msg (p_msg);
 
-        switch ( msg.broadcastType() ) {
+        switch (msg.broadcastType()) {
         case BroadcastMessage::Ping:
-            emit s_brdcst->pingReply ( msg.property ( "Sender" ).toString () );
+            emit s_brdcst->pingReply (msg.property ("Sender").toString ());
             break;
         }
     }
 }
 
-void Broadcast::forceSignal () {
-    System::send ( ( BroadcastMessage ( BroadcastMessage::Online ) ) );
+void Broadcast::forceSignal ()
+{
+    System::send ( (BroadcastMessage (BroadcastMessage::Online)));
 }
 
-const bool Broadcast::isActive () {
-    return ( s_brdcst != 0 );
+const bool Broadcast::isActive ()
+{
+    return (s_brdcst != 0);
 }
 
-Broadcast* Broadcast::instance () {
-    if ( !s_brdcst ) s_brdcst = new Broadcast;
+Broadcast* Broadcast::instance ()
+{
+    if (!s_brdcst) s_brdcst = new Broadcast;
+
     return s_brdcst;
 }
 
-void Broadcast::ping ( const QString& p_qualifier ) {
-    BroadcastMessage msg ( BroadcastMessage::Ping );
-    msg.setProperty ( "Recipient",p_qualifier );
-    System::send ( msg );
+void Broadcast::ping (const QString& p_qualifier)
+{
+    BroadcastMessage msg (BroadcastMessage::Ping);
+    msg.setProperty ("Recipient", p_qualifier);
+    System::send (msg);
 }
 
 /// @todo Just convert the address into a qualifier and send it to the other version of the method.
-void Broadcast::ping ( const QHostAddress& p_addr ) {
-    Broadcast::ping ( System::toQualifier ( p_addr ) );
+void Broadcast::ping (const QHostAddress& p_addr)
+{
+    Broadcast::ping (System::toQualifier (p_addr));
 }
 
-BroadcastMessage::BroadcastMessage ( const Message& p_msg ) : Message ( p_msg ) { }
+BroadcastMessage::BroadcastMessage (const Message& p_msg) : Message (p_msg) { }
 
-BroadcastMessage::BroadcastMessage ( const BroadcastType& brdtype ) : Message( ) {
-    this->setProperty ( "Type" , "Broadcast" );
-    this->setProperty ( "BroadcastType" , ( ( int ) brdtype ) );
-    this->setProperty ( "Recipient" , "broadcast" );
+BroadcastMessage::BroadcastMessage (const BroadcastType& brdtype) : Message()
+{
+    this->setProperty ("Type" , "Broadcast");
+    this->setProperty ("BroadcastType" , ( (int) brdtype));
+    this->setProperty ("Recipient" , "broadcast");
 }
 
-const BroadcastMessage::BroadcastType BroadcastMessage::broadcastType( ) const {
-    const int val = this->property ( "BroadcastType" ).toInt ();
-    return static_cast< const BroadcastType > ( val );
+const BroadcastMessage::BroadcastType BroadcastMessage::broadcastType() const
+{
+    const int val = this->property ("BroadcastType").toInt ();
+    return static_cast< const BroadcastType > (val);
 }
 }
 }
 
 #include "broadcast.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

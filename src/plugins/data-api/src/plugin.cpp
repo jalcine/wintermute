@@ -48,4 +48,4 @@ void Plugin::stop () const { }
 Q_EXPORT_PLUGIN2 (wplugin - data, Wintermute::Data::Plugin)
 
 #include "plugin.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

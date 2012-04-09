@@ -32,18 +32,23 @@
 #include "syntax/bond.hpp"
 #include "syntax/chain.hpp"
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Syntax {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Syntax
+{
 
 /**
  * @brief
  * @class Model models.hpp "src/models.hpp"
  */
-class AbstractModel : public QObject {
+class AbstractModel : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( Chain Chain READ chain WRITE setChain )
+    Q_PROPERTY (Chain Chain READ chain WRITE setChain)
 
 protected:
     Chain m_chn; /**< Represents the information used to form a binding. */
@@ -52,7 +57,7 @@ protected:
      * @fn Model
      * @param
      */
-    explicit AbstractModel ( const Bond& );
+    explicit AbstractModel (const Bond&);
 
 public:
     /**
@@ -66,7 +71,7 @@ public:
      * @fn Model
      * @param p_mdl The Model to be copied.
      */
-    AbstractModel ( const AbstractModel& );
+    AbstractModel (const AbstractModel&);
 
     /**
      * @brief Deconstructor.
@@ -85,14 +90,15 @@ public:
      * @fn setChain
      * @param p_chn The Chain to be saved.
      */
-    void setChain ( const Chain& );
+    void setChain (const Chain&);
 };
 
 /**
  * @brief
  * @class SaveModel models.hpp "src/models.hpp"
  */
-class AbstractSaveModel : public AbstractModel {
+class AbstractSaveModel : public AbstractModel
+{
     Q_OBJECT
 
 signals:
@@ -114,7 +120,7 @@ public:
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Chain& ) = 0;
+    virtual void saveFrom (const Chain&) = 0;
 
 protected:
     /**
@@ -127,7 +133,7 @@ protected:
      * @fn SaveModel
      * @param p_model
      */
-    AbstractSaveModel ( const AbstractModel& );
+    AbstractSaveModel (const AbstractModel&);
     /**
      * @brief
      * @fn ~SaveModel
@@ -139,21 +145,22 @@ protected:
      *
      * @fn obtainType
      */
-    virtual void setType ( const QString& ) = 0;
+    virtual void setType (const QString&) = 0;
 
     /**
      * @brief
      *
      * @fn obtainBonds
      */
-    virtual void setBonds ( const BondList& ) = 0;
+    virtual void setBonds (const BondList&) = 0;
 };
 
 /**
  * @brief
  * @class LoadModel models.hpp "src/models.hpp"
  */
-class AbstractLoadModel : public AbstractModel {
+class AbstractLoadModel : public AbstractModel
+{
     Q_OBJECT
 
 signals:
@@ -175,7 +182,7 @@ public:
      * @fn loadTo
      * @param
      */
-    virtual void loadTo ( Chain& ) const = 0;
+    virtual void loadTo (Chain&) const = 0;
 
 protected:
     /**
@@ -188,7 +195,7 @@ protected:
      * @fn LoadModel
      * @param p_model
      */
-    AbstractLoadModel ( const AbstractModel& );
+    AbstractLoadModel (const AbstractModel&);
     /**
      * @brief
      *
@@ -203,7 +210,8 @@ class AbstractBackend { };
  * @brief
  * @class Storage models.hpp "src/models.hpp"
  */
-class AbstractStorage : public virtual AbstractBackend {
+class AbstractStorage : public virtual AbstractBackend
+{
 public:
     /**
      * @brief
@@ -217,14 +225,14 @@ public:
      * @fn Storage
      * @param
      */
-    AbstractStorage ( const AbstractStorage& );
+    AbstractStorage (const AbstractStorage&);
     /**
      * @brief
      *
      * @fn Storage
      * @param
      */
-    AbstractStorage ( const AbstractBackend& );
+    AbstractStorage (const AbstractBackend&);
     /**
      * @brief
      *
@@ -232,53 +240,53 @@ public:
      * @param
      * @param
      */
-    AbstractStorage ( const QString&, const QString& );
+    AbstractStorage (const QString&, const QString&);
     /**
      * @brief
      *
      * @fn operator ==
      * @param
      */
-    bool operator== ( const AbstractStorage& );
+    bool operator== (const AbstractStorage&);
     /**
      * @brief
      *
      * @fn loadTo
      * @param
      */
-    virtual void loadTo ( Chain& ) const = 0;
+    virtual void loadTo (Chain&) const = 0;
     /**
      * @brief
      *
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Chain& ) = 0;
+    virtual void saveFrom (const Chain&) = 0;
     /**
      * @brief
      *
      * @fn exists
      * @param
      */
-    virtual const bool exists ( const QString, const QString ) const = 0;
+    virtual bool exists (const QString&, const QString&) const = 0;
     /**
      * @brief
      *
      * @fn type
      */
-    virtual const QString type() const = 0;
+    virtual QString type() const = 0;
     /**
      * @brief
      *
      * @fn flag
      */
-    virtual const QString flag() const;
+    virtual QString flag() const;
     /**
      * @brief
      *
      * @fn locale
      */
-    virtual const QString locale() const;
+    virtual QString locale() const;
     /**
      * @brief
      *
@@ -295,7 +303,8 @@ private:
  *
  * @class Cache models.hpp "src/models.hpp"
  */
-class Cache {
+class Cache
+{
     /**
      * @brief
      *
@@ -315,21 +324,21 @@ private:
      */
 
 public:
-    static AbstractStorage* addStorage ( AbstractStorage* );
+    static AbstractStorage* addStorage (AbstractStorage*);
     /**
      * @brief
      *
      * @fn storage
      * @param
      */
-    static AbstractStorage* storage ( const QString& );
+    static AbstractStorage* storage (const QString&);
     /**
      * @brief
      *
      * @fn hasStorage
      * @param
      */
-    static const bool hasStorage ( const QString& );
+    static bool hasStorage (const QString&);
     /**
      * @brief
      *
@@ -343,21 +352,21 @@ public:
      * @fn write
      * @param
      */
-    static void write ( const Chain& );
+    static void write (const Chain&);
     /**
      * @brief
      *
      * @fn exists
      * @param
      */
-    static const bool exists ( const QString&, const QString& );
+    static bool exists (const QString&, const QString&);
     /**
      * @brief
      *
      * @fn read
      * @param
      */
-    static const bool read ( Chain& );
+    static bool read (Chain&);
 };
 
 }

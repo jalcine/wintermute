@@ -21,21 +21,24 @@
  */
 
 #ifndef ANGEL_HPP
-#define	ANGEL_HPP
+#define ANGEL_HPP
 
 #include <QObject>
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct Instance;
 
 /**
  * @brief
  */
-class Instance : public QObject {
+class Instance : public QObject
+{
     Q_OBJECT
-    Q_ENUMS ( Type Class )
-    Q_DISABLE_COPY ( Instance )
+    Q_ENUMS (Type Class)
+    Q_DISABLE_COPY (Instance)
 
 signals:
     void started();
@@ -56,12 +59,12 @@ public:
         ArchAngel
     };
 
-    Instance ( QObject* = 0 );
+    Instance (QObject* = 0);
     virtual ~Instance();
 };
 }
 }
 
-#endif	/* ANGEL_HPP */
+#endif  /* ANGEL_HPP */
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

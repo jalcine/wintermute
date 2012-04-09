@@ -35,93 +35,111 @@ using namespace Wintermute::Data::Linguistics::Lexical;
 
 const Data Data::Empty = Data();
 
-Data::Data() : m_id(), m_locale(), m_symbol(), m_flags() { }
+Data::Data() : QObject(), m_id(), m_locale(), m_symbol(), m_flags() { }
 
-Data::Data ( const Data& p_other ) : m_id ( p_other.m_id ),
-    m_locale ( p_other.m_locale ), m_symbol ( p_other.m_symbol ), m_flags ( p_other.m_flags ) { }
+Data::Data (const Data& p_other) : QObject (p_other.parent()), m_id (p_other.m_id),
+    m_locale (p_other.m_locale), m_symbol (p_other.m_symbol),
+    m_flags (p_other.m_flags) { }
 
-Data::Data ( const QString p_id, const QString p_locale, const QString p_symbol, const QVariantMap p_flags ) : m_id ( p_id ),
-    m_locale ( p_locale ), m_symbol ( p_symbol ), m_flags ( p_flags ) { }
+Data::Data (const QString p_id, const QString p_locale,
+            const QString p_symbol, const QVariantMap p_flags) : QObject(),
+    m_id (p_id), m_locale (p_locale),
+    m_symbol (p_symbol), m_flags (p_flags) { }
 
-const QVariantMap Data::flags () const {
+const QVariantMap Data::flags () const
+{
     return m_flags;
 }
 
-const QString Data::symbol () const {
+const QString Data::symbol () const
+{
     return m_symbol;
 }
 
-const QString Data::id () const {
+const QString Data::id () const
+{
     return m_id;
 }
 
-const QString Data::locale () const {
+const QString Data::locale () const
+{
     return m_locale;
 }
 
-void Data::setSymbol ( const QString& p_symbol ) {
-    if ( !p_symbol.isNull() && !p_symbol.isNull() ) {
+void Data::setSymbol (const QString& p_symbol)
+{
+    if (!p_symbol.isNull() && !p_symbol.isNull()) {
         m_symbol = p_symbol;
-        m_id = Data::idFromString ( m_symbol );
+        m_id = Data::idFromString (m_symbol);
     }
 }
 
-void Data::setLocale ( const QString& p_locale ) {
-    if ( !p_locale.isEmpty() && !p_locale.isNull() )
+void Data::setLocale (const QString& p_locale)
+{
+    if (!p_locale.isEmpty() && !p_locale.isNull())
         m_locale = p_locale;
 }
 
-void Data::setID ( const QString &p_id ) {
-    if ( !p_id.isEmpty() && !p_id.isNull() )
+void Data::setID (const QString& p_id)
+{
+    if (!p_id.isEmpty() && !p_id.isNull())
         m_id = p_id;
 }
 
-void Data::setFlags ( const QVariantMap& p_flags ) {
-    if ( !p_flags.empty() )
+void Data::setFlags (const QVariantMap& p_flags)
+{
+    if (!p_flags.empty())
         m_flags = p_flags;
 }
 
-bool Data::operator== ( const Data& p_otherDt ) const {
-    return ( ( m_flags == p_otherDt.m_flags ) && ( m_symbol == p_otherDt.m_symbol ) &&
-             ( m_locale == p_otherDt.m_locale ) && ( m_id == p_otherDt.m_id ) );
+bool Data::operator== (const Data& p_otherDt) const
+{
+    return ( (m_flags == p_otherDt.m_flags) && (m_symbol == p_otherDt.m_symbol) &&
+             (m_locale == p_otherDt.m_locale) && (m_id == p_otherDt.m_id));
 }
 
-void Data::operator= ( const Data& p_otherDt ) {
+void Data::operator= (const Data& p_otherDt)
+{
     m_flags = p_otherDt.m_flags;
     m_symbol = p_otherDt.m_symbol;
     m_locale = p_otherDt.m_locale;
     m_id = p_otherDt.m_id;
 }
 
-const bool Data::isValid () const {
+bool Data::isValid () const
+{
     return Data::Empty == *this;
 }
 
 /// @todo Use MD-5 hashing from another library (QCA has it) so we can eliminate md5.*pp.
-const QString Data::idFromString ( const QString p_symbol ) {
-    const QString id = QString::fromStdString ( md5 ( p_symbol.toLower ().toStdString () ) );
+const QString Data::idFromString (const QString p_symbol)
+{
+    const QString id = QString::fromStdString (md5 (p_symbol.toLower ().toStdString ()));
     //qDebug() << "(data) [Data]" << p_sym << id;
 
     return id;
 }
 
-Data Data::fromString ( const QString& p_string ) {
+Data Data::fromString (const QString& p_string)
+{
     Data dt;
 
-    if ( !p_string.isEmpty() && !p_string.isNull() ) {
+    if (!p_string.isEmpty() && !p_string.isNull()) {
         QJson::Parser* parser = new QJson::Parser;
-        QVariantMap map = parser->parse ( p_string.toAscii() ).toMap();
-        QJson::QObjectHelper::qvariant2qobject ( map,&dt );
-    } else
+        QVariantMap map = parser->parse (p_string.toAscii()).toMap();
+        QJson::QObjectHelper::qvariant2qobject (map, &dt);
+    }
+    else
         dt = Data::Empty;
 
     return dt;
 }
 
-Data::operator QString() const {
+Data::operator QString() const
+{
     QJson::Serializer* serializer = new QJson::Serializer;
-    QVariantMap map = QJson::QObjectHelper::qobject2qvariant ( this );
-    return QString ( serializer->serialize ( map ) );
+    QVariantMap map = QJson::QObjectHelper::qobject2qvariant (this);
+    return QString (serializer->serialize (map));
 }
 
 Data::~Data () { }

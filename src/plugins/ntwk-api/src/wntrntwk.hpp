@@ -23,23 +23,27 @@
 #ifndef WNTRNTWK_HPP
 #define WNTRNTWK_HPP
 
-#include "angel.hpp"
-#include "message.hpp"
-#include "broadcast.hpp"
-#include "system.hpp"
-#include "adaptors.hpp"
 #include <plugins.hpp>
+
+#include <angel.hpp>
+#include <message.hpp>
+#include <broadcast.hpp>
+#include <system.hpp>
+#include <adaptors.hpp>
 
 using Wintermute::Plugins::AbstractPlugin;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct Interface;
 struct Plugin;
 
-class Interface : public QObject {
+class Interface : public QObject
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( Interface )
+    Q_DISABLE_COPY (Interface)
     static Interface* s_ints;
     ~Interface();
 
@@ -57,12 +61,13 @@ signals:
     void stopped() const;
 };
 
-class Plugin : public AbstractPlugin {
+class Plugin : public AbstractPlugin
+{
     Q_OBJECT
 public:
     Plugin() : AbstractPlugin() { }
     ~Plugin() { }
-    Plugin ( Plugin const &k ) : AbstractPlugin ( k ) { }
+    Plugin (Plugin const& k) : AbstractPlugin (k) { }
 
     virtual void start() const;
     virtual void stop() const;
@@ -73,4 +78,4 @@ public:
 
 
 #endif /* WNTRNTWK_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

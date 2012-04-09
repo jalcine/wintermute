@@ -27,33 +27,38 @@
 // Qt includes
 #include <QObject>
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Lexical {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Lexical
+{
 
 class Data;
 
-class Manager : public QObject {
+class Manager : public QObject
+{
     friend class NodeAdaptor;
     friend class NodeInterface;
     Q_OBJECT
-    Q_DISABLE_COPY ( Manager )
+    Q_DISABLE_COPY (Manager)
 
 private:
     static Manager* s_inst;
     Manager();
 
 signals:
-    void nodeCreated ( const QString& );
+    void nodeCreated (const QString&);
 
 public slots:
     void generate();
-    Data& pseudo ( Data& ) const;
-    Data& read ( Data& ) const;
-    const Data& write ( const Data& );
-    const bool exists ( const Data& ) const;
-    const bool isPseudo ( const Data& ) const;
+    Data& pseudo (Data&) const;
+    Data& read (Data&) const;
+    const Data& write (const Data&);
+    bool exists (const Data&) const;
+    bool isPseudo (const Data&) const;
     static Manager* instance();
 };
 
@@ -63,4 +68,4 @@ public slots:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

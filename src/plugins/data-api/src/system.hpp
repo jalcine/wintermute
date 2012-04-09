@@ -27,14 +27,17 @@
 // Qt includes
 #include <QObject>
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 
-class System : public QObject {
+class System : public QObject
+{
     friend class SystemAdaptor;
     friend class SystemInterface;
     Q_OBJECT
-    Q_DISABLE_COPY ( System )
+    Q_DISABLE_COPY (System)
 
 private:
     static System* s_inst;
@@ -54,7 +57,7 @@ public:
      * @fn setDirectory
      * @param const QString
      */
-    static void setDirectory ( const QString& );
+    static void setDirectory (const QString&);
 
     /**
      * @brief Obtains an instance of the data system object.

@@ -32,10 +32,14 @@
 #include <QDBusArgument>
 
 
-namespace Wintermute {
-namespace Data {
-namespace Linguistics {
-namespace Syntax {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Linguistics
+{
+namespace Syntax
+{
 
 class Bond;
 class Chain;
@@ -67,18 +71,19 @@ typedef QList<Bond*> BondList;
  * @see Cache
  * @class Bond models.hpp "src/models.hpp"
  */
-class Bond : public QObject {
+class Bond : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( QString With READ with WRITE setWith )
-    Q_PROPERTY ( StringMap Attributes READ attributes WRITE setAttributes )
-    friend QDebug operator<< ( QDebug , const Bond& );
-    friend QDBusArgument& operator<< ( QDBusArgument& p_arg, const Bond& p_bnd){
+    Q_PROPERTY (QString With READ with WRITE setWith)
+    Q_PROPERTY (StringMap Attributes READ attributes WRITE setAttributes)
+    friend QDebug operator<< (QDebug , const Bond&);
+    friend QDBusArgument& operator<< (QDBusArgument& p_arg, const Bond& p_bnd) {
         p_arg.beginStructure();
         p_arg << p_bnd.m_props;
         p_arg.endStructure();
         return p_arg;
     }
-    friend const QDBusArgument& operator>> ( const QDBusArgument& p_arg, Bond& p_bnd){
+    friend const QDBusArgument& operator>> (const QDBusArgument& p_arg, Bond& p_bnd) {
         p_arg.beginStructure();
         p_arg >> p_bnd.m_props;
         p_arg.endStructure();
@@ -98,21 +103,21 @@ public:
      * @fn Bond
      * @param Bond The source Bond to be copied.
      */
-    Bond ( const Bond& );
+    Bond (const Bond&);
 
     /**
      * @brief Assignment operator.
      * @fn operator =
      * @param Bond The source Bond to be copied.
      */
-    void operator= ( const Bond& );
+    void operator= (const Bond&);
 
     /**
      * @brief Equality operator.
      * @fn operator ==
      * @param Bond The source Bond to be compared.
      */
-    const bool operator== ( const Bond& ) const;
+    bool operator== (const Wintermute::Data::Linguistics::Syntax::Bond& p_bond) const;
     /**
      * @brief Destructor.
      * @fn ~Bond
@@ -128,7 +133,7 @@ public:
      * @fn attribute
      * @param
      */
-    const QString attribute ( const QString& ) const;
+    const QString attribute (const QString&) const;
     /**
      * @brief
      * @fn attributes
@@ -139,37 +144,37 @@ public:
      * @fn hasAttribute
      * @param
      */
-    const bool hasAttribute ( const QString& ) const;
+    bool hasAttribute (const QString& p_attribute) const;
     /**
      * @brief
      * @fn setWith
      * @param
      */
-    void setWith ( QString& );
+    void setWith (QString&);
     /**
      * @brief
      * @fn setAttribute
      * @param
      * @param
      */
-    void setAttribute ( const QString& , QString& );
+    void setAttribute (const QString& , QString&);
     /**
      * @brief
      * @fn setAttributes
      * @param
      */
-    void setAttributes ( const StringMap& );
+    void setAttributes (const StringMap&);
     /**
      * @brief
      * @fn matches
      * @param
      * @param
      */
-    static const double matches ( const QString& , const QString& );
+    static double matches (const QString& p_regex, const QString& p_query);
 
     QString toString() const;
 
-    static Bond* fromString ( const QString& );
+    static Bond* fromString (const QString&);
 
 private:
     StringMap m_props; /**< Holds all of the attributes. */
@@ -181,7 +186,7 @@ private:
 }
 }
 
-Q_DECLARE_METATYPE ( Wintermute::Data::Linguistics::Syntax::Bond );
+Q_DECLARE_METATYPE (Wintermute::Data::Linguistics::Syntax::Bond);
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

@@ -23,7 +23,7 @@
  */
 
 #ifndef ONTOLOGY_HPP
-#define	ONTOLOGY_HPP
+#define ONTOLOGY_HPP
 
 // Qt
 #include <QUrl>
@@ -41,9 +41,12 @@
 using namespace std;
 
 
-namespace Wintermute {
-namespace Data {
-namespace Ontology {
+namespace Wintermute
+{
+namespace Data
+{
+namespace Ontology
+{
 struct System;
 struct Resource;
 struct Repository;
@@ -53,7 +56,8 @@ typedef QString Concept;
 /**
  * \brief Configuration class for the ontology section.
  */
-class System : public QObject {
+class System : public QObject
+{
     Q_OBJECT
 
 private:
@@ -103,9 +107,10 @@ public:
  * \class Resource ontology.hpp "src/ontology.hpp"
  * \todo Add 'operator==()', 'operator!=()', and 'operator=()' to this method for convience.
  */
-class Resource : public QObject {
+class Resource : public QObject
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( Resource )
+    Q_DISABLE_COPY (Resource)
 
 public:
     /**
@@ -114,7 +119,7 @@ public:
      * \fn Resource
      * \param parent The parent object.
      */
-    explicit Resource ( QObject* = 0 );
+    explicit Resource (QObject* = 0);
 
     /**
      * \brief Initializating constructor.
@@ -126,7 +131,7 @@ public:
      * \param node The Soprano::Node that this Resource represents.
      * \param parent The parent repository.
      */
-    Resource ( const Soprano::Node& , const Repository* , QObject* = 0 );
+    Resource (const Soprano::Node& , const Repository* , QObject* = 0);
 
     /**
      * \brief Deconstructor.
@@ -140,11 +145,11 @@ public:
      *
      * \fn countConcepts
      */
-    static const int countConcepts();
+    static int countConcepts();
 
 private:
-    const Repository* m_repo;
     Soprano::Node m_node;
+    const Repository* m_repo;
 
 };
 
@@ -159,15 +164,16 @@ private:
  *
  * \class Repository ontology.hpp "src/ontology.hpp"
  */
-class Repository : public QObject {
+class Repository : public QObject
+{
     Q_OBJECT
 signals:
     void loaded() const;
 
 public:
-    explicit Repository ( const QObject* parent = 0 );
-    Repository ( const QString& p_str );
-    Repository ( const Repository& p_repo );
+    explicit Repository (const QObject* parent = 0);
+    Repository (const QString& p_str);
+    Repository (const Repository& p_repo);
     virtual ~Repository();
 
     const QUrl url() const;
@@ -178,15 +184,15 @@ public:
      * \param concept concept to search for
      * \return pointer to the object representing the concept
      */
-    Resource* obtainResource ( Concept const& concept ) const;
-    static Resource* obtainResource ( const QString&, const QString& );
+    Resource* obtainResource (Concept const& concept) const;
+    static Resource* obtainResource (const QString&, const QString&);
 
-    static Repository* obtainRepository ( const QString& );
-    static const int countOntologies();
+    static Repository* obtainRepository (const QString&);
+    static int countOntologies();
 
 private:
     static QMap<QString, Repository*> s_repos;
-    void load ( const QString& = QString::null ) const;
+    void load (const QString& = QString::null) const;
     mutable QString m_repoName;
     mutable Soprano::Client::SparqlModel* m_model;
 };
@@ -195,6 +201,6 @@ private:
 }
 }
 
-#endif	/* ONTOLOGY_HPP */
+#endif  /* ONTOLOGY_HPP */
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

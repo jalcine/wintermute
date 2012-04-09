@@ -31,4 +31,4 @@
 
 #define WNTRDATA_DBUS_SERVICE WNTR_DBUS_PLUGIN_NAME".@WNTRDATA_UUID@"
 
-// kate: indent-mode cstyle; space-indent on; indent-width 4;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

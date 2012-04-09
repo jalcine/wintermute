@@ -1,8 +1,4 @@
-/**
- * @author Wintermute Development <wntr-devel@thesii.org>
- * @file logging.hpp
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -18,6 +14,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
+ */
+/**
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ * @file logging.hpp
  */
 
 #include "logging.hpp"

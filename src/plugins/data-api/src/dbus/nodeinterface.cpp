@@ -32,10 +32,11 @@
 using Wintermute::Data::NodeInterface;
 
 NodeInterface::NodeInterface()
-    : QDBusAbstractInterface ( "", "/Nodes", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin() ) {
+    : QDBusAbstractInterface ("", "/Nodes", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin())
+{
 }
 
 NodeInterface::~NodeInterface() { }
 
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

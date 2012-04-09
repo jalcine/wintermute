@@ -32,7 +32,8 @@
 using Wintermute::Data::SyntaxInterface;
 
 SyntaxInterface::SyntaxInterface()
-    : QDBusAbstractInterface ( WNTRDATA_DBUS_SERVICE, "/Rules", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin() ) {
+    : QDBusAbstractInterface (WNTRDATA_DBUS_SERVICE, "/Rules", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin())
+{
 }
 
 SyntaxInterface::~SyntaxInterface() { }

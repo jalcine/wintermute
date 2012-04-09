@@ -29,48 +29,51 @@
 #include <QDBusPendingReply>
 #include <QDBusAbstractInterface>
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 
-class SystemInterface: public QDBusAbstractInterface {
+class SystemInterface: public QDBusAbstractInterface
+{
     Q_OBJECT
 public:
-    static inline const char *staticInterfaceName() {
+    static inline const char* staticInterfaceName() {
         return "org.thesii.Wintermute.Data.System";
     }
 
     SystemInterface();
     ~SystemInterface();
 
-    Q_PROPERTY ( QString Directory READ directory WRITE setDirectory )
+    Q_PROPERTY (QString Directory READ directory WRITE setDirectory)
 
     inline QString directory() const {
-        return qvariant_cast< QString > ( property ( "Directory" ) );
+        return qvariant_cast< QString > (property ("Directory"));
     }
-    inline void setDirectory ( const QString &value ) {
-        setProperty ( "Directory", qVariantFromValue ( value ) );
+    inline void setDirectory (const QString& value) {
+        setProperty ("Directory", qVariantFromValue (value));
     }
 
 public slots:
-    inline QDBusPendingReply<bool> localeExists ( const QString &in0 ) {
+    inline QDBusPendingReply<bool> localeExists (const QString& in0) {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue ( in0 );
-        return asyncCallWithArgumentList ( QLatin1String ( "localeExists" ), argumentList );
+        argumentList << qVariantFromValue (in0);
+        return asyncCallWithArgumentList (QLatin1String ("localeExists"), argumentList);
     }
 
     inline QDBusPendingReply<> quit() {
         QList<QVariant> argumentList;
-        return asyncCallWithArgumentList ( QLatin1String ( "quit" ), argumentList );
+        return asyncCallWithArgumentList (QLatin1String ("quit"), argumentList);
     }
 
     inline Q_NOREPLY void start() {
         QList<QVariant> argumentList;
-        callWithArgumentList ( QDBus::NoBlock, QLatin1String ( "start" ), argumentList );
+        callWithArgumentList (QDBus::NoBlock, QLatin1String ("start"), argumentList);
     }
 
     inline Q_NOREPLY void stop() {
         QList<QVariant> argumentList;
-        callWithArgumentList ( QDBus::NoBlock, QLatin1String ( "stop" ), argumentList );
+        callWithArgumentList (QDBus::NoBlock, QLatin1String ("stop"), argumentList);
     }
 
 signals:
@@ -80,6 +83,6 @@ signals:
 
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
 
 #endif

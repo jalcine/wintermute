@@ -31,12 +31,16 @@
 // local includes
 #include "data.hpp"
 
-namespace Wintermute {
-namespace Data {
+namespace Wintermute
+{
+namespace Data
+{
 class NodeAdaptor;
-namespace Linguistics {
+namespace Linguistics
+{
 class System;
-namespace Lexical {
+namespace Lexical
+{
 
 class AbstractModel;
 class AbstractSaveModel;
@@ -57,9 +61,10 @@ class Cache;
  * @see LoadModel, SaveModel
  * @class Model models.hpp "src/models.hpp"
  */
-class AbstractModel : public QObject {
+class AbstractModel : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( Data data READ data WRITE setData )
+    Q_PROPERTY (Data data READ data WRITE setData)
 
 protected:
     mutable Data m_dt; /**< The variable holding the internal Data. */
@@ -82,14 +87,14 @@ public:
      * @fn Model
      * @param p_info The data to fill itself with.
      */
-    AbstractModel ( Data& );
+    AbstractModel (Data&);
 
     /**
      * @brief Copy constructor.
      * @fn Model
      * @param p_mdl The Model to be copied.
      */
-    AbstractModel ( const AbstractModel& );
+    AbstractModel (const AbstractModel&);
 
     /**
      * @brief Obtains the data stored in this Model.
@@ -103,7 +108,7 @@ public:
      * @fn setData
      * @param p_dt The Data to be used, or typically Data::Null.
      */
-    void setData ( const Data& = Data::Empty );
+    void setData (const Data& = Data::Empty);
 };
 
 /**
@@ -120,7 +125,8 @@ public:
  * @see DomSaveModel
  * @class SaveModel models.hpp "src/models.hpp"
  */
-class AbstractSaveModel : public AbstractModel {
+class AbstractSaveModel : public AbstractModel
+{
     Q_OBJECT
 protected:
     /**
@@ -134,21 +140,21 @@ protected:
      * @fn SaveModel
      * @param p_lxin The Data to be saved.
      */
-    AbstractSaveModel ( Data& );
+    AbstractSaveModel (Data&);
 
     /**
      * @brief Base copy constructor.
      * @fn SaveModel
      * @param p_mod The Model to be copied.
      */
-    AbstractSaveModel ( const AbstractModel& );
+    AbstractSaveModel (const AbstractModel&);
 
     /**
      * @brief Copy constructor.
      * @fn SaveModel
      * @param p_smod The SaveModel to be copied.
      */
-    AbstractSaveModel ( const AbstractSaveModel& );
+    AbstractSaveModel (const AbstractSaveModel&);
 
     /**
      * @brief Deconstructor.
@@ -170,7 +176,7 @@ public:
      * @fn saveFrom
      * @param p_dt The Data to be saved.
      */
-    virtual void saveFrom ( const Data& ) = 0;
+    virtual void saveFrom (const Data&) = 0;
 
 signals:
 
@@ -196,7 +202,8 @@ signals:
  *
  * @class LoadModel models.hpp "src/models.hpp"
  */
-class AbstractLoadModel : public AbstractModel {
+class AbstractLoadModel : public AbstractModel
+{
     Q_OBJECT
 
 protected:
@@ -211,14 +218,14 @@ protected:
      * @fn LoadModel
      * @param p_mdl The LoadModel to be copied.
      */
-    AbstractLoadModel ( const AbstractLoadModel& );
+    AbstractLoadModel (const AbstractLoadModel&);
 
     /**
      * @brief Base copy constructor.
      * @fn LoadModel
      * @param p_mdl The Model to be copied.
      */
-    AbstractLoadModel ( const AbstractModel& );
+    AbstractLoadModel (const AbstractModel&);
 
     /**
      * @brief Deconstructor.
@@ -234,14 +241,14 @@ public:
      * @fn load
      * @return The Data obtained, or Data::Null.
      */
-    virtual const Data load( ) const = 0;
+    virtual const Data load() const = 0;
 
     /**
      * @brief Loads the lexical information storage to p_dt.
      * @fn loadTo
      * @param p_dt The Data to load the information to.
      */
-    virtual bool loadTo ( Data& ) const = 0;
+    virtual bool loadTo (Data&) const = 0;
 
 signals:
     /**
@@ -267,7 +274,8 @@ class AbstractBackend { };
  *
  * @class Storage models.hpp "src/models.hpp"
  */
-class Storage : public virtual AbstractBackend {
+class Storage : public virtual AbstractBackend
+{
 public:
     /**
      * @brief Null constructor.
@@ -280,21 +288,21 @@ public:
      * @fn Storage
      * @param Storage The object to be copied.
      */
-    Storage ( const Storage& );
+    Storage (const Storage&);
 
     /**
      * @brief Builds a @see Storage object from a @see Backend
      * @fn Storage
      * @param
      */
-    explicit Storage ( const AbstractBackend& );
+    explicit Storage (const AbstractBackend&);
 
     /**
      * @brief Equality operator.
      * @fn operator ==
      * @param
      */
-    bool operator== ( const Storage& ) const;
+    bool operator== (const Storage&) const;
 
     /**
      * @brief Reports the kind of data storage this @see Storage use.
@@ -308,7 +316,7 @@ public:
      * @fn exists
      * @param @see Data The @see Data in question.
      */
-    virtual const bool exists ( const Data& ) const = 0;
+    virtual bool exists (const Data&) const = 0;
 
     /**
      * @brief
@@ -316,7 +324,7 @@ public:
      * @note This method <b>edits</b> the Data passed to this method.
      * @param
      */
-    virtual void loadTo ( Data& ) const = 0;
+    virtual void loadTo (Data&) const = 0;
 
     /**
      * @brief
@@ -324,7 +332,7 @@ public:
      * @fn saveFrom
      * @param
      */
-    virtual void saveFrom ( const Data& ) = 0;
+    virtual void saveFrom (const Data&) = 0;
     /**
      * @brief
      *
@@ -337,14 +345,14 @@ public:
      * @fn hasPseudo
      * @param
      */
-    virtual const bool hasPseudo ( const Data& ) const = 0;
+    virtual bool hasPseudo (const Data&) const = 0;
     /**
      * @brief
      *
      * @fn loadPseudo
      * @param
      */
-    virtual void loadPseudo ( Data& ) const = 0;
+    virtual void loadPseudo (Data&) const = 0;
 
     /**
      * @brief
@@ -353,7 +361,7 @@ public:
      * @param
      * @param
      */
-    virtual const QString obtainFullSuffix ( const QString&, const QString& ) const = 0;
+    virtual const QString obtainFullSuffix (const QString&, const QString&) const = 0;
 };
 
 /**
@@ -361,7 +369,8 @@ public:
  *
  * @class Cache models.hpp "src/models.hpp"
  */
-class Cache {
+class Cache
+{
     friend class Storage;
     friend class Wintermute::Data::NodeAdaptor;
     friend class Wintermute::Data::Linguistics::System;
@@ -376,7 +385,7 @@ private:
      * @fn addStorage
      * @param
      */
-    static Storage* addStorage ( Storage* );
+    static Storage* addStorage (Storage*);
     /**
      * @brief
      *
@@ -389,14 +398,14 @@ private:
      * @fn hasStorage
      * @param
      */
-    static const bool hasStorage ( const QString& );
+    static bool hasStorage (const QString&);
     /**
      * @brief
      *
      * @fn storage
      * @param
      */
-    static Storage* storage ( const QString& );
+    static Storage* storage (const QString&);
 
 public:
     ~Cache();
@@ -406,35 +415,35 @@ public:
      * @fn read
      * @param
      */
-    static const bool read ( Data & );
+    static bool read (Data&);
     /**
      * @brief
      *
      * @fn write
      * @param
      */
-    static void write ( const Data & );
+    static void write (const Data&);
     /**
      * @brief
      *
      * @fn exists
      * @param
      */
-    static const bool exists ( const Data& );
+    static bool exists (const Data&);
     /**
      * @brief
      *
      * @fn pseudo
      * @param
      */
-    static void pseudo ( Data & );
+    static void pseudo (Data&);
     /**
      * @brief
      *
      * @fn isPseudo
      * @param
      */
-    static const bool isPseudo ( const Data & );
+    static bool isPseudo (const Data&);
     /**
      * @brief
      *
@@ -447,14 +456,14 @@ public:
      *
      * @fn countFlags
      */
-    static const int countFlags();
+    static int countFlags();
 
     /**
      * @brief
      *
      * @fn countSymbols
      */
-    static const int countSymbols();
+    static int countSymbols();
 
     /**
      * @brief
@@ -462,7 +471,7 @@ public:
      * @fn allNodes
      * @param
      */
-    static const QStringList allNodes ( const QString& );
+    static const QStringList allNodes (const QString&);
 
     /**
      * @brief
@@ -471,7 +480,7 @@ public:
      * @param
      * @param
      */
-    static const QString obtainFullSuffix ( const QString&, const QString& );
+    static const QString obtainFullSuffix (const QString&, const QString&);
 };
 
 }

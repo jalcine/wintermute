@@ -24,20 +24,23 @@
 #ifndef ADAPTORS_HPP
 #define ADAPTORS_HPP
 
-#include <wintermute/adaptors.hpp>
+#include <adaptors.hpp>
 #include <QtDBus/QDBusMessage>
 
 using Wintermute::AbstractAdaptor;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct Message;
 struct BroadcastAdaptor;
 struct SystemAdaptor;
 
-class BroadcastAdaptor : public AbstractAdaptor {
+class BroadcastAdaptor : public AbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.Network.Broadcast" )
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Network.Broadcast")
 
 public:
     explicit BroadcastAdaptor();
@@ -54,41 +57,42 @@ public slots:
     void startBroadcasting();
 };
 
-class SystemAdaptor : public AbstractAdaptor {
+class SystemAdaptor : public AbstractAdaptor
+{
     Q_OBJECT
-    Q_CLASSINFO ( "D-Bus Interface","org.thesii.Wintermute.Network.System" )
-    Q_CLASSINFO ( "D-Bus Introspection", ""
-                  "  <interface name=\"org.thesii.Wintermute.Network.System\">\n"
-                  "    <signal name=\"messageRecieved\">\n"
-                  "      <arg direction=\"in\" type=\"Wintermute::Network::Message\"/>\n"
-                  "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
-                  "    </signal>\n"
-                  "    <method name=\"isActive\" />\n"
-                  "      <arg direction=\"out\" type=\"Wintermute::Data::Linguistics::Rules::Chain\"/>\n"
-                  "      <arg direction=\"in\" type=\"Wintermute::Data::Linguistics::Rules::Chain\"/>\n"
-                  "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
-                  "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.Out0\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"sendMessage\">\n"
-                  "      <arg direction=\"in\" type=\"Wintermute::Network::Message\"/>\n"
-                  "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"isActive\">\n"
-                  "      <arg direction=\"out\" type=\"b\"/>\n"
-                  "    </method>\n"
-                  "    <method name=\"quit\"/>\n"
-                  "  </interface>\n"
-                  "" )
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Network.System")
+    Q_CLASSINFO ("D-Bus Introspection", ""
+                 "  <interface name=\"org.thesii.Wintermute.Network.System\">\n"
+                 "    <signal name=\"messageRecieved\">\n"
+                 "      <arg direction=\"in\" type=\"Wintermute::Network::Message\"/>\n"
+                 "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
+                 "    </signal>\n"
+                 "    <method name=\"isActive\" />\n"
+                 "      <arg direction=\"out\" type=\"Wintermute::Data::Linguistics::Rules::Chain\"/>\n"
+                 "      <arg direction=\"in\" type=\"Wintermute::Data::Linguistics::Rules::Chain\"/>\n"
+                 "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
+                 "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.Out0\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"sendMessage\">\n"
+                 "      <arg direction=\"in\" type=\"Wintermute::Network::Message\"/>\n"
+                 "      <annotation value=\"Wintermute::Data::Linguistics::Rules::Chain\" name=\"com.trolltech.QtDBus.QtTypeName.In0\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"isActive\">\n"
+                 "      <arg direction=\"out\" type=\"b\"/>\n"
+                 "    </method>\n"
+                 "    <method name=\"quit\"/>\n"
+                 "  </interface>\n"
+                 "")
 public:
     explicit SystemAdaptor();
 
 signals:
-    void messageRecieved ( const Network::Message& );
+    void messageRecieved (const Network::Message&);
     void started();
     void stopped();
 
 public slots:
-    Q_INVOKABLE Q_NOREPLY void sendMessage ( const Network::Message& );
+    Q_INVOKABLE Q_NOREPLY void sendMessage (const Network::Message&);
     Q_INVOKABLE const bool isActive() const;
     virtual void quit() const;
 };
@@ -96,4 +100,4 @@ public slots:
 };
 
 #endif // ADAPTORS_HPP
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

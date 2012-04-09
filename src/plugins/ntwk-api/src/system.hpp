@@ -36,8 +36,10 @@ struct QTcpServer;
 struct QTcpSocket;
 struct QUdpSocket;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct System;
 struct Server;
 
@@ -84,7 +86,8 @@ enum Features {
  * @see Message
  * @class System "src/system.hpp"
  */
-class System : public QObject {
+class System : public QObject
+{
     Q_OBJECT
     friend class Server;
 
@@ -101,7 +104,7 @@ signals:
      * @fn messageRecieved
      * @param p_msg The recieved @see Message.
      */
-    void messageRecieved ( const Message& );
+    void messageRecieved (const Message&);
 
 public:
     /**
@@ -123,7 +126,7 @@ public:
      * @param p_tr The kind of Server to send the Message.
      * @see Features
      */
-    static void send ( const Message& , const Features& = Reliable );
+    static void send (const Message& , const Features& = Reliable);
 
     /**
      * @brief Sends a Message to a designated client socket.
@@ -135,7 +138,7 @@ public:
      * @param p_msg The Message to be sent.
      * @param p_prtcl The specific protocol to use.
      */
-    static void send ( const Message& , const QString& );
+    static void send (const Message& , const QString&);
 
     /**
      * @brief Starts the AngelNet system.
@@ -190,7 +193,7 @@ public:
      * @fn toHostAddress
      * @param
      */
-    static const QHostAddress toHostAddress ( const QString& );
+    static const QHostAddress toHostAddress (const QString&);
     /**
      * @brief Obtains an qualifier from a host address.
      *
@@ -203,7 +206,7 @@ public:
      * @fn toQualifier
      * @param
      */
-    static const QString toQualifier ( const QHostAddress& );
+    static const QString toQualifier (const QHostAddress&);
 
 protected:
     /**
@@ -217,7 +220,7 @@ protected:
      * @fn System
      * @param p_sytm The System being copied.
      */
-    System ( const System& );
+    System (const System&);
 
     /**
      * @brief Deconstructor.
@@ -275,10 +278,11 @@ private:
  * @see UdpServer
  * @class Server system.hpp "src/system.hpp"
  */
-class Server : public QObject {
+class Server : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( const QString Protocol READ protocol )
-    Q_PROPERTY ( const Features Features READ features )
+    Q_PROPERTY (const QString Protocol READ protocol)
+    Q_PROPERTY (const Features Features READ features)
 
 signals:
     /**
@@ -290,7 +294,7 @@ signals:
      * @fn messageRecieved
      * @param p_msg The message crafted from the data from the network.
      */
-    void messageRecieved ( const Message& );
+    void messageRecieved (const Message&);
 
 public:
     /**
@@ -304,7 +308,7 @@ public:
      * @fn Server
      * @param p_srvr The Server to be copied.
      */
-    Server ( const Server& );
+    Server (const Server&);
 
     /**
      * @brief Deconstructor.
@@ -352,7 +356,7 @@ public:
      * @fn send
      * @param
      */
-    virtual void send ( const Message& ) = 0;
+    virtual void send (const Message&) = 0;
 
     /**
      * @brief Returns the protocol name.
@@ -427,9 +431,10 @@ protected slots:
  * @see Server
  * @class LocalServer system.hpp "src/system.hpp"
  */
-class LocalServer : public Server {
+class LocalServer : public Server
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( LocalServer )
+    Q_DISABLE_COPY (LocalServer)
 
 public:
     /**
@@ -475,7 +480,7 @@ public:
      * @fn send
      * @param
      */
-    virtual void send ( const Message & );
+    virtual void send (const Message&);
 
     /**
      * @brief Determines if the local server is active.
@@ -540,9 +545,9 @@ protected slots:
     virtual void handleRead ();
 
 private:
-    QLocalServer *m_server;
-    QLocalSocket *m_sckt;
-    QLocalSocket *m_brdcstSckt;
+    QLocalServer* m_server;
+    QLocalSocket* m_sckt;
+    QLocalSocket* m_brdcstSckt;
     static LocalServer s_lclSrv;
 };
 
@@ -551,7 +556,8 @@ private:
  *
  * @class TcpServer system.hpp "src/system.hpp"
  */
-class TcpServer : public Server {
+class TcpServer : public Server
+{
     Q_OBJECT
 
 public:
@@ -568,7 +574,7 @@ public:
      * @fn TcpServer
      * @param
      */
-    TcpServer ( const TcpServer& );
+    TcpServer (const TcpServer&);
 
     /**
      * @brief
@@ -597,7 +603,7 @@ public:
      * @fn send
      * @param
      */
-    virtual void send ( const Message & );
+    virtual void send (const Message&);
 
     /**
      * @brief

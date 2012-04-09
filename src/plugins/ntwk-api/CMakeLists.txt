@@ -8,37 +8,30 @@ set(WNTRNTWK_UUID "6d2a54ae-043d-11e1-b46a-93253d2b7d89")
 set(WNTRNTWK_VERSION
                 ${WNTRNTWK_MAJOR_VERSION}.${WNTRNTWK_MINOR_VERSION})
 
-## Custom modules
-list(APPEND CMAKE_MODULE_PATH "cmake/Modules")
-
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
 ## Packages
 find_package(Wintermute 0.1 REQUIRED)
-find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
-    QtNetwork
-    REQUIRED)
-find_package(QJSON REQUIRED)
+find_package(QJson REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(QCA qca2>=2.0.2)
-
-include("${QT_USE_FILE}")
+find_package(QCA REQUIRED)
 
 ## Main variables
 set(VS_KEYWORD Qt4VSv1.0)
 set(VS_SCC_PROJECTNAME "Wintermute Network")
 set(NTWK_BROADCAST_INTERVAL 200)
-set(WNTRNTWK_INCLUDE_DIR "${WINTER_PLUGIN_INCLUDE_INSTALL_DIR}/ntwk" CACHE PATH "Includes directory.")
+set(WNTRNTWK_INCLUDE_DIR "${WINTER_PLUGIN_INCLUDE_INSTALL_DIR}/network" CACHE PATH "Includes directory.")
 set(WNTRNTWK_LIB_DIR "${WINTER_PLUGIN_INSTALL_DIR}" CACHE PATH "Library install directory.")
 set(WNTRNTWK_INCLUDE_DIRS "${WNTRNTWK_INCLUDE_DIR}"
         ${Boost_INCLUDE_DIR}
         ${QJSON_INCLUDE_DIR}
-        ${QT_INCLUDE_DIR}
+        ${QCA_INCLUDE_DIRS}
         ${WINTERMUTE_INCLUDE_DIRS}
         ${PYTHON_INCLUDE_DIRS})
 set(WNTRNTWK_LIBRARIES ${QT_QTNETWORK_LIBRARY}
         ${QJSON_LIBRARIES}
+        ${QCA_LIBRARIES}
         ${WINTERMUTE_LIBRARIES})
 set(WNTRNTWK_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/WntrNtwk" CACHE PATH "CMake directory.")
 set(WNTRNTWK_COMPILE_DEFINTIONS ${WINTERMUTE_COMPILE_DEFINITIONS})

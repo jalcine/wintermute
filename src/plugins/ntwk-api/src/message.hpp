@@ -20,7 +20,7 @@
  */
 
 #ifndef MESSAGE_HPP
-#define	MESSAGE_HPP
+#define MESSAGE_HPP
 
 #include <QVariant>
 #include <QDateTime>
@@ -28,8 +28,10 @@
 
 class QDBusArgument;
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct Message;
 
 /**
@@ -59,14 +61,15 @@ struct Message;
  * @todo Add operating overloading for searching through messages (operator[](const QString)).
  * @todo Add stream operating support.
  */
-class Message : public QObject {
+class Message : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY ( const QString Type READ type )
-    Q_PROPERTY ( const QDateTime CreationTime READ creationTime )
-    friend QDataStream& operator<< ( QDataStream&, const Message& );
-    friend QDataStream& operator>> ( QDataStream&, Message& );
-    friend QDBusArgument& operator<< ( QDBusArgument&, const Message& );
-    friend QDBusArgument& operator>> ( const QDBusArgument&, Message& );
+    Q_PROPERTY (const QString Type READ type)
+    Q_PROPERTY (const QDateTime CreationTime READ creationTime)
+    friend QDataStream& operator<< (QDataStream&, const Message&);
+    friend QDataStream& operator>> (QDataStream&, Message&);
+    friend QDBusArgument& operator<< (QDBusArgument&, const Message&);
+    friend QDBusArgument& operator>> (const QDBusArgument&, Message&);
 
 private:
     static long s_count; /**< Holds the number of messages ever sent since the process started. */
@@ -96,9 +99,9 @@ public:
      * @param p_attrName The name of the attribute.
      * @param p_attrValue The value of the attribute.
      */
-    explicit Message ( const QString&, const QVariant& );
+    explicit Message (const QString&, const QVariant&);
 
-    Message ( const QVariantMap& );
+    Message (const QVariantMap&);
 
     /**
      * @brief Copy constructor.
@@ -106,7 +109,7 @@ public:
      * Creates a copy of a Message.
      * @param p_msg The Message to be copied.
      */
-    Message ( const Message& );
+    Message (const Message&);
 
     /**
      * @brief Destructor.
@@ -115,9 +118,9 @@ public:
      */
     ~Message();
 
-    void setAttribute ( const QString&, const QVariant& );
+    void setAttribute (const QString&, const QVariant&);
 
-    QVariant& attribute ( const QString& ) const;
+    QVariant& attribute (const QString&) const;
 
     /**
      * @brief Gets message type.
@@ -156,15 +159,15 @@ public:
      * @return A shiny new @see Message, just for you!
      * @todo Implement a means of decrypting this @see Message (hint: use QCA + GPG!).
      */
-    static Message* fromString ( const QString& );
+    static Message* fromString (const QString&);
 
-    static Message* fromVariantMap ( const QVariantMap& );
+    static Message* fromVariantMap (const QVariantMap&);
 };
 }
 }
 
-Q_DECLARE_METATYPE ( Wintermute::Network::Message )
+Q_DECLARE_METATYPE (Wintermute::Network::Message)
 
-#endif	/* MESSAGE_HPP */
+#endif  /* MESSAGE_HPP */
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

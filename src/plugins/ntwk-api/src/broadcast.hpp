@@ -30,8 +30,10 @@ using Wintermute::Network::Message;
 
 struct QHostAddress; //forward decl
 
-namespace Wintermute {
-namespace Network {
+namespace Wintermute
+{
+namespace Network
+{
 struct Broadcast;
 struct BroadcastMessage;
 
@@ -45,9 +47,10 @@ struct BroadcastMessage;
  *
  * @see BroadcastMessage
  */
-class Broadcast : public QObject {
+class Broadcast : public QObject
+{
     Q_OBJECT
-    Q_DISABLE_COPY ( Broadcast )
+    Q_DISABLE_COPY (Broadcast)
 
 private:
     static Broadcast* s_brdcst;
@@ -59,7 +62,7 @@ signals:
      * @fn pingReply
      * @param p_hst The qualifier representing the sender host.
      */
-    void pingReply ( const QString& ) const;
+    void pingReply (const QString&) const;
 
 public:
     ~Broadcast();
@@ -70,21 +73,21 @@ public:
      * @see start()
      * @see stop()
      */
-    static const bool isActive( );
+    static const bool isActive();
 
     /**
      * @brief Sends a ping to a specified host by its qualifier.
      * @fn ping
      * @param p_qualifier The qualifier of the host to send the ping to.
      */
-    static void ping ( const QString& );
+    static void ping (const QString&);
 
     /**
      * @brief Sends a ping to a specified host by its address.
      * @fn ping
      * @param p_addr The direct addres of the host to send the ping to.
      */
-    static void ping ( const QHostAddress& );
+    static void ping (const QHostAddress&);
 
     /**
      * @brief
@@ -103,7 +106,7 @@ public slots:
      * @note If you want to <i>start</i> the broadcasting system, use start() instead.
      * @see start()
      */
-    static void unload( );
+    static void unload();
 
     /**
      * @brief Deinitializes the broadcast system.
@@ -114,7 +117,7 @@ public slots:
      * @note If you want to <i>stop</i> the broadcasting system, use stop() instead.
      * @see stop()
      */
-    static void load( );
+    static void load();
     /**
       * @brief Starts the system.
       *
@@ -156,7 +159,7 @@ public slots:
 
 private slots:
     static void sendSignal();
-    static void readSignal ( const Message& );
+    static void readSignal (const Message&);
 };
 
 /**
@@ -169,10 +172,11 @@ private slots:
  * typically sent over UDP, as supplied by the UDPServer, and therefore have random destination-arrival
  * dates.
  */
-class BroadcastMessage : public Message {
+class BroadcastMessage : public Message
+{
     Q_GADGET
-    Q_ENUMS ( BroadcastType )
-    Q_PROPERTY ( const BroadcastType BroadcastType READ broadcastType )
+    Q_ENUMS (BroadcastType)
+    Q_PROPERTY (const BroadcastType BroadcastType READ broadcastType)
 
 public:
     /**
@@ -200,14 +204,14 @@ public:
      * @param type A reference to a broadcast type, defaults to Unspecified.
      * @see BroadcastType
      */
-    explicit BroadcastMessage ( const BroadcastType & = Unspecified );
+    explicit BroadcastMessage (const BroadcastType & = Unspecified);
 
     /**
      * @brief Copy constructor.
      * @fn BroadcastMessage
      * @param p_msg The source message.
      */
-    BroadcastMessage ( const Message& );
+    BroadcastMessage (const Message&);
 
     /**
      * @brief Obtains the broadcast type.
@@ -216,10 +220,10 @@ public:
      * @return BroadcastType The type of broadcast.
      * @see BroadcastType
      */
-    const BroadcastType broadcastType( ) const;
+    const BroadcastType broadcastType() const;
 };
 }
 }
-#endif	/* BROADCAST_HPP */
+#endif  /* BROADCAST_HPP */
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
