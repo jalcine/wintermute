@@ -24,7 +24,7 @@
 #define _PLUGINS_HPP_
 
 // Joint header
-#include "abstractplugin.hpp"
+#include "plugin.hpp"
 #include "factory.hpp"
 #include "pluginhandle.hpp"
 

@@ -25,7 +25,7 @@
 #include "backend.hpp"
 #include "ipc.hpp"
 
-#include "abstractplugin.hpp"
+#include "plugin.hpp"
 #include "factory.hpp"
 #include "pluginhandle.hpp"
 
@@ -123,7 +123,7 @@ const QStringList PluginFactoryAdaptor::loadedPlugins() const
 void PluginFactoryAdaptor::quit() const
 {
     emit aboutToQuit();
-    Factory::Shutdown();
+    Factory::shutdown();
 }
 
 PluginHandleAdaptor::PluginHandleAdaptor (AbstractPlugin* p_plgn) : AbstractAdaptor (Core::instance())

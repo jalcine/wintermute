@@ -52,8 +52,8 @@ void System::start()
 
     if (instance()->m_appMod == "master") {
         objectName = "master";
-        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (Startup()));
-        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (Shutdown()));
+        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (startup()));
+        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (shutdown()));
 
         CoreAdaptor* coreAdaptor = new CoreAdaptor;
         Plugins::PluginFactoryAdaptor* pluginFactoryAdaptor = new Plugins::PluginFactoryAdaptor;
