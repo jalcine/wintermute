@@ -20,8 +20,8 @@
  * @endlegalese
  */
 // WntrData includes
-#include <data/dbus/interfaces.hpp>
-#include <data/syntax/bond.hpp>
+#include <data-api/dbus/interfaces.hpp>
+#include <data-api/syntax/bond.hpp>
 
 #include "binding.hpp"
 #include "rule.hpp"

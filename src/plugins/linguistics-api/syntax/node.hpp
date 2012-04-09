@@ -28,8 +28,8 @@
 #include <QString>
 
 // WntrData includes
-#include <lexical/data.hpp>
-#include <lexical/model.hpp>
+#include <data-api/lexical/data.hpp>
+#include <data-api/lexical/model.hpp>
 
 namespace Wintermute
 {
@@ -343,4 +343,4 @@ public:
 QDebug operator<< (QDebug , const Wintermute::Linguistics::Node*);
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

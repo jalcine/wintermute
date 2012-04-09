@@ -1,5 +1,5 @@
-#include <data/syntax/bond.hpp>
-#include <data/syntax/chain.hpp>
+#include <data-api/syntax/bond.hpp>
+#include <data-api/syntax/chain.hpp>
 #include "rule.hxx"
 #include <parser/binding.hpp>
 

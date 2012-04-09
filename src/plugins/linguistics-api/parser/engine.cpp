@@ -24,7 +24,7 @@
 #include <algorithm>
 
 // WntrData includes
-#include <lexical/model.hpp>
+#include <data-api/lexical/model.hpp>
 
 // local include
 #include "engine.hpp"
@@ -314,4 +314,4 @@ const Meaning* Engine::process (const QString& p_txt)
     if (!meaningVtr.empty ()) return meaningVtr.front ();
     else return 0;
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
