@@ -21,18 +21,19 @@
  *
  */
 
-#ifndef _FACTORY_HPP_
-#define _FACTORY_HPP_
+#ifndef WINTERMUTE_FACTORY_HPP_
+#define WINTERMUTE_FACTORY_HPP_
 
-// Local
-#include "abstractplugin.hpp"
-#include "pluginhandle.hpp"
+#include <app/global.hpp>
+#include <app/plugin.hpp>
+#include <app/pluginhandle.hpp>
 
 namespace Wintermute
 {
 namespace Plugins
 {
 
+struct FactoryPrivate;
 /**
  * @brief Provides factory management of plug-ins.
  *
@@ -44,11 +45,13 @@ namespace Plugins
  * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
  * @see AbstractPlugin
  */
-class Factory : public QObject
+class WNTR_EXPORT Factory : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY (Factory);
-    friend class AbstractPlugin;
+    Q_DISABLE_COPY (Factory)
+    Q_DECLARE_PRIVATE (Factory)
+    WINTER_SINGLETON (Factory)
+    friend class AbstractPluginPrivate;
 
 signals:
     /**
@@ -56,21 +59,21 @@ signals:
      * @fn pluginLoaded
      * @param p_uuid The UUID of the loaded plug-in.
      */
-    void pluginLoaded (const QString&) const;
+    void pluginLoaded (const QString& p_uuid) const;
 
     /**
      * @brief Emitted when a plug-in has been successfully unloaded from the system.
      * @fn pluginUnloaded
      * @param p_uuid The UUID of the unloaded plug-in.
      */
-    void pluginUnloaded (const QString&) const;
+    void pluginUnloaded (const QString& p_uuid) const;
 
     /**
      * @brief Emitted when a plug-in experiences a sporadic crash.
      * @fn pluginCrashed
      * @param p_uuid The UUID of the faulty plug-in.
      */
-    void pluginCrashed (const QString&) const;
+    void pluginCrashed (const QString& p_uuid) const;
 
     /**
      * @brief Emitted when the factory's up and running.
@@ -88,49 +91,27 @@ public slots:
      * @brief Starts the plug-in system.
      * @fn Startup
      */
-    static void Startup();
+    static void startup();
     /**
      * @brief Stops the plug-in system.
      * @fn Shutdown
      */
-    static void Shutdown();
+    static void shutdown();
 
 public:
-    /**
-     * @brief A helper class for plug-ins.
-     * Shell plug-ins allows the Factory to learn about a plug-in configuration
-     * and setup without loading all of its libraries and dependencies. It's also
-     * provided since AbstractPlugin is an abstract class.
-     */
-    class ShellPlugin : public AbstractPlugin
-    {
-        friend class Factory;
-        friend class AbstractPlugin;
-
-    public:
-        ShellPlugin();
-        ShellPlugin (const QString&);
-        virtual ~ShellPlugin();
-
-    private:
-        virtual void start () const { }
-        virtual void stop () const { }
-    };
-
-    Factory();
     /**
      * @brief Loads a plug-in.
      * @fn loadPlugin
      * @param
      */
-    static AbstractPlugin* loadPlugin (const QString&);
+    static AbstractPlugin* loadPlugin (const QString& p_uuid);
 
     /**
      * @brief Unloads a plug-in from the system.
      * @fn unloadPlugin
      * @param
      */
-    static void unloadPlugin (const QString&);
+    static void unloadPlugin (const QString& p_uuid);
 
     /**
      * @brief Returns a list of all currently plug-ins with meta-data information.
@@ -146,58 +127,28 @@ public:
      */
     static QStringList allPlugins();
 
-    /**
-     * @brief Obtains an instance of the Factory.
-     * @fn instance
-     * @return const Factory *
-     */
-    static Factory* instance();
-
-    /**
-     * @brief ...
-     *
-     * @return :Plugins::AbstractPlugin*
-     **/
     static AbstractPlugin* currentPlugin();
+    static QVariant attribute (const QString& p_uuid, const QString& p_attributePath);
+    static void setAttribute (const QString& p_uuid, const QString& p_attributePath, const QVariant& p_attributeValue);
+    static AbstractPlugin* obtainPlugin(const QString& p_uuid);
 
-    /**
-     * @brief ...
-     *
-     * @param  ...
-     * @param  ...
-     * @return QVariant
-     **/
-    static QVariant attribute (const QString& , const QString&);
-
-    /**
-     * @brief ...
-     *
-     * @param  ...
-     * @param  ...
-     * @param  ...
-     * @return void
-     **/
-    static void setAttribute (const QString&, const QString&, const QVariant&);
-
-private:
-    static PluginTable s_plgnLst; /**< Holds a list  */
-    static Factory* s_fctry; /**< Holds the Factory's instance. */
-    static AbstractPlugin* s_rtPlgn;
-    QHash<const QString, PluginHandle*> m_plgnPool;
-
+protected:
     /**
      * @brief Obtains the specification options (not the configuration used by the plug-in).
      * @param string The UUID of the plug-in in question.
      * @return A pointer to a QSettings object or NULL if the UUID doesn't refer to a plug-in.
      */
-    static QSettings* getPluginSettings (const QString&);
+    static QSettings* getPluginSettings (const QString& p_uuid);
 
     /**
      * @brief
      * @param string The UUID of the plug-in in question.
      * @return True if the plug-in has been loaded successfully, false otherwise.
      */
-    static bool loadBackendPlugin (const QString& p_plgnUuid);
+    static bool loadBackendPlugin (const QString& p_uuid);
+
+private:
+    QScopedPointer<FactoryPrivate> d_ptr;
 
 private slots:
     /**
@@ -238,4 +189,4 @@ private slots:
 }
 
 #endif // _FACTORY_HPP_
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
