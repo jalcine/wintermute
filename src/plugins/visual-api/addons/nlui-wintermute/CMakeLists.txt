@@ -51,6 +51,7 @@ include_directories(${WNTRNLUI_INCLUDE_DIRS})
 add_library(nlui-wintermute SHARED ${WNTRNLUI_SCPP})
 
 set_target_properties(nlui-wintermute PROPERTIES
+    DEFINE_SYMBOL "WNTR_EXPORT_SYMBOLS"
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION})
 
