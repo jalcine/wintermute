@@ -30,21 +30,21 @@
 using namespace Wintermute::Plugins;
 
 AbstractPluginPrivate::AbstractPluginPrivate (AbstractPlugin* p_qPtr) :
-    m_plgnLdr (0), m_cnfg (0), q_ptr (p_qPtr), m_sttngs (0)
+    m_plgnLdr (0), q_ptr (p_qPtr), m_sttngs (0), m_cnfg (0)
 {
 
 }
 
 void AbstractPluginPrivate::doStart()
 {
-    Q_Q(AbstractPlugin);
+    Q_Q (AbstractPlugin);
     q->start();
     emit q->started();
 }
 
 void AbstractPluginPrivate::doStop()
 {
-    Q_Q(AbstractPlugin);
+    Q_Q (AbstractPlugin);
     q->stop();
     emit q->stopped();
 }

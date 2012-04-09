@@ -41,7 +41,7 @@ namespace Wintermute
 namespace IPC
 {
 GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (p_parent),
-    d_ptr(new GenericAdaptorPrivate)
+    d_ptr(new GenericAdaptorPrivate(this))
 {
     Q_D(GenericAdaptor);
 
