@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/img">
+        <file alias="wm-logo">wmbox.png</file>
+        <file alias="sii-logo">siibutton.png</file>
+    </qresource>
+</RCC>
