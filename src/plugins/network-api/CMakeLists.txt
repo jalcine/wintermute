@@ -37,4 +37,5 @@ set(WNTRNTWK_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/share/cmake/WntrNtwk" CACHE PATH
 set(WNTRNTWK_COMPILE_DEFINTIONS ${WINTERMUTE_COMPILE_DEFINITIONS})
 set(WNTRNTWK_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
 
-add_subdirectory(src)
+wntrplugin_add_data("network-api")
+include(network-api.cmake)
