@@ -13,7 +13,3 @@ include("@WNTRNTWK_CMAKE_DIR@/WntrNtwkLibraryDepends.cmake")
 
 # These are IMPORTED targets created by WntrNtwkLibraryDepends.cmake
 set(WNTRNTWK_LIBRARIES wapi-network)
-
-if (WINTER_PLUGINS_BUILDING)
-    list(APPEND WNTRNTWK_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/plugins/ntwk-api/src")
-endif (WINTER_PLUGINS_BUILDING)
