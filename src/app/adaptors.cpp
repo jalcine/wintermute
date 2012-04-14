@@ -41,9 +41,9 @@ namespace Wintermute
 namespace IPC
 {
 GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (p_parent),
-    d_ptr(new GenericAdaptorPrivate(this))
+    d_ptr (new GenericAdaptorPrivate (this))
 {
-    Q_D(GenericAdaptor);
+    Q_D (GenericAdaptor);
 
     if (IPC::System::module() != "master") {
         d->m_tmr = new QTimer (this);
@@ -74,12 +74,16 @@ PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor (Factory::instanc
 
 void PluginFactoryAdaptor::loadPlugin (const QString& p_plgnName)
 {
-    Factory::instance()->loadPlugin (p_plgnName);
+    if (!p_plgnName.isEmpty() && !p_plgnName.isNull()) {
+        Factory::instance()->loadPlugin (p_plgnName);
+    }
 }
 
 void PluginFactoryAdaptor::unloadPlugin (const QString& p_plgnName)
 {
-    Factory::instance()->unloadPlugin (p_plgnName);
+    if (!p_plgnName.isEmpty() && !p_plgnName.isNull()) {
+        Factory::instance()->unloadPlugin (p_plgnName);
+    }
 }
 
 const QStringList PluginFactoryAdaptor::allPlugins() const
@@ -134,9 +138,11 @@ void PluginHandleAdaptor::quit () const
 
 void PluginHandleAdaptor::loadBackend (const QString& p_uuid)
 {
-    AbstractPlugin* plgn = qobject_cast<AbstractPlugin*> (parent());
-    Backends::AbstractFramework* frmk = Backends::AbstractFramework::obtainFramework (plgn->uuid());
-    frmk->isBackendListed (p_uuid);
+    if (!p_uuid.isEmpty() && !p_uuid.isNull()) {
+        AbstractPlugin* plgn = qobject_cast<AbstractPlugin*> (parent());
+        Backends::AbstractFramework* frmk = Backends::AbstractFramework::obtainFramework (plgn->uuid());
+        frmk->isBackendListed (p_uuid);
+    }
 }
 
 } // namespace
