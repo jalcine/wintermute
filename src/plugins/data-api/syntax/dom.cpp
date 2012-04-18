@@ -26,6 +26,7 @@
 
 // Qt includes
 #include <QFile>
+#include <data/syntax/chain.hpp>
 
 // local includes
 #include "config.hpp"
@@ -72,12 +73,12 @@ void DomLoadModel::obtainBonds (BondList* p_bndVtr, const QDomElement* p_elem) c
 
     QDomNodeList lst = p_elem->elementsByTagName ("Bind");
 
-    for (int i = 0; i < lst.count (); i++) {
+    for (uint i = 0; i < lst.length (); i++) {
         QDomElement elem = lst.at (i).toElement ();
         Bond* bnd = new Bond;
         QDomNamedNodeMap attrs = elem.attributes ();
 
-        for (int i = 0; i < attrs.length (); i++) {
+        for (uint i = 0; i < attrs.length (); i++) {
             QDomAttr attr = attrs.item (i).toAttr ();
             const QString nm = attr.name ();
             QString vl = attr.value ();
@@ -138,9 +139,19 @@ void DomSaveModel::saveFrom (const Chain& p_chn)
     save();
 }
 
-void DomSaveModel::setBonds (const BondList& p_bndVtr) { }
+void DomSaveModel::setBonds (const BondList& p_bndVtr)
+{
+    if (!p_bndVtr.isEmpty()) {
+        m_chn.setBonds (p_bndVtr);
+    }
+}
 
-void DomSaveModel::setType (const QString& p_bndTyp) {}
+void DomSaveModel::setType (const QString& p_bndTyp)
+{
+    if (!p_bndTyp.isNull() && !p_bndTyp.isEmpty()) {
+        m_chn.setType (p_bndTyp);
+    }
+}
 
 DomSaveModel::~DomSaveModel () { }
 
@@ -181,7 +192,7 @@ QDomDocument* DomStorage::loadDom (const Chain& p_chn)
 
 bool DomStorage::exists (const QString& p_flg, const QString& p_lcl) const
 {
-    Chain chn (p_lcl,p_flg);
+    Chain chn (p_lcl, p_flg);
     const QString pth = getPath (chn);
     return QFile::exists (pth);
 }
@@ -275,4 +286,6 @@ QString DomStorage::type () const
 }
 
 DomStorage::~DomStorage() { }
+
+#include "syntax/dom.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

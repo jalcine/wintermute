@@ -62,4 +62,6 @@ Manager* Manager::instance()
 
     return s_inst;
 }
+
+#include "syntax/manager.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

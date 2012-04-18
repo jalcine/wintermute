@@ -164,4 +164,6 @@ AbstractStorage* Cache::storage (const QString& p_strName)
 
     return 0;
 }
+
+#include "syntax/model.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
