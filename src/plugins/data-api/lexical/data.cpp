@@ -1,9 +1,4 @@
-/**
- * @file data.hpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,127 +16,185 @@
  *
  */
 
-// local includes
-#include "data.hpp"
-#include "md5.hpp"
+/**
+ * @file data.hpp
+ * @author Jacky Alcine <jacky.alcine@thesii.org>
+ * @date Sun, 30 Oct 2011 21:54:16
+ */
 
-// Qt includes
 #include <QDataStream>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include <qjson/qobjecthelper.h>
+#include "data.hpp"
+#include "dataprivate.hpp"
+#include "md5.hpp"
 
 using namespace Wintermute::Data::Linguistics::Lexical;
 
 const Data Data::Empty = Data();
 
-Data::Data() : QObject(), m_id(), m_locale(), m_symbol(), m_flags() { }
+DataPrivate::DataPrivate() : id (QString::null),
+    locale (QString::null),
+    symbol (QString::null),
+    flags (QVariantMap())
+{
 
-Data::Data (const Data& p_other) : QObject (p_other.parent()), m_id (p_other.m_id),
-    m_locale (p_other.m_locale), m_symbol (p_other.m_symbol),
-    m_flags (p_other.m_flags) { }
+}
+
+DataPrivate::~DataPrivate() {
+}
+
+Data::Data() : QObject(), d_ptr (new DataPrivate)
+{
+
+}
+
+Data::Data (const Data& p_other) : QObject (p_other.parent()),
+    d_ptr (p_other.d_ptr.data())
+{
+
+}
 
 Data::Data (const QString p_id, const QString p_locale,
             const QString p_symbol, const QVariantMap p_flags) : QObject(),
-    m_id (p_id), m_locale (p_locale),
-    m_symbol (p_symbol), m_flags (p_flags) { }
-
-const QVariantMap Data::flags () const
+    d_ptr (new DataPrivate)
 {
-    return m_flags;
+    Q_D (Data);
+    d->id = p_id;
+    d->locale = p_locale;
+    d->symbol = p_symbol;
+    d->flags = p_flags;
 }
 
-const QString Data::symbol () const
+Data::Data (DataPrivate* dd) : QObject(), d_ptr (dd)
 {
-    return m_symbol;
+
 }
 
-const QString Data::id () const
+QVariantMap Data::flags () const
 {
-    return m_id;
+    Q_D (const Data);
+    return d->flags;
 }
 
-const QString Data::locale () const
+QString Data::symbol () const
 {
-    return m_locale;
+    Q_D (const Data);
+    return d->symbol;
+}
+
+QString Data::id () const
+{
+    Q_D (const Data);
+    return d->id;
+}
+
+QString Data::locale () const
+{
+    Q_D (const Data);
+    return d->locale;
 }
 
 void Data::setSymbol (const QString& p_symbol)
 {
+    Q_D (Data);
+
     if (!p_symbol.isNull() && !p_symbol.isNull()) {
-        m_symbol = p_symbol;
-        m_id = Data::idFromString (m_symbol);
+        d->symbol = p_symbol;
+        d->id = Data::idFromString (d->symbol);
     }
 }
 
 void Data::setLocale (const QString& p_locale)
 {
+    Q_D (Data);
+
     if (!p_locale.isEmpty() && !p_locale.isNull())
-        m_locale = p_locale;
+        d->locale = p_locale;
 }
 
-void Data::setID (const QString& p_id)
+void Data::setId (const QString& p_id)
 {
+    Q_D (Data);
+
     if (!p_id.isEmpty() && !p_id.isNull())
-        m_id = p_id;
+        d->id = p_id;
 }
 
 void Data::setFlags (const QVariantMap& p_flags)
 {
+    Q_D (Data);
+
     if (!p_flags.empty())
-        m_flags = p_flags;
+        d->flags = p_flags;
 }
 
-bool Data::operator== (const Data& p_otherDt) const
+bool Data::operator== (const Data& p_other) const
 {
-    return ( (m_flags == p_otherDt.m_flags) && (m_symbol == p_otherDt.m_symbol) &&
-             (m_locale == p_otherDt.m_locale) && (m_id == p_otherDt.m_id));
+    return ( (flags() == p_other.flags()) && (symbol() == p_other.symbol()) &&
+             (locale() == p_other.locale()) && (id() == p_other.id()));
 }
 
-void Data::operator= (const Data& p_otherDt)
+void Data::operator= (const Data& p_other)
 {
-    m_flags = p_otherDt.m_flags;
-    m_symbol = p_otherDt.m_symbol;
-    m_locale = p_otherDt.m_locale;
-    m_id = p_otherDt.m_id;
+    setFlags (p_other.flags());
+    setLocale (p_other.locale());
+    setSymbol (p_other.symbol());
+    setId (p_other.id());
+}
+
+Data Data::clone() const
+{
+    return * (new Data (d_ptr.data()));
 }
 
 bool Data::isValid () const
 {
-    return Data::Empty == *this;
+    return Data::Empty.d_ptr != this->d_ptr ||
+           ! (flags().isEmpty() && (symbol().isNull() && symbol().isEmpty()));
 }
 
 /// @todo Use MD-5 hashing from another library (QCA has it) so we can eliminate md5.*pp.
 const QString Data::idFromString (const QString p_symbol)
 {
     const QString id = QString::fromStdString (md5 (p_symbol.toLower ().toStdString ()));
-    //qDebug() << "(data) [Data]" << p_sym << id;
+    qDebug() << "(data) [Data::idFromString()]" << p_symbol << id;
 
     return id;
 }
 
 Data Data::fromString (const QString& p_string)
 {
-    Data dt;
+    Data dt = Data::Empty;
 
     if (!p_string.isEmpty() && !p_string.isNull()) {
         QJson::Parser* parser = new QJson::Parser;
-        QVariantMap map = parser->parse (p_string.toAscii()).toMap();
-        QJson::QObjectHelper::qvariant2qobject (map, &dt);
+        bool success = false;
+        QVariantMap map = parser->parse (p_string.toStdString().c_str(), &success).toMap();
+
+        qDebug() << "(data) [Data::fromString()] Result from string:" << map;
+
+        if (success) {
+            QJson::QObjectHelper::qvariant2qobject (map, &dt);
+        }
     }
-    else
-        dt = Data::Empty;
 
     return dt;
 }
 
-Data::operator QString() const
+QString Data::toJson() const
 {
     QJson::Serializer* serializer = new QJson::Serializer;
     QVariantMap map = QJson::QObjectHelper::qobject2qvariant (this);
-    return QString (serializer->serialize (map));
+    const QString str = QString (serializer->serialize (map));
+    qDebug() << "(data) [Data::cast_operation]" << str;
+    return str;
 }
 
-Data::~Data () { }
+Data::~Data ()
+{
+}
 
+#include "lexical/data.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

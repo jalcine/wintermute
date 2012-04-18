@@ -70,7 +70,7 @@ const Data& Manager::write (const Data& p_dt)
 
 bool Manager::exists (const Data& p_dt) const
 {
-    qDebug() << "(data) [Manager] Exists? " << p_dt.id() << Lexical::Cache::exists (p_dt);
+    qDebug() << "(data) [Manager] Data exists?" << p_dt.id() << Lexical::Cache::exists (p_dt);
     return Lexical::Cache::exists (p_dt);
 }
 
@@ -85,4 +85,6 @@ Manager* Manager::instance()
 
     return s_inst;
 }
+
+#include "lexical/manager.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

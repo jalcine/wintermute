@@ -35,54 +35,56 @@
 
 using namespace Wintermute::Data::Linguistics::Lexical;
 
-DomBackend::DomBackend (QDomElement* p_ele) : m_ele (p_ele) { }
+DomBackend::DomBackend (const QDomElement& p_ele) : AbstractBackend(), m_ele (p_ele) { }
 
 DomStorage::DomStorage() : Storage() { }
 
-const QString DomStorage::getPath (const Data& p_dt)
+const QString DomStorage::getPath (const Data& p_data)
 {
-    const QString bsPth = System::directory () + QString ("/") + p_dt.locale() + QString ("/node/");
+    const QString bsPth = System::directory () + QString ("/") + p_data.locale() + QString ("/node/");
     QDir* bsDir = new QDir (bsPth);
 
-    if (!bsDir->exists())
-        bsDir->mkpath (bsPth);
+    if (!bsDir->exists() && bsDir->mkpath (bsPth)) {
+        qDebug() << "(data) [DomStorage::getPath()] Made path" << bsDir->absolutePath();
+    }
 
-    return bsPth + p_dt.id() + QString (".node");
+    return bsPth + p_data.id() + QString (".node");
 }
 
-bool DomStorage::exists (const Data& p_dt) const
+bool DomStorage::exists (const Data& p_data) const
 {
-    const QString pth = DomStorage::getPath (p_dt);
+    const QString pth = DomStorage::getPath (p_data);
+    qDebug() << "(data) [DomStorage::exists()] Exists?"  << pth << QFile::exists (pth);
     return QFile::exists (pth);
 }
 
-void DomStorage::loadTo (Data& p_dt) const
+bool DomStorage::loadTo (Data& p_data) const
 {
-    if (!DomStorage::exists (p_dt))
-        return;
+    if (!DomStorage::exists (p_data))
+        return false;
 
     QDomDocument dom ("Data");
-    QFile* file = new QFile (getPath (p_dt));
+    QFile* file = new QFile (getPath (p_data));
     dom.setContent (file);
 
     QDomElement elem = dom.documentElement ();
-    DomLoadModel model (&elem);
-    model.loadTo (p_dt);
+    DomLoadModel model (elem);
+    return model.loadTo (p_data);
 }
 
 /// @todo Add a timestamp and system-user information to the generated file.
 /// @todo When semantics become powerful, add the generating Wintermute's ID (and place of origin, if possible).
-void DomStorage::saveFrom (const Data& p_dt)
+bool DomStorage::saveFrom (const Data& p_data)
 {
     QDomDocument dom ("Data");
     QDomElement elem = dom.createElement ("Data");
     dom.appendChild (elem);
 
-    DomSaveModel domSvMdl (&elem);
-    domSvMdl.saveFrom (p_dt);
+    DomSaveModel domSvMdl (elem);
+    domSvMdl.saveFrom (p_data);
     const QString str = dom.toByteArray (4);
 
-    QFile* file = new QFile (DomStorage::getPath (p_dt));
+    QFile* file = new QFile (DomStorage::getPath (p_data));
 
     if (!file->exists ()) {
         file->open (QIODevice::WriteOnly | QIODevice::Truncate);
@@ -93,10 +95,10 @@ void DomStorage::saveFrom (const Data& p_dt)
     file->open (QIODevice::WriteOnly | QIODevice::Append);
     file->write (str.toUtf8());
     file->close ();
-
+    return true;
 }
 
-const QString DomStorage::type () const
+QString DomStorage::type () const
 {
     return "Dom";
 }
@@ -105,11 +107,11 @@ void DomStorage::generate()
 {
     QDir d (System::directory ());
     d.setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
-    QStringList lclLst = d.entryList ();
+    QStringList localeLst = d.entryList ();
 
-    foreach (const QString lcl, lclLst) {
-        qDebug() << "(data) [DomStorage] Parsing locale" << lcl << "...";
-        const QString pth = d.absolutePath () + "/" + lcl + "/node.xml";
+    foreach (const QString locale, localeLst) {
+        qDebug() << "(data) [DomStorage] Parsing locale" << locale << "...";
+        const QString pth = d.absolutePath () + "/" + locale + "/node.xml";
         QDomDocument spawnDom ("Store");
         QFile* file = new QFile (pth);
 
@@ -128,24 +130,24 @@ void DomStorage::generate()
     }
 }
 
-const QString DomStorage::obtainFullSuffix (const QString& p_lcl, const QString& p_sfx) const
+QString DomStorage::obtainFullSuffix (const QString& p_locale, const QString& p_suffix) const
 {
-    const Data dt (QString::null, p_lcl);
-    const QDomDocument* spawnDoc = getSpawnDoc (dt);
+    const Data dt (QString::null, p_locale);
+    const QDomDocument spawnDoc = getSpawnDoc (dt);
 
-    if (!spawnDoc) {
-        qWarning() << "(ling) [DomStorage] Data not found for locale" << p_lcl;
+    if (spawnDoc.isNull()) {
+        qWarning() << "(ling) [DomStorage] Data not found for locale" << p_locale;
         return QString::null;
     }
 
-    const QDomElement dom = spawnDoc->documentElement ();
+    const QDomElement dom = spawnDoc.documentElement ();
 
     const QDomNodeList domList = dom.elementsByTagName ("Mapping").at (0).toElement ().elementsByTagName ("Suffix");
 
     for (int i = 0; i < domList.count (); i++) {
         QDomElement ele = domList.at (i).toElement ();
 
-        if (ele.attribute ("from") == p_sfx)
+        if (ele.attribute ("from") == p_suffix)
             return ele.attribute ("to");
         else
             continue;
@@ -162,81 +164,89 @@ void DomStorage::spawn (const QDomDocument& p_dom)
     qDebug () << "(data) [DomStorage] Spawning locale" << lcl << "...";
 
     for (int i = 0; i < lst.count (); i++) {
-        QDomElement ele = lst.at (i).toElement ();
+        QDomElement currentElement = lst.at (i).toElement ();
 
-        if (ele.isNull ()) continue;
+        if (currentElement.isNull ()) continue;
 
-        DomLoadModel ldM (&ele);
+        DomLoadModel loadModel (currentElement);
         QDomDocument newDom ("Data");
-        Data dt = ldM.load();
-        dt.setLocale (lcl);
+        QDomElement rootNode = newDom.createElement ("Data");
+        newDom.appendChild (rootNode);
 
-        QDomElement root = newDom.createElement ("Data");
-        root.setAttribute ("locale", lcl);
-        DomSaveModel svM (&root);
-        svM.saveFrom (dt);
-        newDom.appendChild (root);
+        Data dt = loadModel.load();
+        dt.setLocale (lcl);
+        DomSaveModel saveModel (rootNode);
+        saveModel.saveFrom (dt);
 
         QFile* file = new QFile (DomStorage::getPath (dt));
 
         if (!file->open (QIODevice::WriteOnly | QIODevice::Truncate)) {
             file->setPermissions (QFile::WriteOther);
-            //qWarning() << "(data) [DomStorage] Failed to spawn node" << dt.id() << ":" << file->errorString();
+            qWarning() << "(data) [DomStorage] Failed to spawn node" << dt.id() << ":" << file->errorString();
         }
         else {
-            QDataStream stream (file);
-            stream << "<!-- Generated -->" << endl
-                   << newDom.toByteArray (4);
+            QTextStream stream (file);
+            stream << newDom.toByteArray (4);
             file->close ();
-            //qDebug() << "(data) [DomStorage] Wrote" << dt.id() << "with" << file->size() << "bytes.";
+            qDebug() << "(data) [DomStorage] Wrote" << dt.id() << "with" << file->size() << "bytes.";
         }
     }
 
     qDebug () << "(data) [DomStorage] Locale" << lcl << "spawned.";
 }
 
-QDomDocument* DomStorage::getSpawnDoc (const Data& p_dt)
+QDomDocument DomStorage::getSpawnDoc (const Data& p_data)
 {
-    QDir dir (System::directory ());
-    const QString pth = dir.absolutePath () + "/" + p_dt.locale () + "/node.xml";
-    QDomDocument* spawnDom = new QDomDocument ("Storage");
-    QFile* file = new QFile (pth);
+    QDomDocument spawnDom;
 
-    if (!file->exists () || !dir.exists ()) {
-        qWarning() << "(data) [DomStorage] Can't find node cache for" << p_dt.locale ();
-        return 0;
-    }
+    if (p_data.isValid()) {
+        QDir dir (System::directory ());
+        const QString pth = dir.absolutePath () + "/" + p_data.locale () + "/node.xml";
+        QFile* file = new QFile (pth);
 
-    if (!spawnDom->setContent (file)) {
-        qWarning() << "(data) [DomStorage] Parse error for" << p_dt.locale ();
-        return 0;
+        if (!file->exists () || !dir.exists ()) {
+            qWarning() << "(data) [DomStorage] Can't find node cache for" << p_data.locale ();
+        }
+        else {
+            if (!spawnDom.setContent (file)) {
+                qWarning() << "(data) [DomStorage] Parse error for" << p_data.locale ();
+            }
+        }
     }
 
     return spawnDom;
 }
 
-bool DomStorage::hasPseudo (const Data& p_dt) const
+bool DomStorage::hasPseudo (const Data& p_data) const
 {
-    QDomDocument* dom = getSpawnDoc (p_dt);
-    QDomElement root = dom->documentElement ();
-    QDomNodeList lst = root.elementsByTagName ("Pseudo");
-    return !lst.isEmpty ();
+    QDomDocument dom = getSpawnDoc (p_data);
+
+    if (!dom.isNull()) {
+        QDomElement root = dom.documentElement ();
+        QDomNodeList lst = root.elementsByTagName ("Pseudo");
+        return !lst.isEmpty ();
+    }
+
+    return false;
 }
 
-void DomStorage::loadPseudo (Data& p_dt) const
+bool DomStorage::loadPseudo (Data& p_data) const
 {
-    if (!hasPseudo (p_dt))
-        return;
+    if (!hasPseudo (p_data))
+        return false;
 
-    QDomDocument* dom = getSpawnDoc (p_dt);
-    QDomElement root = dom->documentElement (), psElem;
-    QDomNodeList lst = root.elementsByTagName ("Pseudo");
-    psElem = lst.at (0).toElement ();
+    const QDomDocument dom = getSpawnDoc (p_data);
 
-    DomLoadModel ldMdl (&psElem);
-    const QString sym = p_dt.symbol ();
-    ldMdl.loadTo (p_dt);
-    p_dt.setSymbol (sym);   // The loading process probably overwrote the symbol; depends on the definition.
+    if (!dom.isNull()) {
+        QDomElement rootNode = dom.documentElement ();
+        QDomNodeList pseudoNodeList = rootNode.elementsByTagName ("Pseudo");
+        QDomElement pseudoElement = pseudoNodeList.at (0).toElement ();
+
+        DomLoadModel loadModel (pseudoElement);
+        return loadModel.loadTo (p_data);
+    }
+
+    return false;
 }
 
 int DomStorage::countFlags()
@@ -249,7 +259,7 @@ int DomStorage::countFlags()
         Data data (QString::null, locale);
         const QStringList nodeIDs = Cache::allNodes (locale);
         foreach (const QString nodeID, nodeIDs) {
-            data.setID (nodeID);
+            data.setId (nodeID);
             Cache::read (data);
             count += data.flags ().count ();
         }
@@ -264,7 +274,6 @@ int DomStorage::countSymbols()
     int cnt = 0;
 
     foreach (const QString locale, locales) {
-        qDebug() << locale;
         const QStringList nodeIDs = Cache::allNodes (locale);
         cnt += nodeIDs.count ();
     }
@@ -274,14 +283,18 @@ int DomStorage::countSymbols()
 
 DomStorage::~DomStorage() { }
 
-DomLoadModel::DomLoadModel (QDomElement* p_ele) : DomBackend (p_ele) { }
+DomLoadModel::DomLoadModel (QDomElement& p_elem) : AbstractLoadModel(),
+    DomBackend (p_elem)
+{
+
+}
 
 DomLoadModel::~DomLoadModel() { }
 
-const Data DomLoadModel::load () const
+Data DomLoadModel::load () const
 {
-    if (loadTo (this->AbstractModel::m_dt))
-        return this->AbstractModel::m_dt;
+    if (loadTo (m_dt))
+        return m_dt;
     else {
         qWarning() << "(data) [DomLoadModel] Failed to load" << m_dt.id () << m_dt.symbol ();
         return Data::Empty;
@@ -290,66 +303,76 @@ const Data DomLoadModel::load () const
     return Data::Empty;
 }
 
-bool DomLoadModel::loadTo (Data& p_dt) const
+bool DomLoadModel::loadTo (Data& p_data) const
 {
-    if (this->DomBackend::m_ele == 0 || this->DomBackend::m_ele->isNull ()) {
+    if (m_ele.isNull ()) {
         qCritical () << "(data) [DomLoadModel] Backend's empty.";
         return false;
     }
 
-    QVariantMap mp;
-    QDomNodeList ndlst = this->DomBackend::m_ele->childNodes();
+    QVariantMap* mp = new QVariantMap;
+    QDomNodeList ndlst = m_ele.childNodes();
 
     if (!ndlst.isEmpty ()) {
         for (int i = 0; i < ndlst.count (); i++) {
             QDomElement elem = ndlst.at (i).toElement ();
-            mp.insert (elem.attribute ("guid"), elem.attribute ("link"));
+
+            if (!elem.isNull()) {
+                mp->insert (elem.attribute ("guid"), elem.attribute ("link"));
+            }
         }
     }
 
-    p_dt.setSymbol (this->DomBackend::m_ele->attribute ("symbol").toLower());
-    p_dt.setFlags (mp);
-    //qDebug() << "(data) [DomLoadModel] Data loaded to: " << p_dt;
+    p_data.setSymbol (m_ele.attribute ("symbol").toLower());
+    p_data.setFlags (*mp);
+    qDebug() << "(data) [DomLoadModel] Data loaded to: " << p_data.toJson();
     return true;
 }
 
-DomSaveModel::DomSaveModel (QDomElement* p_ele) : DomBackend (p_ele) { }
+DomSaveModel::DomSaveModel (QDomElement& p_elem) : AbstractSaveModel(),
+    DomBackend (p_elem)
+{
+
+}
 
 DomSaveModel::~DomSaveModel() { }
 
 void DomSaveModel::save()
 {
-    if (this->DomBackend::m_ele->isNull()) return;
+    if (m_ele.isNull() || !m_dt.isValid()) return;
 
-    this->DomBackend::m_ele->setAttribute ("symbol" , this->AbstractModel::m_dt.symbol().toLower ());
-    this->DomBackend::m_ele->setAttribute ("locale" , this->AbstractModel::m_dt.locale ());
+    m_ele.setAttribute ("symbol" , m_dt.symbol().toLower ());
+    m_ele.setAttribute ("locale" , m_dt.locale ());
 
-    /*while (this->DomBackend::m_ele->hasChildNodes ())
-        this->DomBackend::m_ele->removeChild (this->DomBackend::m_ele->firstChild ());*/
+    while (m_ele.hasChildNodes ()) {
+        m_ele.removeChild (m_ele.firstChild ());
+    }
 
-    QDomDocument dom = this->DomBackend::m_ele->ownerDocument ();
+    QDomDocument dom = m_ele.ownerDocument ();
 
-    if (!this->AbstractModel::m_dt.flags().empty()) {
-        for (QVariantMap::ConstIterator itr = this->AbstractModel::m_dt.flags ().begin ();
-                itr != this->AbstractModel::m_dt.flags ().end (); itr++) {
+    if (!m_dt.flags().empty()) {
+        QStringList keys = m_dt.flags().keys();
+
+        Q_FOREACH (const QString key, keys) {
             QDomElement ele = dom.createElement ("Flag");
-            ele.setAttribute ("guid", itr.key ());
-            ele.setAttribute ("link", itr.value ().toString());
-            this->DomBackend::m_ele->appendChild (ele);
+            m_ele.appendChild (ele);
+            const QVariant value = m_dt.flags().value (key);
+            ele.setAttribute ("guid", key);
+            ele.setAttribute ("link", value.toString());
         }
     }
-    else {
-        //qDebug() << "No flags for" << this->AbstractModel::m_dt.id();
-    }
 
-    //qDebug() << "(data) [DomSaveModel] Saved" << this->AbstractModel::m_dt.id ();
+    qDebug() << dom.toString();
+    qDebug() << "(data) [DomSaveModel] Saved" << m_dt.id () << m_dt.symbol();
 }
 
-void DomSaveModel::saveFrom (const Data& p_dt)
+void DomSaveModel::saveFrom (const Data& p_data)
 {
-    if (! (p_dt == Data::Empty))
-        this->AbstractModel::m_dt = p_dt;
+    if (p_data.isValid())
+        m_dt = p_data;
 
     save();
 }
+
+#include "lexical/dom.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
