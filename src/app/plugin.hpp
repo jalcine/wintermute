@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QPluginLoader>
 
+#include <app/config.hpp>
 #include <app/adaptors.hpp>
 
 namespace Wintermute

@@ -1,31 +1,32 @@
 /***
- * @file backend.cpp
- * @author Wintermute Development <wntr-devel@thesii.org>
+ *  This file is part of the Wintermute project.
  *
- * @section lcns Licensing
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ *  Wintermute is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  Wintermute is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
  *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with Wintermute.
+ *  If not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-// Local
-#include "backend.hpp"
-#include "plugins.hpp"
-
-// Qt
+/**
+ * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @date 04/18/12 4:22:13 PM
+ */
 #include <QDebug>
+#include "backend.hpp"
+#include "plugin.hpp"
+#include "factory.hpp"
 
 using namespace Wintermute::Plugins;
 
@@ -36,12 +37,14 @@ namespace Backends
 BackendList AbstractBackend::s_lst;
 FrameworkList AbstractFramework::s_frmk;
 
-AbstractFramework::AbstractFramework (AbstractPlugin* p_plgn, QObject* p_prnt) : QObject (p_prnt),
-    m_bckndLst(), m_dfltBcknd(), m_plgn (p_plgn)
+AbstractFramework::AbstractFramework (AbstractPlugin* p_plugin, QObject* p_parent) : QObject (p_parent),
+    m_bckndLst(), m_dfltBcknd(), m_plgn (p_plugin)
 {
+    if (p_plugin == 0)
+        p_plugin = Plugins::Factory::currentPlugin();
 
-    connect (p_plgn, SIGNAL (started()), this, SLOT (start()));
-    connect (p_plgn, SIGNAL (stopped()), this, SLOT (stop()));
+    connect (m_plgn, SIGNAL (started()), this, SLOT (start()));
+    connect (m_plgn, SIGNAL (stopped()), this, SLOT (stop()));
 
     m_dfltBcknd = m_plgn->attribute ("Framework/Defaults").toStringList();
     m_strtMd = (StartupMode) m_plgn->attribute ("Framework/StartMode").toInt();
@@ -169,9 +172,12 @@ int AbstractFramework::frameworks()
 
 AbstractFramework::~AbstractFramework() { }
 
-AbstractBackend::AbstractBackend (AbstractPlugin* p_plgn, QObject* p_prnt) : QObject (p_prnt),
-    m_plgn (p_plgn)
+AbstractBackend::AbstractBackend (AbstractPlugin* p_plugin, QObject* p_prnt) : QObject (p_prnt),
+    m_plgn (p_plugin)
 {
+    if (p_plugin == 0)
+        p_plugin = Plugins::Factory::currentPlugin();
+
     if (AbstractBackend::s_lst.contains (m_plgn->uuid())) {
         qWarning() << "(core) [AbstractBackend] Plugin" << m_plgn->uuid() << "already registered.";
         Factory::unloadPlugin (m_plgn->uuid());
@@ -221,4 +227,4 @@ QString Wintermute::Backends::AbstractBackend::id() const
 }
 
 #include "backend.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

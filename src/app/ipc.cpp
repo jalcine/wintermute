@@ -25,7 +25,6 @@
 #include "core.hpp"
 #include "config.hpp"
 #include "adaptors.hpp"
-#include "plugins.hpp"
 #include "factory.hpp"
 
 // Qt

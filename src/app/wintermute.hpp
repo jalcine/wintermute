@@ -1,26 +1,28 @@
 /***
- * @file wintermute.hpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
+ *  This file is part of the Wintermute project.
  *
- * @section lcns Licensing
- * Wintermute is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ *  Copyright (C) 2012 Jacky Alciné <jacky.alcine@thesii.org>
  *
- * Wintermute is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ *  Wintermute is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the GNU General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  Wintermute is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
  *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with Wintermute.
+ *  If not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 /**
+ * @author Jacky Alciné <jacky.alcine@thesii.org>
+ * @date 04/18/12 4:18:48 PM
+ *
  * @mainpage Wintermute API Documentation
  * @section intro Introduction
  * Wintermute is written mainly in C++. It features a plug-in system (see Wintermute::Plugins::PluginBase),
@@ -38,7 +40,7 @@
 #ifndef WINTERMUTE_HPP
 #define WINTERMUTE_HPP
 
-// Joint header
+// Let's pull everything in one giant header.
 #include "config.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
@@ -48,4 +50,4 @@
 #include "plugins.hpp"
 
 #endif /* WINTERMUTE_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
