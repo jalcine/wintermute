@@ -4,8 +4,8 @@ project(WintermuteApplication)
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
-file(GLOB WINTERMUTE_SOURCES "*.cpp" "*.cxx")
-file(GLOB WINTERMUTE_HEADERS "*.hpp" "*.hxx")
+file(GLOB WINTERMUTE_SOURCES "*.cpp")
+file(GLOB WINTERMUTE_HEADERS "*.hpp")
 
 set(WINTERMUTE_APP_LIBRARIES ${WINTERMUTE_LIBRARIES})
 set(WINTERMUTE_APP_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS})

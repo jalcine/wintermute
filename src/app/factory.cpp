@@ -29,10 +29,10 @@
 #include <app/adaptors.hpp>
 #include <app/plugin.hpp>
 #include <app/ipc.hpp>
+#include <app/factoryprivate.hpp>
+#include <app/shellplugin.hpp>
+#include <app/pluginprivate.hpp>
 #include <app/factory.hpp>
-#include <app/factory.hxx>
-#include <app/plugin.hxx>
-#include <app/shellplugin.h>
 
 using namespace Wintermute;
 using namespace Wintermute::Plugins;
@@ -128,29 +128,31 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
         if (!gnrcPlgn->loadRequiredComponents())
             return 0;
 
-        if (gnrcPlgn->loadLibrary()) {
-            plgnBase = dynamic_cast<AbstractPlugin*> (gnrcPlgn->obtainInstance());
-            plgnBase->d_func()->m_plgnLdr = gnrcPlgn->d_func()->m_plgnLdr;
-            plgnBase->d_func()->loadSettings (p_uuid);
-            plgnBase->d_func()->doStart();
-
-            instance()->d_func()->s_rtPlgn = plgnBase;
-        }
-        else {
-            qWarning() << "(plugin) [Factory] Error loading plugin" << gnrcPlgn->name();
+        if (!gnrcPlgn->loadLibrary()) {
+            qWarning() << "(plugin) [Factory] Error loading plug-in" << gnrcPlgn->name();
 
             if (gnrcPlgn->d_func()->m_plgnLdr)
                 qDebug() << "(plugin) [Factory] Library loading error: " << gnrcPlgn->d_func()->m_plgnLdr->errorString();
 
             emit Factory::instance()->pluginCrashed (p_uuid);
-            //Core::exit(3, true);
-            return NULL;
+            return 0;
         }
 
-        plgnBase->d_func()->doStart();
-        emit Factory::instance ()->pluginLoaded (plgnBase->uuid ());
-        qDebug() << "(plugin) [Factory] Plugin" << plgnBase->name () << "loaded.";
-        return plgnBase;
+        plgnBase = gnrcPlgn->obtainInstance();
+
+        if (plgnBase) {
+            plgnBase->d_func()->m_plgnLdr = gnrcPlgn->d_func()->m_plgnLdr;
+            plgnBase->d_func()->loadSettings (p_uuid);
+            plgnBase->d_func()->doStart();
+            instance()->d_func()->s_rtPlgn = plgnBase;
+            emit Factory::instance ()->pluginLoaded (plgnBase->uuid ());
+            qDebug() << "(plugin) [Factory] Plug-in" << plgnBase->name () << "loaded.";
+            return plgnBase;
+        }
+        else {
+            qFatal ("(plugin) [Factory] Plug-in object could not be pulled from loaded library.");
+            return 0;
+        }
     }
     else {
         qDebug() << "Inserting plug-in" << p_uuid << "into the pool.";
@@ -199,9 +201,16 @@ void Factory::loadStandardPlugin()
     qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (plgnUuid, "Description/Name").toString() << "UUID:" << plgnUuid << "...";
 
     instance()->d_func()->s_rtPlgn = loadPlugin (plgnUuid);
-    PluginHandleAdaptor* adpt = new PluginHandleAdaptor (instance()->d_func()->s_rtPlgn);
-    IPC::System::registerObject ("/Plugin", adpt);
-    IPC::System::instance()->m_adapt = adpt;
+
+    if (instance()->d_func()->s_rtPlgn) {
+        PluginHandleAdaptor* adpt = new PluginHandleAdaptor (instance()->d_func()->s_rtPlgn);
+        IPC::System::registerObject ("/Plugin", adpt);
+        IPC::System::instance()->m_adapt = adpt;
+    }
+    else {
+        qDebug() << "(core) [Factory] Unable to load standard plug-in; exiting.";
+        Core::exit();
+    }
 }
 
 AbstractPlugin* Factory::currentPlugin()
