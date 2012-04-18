@@ -34,11 +34,9 @@ namespace Data
 class Plugin : public Plugins::AbstractPlugin
 {
     Q_OBJECT
-    Q_DISABLE_COPY (Plugin)
 public:
-    Plugin() : AbstractPlugin() { }
-    ~Plugin() { }
-
+    Plugin();
+    virtual ~Plugin();
     virtual void start() const;
     virtual void stop() const;
 };
@@ -47,4 +45,4 @@ public:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
