@@ -1,26 +1,35 @@
-/**
- * @file    adaptors.cpp
- * @author  Wintermute Development <wntr-devel@thesii.org>
- */
-/*
- * This is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+/***
+ *  This file is part of the Wintermute project.
  *
- * Wintermute Linguistics is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  Copyright (C) 2012 Jacky Alciné <jacky.alcine@thesii.org>
  *
- * You should have received a copy of the GNU General Public License
- * along with Wintermute Linguistics; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor,
- * Boston, MA  02110-1301  USA
+ *  Wintermute is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *
+ *  Wintermute is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with Wintermute .
+ *  If not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-// Local
-#include "adaptors.hxx"
+/**
+ * @author Jacky Alciné <jacky.alcine@thesii.org>
+ * @date 04/18/12 4:16:41 PM
+ */
+
+#include <QTimer>
+#include <QtDebug>
+#include <QApplication>
+#include <QDBusConnection>
+
+#include "adaptorsprivate.hpp"
 #include "adaptors.hpp"
 #include "core.hpp"
 #include "backend.hpp"
@@ -30,16 +39,51 @@
 #include "factory.hpp"
 #include "pluginhandle.hpp"
 
-// Qt
-#include <QTimer>
-#include <QtDebug>
-#include <QApplication>
-#include <QDBusConnection>
+using namespace Wintermute;
+using namespace Wintermute::IPC;
+using namespace Wintermute::Plugins;
 
-namespace Wintermute
+GenericAdaptorPrivate::GenericAdaptorPrivate (GenericAdaptor* p_qPtr) : q_ptr (p_qPtr)
 {
-namespace IPC
+
+}
+
+void GenericAdaptorPrivate::detect() const
 {
+    Q_Q (const GenericAdaptor);
+    m_tmr->stop();
+    const bool prv = m_core;
+    QDBusMessage ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "ping");
+    ping << System::module ();
+    ping.setAutoStartService (true);
+    QDBusMessage pingReply = IPC::System::bus ()->call (ping, QDBus::BlockWithGui);
+    m_core = pingReply.type () != QDBusMessage::ErrorMessage;
+
+    if (m_core != prv) {
+        if (m_core) {
+            qDebug() << "(core) [D-Bus] Core module found.";
+            emit q->coreModuleLoaded ();
+        }
+        else {
+            qDebug() << "(core) [D-Bus] Core module lost.";
+            emit q->coreModuleUnloaded ();
+        }
+    }
+
+    if (pingReply.type () == QDBusMessage::ErrorMessage) {
+        //qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
+        /*if (!Core::arguments().value ("daemon").toBool ())
+         *            CoreAdaptor::haltSystem ();*/
+    }
+
+    m_tmr->start ();
+}
+
+GenericAdaptorPrivate::~GenericAdaptorPrivate()
+{
+
+}
+
 GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (p_parent),
     d_ptr (new GenericAdaptorPrivate (this))
 {
@@ -63,10 +107,7 @@ const QString GenericAdaptor::module() const
 {
     return IPC::System::module();
 }
-} // namespace
 
-namespace Plugins
-{
 PluginFactoryAdaptor::PluginFactoryAdaptor() : AbstractAdaptor (Factory::instance())
 {
     setAutoRelaySignals (true);
@@ -145,8 +186,6 @@ void PluginHandleAdaptor::loadBackend (const QString& p_uuid)
     }
 }
 
-} // namespace
-
 CoreAdaptor::CoreAdaptor() : AbstractAdaptor (Core::instance()) { }
 
 const QVariantMap CoreAdaptor::arguments() const
@@ -177,7 +216,6 @@ void CoreAdaptor::haltSystem ()
 
     QApplication::quit ();
 }
-} // namespace
 
 #include "adaptors.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

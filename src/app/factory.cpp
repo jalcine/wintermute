@@ -29,10 +29,10 @@
 #include <app/adaptors.hpp>
 #include <app/plugin.hpp>
 #include <app/ipc.hpp>
+#include <app/factoryprivate.hpp>
+#include <app/shellplugin.hpp>
+#include <app/pluginprivate.hpp>
 #include <app/factory.hpp>
-#include <app/factory.hxx>
-#include <app/plugin.hxx>
-#include <app/shellplugin.h>
 
 using namespace Wintermute;
 using namespace Wintermute::Plugins;

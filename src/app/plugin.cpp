@@ -29,15 +29,94 @@
 #include <app/core.hpp>
 #include <app/config.hpp>
 #include <app/factory.hpp>
-#include <app/plugin.hxx>
+#include <app/shellplugin.hpp>
+#include <app/pluginprivate.hpp>
 #include <app/plugin.hpp>
 
 using namespace Wintermute::Plugins;
 
+AbstractPluginPrivate::AbstractPluginPrivate (AbstractPlugin* p_qPtr) :
+m_plgnLdr (0), q_ptr (p_qPtr), m_sttngs (0), m_cnfg (0)
+{
+
+}
+
+void AbstractPluginPrivate::doStart()
+{
+    Q_Q (AbstractPlugin);
+    q->start();
+    emit q->started();
+}
+
+void AbstractPluginPrivate::doStop()
+{
+    Q_Q (AbstractPlugin);
+    q->stop();
+    emit q->stopped();
+}
+
+bool AbstractPluginPrivate::loadPackages() const
+{
+    Q_Q (const AbstractPlugin);
+    const QStringList deps = q->packages();
+    //qDebug () << "(core) [AbstractPlugin] Loading packages for" << q->name () << ";" << deps.length () << "package(s) to be loaded.";
+    foreach (const QString dep, deps) {
+        const QString depName = dep.split (" ").at (0);
+    }
+
+    return true;
+}
+
+bool AbstractPluginPrivate::loadPlugins() const
+{
+    Q_Q (const AbstractPlugin);
+    const QStringList plgnLst = q->plugins();
+    qDebug () << "(core) [AbstractPluginPrivate::loadPlugins()] Loading plug-ins for"
+    << q->name () << ";"
+    << plgnLst.length () << "plug-in(s) to be loaded.";
+
+    foreach (const QString plgn, plgnLst) {
+        const QString plgnUuid = plgn.split (" ").at (0);
+
+        if (Factory::loadedPlugins().contains (plgnUuid))
+            qDebug () << "(core) [AbstractPluginPrivate::loadPlugins()] Dependency"
+            << Factory::attribute (plgnUuid, "Description/Name").toString()
+            << "already loaded.";
+        else {
+            ShellPlugin* gnrc = new ShellPlugin (plgnUuid);
+            qDebug() << "(core) [AbstractPluginPrivate::loadPlugins()] Loading dependency"
+            << gnrc->name() << "...";
+
+            if (gnrc->loadLibrary()) {
+                qWarning() << "(core) [AbstractPluginPrivate::loadPlugins()] Loaded symbols of plug-in"
+                << Factory::attribute (plgnUuid, "Description/Name").toString() << ".";
+            }
+            else {
+                qWarning() << "(core) [AbstractPluginPrivate::loadPlugins] Unable to load symbols of dependency"
+                << gnrc->name() << ":" << gnrc->d_func()->m_plgnLdr->errorString();
+
+                return false;
+            }
+        }
+    }
+    qDebug() << "(core) [AbstractPluginPrivate::loadPlugins()] Dependent plug-ins loaded.";
+    return true;
+}
+
+void AbstractPluginPrivate::loadSettings (const QString& p_uuid)
+{
+    m_sttngs = Factory::getPluginSettings (p_uuid);
+    m_cnfg = new QSettings ("Synthetic Intellect Institute", p_uuid);
+}
+
+AbstractPluginPrivate::~AbstractPluginPrivate()
+{
+
+}
+
 AbstractPlugin::AbstractPlugin() : QObject(),
     d_ptr (new AbstractPluginPrivate (this))
 {
-
 }
 
 AbstractPlugin::AbstractPlugin (QPluginLoader* p_pluginLoader) :
@@ -235,12 +314,13 @@ bool AbstractPlugin::loadLibrary() const
     const QString plgnLibrary = d->m_sttngs->value ("Version/Library").toString();
     const QString plgPth = QString (WNTR_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
     d->m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
-    d->m_plgnLdr->setLoadHints (QLibrary::ResolveAllSymbolsHint);
-    d->m_plgnLdr->load();
+    d->m_plgnLdr->setLoadHints(QLibrary::ResolveAllSymbolsHint);
+    qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Loaded library for " << name() << "?" << d->m_plgnLdr->load();
 
     if (!d->m_plgnLdr->isLoaded())
-        qDebug() << "(plugin) [AbstractPlugin] Error loading library"
-                 << plgPth << ":" << d->m_plgnLdr->errorString();
+        qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Error loading library"
+                 << plgPth << endl
+                 << d->m_plgnLdr->errorString();
 
     return d->m_plgnLdr->isLoaded();
 }
@@ -273,8 +353,17 @@ AbstractPlugin* AbstractPlugin::obtainInstance() const
 {
     Q_D (const AbstractPlugin);
 
-    if (d->m_plgnLdr->isLoaded())
-        return qobject_cast< AbstractPlugin* > (d->m_plgnLdr->instance());
+    if (d->m_plgnLdr->isLoaded()) {
+        QObject* plgnInstance = d->m_plgnLdr->instance();
+
+        if (plgnInstance->inherits (staticMetaObject.className())) {
+            return dynamic_cast< AbstractPlugin* > (plgnInstance);
+        }
+        else {
+            qDebug() << "(core) [AbstractPlugin::obtainInstance()] The instance doesn't inherit from the abstract plug-in class.";
+            return 0;
+        }
+    }
 
     return 0;
 }
@@ -287,5 +376,5 @@ AbstractPlugin::~AbstractPlugin()
     d->m_sttngs->deleteLater();
 }
 
-#include "plugin.hpp.moc"
+#include "plugin.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
