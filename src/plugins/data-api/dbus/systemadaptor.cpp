@@ -69,4 +69,5 @@ void SystemAdaptor::stop()
     QMetaObject::invokeMethod (parent(), "stop");
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#include "dbus/systemadaptor.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

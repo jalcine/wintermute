@@ -39,4 +39,6 @@ SystemInterface::SystemInterface()
 SystemInterface::~SystemInterface()
 {
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "dbus/systeminterface.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

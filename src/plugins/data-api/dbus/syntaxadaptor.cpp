@@ -1,9 +1,4 @@
-/**
- * @file adaptors.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,10 +16,15 @@
  *
  */
 
-// local includes
+/**
+ * @file adaptors.hpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ * @date Sun, 30 Oct 2011 21:54:16
+ */
+
+#include "data-api/syntax/manager.hpp"
+#include "data-api/wntrdata.hpp"
 #include "syntaxadaptor.hpp"
-#include "../syntax/manager.hpp"
-#include "../wntrdata.hpp"
 
 using namespace Wintermute::Data;
 using namespace Wintermute::Data::Linguistics;
@@ -63,4 +63,6 @@ QString SyntaxAdaptor::write (QString in0)
     Manager::instance()->write (chn);
     return chn.toString();
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "dbus/syntaxadaptor.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -1,9 +1,4 @@
-/**
- * @file adaptors.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,21 +16,59 @@
  *
  */
 
-// Wintermute includes
-#include <ipc.hpp>
-#include <plugins.hpp>
+/**
+ * @file adaptors.hpp
+ * @author Wintermute Development <wntr-devel@thesii.org>
+ * @date Sun, 30 Oct 2011 21:54:16
+ */
 
-// local includes
-#include "../config.hpp"
+#include <app/ipc.hpp>
+#include <app/core.hpp>
+
+#include "data-api/config.hpp"
 #include "syntaxinterface.hpp"
 
+using Wintermute::Core;
 using Wintermute::Data::SyntaxInterface;
+using namespace Wintermute::Data::Linguistics;
 
 SyntaxInterface::SyntaxInterface()
-    : QDBusAbstractInterface (WNTRDATA_DBUS_SERVICE, "/Rules", staticInterfaceName(), *IPC::System::bus(), Plugins::Factory::currentPlugin())
+    : QDBusAbstractInterface (WNTRDATA_DBUS_SERVICE, "/Syntax", staticInterfaceName(), *IPC::System::bus(), Core::instance())
 {
+}
+
+QDBusPendingReply< bool > SyntaxInterface::exists (const QString& in0, const QString& in1)
+{
+    QList<QVariant> argumentList;
+    qDebug() << "(data) [SyntaxInterface::exists()]" << in0 << in1;
+    argumentList << qVariantFromValue (in0) << qVariantFromValue (in1);
+    return asyncCallWithArgumentList (QLatin1String ("exists"), argumentList);
+}
+
+QDBusPendingReply< void > SyntaxInterface::quit()
+{
+    QList<QVariant> argumentList;
+    return asyncCallWithArgumentList (QLatin1String ("quit"), argumentList);
+}
+
+QDBusPendingReply< Syntax::Chain > SyntaxInterface::read (Syntax::Chain in0)
+{
+    QList<QVariant> argumentList;
+    qDebug() << "(data) [SyntaxInterface::read()]" << in0.toString();
+    argumentList << in0.toString();
+    return asyncCallWithArgumentList (QLatin1String ("read"), argumentList);
+}
+
+
+QDBusPendingReply< Syntax::Chain > SyntaxInterface::write (Syntax::Chain in0)
+{
+    QList<QVariant> argumentList;
+    qDebug() << "(data) [SyntaxInterface::write()]" << in0.toString();
+    argumentList << in0.toString();
+    return asyncCallWithArgumentList (QLatin1String ("write"), argumentList);
 }
 
 SyntaxInterface::~SyntaxInterface() { }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+#include "dbus/syntaxinterface.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -22,7 +22,7 @@
  */
 
 #ifndef WNTRDATA_SYSTEMADAPTOR
-#define WNTRDATA_SYSTEMADPATOR
+#define WNTRDATA_SYSTEMADAPTOR
 
 // Qt includes
 #include <QObject>
@@ -77,4 +77,4 @@ Q_SIGNALS: // SIGNALS
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

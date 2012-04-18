@@ -44,57 +44,18 @@ class NodeInterface: public QDBusAbstractInterface
     Q_OBJECT
 
 public:
-    static inline const char* staticInterfaceName() {
-        return "org.thesii.Wintermute.Data.Nodes";
-    }
+    static const char* staticInterfaceName();
     NodeInterface();
-
-    ~NodeInterface();
+    virtual ~NodeInterface();
 
 public slots:
-    inline QDBusPendingReply<bool> exists (Data in0) {
-        QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0);
-
-        if (in0.id() == "d41d8cd98f00b204e9800998ecf8427e")
-            qFatal ("WOAH BUDDY!");
-
-        return asyncCallWithArgumentList (QLatin1String ("exists"), argumentList);
-    }
-
-    inline Q_NOREPLY void generate() {
-        QList<QVariant> argumentList;
-        callWithArgumentList (QDBus::NoBlock, QLatin1String ("generate"), argumentList);
-    }
-
-    inline QDBusPendingReply<bool> isPseudo (Data in0) {
-        QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0);
-        return asyncCallWithArgumentList (QLatin1String ("isPseudo"), argumentList);
-    }
-
-    inline QDBusPendingReply<Data> pseudo (Data in0) {
-        QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0);
-        return asyncCallWithArgumentList (QLatin1String ("pseudo"), argumentList);
-    }
-
-    inline QDBusPendingReply<> quit() {
-        QList<QVariant> argumentList;
-        return asyncCallWithArgumentList (QLatin1String ("quit"), argumentList);
-    }
-
-    inline QDBusPendingReply<Data> read (Data in0) {
-        QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0);
-        return asyncCallWithArgumentList (QLatin1String ("read"), argumentList);
-    }
-
-    inline QDBusPendingReply<Data> write (Data in0) {
-        QList<QVariant> argumentList;
-        argumentList << qVariantFromValue (in0);
-        return asyncCallWithArgumentList (QLatin1String ("write"), argumentList);
-    }
+    Q_NOREPLY void generate();
+    QDBusPendingReply<void> quit();
+    QDBusPendingReply<bool> exists (Data in0);
+    QDBusPendingReply<bool> isPseudo (Data in0);
+    QDBusPendingReply<Data> pseudo (Data in0);
+    QDBusPendingReply<Data> read (Data in0);
+    QDBusPendingReply<Data> write (Data in0);
 
 Q_SIGNALS: // SIGNALS
     void nodeCreated (const QString& in0);
