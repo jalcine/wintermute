@@ -25,11 +25,11 @@
 #include <QDBusConnection>
 
 // Wintermute includes
-#include <adaptors.hpp>
+#include <app/adaptors.hpp>
 
 // Local includes
-#include "../config.hpp"
-#include "../system.hpp"
+#include <linguistics-api/system.hpp>
+#include <app/config.hpp>
 #include "systemadaptor.hpp"
 
 using Wintermute::CoreAdaptor;
@@ -67,4 +67,4 @@ void SystemAdaptor::tellSystem (const QString& in0)
 {
     QMetaObject::invokeMethod (parent(), "tellSystem", Q_ARG (QString, in0));
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

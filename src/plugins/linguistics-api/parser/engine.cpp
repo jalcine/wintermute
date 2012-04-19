@@ -1,8 +1,8 @@
 /**
  * @author Jacky Alciné <jackyalcine@gmail.com>
  * @date 03/04/12 6:06:41 AM
- *
- * @section lcns Licensing
+ */
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -20,13 +20,8 @@
  * @endlegalese
  */
 
-// stdc++
 #include <algorithm>
-
-// WntrData includes
 #include <data-api/lexical/model.hpp>
-
-// local include
 #include "engine.hpp"
 #include "token.hpp"
 #include "syntax/node.hpp"
@@ -35,7 +30,7 @@
 using namespace Wintermute::Linguistics;
 using namespace std;
 
-Engine::Engine (const QString& p_string)
+Engine::Engine (const QString& p_locale) : m_locale(p_locale)
 {
 
 }
@@ -45,14 +40,14 @@ const Meaning Engine::formMeaning (const NodeList& p_nodeList)
 
 }
 
-const QString Engine::locale () const
+QString Engine::locale () const
 {
-    return m_lcl;
+    return m_locale;
 }
 
-void Engine::setLocale (const QString& p_lcl)
+void Engine::setLocale (const QString& p_locale)
 {
-    m_lcl = p_lcl;
+    m_locale = p_locale;
 }
 
 QStringList Engine::getTokens (const QString& p_str)
@@ -121,11 +116,14 @@ NodeList Engine::formNodes (QStringList const& p_tokens)
 Node* Engine::formNode (const QString& p_symbol)
 {
     const QString theID = Lexical::Data::idFromString (p_symbol);
-    Node* theNode = const_cast<Node*> (Node::obtain (m_lcl, theID));
+    Node* theNode = 0;
 
-    if (!Node::exists (m_lcl, theID)) {
-        theNode = Node::buildPseudo (m_lcl, p_symbol);
+    if (!Node::exists (m_locale, theID)) {
+        theNode = Node::buildPseudo (m_locale, p_symbol);
         emit foundPseduoNode (theNode);
+    }
+    else {
+        theNode = const_cast<Node*> (Node::obtain (m_locale, theID));
     }
 
     if (theNode)
@@ -205,7 +203,7 @@ NodeTree Engine::expandNodes (const NodeList& p_baseNodeVtr)
     if (!p_baseNodeVtr.isEmpty ()) {
         for (NodeList::ConstIterator itr = p_baseNodeVtr.begin (); itr != p_baseNodeVtr.end (); itr++) {
             const Node* curNode = *itr;
-            NodeList curNodeForms = Node::expand (curNode);
+            NodeList curNodeForms = Node::expand (*curNode);
             const unsigned int size = curNodeForms.size ();
 
             qDebug() << "(ling) [Parser]" << curNode << "provided " << size << "forms";
@@ -255,9 +253,10 @@ const QString Engine::formShorthand (const NodeList& p_ndVtr, const Node::Format
 }
 
 /// @todo When parsing multiple sentences back-to-back; we need to implement a means of maintaining context. [Can't be done without implementing context ;)]
-void Engine::parse (const QString& p_txt)
+void Engine::parse (const QString& p_text)
 {
-    QTextStream strm (p_txt.toLocal8Bit (), QIODevice::ReadOnly);
+    qDebug() << "(ling) [Engine::parse()] Parsing" << p_text;
+    QTextStream strm (p_text.toLocal8Bit (), QIODevice::ReadOnly);
     MeaningList mngVtr;
 
     while (!strm.atEnd ()) {
@@ -269,15 +268,9 @@ void Engine::parse (const QString& p_txt)
                 qDebug() << "Parsing next sentence...";
 
             Meaning* mng = const_cast<Meaning*> (process (sentence));
-#if 0
-
-            /// @todo Connect this meaning to the last meaning. (Implement context?)
-            if (!mngVtr.isEmpty ())
-                mng->connectWith (mngVtr.last ());
-
-#endif
 
             if (mng) {
+                qDebug() << "(ling) [Engine::parse()] Got " << mng;
                 mngVtr.push_back (mng);
             }
         }
@@ -287,11 +280,10 @@ void Engine::parse (const QString& p_txt)
 /// @todo Obtain the one meaning that represents the entire parsed text.
 const Meaning* Engine::process (const QString& p_txt)
 {
+    MeaningList meaningVtr;
     QStringList tokens = getTokens (p_txt);
     NodeList theNodes = formNodes (tokens);
     NodeTree nodeTree = expandNodes (theNodes);
-
-    MeaningList meaningVtr;
 
     for (NodeTree::const_iterator itr = nodeTree.begin (); itr != nodeTree.end (); itr++) {
         const NodeList ndVtr = *itr;
@@ -313,5 +305,10 @@ const Meaning* Engine::process (const QString& p_txt)
 
     if (!meaningVtr.empty ()) return meaningVtr.front ();
     else return 0;
+}
+
+Engine::~Engine()
+{
+
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -1,7 +1,9 @@
 /**
  * @file wntrling.hpp
  * This file is part of Wintermute Linguistics
- *
+ */
+
+/*
  * Copyright (C) 2011 - Wintermute Development <wntr-devel@thesii.org>
  *
  * Wintermute Linguistics is free software; you can redistribute it and/or modify
@@ -23,11 +25,8 @@
 #ifndef WNTRLING_NODE_HPP
 #define WNTRLING_NODE_HPP
 
-// Qt includes
 #include <QList>
 #include <QString>
-
-// WntrData includes
 #include <data-api/lexical/data.hpp>
 #include <data-api/lexical/model.hpp>
 
@@ -37,7 +36,9 @@ namespace Linguistics
 {
 
 using namespace Wintermute::Data::Linguistics;
+using namespace Wintermute::Data::Linguistics::Lexical;
 
+struct NodePrivate;
 class Node;
 /**
   * @brief Represents a @c QVector of @c Nodes;
@@ -83,22 +84,16 @@ typedef QList<NodeList> NodeTree;
   *
   * @class Node syntax.hpp "src/syntax.hpp"
   */
-/// @todo Remove all of the in-line definitions of methods that _aren't_ inlined.
 class Node : public QObject
 {
-    Q_GADGET
-    Q_PROPERTY (const QString id READ id)
-    Q_PROPERTY (const QString locale READ locale)
-    Q_PROPERTY (const QString symbol READ symbol)
-    Q_PROPERTY (const QString value READ toString)
-    Q_PROPERTY (const QVariantMap flags READ flags)
-    Q_PROPERTY (const Data* data READ data)
+    Q_OBJECT
+    Q_DECLARE_PRIVATE (Node)
+    Q_PROPERTY (const Wintermute::Data::Linguistics::Lexical::Data Data READ data)
     Q_ENUMS (FormatVerbosity)
 
-    friend class Link;
+    QScopedPointer<NodePrivate> d_ptr;
 
-protected:
-    Lexical::Data m_lxdt;
+    friend class Link;
 
 public:
     /**
@@ -119,31 +114,27 @@ public:
     * @brief Null constructor.
     * @fn Node
     */
-    Node() : m_lxdt() { }
+    Node();
 
     /**
     * @brief Default constructor.
     * @fn Node
     * @param p_lxdt The Lexical::Data representing the internal data of the Node.
     */
-    explicit Node (Lexical::Data p_lxdt) : m_lxdt (p_lxdt) {
-        this->setProperty ("OriginalToken", symbol ());
-    }
+    explicit Node (const Lexical::Data& p_lxdt);
 
     /**
     * @brief Copy constructor.
     * @fn Node
     * @param p_nd The node being copied.
     */
-    Node (const Node& p_nd) : m_lxdt (p_nd.m_lxdt) {
-        this->setProperty ("OriginalToken", symbol ());
-    }
+    Node (const Node& p_nd);
 
     /**
     * @brief Deconstructor.
     * @fn ~Node
     */
-    ~Node() { }
+    virtual ~Node();
 
     /**
     * @brief Obtains the ID of the Node.
@@ -154,8 +145,8 @@ public:
     * @see Node(Lexical::Data p_lxdt)
     * @see Lexical::Data
     */
-    Q_INVOKABLE inline const QString id() const {
-        return m_lxdt.id ();
+    Q_INVOKABLE QString id() const {
+        return data().id();
     }
 
     /**
@@ -167,8 +158,8 @@ public:
     * @see Node(Lexical::Data p_lxdt)
     * @see Lexical::Data
     */
-    Q_INVOKABLE inline const QString locale() const {
-        return m_lxdt.locale ();
+    Q_INVOKABLE QString locale() const {
+        return data().locale();
     }
 
     /**
@@ -176,8 +167,8 @@ public:
     * @fn symbol
     * @return The symbol of the Node, or an empty QString.
     */
-    Q_INVOKABLE inline const QString symbol() const {
-        return m_lxdt.symbol ();
+    Q_INVOKABLE QString symbol() const {
+        return data().symbol();
     }
 
     /**
@@ -185,8 +176,8 @@ public:
     * @fn flags
     * @return The flags of the Node.
     */
-    Q_INVOKABLE inline const QVariantMap flags() const {
-        return m_lxdt.flags ();
+    Q_INVOKABLE QVariantMap flags() const {
+        return data().flags();
     }
 
     /**
@@ -194,9 +185,7 @@ public:
     * @fn data
     * @return The Lexical::Data defining this node.
     */
-    Q_INVOKABLE inline const Lexical::Data* data() const {
-        return &m_lxdt;
-    }
+    Lexical::Data data() const;
 
     /**
     * @brief Determines if the Node is 'flat'.
@@ -207,7 +196,7 @@ public:
     * @fn isFlat
     * @return 'true' if flags().size == 1, returns 'false' otherwise.
     */
-    Q_INVOKABLE inline const bool isFlat() const {
+    Q_INVOKABLE inline bool isFlat() const {
         return this->flags ().size () == 1;
     }
 
@@ -221,8 +210,8 @@ public:
     * @fn isPseudo
     * @return 'true' if the flags and ID are pseudo-worthy, returns 'false' otherwise.
     */
-    Q_INVOKABLE inline const bool isPseudo() const {
-        return Lexical::Cache::isPseudo (m_lxdt);
+    Q_INVOKABLE inline bool isPseudo() const {
+        return Lexical::Cache::isPseudo (data());
     }
 
     /**
@@ -230,7 +219,7 @@ public:
     * @fn toString
     * @param p_verbosity The verbosity of the printing of the Node.
     */
-    Q_INVOKABLE const QString toString (const FormatVerbosity& = FULL) const;
+    Q_INVOKABLE QString toString (const Wintermute::Linguistics::Node::FormatVerbosity& p_density = FULL) const;
 
     /**
     * @brief Prints out a QString representing a specific Node.
@@ -238,7 +227,7 @@ public:
     * @param p_node The Node to be printed.
     * @param p_verbosity The verbosity of the printing of the Node.
     */
-    static const QString toString (const Node* , const FormatVerbosity& = FULL);
+    static const QString toString (const Node* p_node, const FormatVerbosity& p_verbosity = FULL);
 
     /**
     * @brief Prints out an entire NodeVector using a specific FormatVerbosity.
@@ -246,7 +235,7 @@ public:
     * @param p_ndVtr The vector to be printed out.
     * @param p_verbosity The verbosity for each Node in the NodeVector to be printed with.
     */
-    static const QString toString (const NodeList& , const FormatVerbosity& = FULL);
+    static const QString toString (const NodeList& p_nodeVector, const FormatVerbosity& p_verbosity = FULL);
 
     /**
     * @brief Determines if a specific Node exists.
@@ -254,7 +243,7 @@ public:
     * @param p_lcl The locale of the potential Node.
     * @param p_sym The symbol of the potential Node.
     */
-    static const bool exists (const QString&, const QString&);
+    static const bool exists (const QString& p_locale, const QString& p_id);
 
     /**
     * @brief Obtains a Node from a specific locale with a specific symbol.
@@ -263,7 +252,7 @@ public:
     * @param p_sym The symbol of the potential Node.
     * @return A Node if the Node exists, or 0 if it doesn't.
     */
-    static Node* obtain (const QString&, const QString&);
+    static Node* obtain (const QString& p_locale, const QString& p_id);
 
     /**
     * @brief Creates a new Node based on a Lexical::Data.
@@ -273,7 +262,7 @@ public:
     * @warning This method may fail quietly, if the Lexical::Cache is unable to write the Lexical::Data to disk.
     *          In a future implementation that uses error handling via exceptions, you'll be able to catch such a failure.
     */
-    static Node* create (const Lexical::Data&);
+    static Node* create (const Lexical::Data& p_data);
 
     /**
     * @brief Generates a Node from a QString.
@@ -283,7 +272,7 @@ public:
     * @deprecated Use the obtain() method to obtain a Node from a QString.
     * @obsolete This method will be removed in a later micro-version of WntrLing.
     */
-    static Node* fromString (const QString&);
+    static Node* fromString (const QString& p_string);
 
     /**
     * @brief Builds a pseudo-Node with the specified locale and symbol.
@@ -293,7 +282,7 @@ public:
     * @return A Node representing the pseudo-Node, or 0 if no pseudo-Nodes could be formed.
     * @todo Check if this Node exists. If it does, return that instead of forming a pseudo-Node.
     */
-    static Node* buildPseudo (const QString&, const QString&);
+    static Node* buildPseudo (const QString& p_locale, const QString& p_symbol);
 
     /**
     * @brief Creates a Node based on a specific Lexical::Data.
@@ -302,7 +291,7 @@ public:
     * @return A new Node with @var p_lxdt at its core.
     * @see Node(Lexical::Data p_lxdt)
     */
-    static Node* form (Lexical::Data);
+    static Node* form (const Lexical::Data& p_data);
 
     /**
     * @brief Splits a Node into many Nodes.
@@ -316,7 +305,7 @@ public:
     * @param p_node The Node to split.
     * @return A NodeList with a Node for each flag defind in p_node.
     */
-    static NodeList expand (const Node*);
+    static NodeList expand (const Node& p_node);
 
     /**
     * @brief Equality operator.
@@ -324,11 +313,7 @@ public:
     * @param p_nd
     * @return bool
     */
-    bool operator== (const Node& p_nd) {
-        return this->id () == p_nd.id () &&
-               this->m_lxdt.locale () == this->m_lxdt.locale ();
-    }
-
+    bool operator== (const Node& p_node);
 };
 
 }

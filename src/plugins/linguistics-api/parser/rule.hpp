@@ -67,23 +67,17 @@ struct RulePrivate;
 class Rule : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Rule)
+    Q_DECLARE_PRIVATE (Rule)
     Q_PROPERTY (QString type READ type)
     Q_PROPERTY (QString locale READ locale)
 
     friend class RuleSet;
 public:
-    Q_DISABLE_COPY(Rule)
+    explicit Rule ();
+    Rule (const Rule& p_other);
+    Rule operator=(Rule p_other);
+    Rule (const Data::Linguistics::Syntax::Chain& p_chain, QObject* parent = 0);
     virtual ~Rule();
-    explicit Rule (QObject* parent = 0);
-
-    /**
-     * @brief
-     *
-     * @fn Rule
-     * @param
-     */
-    Rule (const Data::Linguistics::Syntax::Chain&);
     /**
      * @brief Returns a Rule that's satisified by this Node.
      * @fn obtain

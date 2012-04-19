@@ -62,27 +62,28 @@ void Meaning::__init()
     qDebug() << "(ling) [Meaning] Encapsulates" << m_ontoMap.uniqueKeys ();
 }
 
-const Meaning* Meaning::form (LinkList* p_lnkLst, const NodeList& p_ndVtr)
+Meaning* Meaning::form (LinkList* p_linkLst, const NodeList& p_nodeList)
 {
     Meaning::s_cnt++;
 
-    if (p_lnkLst == 0)
-        p_lnkLst = new LinkList;
+    if (p_linkLst == 0)
+        p_linkLst = new LinkList;
 
-    cout << endl << setw (6) << setfill ('=') << '=';
-    cout << " Level ";
-    cout << setw (4) << setfill ('0') << right << s_cnt << ' ';
-    cout << setw (6) << setfill ('=') << '=' << endl;
+    cout << endl << setw (6) << setfill ('=') << '='
+         << " Level "
+         << setw (4) << setfill ('0') << right << s_cnt << ' '
+         << setw (6) << setfill ('=') << '=' << endl;
 
-    NodeList::ConstIterator ndItr = p_ndVtr.begin ();
+    NodeList::ConstIterator ndItr = p_nodeList.begin ();
     NodeList ndLst;
     QStringList* hideList = 0;
-    bool hideOther = false, hideThis = false;
+    bool hideOther = false;
+    bool hideThis = false;
 
-    if (p_ndVtr.size () != 1) {
+    if (p_nodeList.size () != 1) {
         Node* ndLeft = 0;
         Node* ndRight = 0;
-        const NodeList::ConstIterator ndItrEnd = p_ndVtr.end ();
+        const NodeList::ConstIterator ndItrEnd = p_nodeList.end ();
 
         for (; ndItr != ndItrEnd; ndItr++) {
             ndLeft  =  *ndItr;
@@ -114,7 +115,7 @@ const Meaning* Meaning::form (LinkList* p_lnkLst, const NodeList& p_ndVtr)
             if (bnd) {
                 lnk = bnd->bind (*ndLeft, *ndRight);
                 lnk->m_lvl = Meaning::s_cnt;
-                p_lnkLst->push_back (const_cast<Link*> (lnk));
+                p_linkLst->push_back (const_cast<Link*> (lnk));
 
                 QString hide = bnd->getAttrValue ("hide");
                 QString hideNext = bnd->getAttrValue ("hideNext");
@@ -183,18 +184,18 @@ const Meaning* Meaning::form (LinkList* p_lnkLst, const NodeList& p_ndVtr)
 
         }
 
-        qDebug() << "(ling) [Meaning] Formed" << p_lnkLst->size () << "links with" << ndLst.size () << "nodes left to parse.";
+        qDebug() << "(ling) [Meaning] Formed" << p_linkLst->size () << "links with" << ndLst.size () << "nodes left to parse.";
     }
 
-    if (!p_lnkLst->empty ()) {
-        if (! (p_lnkLst->size () >= 1) || ndLst.size () > 0) {
+    if (!p_linkLst->empty ()) {
+        if (! (p_linkLst->size () >= 1) || ndLst.size () > 0) {
             qDebug() << "(ling) [Meaning] No links were made!";
             Q_ASSERT (Meaning::s_cnt < 5);
-            return Meaning::form (&*p_lnkLst, ndLst);
+            return Meaning::form (&*p_linkLst, ndLst);
         }
         else {
             Meaning::s_cnt = 0;
-            return new Meaning (*p_lnkLst);
+            return new Meaning (*p_linkLst);
         }
     }
     else

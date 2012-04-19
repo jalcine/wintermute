@@ -41,13 +41,13 @@ Binding::Binding (const Binding& p_other) : QObject (p_other.parent()),
 
 }
 
-Binding::Binding (const Syntax::Bond& p_bnd , const Rule* p_rl) : QObject(),
+Binding::Binding (const Bond& p_bond, const Rule* p_rule) : QObject(),
     d_ptr (new BindingPrivate)
 {
     Q_D (Binding);
 
-    d->m_bnd = p_bnd;
-    d->m_rl = *p_rl;
+    d->m_bnd = p_bond;
+    d->m_rl = *p_rule;
 }
 
 const Rule* Binding::parentRule() const
@@ -76,6 +76,7 @@ const QString Binding::getAttrValue (const QString& p_attr) const
 const double Binding::canBind (const Node& p_ndSrc, const Node& p_ndDst) const
 {
     Q_D (const Binding);
+
     if (this->parentRule ()->appliesFor (p_ndSrc) == 0.0)
         return 0.0;
 
@@ -149,6 +150,7 @@ const double Binding::canBind (const Node& p_ndSrc, const Node& p_ndDst) const
 const Link* Binding::bind (const Node& p_nd1, const Node& p_nd2) const
 {
     Q_D (const Binding);
+
     if (!canBind (p_nd1, p_nd2)) {
         emit bindFailed (const_cast<Binding*> (this), &p_nd1, &p_nd2);
         return 0;
@@ -178,5 +180,10 @@ const Link* Binding::bind (const Node& p_nd1, const Node& p_nd2) const
     emit binded (this, &p_nd1, &p_nd2);
     qDebug() << "(ling) [Binding] Link formed: " << p_nd1.toString (Node::EXTRA) << p_nd2.toString (Node::EXTRA);
     return Link::form (*&nd, *&nd2 , type , lcl);
+}
+
+Binding::~Binding()
+{
+
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

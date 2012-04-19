@@ -39,9 +39,6 @@ System::System() : QObject(), m_prs ( (new Engine))
     if (System::s_sys)
         System::s_sys->deleteLater ();
 
-    connect (this, SIGNAL (started()), Wintermute::Data::System::instance(), SLOT (start()));
-    connect (this, SIGNAL (stopped()), Wintermute::Data::System::instance(), SLOT (stop()));
-
     System::s_sys = this;
 
 }

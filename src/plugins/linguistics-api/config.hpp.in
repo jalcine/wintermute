@@ -26,6 +26,7 @@
 #define __WNTRLING_CONFIG_HPP__
 
 #include <app/config.hpp>
+#include <data-api/config.hpp>
 #cmakedefine01 DEBUG
 
 #define WNTRLING_UUID "@WNTRLING_UUID@"
