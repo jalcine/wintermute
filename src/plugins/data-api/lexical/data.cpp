@@ -192,8 +192,9 @@ QString Data::toJson() const
     return str;
 }
 
-Data::~Data ()
+Data::~Data()
 {
+    d_ptr.reset();
 }
 
 #include "lexical/data.moc"

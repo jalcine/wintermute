@@ -1,37 +1,35 @@
-/**
- * @file dom.hpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
+/***
+ *  This file is part of the Wintermute project.
  *
- * @section lcns Licensing
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ *  Copyright (C) 2012 Jacky Alciné <jacky.alcine@thesii.org>
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ *  Wintermute is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  Wintermute is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
  *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with Wintermute.
+ *  If not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-// Qt includes
+/**
+ * @author Jacky Alciné <jacky.alcine@thesii.org>
+ * @date 04/18/12 7:02:17 PM
+ */
+
 #include <QDir>
 #include <QFile>
-#include <QDomElement>
-#include <QDomDocument>
-
-// local includes
+#include "data-api/linguistics.hpp"
 #include "data.hpp"
 #include "model.hpp"
 #include "dom.hpp"
-#include "../linguistics.hpp"
 
 using namespace Wintermute::Data::Linguistics::Lexical;
 

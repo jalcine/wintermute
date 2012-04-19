@@ -21,13 +21,8 @@
  *
  */
 
-// Qt includes
 #include <QDBusMetaType>
-
-// Wintermute includes
 #include <core.hpp>
-
-// local includes
 #include "linguistics.hpp"
 #include "ontology/ontology.hpp"
 #include "lexical/data.hpp"
@@ -87,4 +82,5 @@ void System::setDirectory (const QString& p_dir)
     start();
 }
 
+#include "system.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -47,7 +47,6 @@ class DomBackend : public AbstractBackend
 {
 public:
     DomBackend (const QDomElement& p_ele);
-    DomBackend (QDomElement&);
 
 protected:
     QDomElement m_ele; /**< Represents the Dom data of the object. */

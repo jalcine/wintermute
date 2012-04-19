@@ -57,12 +57,12 @@ struct DataPrivate;
  */
 class Data : public QObject
 {
-    Q_OBJECT
+    Q_GADGET
     Q_DECLARE_PRIVATE (Data)
-    Q_PROPERTY (QString ID READ id WRITE setId)
-    Q_PROPERTY (QString Locale READ locale WRITE setLocale)
-    Q_PROPERTY (QString Symbol READ symbol WRITE setSymbol)
-    Q_PROPERTY (QVariantMap Flags READ flags WRITE setFlags)
+    Q_PROPERTY (QString ID READ id WRITE setId)              /// Represents the ID of the Data.
+    Q_PROPERTY (QString Locale READ locale WRITE setLocale)  /// Represents the locale of the Data.
+    Q_PROPERTY (QString Symbol READ symbol WRITE setSymbol)  /// Represents the symbol of the Data.
+    Q_PROPERTY (QVariantMap Flags READ flags WRITE setFlags) /// Represents the flags of the Data.
 
     friend const QDBusArgument& operator>> (const QDBusArgument& argument, Lexical::Data& structure) {
         QString id, locale, symbol;
@@ -92,11 +92,10 @@ class Data : public QObject
 public:
     /**
      * @brief Default constructor.
-     * @fn Data
-     * @param p_id The ID of the Data.
+     * @param p_id     The ID of the Data.
      * @param p_locale The locale of the Data.
      * @param p_symbol The symbol of the Data.
-     * @param p_flags The flags of the Data.
+     * @param p_flags  The flags of the Data.
      */
     Data (const QString     p_id,
           const QString     p_locale,
@@ -117,12 +116,9 @@ public:
     Data (const Data& p_other);
 
     /**
-     * @brief Deconstructor.
-     * @fn ~Data
-     */
-    ~Data();
-
-    static Data fromString (const QString& p_string);
+     * @brief Destructor.
+     **/
+    virtual ~Data();
 
     /**
      * @brief Returns the ID of the node.
@@ -190,6 +186,8 @@ public:
      */
     static const QString idFromString (const QString);
 
+    static Data fromString (const QString& p_string);
+
     static const Data Empty; /**< Represents an empty set of data. */
     /**
      * @brief Equality operator.
@@ -220,3 +218,4 @@ Q_DECLARE_METATYPE (Wintermute::Data::Linguistics::Lexical::Data)
 
 #endif /* WNTRDATA_LEXICAL_DATA_HPP */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+
