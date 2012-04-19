@@ -7,7 +7,7 @@ configure_file("spec.in"
 
 ## Installs
 install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/${WNTRDATA_UUID}.spec"
-        DESTINATION "${WINTER_PLUGINSPEC_INSTALL_DIR}")
+        DESTINATION "${WINTER_PLUGIN_SPEC_INSTALL_DIR}")
 
 install(DIRECTORY ${WNTRDATA_LING_DIR}
                   ${WNTRDATA_ONTO_DIR}
