@@ -20,7 +20,7 @@
  */
 
 #include <QDBusConnection>
-#include <app/adaptors.hxx>
+#include <app/adaptorsprivate.hpp>
 #include <network-api/adaptors.hpp>
 #include <network-api/wntrntwk.hpp>
 
