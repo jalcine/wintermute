@@ -20,17 +20,12 @@
  * Boston, MA  02110-1301  USA
  */
 
-// Qt includes
 #include <QDebug>
 #include <QtPlugin>
-
-// Wintermute includes
-#include <ipc.hpp>
-
-// local includes
-#include "plugin.hpp"
-#include "system.hpp"
-#include "dbus/adaptors.hpp"
+#include <app/ipc.hpp>
+#include "linguistics-api/plugin.hpp"
+#include "linguistics-api/system.hpp"
+#include "linguistics-api/dbus/adaptors.hpp"
 
 using namespace Wintermute;
 using Wintermute::Linguistics::Plugin;
@@ -64,4 +59,4 @@ Plugin::~Plugin()
 }
 
 Q_EXPORT_PLUGIN2 (wplugin - linguistics, Wintermute::Linguistics::Plugin)
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -1,8 +1,4 @@
-/**
- * @author Jacky Alciné <jackyalcine@gmail.com>
- * @date 03/04/12 6:31:15 AM
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -19,31 +15,42 @@
  * Boston, MA 02111-1307, USA.
  * @endlegalese
  */
-// WntrData includes
+
+/**
+ * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @date 03/04/12 6:31:15 AM
+ */
+
 #include <data-api/dbus/interfaces.hpp>
 #include <data-api/syntax/bond.hpp>
+#include <data-api/config.hpp>
 
-#include "binding.hpp"
-#include "rule.hpp"
-#include "rule.hxx"
 #include "syntax/node.hpp"
+#include "binding.hpp"
+#include "rule.hxx"
+#include "rule.hpp"
+#include <QDBusInterface>
 
 using namespace std;
 using namespace Wintermute::Data;
 using namespace Wintermute::Data::Linguistics;
 using namespace Wintermute::Linguistics;
 
-Rule::Rule (const Syntax::Chain& p_chn) : d_ptr (new RulePrivate)
+Rule::Rule() : QObject(), d_ptr (new RulePrivate)
+{
+
+}
+Rule::Rule (const Chain& p_chain, QObject* parent) : QObject (parent), d_ptr (new RulePrivate)
 {
     Q_D (Rule);
-    d->m_chn = p_chn;
-    d->__init(this);
+    d->m_chn = p_chain;
+    d->__init (this);
 }
 
-Rule::Rule (const Rule& p_other) : d_ptr (const_cast<RulePrivate*> (p_other.d_ptr.data()))
+Rule::Rule (const Rule& p_other) : QObject (p_other.parent()), d_ptr (const_cast<RulePrivate*> (p_other.d_ptr.data()))
 {
     Q_D (Rule);
-    d->__init(this);
+    d->__init (this);
 }
 
 const Rule* Rule::obtain (const Node& p_nd)
@@ -52,9 +59,13 @@ const Rule* Rule::obtain (const Node& p_nd)
     const QString flg = p_nd.flags ().begin ().value ().toString();
     SyntaxInterface* intf = new SyntaxInterface;
     Syntax::Chain chn (lcl, flg);
-    QDBusPendingReply<QString> reply = intf->read (chn);
+    QDBusPendingReply<QString> reply = intf->read(chn);
     reply.waitForFinished();
-    qDebug() << reply;
+    if (!reply.isError()){
+        qDebug() << "(ling) [Rule::obtain()] Obtained from D-Bus:" << reply;
+    } else {
+        qDebug() << "(ling) [Rule::obtain()] D-Bus error:" << reply.error().errorString(reply.error().type());
+    }
     chn = Syntax::Chain::fromString (reply);
     return new Rule (chn);
 }
@@ -137,6 +148,16 @@ const QString Rule::locale () const
 {
     Q_D (const Rule);
     return d->m_chn.locale();
+}
+
+Rule Rule::operator=(Rule p_other){
+    this->d_ptr.swap(p_other.d_ptr);
+    return *this;
+}
+
+Rule::~Rule()
+{
+
 }
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

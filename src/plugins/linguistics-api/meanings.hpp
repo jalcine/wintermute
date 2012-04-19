@@ -173,7 +173,7 @@ public:
      * @param p_lnkLst The list of Link objects.
      * @param p_nodeLst The list of Node objects.
      */
-    static const Meaning* form (LinkList* , const NodeList&);
+    static Meaning* form (Wintermute::Linguistics::LinkList* p_linkLst, const Wintermute::Linguistics::NodeList& p_nodeList);
 
 protected:
     LinkList m_lnkVtr;
@@ -190,4 +190,4 @@ Q_DECLARE_METATYPE (Wintermute::Linguistics::Meaning)
 
 #endif
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

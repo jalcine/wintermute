@@ -1,4 +1,5 @@
-/**  This file is part of Wintermute Linguistics
+/*
+ *  This file is part of Wintermute Linguistics
  *
  *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
  *
@@ -18,82 +19,112 @@
  *  Boston, MA 02110-1301, USA.
  */
 
-// Qt includes
 #include <QDebug>
 #include <QVariantMap>
 #include <QDBusPendingReply>
-
-// wntrdata includes
+#include <QDBusInterface>
 #include <data-api/wntrdata.hpp>
+#include <data-api/lexical/data.hpp>
 #include <data-api/dbus/nodeinterface.hpp>
-
-// local includes
+#include "node.hxx"
 #include "node.hpp"
 
-using Wintermute::Linguistics::Node;
-using Wintermute::Linguistics::NodeList;
-using Wintermute::Linguistics::NodeTree;
+using namespace Wintermute::Linguistics;
+using namespace Wintermute::Data::Linguistics::Lexical;
 
-const QString Node::toString (const Node::FormatVerbosity& p_density) const
+Node::Node() : QObject(), d_ptr (new NodePrivate)
 {
-    QVariantMap::ConstIterator flgItr = m_lxdt.flags ().begin ();
+
+}
+
+Node::Node (const Lexical::Data& p_lxdt) : QObject(), d_ptr (new NodePrivate)
+{
+    Q_D (Node);
+    d->data = p_lxdt;
+    setProperty ("OriginalToken", symbol ());
+}
+
+Node::Node (const Node& p_node) : QObject (p_node.parent()),
+    d_ptr (const_cast<NodePrivate*> (p_node.d_ptr.data()))
+{
+    setProperty ("OriginalToken", symbol ());
+}
+
+Lexical::Data Node::data() const
+{
+    Q_D (const Node);
+    return d->data;
+}
+
+QString Node::toString (const Node::FormatVerbosity& p_density) const
+{
+    Q_D (const Node);
+    QVariantMap flags = d->data.flags();
+
+    if (!flags.isEmpty()) {
+        QVariantMap::ConstIterator flgItr = flags.begin();
+        QString sig;
+
+        switch (p_density) {
+        case MINIMAL:
+            sig = flgItr.value ().toString().at (0);
+            break;
+
+        case EXTRA:
+            sig = flgItr.value ().toString();
+            break;
+
+        default:
+        case FULL:
+            sig = flgItr.value ().toString();
+            sig += "[";
+            sig += flgItr.key();
+            sig += "]";
+            break;
+        }
+
+        return sig;
+    }
+
+    return "<?>";
+}
+
+const QString Node::toString (const Node* p_node, const Node::FormatVerbosity& p_verbosity)
+{
+    return p_node->toString (p_verbosity);
+}
+
+const QString Node::toString (const NodeList& p_nodeVector, const Node::FormatVerbosity& p_verbosity)
+{
     QString sig;
 
-    switch (p_density) {
-    case MINIMAL:
-        sig = flgItr.value ().toString().at (0);
-        break;
+    for (NodeList::const_iterator itr = p_nodeVector.begin (); itr != p_nodeVector.end (); itr++) {
+        sig += Node::toString ( (*itr), p_verbosity);
 
-    case EXTRA:
-        sig = flgItr.value ().toString();
-        break;
-
-    default:
-    case FULL:
-        sig = flgItr.value ().toString();
-        sig += "[";
-        sig += flgItr.key();
-        sig += "]";
-        break;
+        if ( (itr + 1) != p_nodeVector.end ())
+            sig += ">";
     }
 
     return sig;
 }
 
-const QString Node::toString (const Node* p_nd, const FormatVerbosity& p_density)
+Node* Node::create (const Lexical::Data& p_data)
 {
-    return p_nd->toString (p_density);
-}
-
-const QString Node::toString (const NodeList& p_ndVtr, const FormatVerbosity& p_density)
-{
-    QString sig;
-
-    for (NodeList::const_iterator itr = p_ndVtr.begin (); itr != p_ndVtr.end (); itr++) {
-        sig += (*itr)->toString (p_density);
-
-        if ( (itr + 1) != p_ndVtr.end ())
-            sig += ">";
-    }
-}
-
-Node* Node::create (const Lexical::Data& p_dt)
-{
-    qDebug() << "(ling) [Node] Created node for" << p_dt.id() << ".";
+    qDebug() << "(ling) [Node] Created node for" << p_data.id() << ".";
     Data::NodeInterface* ndInt = new Data::NodeInterface;
-    QDBusPendingReply<QString> replyDt = ndInt->write (p_dt);
+    QDBusPendingReply<QString> replyDt = ndInt->write (p_data);
     replyDt.waitForFinished();
-    const Lexical::Data dt = Lexical::Data::fromString (replyDt);
-    return Node::obtain (dt.locale (), dt.id ());
+    const Lexical::Data data = Lexical::Data::fromString (replyDt);
+    return Node::obtain (data.locale (), data.id ());
 }
 
-Node* Node::obtain (const QString& p_lcl, const QString& p_id)
+Node* Node::obtain (const QString& p_locale, const QString& p_id)
 {
-    Lexical::Data dt (p_id , p_lcl);
+    Lexical::Data data (p_id , p_locale);
 
-    if (exists (p_lcl , p_id)) {
+    if (exists (p_locale , p_id)) {
         Data::NodeInterface* ndInt = new Data::NodeInterface;
-        QDBusPendingReply<QString> reply = ndInt->read (dt);
+        QDBusPendingReply<QString> reply = ndInt->read (data);
         reply.waitForFinished();
         return new Node (Lexical::Data::fromString (reply));
     }
@@ -101,76 +132,96 @@ Node* Node::obtain (const QString& p_lcl, const QString& p_id)
     return 0;
 }
 
-Node* Node::buildPseudo (const QString& p_lcl, const QString& p_sym)
+Node* Node::buildPseudo (const QString& p_locale, const QString& p_symbol)
 {
-    qDebug() << "(ling) [Node] Building pseudo-node for" << p_sym << "...";
-    Lexical::Data dt (QString::null , p_lcl , p_sym);
+    qDebug() << "(ling) [Node::buildPseudo] Building pseudo-node for" << p_symbol << "with locale" << p_locale << "...";
+    Lexical::Data dt (QString::null , p_locale , p_symbol);
+    qDebug() << dt.toJson();
     Data::NodeInterface* ndInt = new Data::NodeInterface;
     QDBusPendingReply<QString> reply = ndInt->pseudo (dt);
     reply.waitForFinished();
 
-    if (reply.isValid()) {
-        dt = Lexical::Data::fromString ( (QString) reply);
-        qDebug() << "(ling) [Node] Formed psuedo:" << dt;
-        return new Node (dt);
+    qDebug() << "(ling) [Node::buildPseudo] Response:" << reply.value();
+
+    if (reply.isValid() && !reply.value().isNull()) {
+        dt = Lexical::Data::fromString (reply);
+
+        if (dt.isValid()) {
+            qDebug() << "(ling) [Node::buildPseudo] Formed pseudo node:" << dt.toJson();
+            return new Node (dt);
+        }
     }
     else {
         if (reply.isError())
-            qDebug() << "Error building psuedo node for " << p_sym << ":"
+            qDebug() << "Error building pseudo node for " << p_symbol << ":"
                      << reply.error();
     }
 
+    qDebug() << "(ling) [Node] Couldn't form pseudo-node for" << p_symbol << "of locale" << p_locale;
     return 0;
 }
 
-const bool Node::exists (const QString& p_lcl, const QString& p_id)
+const bool Node::exists (const QString& p_locale, const QString& p_id)
 {
     Data::System::registerDataTypes();
-    Lexical::Data dt (p_id, p_lcl);
+    Lexical::Data dt;
+    dt.setLocale (p_locale);
+    dt.setId(p_id);
+    qDebug() << "(ling) [Node::exists()] Data in question: " << dt.toJson();
     Data::NodeInterface* ndInt = new Data::NodeInterface;
     QDBusPendingReply<bool> reply = ndInt->exists (dt);
     reply.waitForFinished();
+    bool result = false;
 
-    if (reply.isValid())
-        return reply.value();
-    else {
-        if (reply.isError())
-            qDebug() << reply.error();
-    }
+    result = reply.isValid();
+
+    if (reply.isError())
+        qDebug() << "(ling) [Node::exists()] Error determining existence of node's data:" << reply.error();
 
     return false;
 }
 
-Node* Node::form (const Lexical::Data dt)
+Node* Node::form (const Lexical::Data& p_data)
 {
-    return new Node (dt);
+    return new Node (p_data);
 }
 
-NodeList Node::expand (const Node* p_nd)
+NodeList Node::expand (const Node& p_node)
 {
     NodeList vtr;
     QVariantMap map;
     int indx = 0;
 
-    map = p_nd->flags ();
+    map = p_node.flags ();
 
     for (QVariantMap::iterator itr = map.begin (); itr != map.end (); indx++, itr++) {
         QVariantMap mp;
         mp.insert (itr.key (), itr.value ());
-        Lexical::Data dt (p_nd->id (), p_nd->locale (), p_nd->symbol ());
+        Lexical::Data dt = p_node.data();
         dt.setFlags (mp);
         vtr.push_back (const_cast<Node*> (Node::form (dt)));
     }
 
-    qDebug() << "(ling) [Node] Expanded symbol" << p_nd->symbol () << "to spread across its" << map.size() << "variations.";
+    qDebug() << "(ling) [Node] Expanded symbol" << p_node.symbol () << "to spread across its" << map.size() << "variations.";
 
     return vtr;
 }
 
-QDebug operator<< (QDebug dbg, const Node* p_nd)
+bool Node::operator== (const Node& p_node)
 {
-    Q_ASSERT (p_nd);
-    dbg.nospace () << "[" << p_nd->symbol () << " (" << p_nd->toString (Node::EXTRA) << "):" << p_nd->locale ().toStdString ().c_str () << "]";
+    return this->id () == p_node.id () &&
+           this->locale() == this->locale();
+}
+
+Node::~Node()
+{
+
+}
+
+QDebug operator<< (QDebug dbg, const Node* p_node)
+{
+    Q_ASSERT (p_node);
+    dbg.nospace () << "Node [" << p_node->symbol () << " (" << p_node->toString (Node::FULL) << "):" << qPrintable (p_node->locale ()) << "]";
     return dbg.space();
 }
 

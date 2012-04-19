@@ -1,7 +1,9 @@
 /**
  * @file wntrling.hpp
  * This file is part of Wintermute Linguistics
- *
+ */
+
+/*
  * Copyright (C) 2011 - Wintermute Development <wntr-devel@thesii.org>
  *
  * Wintermute Linguistics is free software; you can redistribute it and/or modify
@@ -164,7 +166,6 @@ namespace Linguistics
   * the more confidient Wintermute is about the statement. If confidient enough, it then
   * generates an approriate response.
   *
-  * @endsection
   * There's a pantheon of errors, mistakes and complications that haven't been calculated
   * currently into the coding that could cause subtle exceptions in interpretation, execution
   * or even santization that'd mess up the potential output of Wintermute.
@@ -183,28 +184,28 @@ public:
     /**
       * @brief Copy constructor.
       * @fn Parser
-      * @param p_prsr The Parser to be copied.
+      * @param p_parser The Parser to be copied.
       */
-    Engine (const Engine& p_prsr) : m_lcl (p_prsr.m_lcl) {}
+    Engine (const Engine& p_parser) : m_locale  (p_parser.m_locale ) {}
 
     /**
       * @brief Default constructor.
       * @fn Parser
       * @param p_lcl The locale for the parser to use (default is Wintermute's default locale).
       */
-    explicit Engine (const QString& = Wintermute::Data::Linguistics::System::locale ());
+    explicit Engine (const QString& p_locale = Wintermute::Data::Linguistics::System::locale ());
 
     /**
       * @brief Deconstructor.
       * @fn ~Parser
       */
-    ~Engine() { }
+    virtual ~Engine();
 
     /**
       * @brief Returns the locale of the Parser.
       * @fn locale
       */
-    const QString locale() const;
+    QString locale() const;
 
     /**
       * @brief Changes the locale of the Parser.
@@ -212,17 +213,17 @@ public:
       * @param p_lcl The locale to be used by the Parser.
       * @todo Prevent this value from being changed while parsing's active; it can cause malformed data to be generated.
       */
-    void setLocale (const QString& = Wintermute::Data::Linguistics::System::locale ());
+    void setLocale (const QString& p_locale = Wintermute::Data::Linguistics::System::locale ());
 
     /**
       * @brief Parses user text into a semantic representation of its underlying meaning.
       * @fn parse
       * @param p_txt The text to be parsed.
       */
-    void parse (const QString&);
+    void parse (const QString& p_text);
 
 protected:
-    mutable QString m_lcl;
+    mutable QString m_locale;
     int m_prg;
     int m_prgMax;
 

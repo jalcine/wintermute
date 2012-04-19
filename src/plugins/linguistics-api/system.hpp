@@ -79,34 +79,11 @@ signals:
     void responseFormed (const QString&);
 
 public:
-    /**
-     * @brief
-     *
-     * @fn instance
-     */
     static System* instance();
 
 public slots:
-    /**
-     * @brief
-     *
-     * @fn start
-     */
     static void start();
-
-    /**
-     * @brief
-     *
-     * @fn stop
-     */
     static void stop();
-
-    /**
-     * @brief
-     *
-     * @fn tellSystem
-     * @param
-     */
     static void tellSystem (const QString&);
 };
 
@@ -114,4 +91,4 @@ public slots:
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

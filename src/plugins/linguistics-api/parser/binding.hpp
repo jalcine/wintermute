@@ -25,15 +25,16 @@
 #include <QObject>
 
 namespace Wintermute
-{namespace Data
 {
-    namespace Linguistics
-    {
-        namespace Syntax
-        {
-            class Bond;
-        }
-    }
+namespace Data
+{
+namespace Linguistics
+{
+namespace Syntax
+{
+class Bond;
+}
+}
 }
 namespace Linguistics
 {
@@ -64,73 +65,21 @@ class Binding : public QObject
     Q_DECLARE_PRIVATE (Binding)
     friend class RulePrivate;
 signals:
-    /**
-     * @brief
-     * @fn binded
-     * @param
-     * @param
-     * @param
-     */
     void binded (const Binding* = 0, const Node* = 0, const Node* = 0) const;
-    /**
-     * @brief
-     * @fn bindFailed
-     * @param
-     * @param
-     * @param
-     */
     void bindFailed (const Binding* = 0, const Node* = 0, const Node* = 0) const;
 
 public:
-    Q_DISABLE_COPY(Binding)
+    Q_DISABLE_COPY (Binding)
     explicit Binding ();
-    /**
-     * @brief
-     * @fn ~Binding
-     */
     virtual ~Binding();
-    /**
-     * @brief
-     *
-     * @fn obtain
-     * @param
-     * @param
-     */
     static const Binding* obtain (const Node&, const Node&);
-    /**
-     * @brief
-     * @fn parentRule
-     */
     const Rule* parentRule() const;
-    /**
-     * @brief The ability of binding is measured on a scale from 0.0 to 1.0; where 0.0 is no chance at all and 1.0 is equality.
-     * @fn canBind
-     * @param
-     * @param
-     */
     const double canBind (const Node&, const Node&) const;
-    /**
-     * @brief
-     * @fn getAttrValue
-     * @param
-     */
     const QString getAttrValue (const QString&) const;
-    /**
-     * @brief
-     * @fn bind
-     * @param
-     * @param
-     */
     const Link* bind (const Node&, const Node&) const;
 
 protected:
-    /**
-     * @brief
-     * @fn Binding
-     * @param QDomElement
-     * @param
-     */
-    Binding (const Bond& , const Rule*);
+    Binding (const Bond& p_bond, const Rule* p_rule);
 
 private:
     QScopedPointer<BindingPrivate> d_ptr;
