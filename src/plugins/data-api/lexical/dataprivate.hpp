@@ -14,41 +14,33 @@
  *  Library General Public License for more details.
  *
  *  You should have received a copy of the GNU Library General Public License
- *  along with Wintermute .  If not, write to the Free Software Foundation, Inc.,
+ *  along with Wintermute.  If not, write to the Free Software Foundation, Inc.,
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef WINTERMUTE_SHELLPLUGIN_H_
-#define WINTERMUTE_SHELLPLUGIN_H_
+#include <QString>
+#include <QVariantMap>
 
 namespace Wintermute
 {
-namespace Plugins
+namespace Data
 {
-/**
- * @brief A helper class for plug-ins.
- * Shell plug-ins allows the Factory to learn about a plug-in configuration
- * and setup without loading all of its libraries and dependencies. It's also
- * provided since AbstractPlugin is an abstract class.
- */
-class ShellPlugin : public AbstractPlugin
+namespace Linguistics
 {
-    Q_OBJECT
-    friend class Factory;
-    friend class AbstractPlugin;
+namespace Lexical
+{
 
-public:
-    ShellPlugin();
-    ShellPlugin (const QString& p_uuid);
-    virtual ~ShellPlugin();
-
-private:
-    virtual void start () const { }
-    virtual void stop () const { }
+struct DataPrivate {
+    DataPrivate();
+    ~DataPrivate();
+    QString id;
+    QString locale;
+    QString symbol;
+    QVariantMap flags;
 };
 
 }
 }
-
-#endif
+}
+}
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

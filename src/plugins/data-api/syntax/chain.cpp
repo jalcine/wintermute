@@ -109,4 +109,6 @@ Chain Chain::fromString (const QString& p_str)
 }
 
 Chain::~Chain () { }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "syntax/chain.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

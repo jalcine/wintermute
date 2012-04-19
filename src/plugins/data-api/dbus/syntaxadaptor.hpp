@@ -36,9 +36,9 @@ namespace Data
 class SyntaxAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Data.Rules")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Data.Syntax")
     Q_CLASSINFO ("D-Bus Introspection", ""
-                 "  <interface name=\"org.thesii.Wintermute.Data.Rules\">\n"
+                 "  <interface name=\"org.thesii.Wintermute.Data.Syntax\">\n"
                  "    <signal name=\"ruleCreated\">\n"
                  "      <arg direction=\"out\" type=\"s\"/>\n"
                  "    </signal>\n"
@@ -76,4 +76,4 @@ Q_SIGNALS: // SIGNALS
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

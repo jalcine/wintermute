@@ -34,12 +34,18 @@ using namespace Wintermute::Plugins;
 PluginHandle::PluginHandle() : QObject (Factory::instance()),
     m_uuid (QString::null),
     m_prcss (NULL),
-    m_settings (NULL) {}
+    m_settings (NULL)
+{
+
+}
 
 PluginHandle::PluginHandle (const PluginHandle& p_plgnInst) : QObject (p_plgnInst.parent()),
     m_uuid (p_plgnInst.m_uuid),
     m_prcss (p_plgnInst.m_prcss),
-    m_settings (p_plgnInst.m_settings) {}
+    m_settings (p_plgnInst.m_settings)
+{
+
+}
 
 PluginHandle::PluginHandle (const QString& p_plgnUuid, QSettings* p_settings) : QObject (Factory::instance()),
     m_uuid (p_plgnUuid),
@@ -74,6 +80,7 @@ void PluginHandle::start()
 
         m_prcss->setProcessChannelMode (QProcess::ForwardedChannels);
         m_prcss->start (QApplication::applicationFilePath(), QStringList() << "--ipc" << "plugin" << "--plugin" << m_uuid);
+        qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << m_uuid;
     }
     else
         qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has already started in pid" << m_prcss->pid();
@@ -158,4 +165,4 @@ void PluginHandle::catchError (const QProcess::ProcessError& p_err)
 
 
 #include "pluginhandle.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

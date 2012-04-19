@@ -1,9 +1,4 @@
-/**
- * @file model.hpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,17 +16,21 @@
  *
  */
 
-// Qt includes
+/**
+ * @file model.hpp
+ * @author Jacky Alcine <jacky.alcine@thesii.org>
+ * @date Sun, 30 Oct 2011 21:54:16
+ */
+
 #include <QDir>
 #include <QDebug>
 #include <QDomElement>
 #include <QDomDocument>
 
-// local includes
+#include "data-api/linguistics.hpp"
 #include "data.hpp"
-#include "model.hpp"
 #include "dom.hpp"
-#include "../linguistics.hpp"
+#include "model.hpp"
 
 using namespace Wintermute::Data::Linguistics::Lexical;
 
@@ -45,7 +44,7 @@ AbstractModel::AbstractModel (Data& p_dt) : QObject (p_dt.parent()),
 AbstractModel::AbstractModel (const AbstractModel& p_mdl) : QObject (p_mdl.parent()),
     m_dt (p_mdl.m_dt) { }
 
-const Data& AbstractModel::data()
+Data AbstractModel::data() const
 {
     return m_dt;
 }
@@ -67,11 +66,11 @@ AbstractLoadModel::~AbstractLoadModel() { }
 
 AbstractSaveModel::AbstractSaveModel() : AbstractModel() { }
 
-AbstractSaveModel::AbstractSaveModel (Data& p_dt) : AbstractModel (p_dt) { }
+AbstractSaveModel::AbstractSaveModel (Data& p_data) : AbstractModel (p_data) { }
 
-AbstractSaveModel::AbstractSaveModel (const AbstractSaveModel& p_mdl) : AbstractModel (p_mdl) { }
+AbstractSaveModel::AbstractSaveModel (const AbstractSaveModel& p_other) : AbstractModel (p_other) { }
 
-AbstractSaveModel::AbstractSaveModel (const AbstractModel& p_mdl) : AbstractModel (p_mdl) { }
+AbstractSaveModel::AbstractSaveModel (const AbstractModel& p_other) : AbstractModel (p_other) { }
 
 AbstractSaveModel::~AbstractSaveModel() { }
 
@@ -122,41 +121,54 @@ int Cache::countSymbols()
 }
 
 /// @todo Find a way to call all of the storages in parallel and then kill all of the other ones when none (or one has) found information.
-bool Cache::exists (const Data& p_dt)
+bool Cache::exists (const Data& p_data)
 {
-    if (p_dt.id() == "d41d8cd98f00b204e9800998ecf8427e")
-        qDebug() << "(data) [Cache] Suspicious data" << p_dt;
+    if (p_data.id() == "d41d8cd98f00b204e9800998ecf8427e")
+        qWarning() << "(data) [Cache] Suspicious data" << p_data.toJson();
 
     foreach (Storage * str, Cache::s_stores) {
-        if (str->exists (p_dt))
+        if (str->exists (p_data)){
+            qDebug() << "(data) [Cache::exists()] Symbol" << p_data.symbol() << "exists.";
             return true;
+        } else {
+            Data other = p_data.clone();
+            if (str->loadTo(other))
+                return true;
+        }
     }
+
+    qDebug() << "(data) [Cache::exists()] Symbol" << p_data.symbol() << "doesn't exist.";
     return false;
 }
 
 /// @todo Find a way to call all of the storages in parallel and then kill all of the other ones when none (or one has) found information.
-bool Cache::read (Data& p_dt)
+bool Cache::read (Data& p_data)
 {
     foreach (Storage * str, Cache::s_stores) {
-        if (str->exists (p_dt)) {
-            str->loadTo (p_dt);
+        if (str->exists (p_data)) {
+            str->loadTo (p_data);
             return true;
         }
         else continue;
     }
+
+    qDebug() << "(data) [Cache::read()] Can't find data for symbol" << p_data.symbol();
     return false;
 }
 
 /// @todo Find a way to call all of the storages in parallel and then kill all of the other ones when none (or one has) found information.
-void Cache::pseudo (Data& p_psDt)
+void Cache::pseudo (Data& p_data)
 {
     foreach (Storage * str, Cache::s_stores) {
-        if (str->hasPseudo (p_psDt)) {
-            str->loadPseudo (p_psDt);
+        if (str->hasPseudo (p_data)) {
+            str->loadPseudo (p_data);
+            qDebug() << "(data) [Cache::pseudo()]" << p_data.symbol() << "pseudo-symbol loaded in format" << str->type() << ".";
             return;
         }
         else continue;
     }
+
+    qDebug() << "(data) [Cache::pseudo()]" << p_data.symbol() << "couldn't be formed into a pseudo-data.";
 }
 
 /// @todo Find a way to call all of the storages in parallel and then kill all of the other ones when none (or one has) found information.
@@ -179,7 +191,7 @@ Storage* Cache::addStorage (Storage* p_str)
 {
     if (!hasStorage (p_str->type ())) {
         s_stores << p_str;
-        qDebug() << "(data) [Cache] Added lexical cache backend" << p_str->type() << ".";
+        qDebug() << "(data) [Cache::addStorage()] Added lexical cache backend" << p_str->type() << ".";
     }
 
     return p_str;
@@ -227,13 +239,15 @@ const QStringList Cache::allNodes (const QString& p_lcl)
 /// @todo Find a way to call all of the storages in parallel and then kill all of the other ones when none (or one has) found information.
 void Cache::generate()
 {
-    qDebug() << "(data) [Cache] Dumping all data storages...";
+    qDebug() << "(data) [Cache::generate()] Dumping all data storages...";
 
     foreach (Storage * str, Cache::s_stores) {
-        qDebug() << "(data) [Cache] Dumping" << str->type ();
+        qDebug() << "(data) [Cache::generate()] Dumping" << str->type ();
         str->generate();
     }
 
-    qDebug() << "(data) [Cache] Dumped data.";
+    qDebug() << "(data) [Cache::generate()] Dumped data.";
 }
+
+#include "lexical/model.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

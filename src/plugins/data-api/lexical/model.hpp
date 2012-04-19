@@ -2,8 +2,8 @@
  * @file model.hpp
  * @author Jacky Alcine <jacky.alcine@thesii.org>
  * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+ */
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -24,12 +24,10 @@
 #ifndef WNTRDATA_LEXICAL_MODEL_HPP
 #define WNTRDATA_LEXICAL_MODEL_HPP
 
-// Qt includes
 #include <QString>
 #include <QObject>
 
-// local includes
-#include "data.hpp"
+#include <data-api/lexical/data.hpp>
 
 namespace Wintermute
 {
@@ -70,16 +68,7 @@ protected:
     mutable Data m_dt; /**< The variable holding the internal Data. */
 
 public:
-    /**
-     * @brief Default constructor.
-     * @fn ~Model
-     */
     virtual ~AbstractModel();
-
-    /**
-     * @brief Null constructor.
-     * @fn Model
-     */
     AbstractModel();
 
     /**
@@ -87,35 +76,35 @@ public:
      * @fn Model
      * @param p_info The data to fill itself with.
      */
-    AbstractModel (Data&);
+    AbstractModel (Data& p_data);
 
     /**
      * @brief Copy constructor.
      * @fn Model
      * @param p_mdl The Model to be copied.
      */
-    AbstractModel (const AbstractModel&);
+    AbstractModel (const AbstractModel& p_other);
 
     /**
      * @brief Obtains the data stored in this Model.
      * @fn getLexicalMap
      * @return Data
      */
-    const Data& data();
+    Data data() const;
 
     /**
      * @brief Changes the internal Data to p_dt.
      * @fn setData
      * @param p_dt The Data to be used, or typically Data::Null.
      */
-    void setData (const Data& = Data::Empty);
+    void setData (const Data& p_data = Data::Empty);
 };
 
 /**
  * @brief Represents a model for saving data to the lexical information
  * storage.
  *
- * The SaveModel class is typically dervived for the simplest of
+ * The SaveModel class is typically derived for the simplest of
  * saving information to whatever it's dervied source of lexical
  * information may be. Typically, you'd use this class if you
  * don't know where your information is being saved to; but the
@@ -140,21 +129,21 @@ protected:
      * @fn SaveModel
      * @param p_lxin The Data to be saved.
      */
-    AbstractSaveModel (Data&);
+    AbstractSaveModel (Data& p_data);
 
     /**
      * @brief Base copy constructor.
      * @fn SaveModel
      * @param p_mod The Model to be copied.
      */
-    AbstractSaveModel (const AbstractModel&);
+    AbstractSaveModel (const AbstractModel& p_other);
 
     /**
      * @brief Copy constructor.
      * @fn SaveModel
      * @param p_smod The SaveModel to be copied.
      */
-    AbstractSaveModel (const AbstractSaveModel&);
+    AbstractSaveModel (const AbstractSaveModel& p_other);
 
     /**
      * @brief Deconstructor.
@@ -176,7 +165,7 @@ public:
      * @fn saveFrom
      * @param p_dt The Data to be saved.
      */
-    virtual void saveFrom (const Data&) = 0;
+    virtual void saveFrom (const Data& p_data) = 0;
 
 signals:
 
@@ -193,7 +182,7 @@ signals:
  * @brief Represents a model for saving data to the lexical information
  * storage.
  *
- * The LoadModel class is typically dervived for the simplest of
+ * The LoadModel class is typically derived for the simplest of
  * loading information to whatever it's dervied source of lexical
  * information may be. Typically, you'd use this class if you
  * don't know where your information is being loaded from; but the
@@ -218,14 +207,14 @@ protected:
      * @fn LoadModel
      * @param p_mdl The LoadModel to be copied.
      */
-    AbstractLoadModel (const AbstractLoadModel&);
+    AbstractLoadModel (const AbstractLoadModel& p_other);
 
     /**
      * @brief Base copy constructor.
      * @fn LoadModel
      * @param p_mdl The Model to be copied.
      */
-    AbstractLoadModel (const AbstractModel&);
+    AbstractLoadModel (const AbstractModel& p_other);
 
     /**
      * @brief Deconstructor.
@@ -241,14 +230,14 @@ public:
      * @fn load
      * @return The Data obtained, or Data::Null.
      */
-    virtual const Data load() const = 0;
+    virtual Data load() const = 0;
 
     /**
      * @brief Loads the lexical information storage to p_dt.
      * @fn loadTo
      * @param p_dt The Data to load the information to.
      */
-    virtual bool loadTo (Data&) const = 0;
+    virtual bool loadTo (Data& p_data) const = 0;
 
 signals:
     /**
@@ -264,7 +253,7 @@ signals:
  * @brief Represents the infrastructual backend of all storage classes.
  * @class Backend models.hpp "src/models.hpp"
  */
-class AbstractBackend { };
+struct AbstractBackend { };
 
 /**
  * @brief Represents the foundational front-end means of loading
@@ -288,35 +277,35 @@ public:
      * @fn Storage
      * @param Storage The object to be copied.
      */
-    Storage (const Storage&);
+    Storage (const Storage& p_other);
 
     /**
      * @brief Builds a @see Storage object from a @see Backend
      * @fn Storage
      * @param
      */
-    explicit Storage (const AbstractBackend&);
+    explicit Storage (const AbstractBackend& p_other);
 
     /**
      * @brief Equality operator.
      * @fn operator ==
      * @param
      */
-    bool operator== (const Storage&) const;
+    bool operator== (const Storage& p_other) const;
 
     /**
      * @brief Reports the kind of data storage this @see Storage use.
      * @fn type
      * @return A @see QString delinating the kind of data storage uses.
      */
-    virtual const QString type() const = 0;
+    virtual QString type() const = 0;
 
     /**
      * @brief Determines if a specific @see Data is available.
      * @fn exists
      * @param @see Data The @see Data in question.
      */
-    virtual bool exists (const Data&) const = 0;
+    virtual bool exists (const Data& p_data) const = 0;
 
     /**
      * @brief
@@ -324,51 +313,15 @@ public:
      * @note This method <b>edits</b> the Data passed to this method.
      * @param
      */
-    virtual void loadTo (Data&) const = 0;
+    virtual bool loadTo (Data& p_data) const = 0;
 
-    /**
-     * @brief
-     *
-     * @fn saveFrom
-     * @param
-     */
-    virtual void saveFrom (const Data&) = 0;
-    /**
-     * @brief
-     *
-     * @fn generate
-     */
+    virtual bool saveFrom (const Data& p_data) = 0;
+    virtual bool hasPseudo (const Data& p_data) const = 0;
+    virtual bool loadPseudo (Data& p_data) const = 0;
     virtual void generate() = 0;
-    /**
-     * @brief
-     *
-     * @fn hasPseudo
-     * @param
-     */
-    virtual bool hasPseudo (const Data&) const = 0;
-    /**
-     * @brief
-     *
-     * @fn loadPseudo
-     * @param
-     */
-    virtual void loadPseudo (Data&) const = 0;
-
-    /**
-     * @brief
-     *
-     * @fn obtainFullSuffix
-     * @param
-     * @param
-     */
-    virtual const QString obtainFullSuffix (const QString&, const QString&) const = 0;
+    virtual QString obtainFullSuffix (const QString&, const QString&) const = 0;
 };
 
-/**
- * @brief
- *
- * @class Cache models.hpp "src/models.hpp"
- */
 class Cache
 {
     friend class Storage;
@@ -379,107 +332,22 @@ class Cache
 private:
     static StorageList s_stores; /** Represents a listing of all of the Storages for the Lexical system. */
 
-    /**
-     * @brief
-     *
-     * @fn addStorage
-     * @param
-     */
     static Storage* addStorage (Storage*);
-    /**
-     * @brief
-     *
-     * @fn clearStorage
-     */
     static void clearStorage();
-    /**
-     * @brief
-     *
-     * @fn hasStorage
-     * @param
-     */
     static bool hasStorage (const QString&);
-    /**
-     * @brief
-     *
-     * @fn storage
-     * @param
-     */
     static Storage* storage (const QString&);
 
 public:
     ~Cache();
-    /**
-     * @brief
-     *
-     * @fn read
-     * @param
-     */
-    static bool read (Data&);
-    /**
-     * @brief
-     *
-     * @fn write
-     * @param
-     */
-    static void write (const Data&);
-    /**
-     * @brief
-     *
-     * @fn exists
-     * @param
-     */
-    static bool exists (const Data&);
-    /**
-     * @brief
-     *
-     * @fn pseudo
-     * @param
-     */
-    static void pseudo (Data&);
-    /**
-     * @brief
-     *
-     * @fn isPseudo
-     * @param
-     */
-    static bool isPseudo (const Data&);
-    /**
-     * @brief
-     *
-     * @fn generate
-     */
+    static void write (const Data& p_data);
     static void generate();
-
-    /**
-     * @brief
-     *
-     * @fn countFlags
-     */
+    static void pseudo (Data& p_data);
+    static bool read (Data& p_data);
+    static bool exists (const Data& p_data);
+    static bool isPseudo (const Data& p_data);
     static int countFlags();
-
-    /**
-     * @brief
-     *
-     * @fn countSymbols
-     */
     static int countSymbols();
-
-    /**
-     * @brief
-     *
-     * @fn allNodes
-     * @param
-     */
     static const QStringList allNodes (const QString&);
-
-    /**
-     * @brief
-     *
-     * @fn obtainFullSuffix
-     * @param
-     * @param
-     */
     static const QString obtainFullSuffix (const QString&, const QString&);
 };
 
@@ -488,4 +356,4 @@ public:
 }
 }
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

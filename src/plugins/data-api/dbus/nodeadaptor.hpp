@@ -22,10 +22,9 @@
  */
 
 #ifndef WNTRDATA_NODEADAPTOR_HPP
-#define WNTRDATA_NODEADPATOR_HPP
+#define WNTRDATA_NODEADAPTOR_HPP
 
-// Wintermute includes
-#include <adaptors.hpp>
+#include <app/adaptors.hpp>
 
 namespace Wintermute
 {
@@ -88,4 +87,4 @@ Q_SIGNALS: // SIGNALS
 }
 
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

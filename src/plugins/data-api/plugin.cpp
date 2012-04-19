@@ -20,18 +20,19 @@
  * @date March 29, 2011, 3:08 PM
  */
 
-// Qt includes
 #include <QtPlugin>
-
-// Wintermute includes
-#include <ipc.hpp>
-
-// local includes
-#include "plugin.hpp"
-#include "system.hpp"
+#include <app/ipc.hpp>
+#include <app/pluginprivate.hpp>
 #include "dbus/adaptors.hpp"
+#include "system.hpp"
+#include "plugin.hpp"
 
 using namespace Wintermute::Data;
+
+Plugin::Plugin() : AbstractPlugin()
+{
+
+}
 
 void Plugin::start () const
 {
@@ -45,7 +46,12 @@ void Plugin::start () const
 
 void Plugin::stop () const { }
 
-Q_EXPORT_PLUGIN2 (wplugin - data, Wintermute::Data::Plugin)
+Plugin::~Plugin()
+{
 
-#include "plugin.moc"
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+}
+
+Q_EXPORT_PLUGIN2 (wapi-data, Wintermute::Data::Plugin)
+
+#include "../data-api/plugin.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

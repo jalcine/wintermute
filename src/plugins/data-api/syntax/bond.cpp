@@ -137,15 +137,18 @@ QString Bond::toString() const
     for (; itr != end; ++itr)
         map.insert (itr.key(), itr.value());
 
-    return QString (serializer->serialize (map));
+    QString str = serializer->serialize (map);
+    qDebug() << "(data) [Bond::toString()]" << str;
+    return str;
 }
 
 QDebug operator<< (QDebug p_dbg, const Bond& p_bnd)
 {
-    //p_dbg << p_bnd.m_props;
+    p_dbg << p_bnd.toString();
     return p_dbg;
 }
 
 Bond::~Bond () { }
 
+#include "syntax/bond.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

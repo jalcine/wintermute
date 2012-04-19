@@ -1,9 +1,4 @@
-/**
- * @file data.hpp
- * @author Jacky Alcine <jacky.alcine@thesii.org>
- * @date Sun, 30 Oct 2011 21:54:16
- *
- * @section lcns Licensing
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,6 +16,13 @@
  *
  */
 
+/**
+ * @file data.hpp
+ * @author Jacky Alcine <jacky.alcine@thesii.org>
+ * @date Sun, 30 Oct 2011 21:54:16
+ *
+ */
+
 #ifndef WNTRDATA_LEXICAL_DATA_HPP
 #define WNTRDATA_LEXICAL_DATA_HPP
 
@@ -28,7 +30,6 @@
 #include <QMap>
 #include <QObject>
 #include <QVariant>
-#include <QMetaType>
 #include <QDBusArgument>
 
 namespace Wintermute
@@ -39,7 +40,7 @@ namespace Linguistics
 {
 namespace Lexical
 {
-
+struct DataPrivate;
 /**
  * @brief The lexical POD (plain ol' data) format of linguistics parsing.
  *
@@ -56,33 +57,50 @@ namespace Lexical
  */
 class Data : public QObject
 {
-    Q_OBJECT
-    Q_PROPERTY (QString ID READ id WRITE setID)
-    friend const QDBusArgument& operator>> (const QDBusArgument& argument, Wintermute::Data::Linguistics::Lexical::Data& structure) {
+    Q_GADGET
+    Q_DECLARE_PRIVATE (Data)
+    Q_PROPERTY (QString ID READ id WRITE setId)              /// Represents the ID of the Data.
+    Q_PROPERTY (QString Locale READ locale WRITE setLocale)  /// Represents the locale of the Data.
+    Q_PROPERTY (QString Symbol READ symbol WRITE setSymbol)  /// Represents the symbol of the Data.
+    Q_PROPERTY (QVariantMap Flags READ flags WRITE setFlags) /// Represents the flags of the Data.
+
+    friend const QDBusArgument& operator>> (const QDBusArgument& argument, Lexical::Data& structure) {
+        QString id, locale, symbol;
+        QVariantMap flags;
         argument.beginStructure();
-        argument >> structure.m_id >> structure.m_locale >> structure.m_symbol;
-        argument >> structure.m_flags;
+        argument >> id >> locale >> symbol;
+        argument >> flags;
+        argument.endStructure();
+
+        structure.setFlags (flags);
+        structure.setLocale (locale);
+        structure.setSymbol (symbol);
+        structure.setId (id);
+        return argument;
+    }
+
+    friend QDBusArgument& operator<< (QDBusArgument& argument, const Lexical::Data& structure) {
+        argument.beginStructure();
+        argument << structure.id() << structure.locale() << structure.symbol();
+        argument << structure.flags();
         argument.endStructure();
         return argument;
     }
 
-    friend QDBusArgument& operator<< (QDBusArgument& argument, const Data& structure) {
-        argument.beginStructure();
-        argument << structure.m_id << structure.m_locale << structure.m_locale << structure.m_flags;
-        argument.endStructure();
-        return argument;
-    }
+    Data (DataPrivate* dd);
 
 public:
     /**
      * @brief Default constructor.
-     * @fn Data
-     * @param p_id The ID of the Data.
+     * @param p_id     The ID of the Data.
      * @param p_locale The locale of the Data.
      * @param p_symbol The symbol of the Data.
-     * @param p_flags The flags of the Data.
+     * @param p_flags  The flags of the Data.
      */
-    Data (const QString p_id , const QString p_locale , const QString p_symbol = QString::null , const QVariantMap p_flags = QVariantMap());
+    Data (const QString     p_id,
+          const QString     p_locale,
+          const QString     p_symbol = QString::null,
+          const QVariantMap p_flags  = QVariantMap());
 
     /**
      * @brief Null constructor.
@@ -98,36 +116,40 @@ public:
     Data (const Data& p_other);
 
     /**
-     * @brief Deconstructor.
-     * @fn ~Data
-     */
+     * @brief Destructor.
+     **/
     virtual ~Data();
-
-    static Data fromString (const QString& p_string);
 
     /**
      * @brief Returns the ID of the node.
      * @fn id
      */
-    const QString id() const;
+    QString id() const;
 
     /**
      * @brief Returns the locale of the Data.
      * @fn locale
      */
-    const QString locale() const;
+    QString locale() const;
 
     /**
      * @brief Returns the symbol of the Data.
      * @fn symbol
      */
-    const QString symbol() const;
+    QString symbol() const;
 
     /**
      * @brief Returns the flags of the Data.
      * @fn flags
      */
-    const QVariantMap flags() const;
+    QVariantMap flags() const;
+
+    /**
+     * @brief Returns a clone of this object.
+     * @fn clone
+     * @return A object with the same exact data as this Data.
+     **/
+    Data clone() const;
 
     /**
      * @brief Changes the symbol of the Data to p_dt.
@@ -147,21 +169,9 @@ public:
      */
     void setFlags (const QVariantMap& p_flags);
 
-    /**
-     * @brief ...
-     *
-     * @param p_locale ...
-     * @return void
-     **/
     void setLocale (const QString& p_locale);
-    /**
-     * @brief ...
-     *
-     * @param p_id ...
-     * @return void
-     **/
 
-    void setID (const QString& p_id);
+    void setId (const QString& p_id);
 
     /**
      * @brief Determines if this Data is equivalent to a null Data object.
@@ -176,6 +186,8 @@ public:
      */
     static const QString idFromString (const QString);
 
+    static Data fromString (const QString& p_string);
+
     static const Data Empty; /**< Represents an empty set of data. */
     /**
      * @brief Equality operator.
@@ -189,15 +201,12 @@ public:
      * @fn operator=
      * @param The Data to be copied.
      */
-    void operator= (const Data&);
+    void operator= (const Data& p_other);
 
-    operator QString() const;
+    QString toJson() const;
 
 private:
-    QString m_id;
-    QString m_locale;
-    QString m_symbol;
-    QVariantMap m_flags;
+    QScopedPointer<DataPrivate> d_ptr;
 };
 
 }
@@ -205,8 +214,8 @@ private:
 }
 }
 
-Q_DECLARE_TYPEINFO (Wintermute::Data::Linguistics::Lexical::Data, Q_MOVABLE_TYPE);
 Q_DECLARE_METATYPE (Wintermute::Data::Linguistics::Lexical::Data)
 
 #endif /* WNTRDATA_LEXICAL_DATA_HPP */
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+

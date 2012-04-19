@@ -25,7 +25,8 @@
 #include "config.hpp"
 #include "linguistics.hpp"
 #include "nodeadaptor.hpp"
-#include "lexical/manager.hpp"
+#include "data-api/lexical/manager.hpp"
+#include <data-api/lexical/data.hpp>
 
 using namespace Wintermute::Data::Linguistics;
 
@@ -43,7 +44,14 @@ NodeAdaptor::~NodeAdaptor() { }
 
 bool NodeAdaptor::exists (QString in0)
 {
-    return Manager::instance()->exists (Lexical::Data::fromString (in0));
+    qDebug() << "(data) [NodeAdaptor::exists()] Data string:" << in0;
+    Lexical::Data data = Lexical::Data::fromString (in0);
+
+    if (data.isValid()) {
+        return Manager::instance()->exists (data);
+    }
+
+    return false;
 }
 
 void NodeAdaptor::generate()
@@ -60,8 +68,8 @@ bool NodeAdaptor::isPseudo (QString in0)
 
 QString NodeAdaptor::pseudo (QString in0)
 {
-    Lexical::Data  dt = Lexical::Data::fromString (in0);
-    return Manager::instance()->pseudo (dt);
+    Lexical::Data dt = Lexical::Data::fromString (in0);
+    return QString (Manager::instance()->pseudo (dt).toJson());
 }
 
 void NodeAdaptor::quit()
@@ -71,15 +79,17 @@ void NodeAdaptor::quit()
 
 QString NodeAdaptor::read (QString in0)
 {
-    Lexical::Data  out0;
+    Lexical::Data out0;
     QMetaObject::invokeMethod (parent(), "read", Q_RETURN_ARG (Lexical::Data , out0), Q_ARG (Lexical::Data , Lexical::Data::fromString (in0)));
-    return out0;
+    return out0.toJson();
 }
 
 QString NodeAdaptor::write (QString in0)
 {
-    Lexical::Data  out0;
+    Lexical::Data out0;
     QMetaObject::invokeMethod (parent(), "write", Q_RETURN_ARG (Lexical::Data , out0), Q_ARG (Lexical::Data , Lexical::Data::fromString (in0)));
-    return out0;
+    return out0.toJson();
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "dbus/nodeadaptor.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;

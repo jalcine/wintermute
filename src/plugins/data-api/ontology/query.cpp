@@ -3,7 +3,8 @@
  * \author Wintermute Developers <wintermute-devel\lists.launchpad.net>
  * \date March 29, 2011, 2:25 PM
  * \namespace Wintermute::Data::Ontology
- * \legalese
+ */
+/*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -88,4 +89,6 @@ void Query::closeQuery()
 }
 }
 } // namespaces
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
+#include "ontology/query.moc"
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on;
