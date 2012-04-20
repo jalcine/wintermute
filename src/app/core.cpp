@@ -48,6 +48,7 @@
 #include "app/core.hpp"
 
 using std::cout;
+using std::endl;
 using std::string;
 using std::exception;
 using namespace Wintermute;
