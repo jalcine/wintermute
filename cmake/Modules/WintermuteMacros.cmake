@@ -5,13 +5,17 @@
 ##
 
 find_package(PkgConfig)
+include(WintermuteDefaults)
 
 ## Set up an installation target.
-if (NOT TARGET uninstall)
-    configure_file("${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
-    add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
-endif(NOT TARGET uninstall)
+#if (NOT TARGET uninstall)
+#    set(CMAKE_UNINSTALL_TEMPLATE "${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in")
+#    if (PROJECT_LABEL STREQUAL "Wintermute")
+#        set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_"
+#    configure_file("${CMAKE_UNINSTALL_TEMPLATE}"
+#                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
+#    add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
+#endif(NOT TARGET uninstall)
 
 ## Set up documentation.
 macro(wntr_install_docs _path)
