@@ -25,7 +25,7 @@ Ashton <dante.ashton@thesii.org>, CPU/CEO of the Synthetic Intellect Institute.
 ## Running Wintermute
 
 Wintermute may be already bundled up for your operating system distribution.
-Please visit <http://www.thesii.org/wiki/Wintermute#Download> to see if your
+Please visit http://www.thesii.org/wiki/Wintermute#Download to see if your
 system is currently supported. Otherwise, see the INSTALL file for information
 about building Wintermute on your system.
 
@@ -40,15 +40,15 @@ current bindings for the APIs for more information.
 ## Documentation
 
 Practically all of the documentation that's done for Wintermute is stored
-on-line at <http://www.thesii.org/wiki>. Feel free to not only search that
+on-line at http://www.thesii.org/wiki. Feel free to not only search that
 site, but also enter our IRC channel (#sii or #sii-dev, both on
 FreeNode) to ask questions about Wintermute and how you can assist. Check out
-<http://www.thesii.org/wiki/Development>.
+http://www.thesii.org/wiki/Development.
 
 ## Reporting and Contributing to the Cause
 
 We here at the Synthetic Intellect Institute, the makers and maintainers
 of Wintermute, welcome all. If you want to chat with the guys responsible
-for Wintermute or the Institute, drop us a message at <contact@thesii.org> or
-send us a message to our mailing list at <sii@lists.launchpad.net>. We hope to
+for Wintermute or the Institute, drop us a message at contact@thesii.org or
+send us a message to our mailing list at dev@thesii.org. We hope to
 hear (or see or read) from you soon.
