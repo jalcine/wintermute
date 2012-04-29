@@ -35,10 +35,11 @@
  * <em>Join the Team</em>. We hope to hear from you soon.
  *
  * - If you're interested in building a plug-in for Wintermute, visit Wintermute::Plugins::PluginBase.
- * - Visit the <a href="http://www.thesii.org">Synthetic Intellect Institute</a>'s Wiki page for Wintermute!
+ * - Visit the <a href="http://www.thesii.org/wiki">Synthetic Intellect Institute</a>'s Wiki page for Wintermute!
  */
-#ifndef WINTERMUTE_HPP
-#define WINTERMUTE_HPP
+
+#ifndef WINTERMUTE_META_HPP
+#define WINTERMUTE_META_HPP
 
 // Let's pull everything in one giant header.
 #include "config.hpp"
@@ -49,5 +50,5 @@
 #include "factory.hpp"
 #include "plugins.hpp"
 
-#endif /* WINTERMUTE_HPP */
+#endif /* WINTERMUTE_META_HPP */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
