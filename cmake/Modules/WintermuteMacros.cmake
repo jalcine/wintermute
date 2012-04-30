@@ -1,3 +1,24 @@
+# - Useful macros and functionality for Wintermute development.
+# This module provides a collection of macros and does some tidy work foreach(
+# Wintermute development.
+#
+#  QCA_LIBRARY                - path to the Qt Cryptographic Architecture library
+#  QCA_LIBRARIES              - libraries for QCA
+#  QCA_DEFINITIONS            - preferred compile definitions for QCA.
+#  QCA_INCLUDE_DIR            - path to where qca.h is found.
+#  QCA_INCLUDE_DIRS           - include paths for QCA.
+#
+#=============================================================================
+# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+#
+# This module is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+#=============================================================================
+# (To distribute this file outside of CMake, substitute the full
+#  License text for the above reference.)
 ##
 ## Bunch of useful macros and functions
 ## @author Adrian Borcuki <adrian@thesii.org>
@@ -6,16 +27,7 @@
 
 find_package(PkgConfig)
 include(WintermuteDefaults)
-
-## Set up an installation target.
-#if (NOT TARGET uninstall)
-#    set(CMAKE_UNINSTALL_TEMPLATE "${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in")
-#    if (PROJECT_LABEL STREQUAL "Wintermute")
-#        set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_"
-#    configure_file("${CMAKE_UNINSTALL_TEMPLATE}"
-#                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
-#    add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
-#endif(NOT TARGET uninstall)
+include(UseWintermute)
 
 ## Set up documentation.
 macro(wntr_install_docs _path)

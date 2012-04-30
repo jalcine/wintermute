@@ -1,9 +1,28 @@
+# Uninstall target for Wintermute projects.
+#
+#=============================================================================
+# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+#
+# This module is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+#=============================================================================
+# (To distribute this file outside of CMake, substitute the full
+#  License text for the above reference.)
+
+## Check if the manifest file exists.
 IF(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
-  MESSAGE(FATAL_ERROR "Cannot find install manifest: \"@CMAKE_BINARY_DIR@/install_manifest.txt\"")
+  MESSAGE(FATAL_ERROR "Cannot find install manifest for prjoect: \"@CMAKE_BINARY_DIR@/install_manifest.txt\"")
 ENDIF(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
 
+## Load and format the installed files.
 FILE(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
 STRING(REGEX REPLACE "\n" ";" files "${files}")
+
+option(CMAKE_UNINSTALL_VERBOSE "Reports trivial issues from uninstall." OFF)
+
 FOREACH(file ${files})
   MESSAGE(STATUS "Uninstalling \"${file}\"")
   IF(EXISTS "${file}")
@@ -17,6 +36,8 @@ FOREACH(file ${files})
       MESSAGE(FATAL_ERROR "Problem when removing \"${file}\"")
     ENDIF("${rm_retval}" STREQUAL 0)
   ELSE(EXISTS "${file}")
-    MESSAGE(STATUS "File \"${file}\" does not exist.")
+    if (CMAKE_UNINSTALL_VERBOSE)
+        MESSAGE(STATUS "File \"${file}\" does not exist.")
+    endif(CMAKE_UNINSTALL_VERBOSE)
   ENDIF(EXISTS "${file}")
 ENDFOREACH(file)
