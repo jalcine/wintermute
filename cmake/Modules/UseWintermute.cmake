@@ -13,21 +13,32 @@
 #  License text for the above reference.)
 
 ##
+## Prerequisites
+## -----------------------------------------------------------------------------
+## Define some useful variables that would be used by all of CMake.
+##
+##  WINTER_CURRENT_CMAKE_DIR - Defines the location at which Wintermute-specific
+##                             CMake data would be stored.
+##
+set(WINTER_LOCAL_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake")
+set(WINTER_GLOBAL_CMAKE_DIR "${WINTER_CMAKE_DIR}")
+set(WINTER_CURRENT_CMAKE_DIR )
+
+if (PROJECT_LABEL STREQUAL "Wintermute")
+    set(WINTER_CURRENT_CMAKE_DIR "${WINTER_LOCAL_CMAKE_DIR}")
+else(PROJECT_LABEL STREQUAL "Wintermute")
+    set(WINTER_CURRENT_CMAKE_DIR "${WINTER_GLOBAL_CMAKE_DIR}")
+endif(PROJECT_LABEL STREQUAL "Wintermute")
+
+
+##
 ## O. Set up an installation target for this project.
 ## -----------------------------------------------------------------------------
 ## Now, the precarious thing about this is that we have to make sure
 ## that the template for un-installing is available.
 ##
 if (NOT TARGET uninstall)
-    set(CMAKE_UNINSTALL_TEMPLATE_LOCAL  "${CMAKE_SOURCE_DIR}/cmake")
-    set(CMAKE_UNINSTALL_TEMPLATE_GLOBAL "${WINTER_CMAKE_DIR}")
-    set(CMAKE_UNINSTALL_TEMPLATE_BASE   "${CMAKE_UNINSTALL_TEMPLATE_GLOBAL}")
-
-    if (PROJECT_LABEL STREQUAL "Wintermute")
-        set(CMAKE_UNINSTALL_TEMPLATE_BASE "${CMAKE_UNINSTALL_TEMPLATE_LOCAL}")
-    endif()
-
-    set(CMAKE_UNINSTALL_TEMPLATE "${CMAKE_UNINSTALL_TEMPLATE_BASE}/cmake_uninstall.cmake.in")
+    set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_CURRENT_CMAKE_DIR}/cmake_uninstall.cmake.in")
 
     configure_file("${CMAKE_UNINSTALL_TEMPLATE}"
                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"

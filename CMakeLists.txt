@@ -28,6 +28,7 @@ set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}"
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
+## include paths.
 add_subdirectory(cmake)
 add_subdirectory(src)
 add_subdirectory(data)

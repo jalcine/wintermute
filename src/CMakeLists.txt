@@ -27,6 +27,9 @@ configure_file("config.hpp.in" "config.hpp" @ONLY)
 
 QT4_AUTOMOC(${WINTERMUTE_SOURCES})
 
+## make me some docs, will ya?
+wntr_make_docs(PATH "${PROJECT_SOURCE_DIR}")
+
 ## Targets
 add_executable(wintermute ${WINTERMUTE_SOURCES})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})

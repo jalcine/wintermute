@@ -2,14 +2,9 @@
 # This module provides a collection of macros and does some tidy work foreach(
 # Wintermute development.
 #
-#  QCA_LIBRARY                - path to the Qt Cryptographic Architecture library
-#  QCA_LIBRARIES              - libraries for QCA
-#  QCA_DEFINITIONS            - preferred compile definitions for QCA.
-#  QCA_INCLUDE_DIR            - path to where qca.h is found.
-#  QCA_INCLUDE_DIRS           - include paths for QCA.
-#
 #=============================================================================
-# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+# Copyright (c) 2012 Jacky Alcine   <jacky.alcine@thesii.org>
+#           (c) 2012 Adrian Borucki <adrian@thesii.org>
 #
 # This module is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
@@ -19,20 +14,17 @@
 #=============================================================================
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
-##
-## Bunch of useful macros and functions
-## @author Adrian Borcuki <adrian@thesii.org>
-## @author Jacky Alcine <jacky.alcine@thesii.org>
-##
 
 find_package(PkgConfig)
+
 include(WintermuteDefaults)
 include(UseWintermute)
 
 ## Set up documentation.
-macro(wntr_install_docs _path)
+macro(wntr_make_docs)
+    cmake_parse_arguments(docs "" "PATH" "" ${ARGN})
     if (NOT _wntr_set_docs)
-        find_package(Doxygen)
+        include(Documentation)
         if(DOXYGEN_FOUND)
             find_program(HAVE_DOT dot)
             if(HAVE_DOT)
@@ -43,15 +35,11 @@ macro(wntr_install_docs _path)
             endif(HAVE_DOT)
 
             set(_wntr_set_docs true)
-            set(_prefix)
-            set(_docfile_prefix)
 
-            set(_prefix "${CMAKE_SOURCE_DIR}/cmake")
-            set(_docfile_prefix "${CMAKE_SOURCE_DIR}/data/res")
-            set(_docfile_logo "${_docfile_prefix}/wintermute.png")
+            set(_docfile_logo "${WINTER_CURRENT_CMAKE_DIR}/wintermute.png")
 
-            configure_file("${CMAKE_SOURCE_DIR}/doc/Doxyfile.in"
-                        "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
+            configure_file("${WINTER_CURRENT_CMAKE_DIR}/Doxyfile.in"
+                           "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
 
             add_custom_target(docs
                 ${DOXYGEN_EXECUTABLE} Doxyfile
@@ -59,37 +47,39 @@ macro(wntr_install_docs _path)
                 COMMENT "Generating API documentation with Doxygen...")
 
             install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html/
-                    DESTINATION ${_path})
+                    DESTINATION ${docs_PATH})
 
         endif(DOXYGEN_FOUND)
     endif (NOT _wntr_set_docs)
-endmacro(wntr_install_docs _path)
+endmacro(wntr_make_docs)
 
-MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
-  SET(${_output_variable})
+macro(PKGCONFIG_GETVAR _package _var _output_variable)
+  set(${_output_variable})
 
   # if pkg-config has been found
-  IF(PKG_CONFIG_FOUND)
+  if(PKG_CONFIG_FOUND)
 
-    EXEC_PROGRAM(${PKG_CONFIG_EXECUTABLE} ARGS ${_package} --exists RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
+    execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE} ${_package} --exists
+                    RESULT_VARIABLE _return_VALUE
+                    OUTPUT_VARIABLE _pkgconfigDevNull)
 
     # and if the package of interest also exists for pkg-config, then get the information
-    IF(NOT _return_VALUE)
+    if(NOT _return_VALUE)
+      execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE} ${_package} --variable ${_var}
+                      OUTPUT_VARIABLE ${_output_variable})
 
-      EXEC_PROGRAM(${PKG_CONFIG_EXECUTABLE} ARGS ${_package} --variable ${_var} OUTPUT_VARIABLE ${_output_variable} )
+    else(NOT _return_VALUE)
+      message(WARNING "PkgConfig: ${_package} not found.")
+    endif(NOT _return_VALUE)
 
-    ELSE(NOT _return_VALUE)
-      MESSAGE(WARNING "${_package} not found.")
-    ENDIF(NOT _return_VALUE)
+  else(PKG_CONFIG_FOUND)
+    message(ERROR "PkgConfig not found.")
+  endif(PKG_CONFIG_FOUND)
 
-  ELSE(PKG_CONFIG_FOUND)
-    MESSAGE(ERROR "PkgConfig not found.")
-  ENDIF(PKG_CONFIG_FOUND)
-
-ENDMACRO(PKGCONFIG_GETVAR _package _var _output_variable)
+endmacro(PKGCONFIG_GETVAR _package _var _output_variable)
 
 macro(dbus_add_activation_service _sources)
-    PKGCONFIG_GETVAR(dbus-1 session_bus_services_dir _install_dir)
+    pkgconfig_getvar(dbus-1 session_bus_services_dir _install_dir)
     foreach (_i ${_sources})
         get_filename_component(_service_file ${_i} ABSOLUTE)
         string(REGEX REPLACE "\\.service.*$" ".service" _output_file ${_i})
@@ -98,3 +88,37 @@ macro(dbus_add_activation_service _sources)
         install(FILES ${_target} DESTINATION ${_install_dir})
     endforeach (_i ${ARGN})
 endmacro(dbus_add_activation_service _sources)
+
+macro(winter_define_plugin)
+    set(__val_optional ENABLED)
+    set(__val_multi DEPENDS_PLUGINS
+                    DEPENDS_PACKAGES)
+    set(__val_single BLURB
+                     AUTHOR_NAME
+                     AUTHOR_EMAIL
+                     VENDOR_NAME
+                     VENDOR_EMAIL
+                     VERSION_COMPAT
+                     VERSION_PLUGIN
+                     NAME_FRIENDLY
+                     NAME_TARGET
+                     UUID
+                     URL
+                     TYPE
+                     )
+    cmake_parse_arguments(WDP "${__val_optional}"
+                              "${__val_single}"
+                              "${__val_multi}"
+                         ${ARGN})
+
+    if (NOT DEFINED WDP_ENABLED)
+        set(WPD_ENABLED "true")
+    endif (NOT DEFINED WDP_ENABLED)
+
+    set(__specpath "${PROJECT_BINARY_DIR}/${WDP_UUID}.spec")
+    configure_file("${WINTER_CURRENT_CMAKE_DIR}/pluginspec.in"
+                   "${__specpath}" @ONLY)
+
+    install(FILES "${__specpath}"
+            DESTINATION "${WINTER_PLUGIN_SPEC_INSTALL_DIR}")
+endmacro(winter_define_plugin)
