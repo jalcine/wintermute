@@ -13,14 +13,13 @@ find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     REQUIRED)
 
 ## Main variables
-set(VS_KEYWORD Qt4VSv1.0)
-set(VS_SCC_PROJECTNAME "Wintermute")
 set(PROJECT_LABEL "Wintermute")
 set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
 set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}")
 
-## Wintermute-specific macros
+## Includes.
+## There are placed here because they depend on the PROJECT_LABEL value.
 include(WintermuteDefaults)
 include(WintermuteMacros)
 
