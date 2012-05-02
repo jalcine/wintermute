@@ -19,25 +19,22 @@
  */
 
 #include <QVariantMap>
+#include <QApplication>
+
 class QApplication;
 
 namespace Wintermute
 {
 class Core;
 struct CorePrivate {
+    CorePrivate (Core* p_qPtr);
+    ~CorePrivate();
+    Core* q_ptr;            ///< The internal object that represents the core of Wintermute.
     QApplication* app;      ///< Holds the object representing the current Q(Core)Application.
     QVariantMap args;       ///< Holds the map containing the arguments passed to Wintermute in a normalized format.
-    Core* q_ptr;            ///< The internal object that represents the core of Wintermute.
 
-    /**
-     * @brief Processes the command line arguments.
-     *
-     * This method handles the nitty-gritty work of converting all of those command-line arguments
-     * to something less C-style-ish and more C++ workable.
-     *
-     * @fn configureCommandLine
-     */
-    void configureCommandLine();
+    void parseCommandLineArguments();
+    void setDefaultArguments();
 };
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
