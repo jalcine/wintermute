@@ -45,12 +45,14 @@ System::~System() { }
 void System::start()
 {
     instance()->m_cnntn = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
-    instance()->m_appMod = Core::arguments().value ("ipc").toString().toLower();
-    QString serviceName = WNTR_DBUS_SERVICE_NAME,
-            objectName;
+    instance()->m_appMod = Core::arguments().value (WINTER_COMMAND_LINE_IPC).toString().toLower();
+    bool serviceRegistered = false;
+    const QString plgn = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
+    QString serviceName = WINTER_DBUS_SERVICE_NAME;
+    QString objectName;
     qDebug() << "(core) [IPC::System]" << "Mode:" << instance()->m_appMod;
 
-    if (instance()->m_appMod == "master") {
+    if (instance()->m_appMod == WINTER_COMMAND_LINE_IPC_CORE) {
         objectName = "master";
         connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (startup()));
         connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (shutdown()));
@@ -62,16 +64,13 @@ void System::start()
         registerObject ("/Factory", pluginFactoryAdaptor);
         instance()->m_adapt = coreAdaptor;
     }
-    else if (instance()->m_appMod == "plugin") {
-        const QString plgn = Core::arguments().value ("plugin").toString();
+    else if (instance()->m_appMod == WINTER_COMMAND_LINE_IPC_PLUGIN) {
         objectName = "Plugin." + plgn;
         connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (loadStandardPlugin()));
         connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (unloadStandardPlugin()));
     }
 
     if (objectName != "master") serviceName += "." + objectName;
-
-    bool serviceRegistered = false;
 
     if (instance()->m_cnntn->registerService (serviceName))
         serviceRegistered = true;

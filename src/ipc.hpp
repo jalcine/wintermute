@@ -24,8 +24,12 @@
  * @date 04/22/12 5:42:03 AM
  */
 
-#ifndef WNTR_IPC_HPP_
-#define WNTR_IPC_HPP_
+#ifndef WINTER_IPC_HPP
+#define WINTER_IPC_HPP
+
+#define WINTER_COMMAND_LINE_IPC         "ipc"
+#define WINTER_COMMAND_LINE_IPC_CORE    "root"
+#define WINTER_COMMAND_LINE_IPC_PLUGIN  "plugin"
 
 #include <QtDBus/QDBusInterface>
 #include <QVariantMap>
