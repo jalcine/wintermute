@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(WINTERMUTE_BASE_APPLICATION "yoo")
-add_subdirectory(Modules)
+include(WintermuteDefaults)
+
+file(GLOB TEMPLATE_FILES "${CMAKE_SOURCE_DIR}/cmake/*.in")
 
 ## Installs
-install(FILES "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-              "${PROJECT_SOURCE_DIR}/cmake/pluginspec.in"
+install(FILES ${TEMPLATE_FILES}
         DESTINATION "${WINTER_CMAKE_DIR}")
+
+add_subdirectory(Modules)
+add_subdirectory(doc)
