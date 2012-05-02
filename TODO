@@ -13,6 +13,6 @@ in a collaborative manner.
  * Implement UseWintermute.cmake
  * Implement FindWintermute.cmake
   * Allow discovery of 'wintermute' executable.
-  * Allow detection of already installed plug-in.
+  * Allow detection of already installed plug-ins using find_package()
     - Should allow plug-ins to resolve build dependencies.
 * Decouple the use of QApplication and make Wintermute not rely on X.
