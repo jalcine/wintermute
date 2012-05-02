@@ -6,10 +6,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
-find_package(Boost COMPONENTS
-    system
-    program_options
-    REQUIRED)
 find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtGui
