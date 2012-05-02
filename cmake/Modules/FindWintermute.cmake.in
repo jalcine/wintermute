@@ -27,6 +27,15 @@
 
 include(FindPackageHandleStandardArgs)
 
+set(_winty_plugins)
+
+if (Wintermute_FIND_COMPONENTS)
+  foreach(component ${Wintermute_FIND_COMPONENTS})
+    string( TOLOWER ${component} _COMPONENT )
+    list(APPEND _winty_plugins ${_COMPONENT})
+  foreach(component)
+endif (Wintermute_FIND_COMPONENTS)
+
 set(WINTERMUTE_VERSION              "@WINTERMUTE_VERSION@")
 set(WINTERMUTE_INCLUDE_DIRS         "@WINTERMUTE_INCLUDE_DIRS@")
 set(WINTERMUTE_LIBRARIES            "@WINTERMUTE_LIBRARIES@")
@@ -36,12 +45,10 @@ set(WINTERMUTE_LIBRARY_DIRS         "@WINTERMUTE_LIB_DIR@")
 set(WINTERMUTE_COMPILE_FLAGS        "@WINTERMUTE_COMPILE_FLAGS@")
 set(WINTEMRUTE_COMPILE_DEFINITIONS  "@WINTERMUTE_COMPILE_DEFINITONS@")
 
-find_package_handle_standard_args(WINTERMUTE
-    REQUIRED_VARS WINTERMUTE_LIBRARIES WINTERMUTE_INCLUDE_DIRS
-    VERSION_VAR   WINTERMUTE_VERSION)
+find_program(WINTERMUTE_EXECUTABLE "wintermute" DOC "The path to the Wintermute executable.")
 
-find_package_message(Wintermute
-                     "Found Wintermute, version ${WINTERMUTE_VERSION}."
-                     "[${WINTERMUTE_VERSION}]")
+find_package_handle_standard_args(Wintermute
+    REQUIRED_VARS WINTERMUTE_EXECUTABLE
+    VERSION_VAR   WINTERMUTE_VERSION)
 
 include(UseWintermute)
