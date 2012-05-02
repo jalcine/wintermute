@@ -1,3 +1,5 @@
+# Hacking on Wintermute
+
 In order to find things that need quick hacking in Wintermute, open up a terminal
 to this folder and run:
 

@@ -1,3 +1,18 @@
-* Doxygen configuration to be polished + add automatic GraphViz checking. (CHECK)
-    o It would be nice to use custom stylesheet (optional, for now).
-* Correct headers installation - plugin-related stuff under plugins/ directory. -- OK
+# ToDos and Need-To-Finish's.
+
+This document provides a list of things to be done and checked off by the team
+in a collaborative manner.
+
+***
+
+* Have WINTERMUTE_VERSION be populated with a commitsh from Git (up to 10 characters) [0.1-devXXXXXXXX]
+ - Could do the same for Bazaar and Subversion if one can do it in CMake.
+* Create Doxygen tag files so sub-projects related to Wintermute can cross reference.
+* Drop Boost::ProgramOptions and implement a more flexible command-line parsing system. -- CHECK (jalcine)
+* Provide more of a unified building experience with CMake.
+ * Implement UseWintermute.cmake
+ * Implement FindWintermute.cmake
+  * Allow discovery of 'wintermute' executable.
+  * Allow detection of already installed plug-in.
+    - Should allow plug-ins to resolve build dependencies.
+* Decouple the use of QApplication and make Wintermute not rely on X.
