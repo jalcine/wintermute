@@ -24,8 +24,8 @@
  * @date 04/22/12 5:42:48 AM
  */
 
-#ifndef WNTR_LOGGING_HPP
-#define WNTR_LOGGING_HPP
+#ifndef WINTERMUTE_LOGGING_HPP
+#define WINTERMUTE_LOGGING_HPP
 
 #include <QObject>
 #include <QDebug>
@@ -45,13 +45,13 @@ class Logging : public QObject
     Q_DISABLE_COPY (Logging)
 
 signals:
-    void linePrinted (const QString&);
-    void warningEncountered (const QString&);
-    void criticalErrorEncountered (const QString&);
-    void fatalErrorEncountered (const QString&);
+    void linePrinted (const QString& p_line);
+    void warningEncountered (const QString& p_warning);
+    void criticalErrorEncountered (const QString& p_error);
+    void fatalErrorEncountered (const QString& p_fatalError);
 
 public:
-    static void catchQDebugMessage (QtMsgType, const char*);
+    static void catchQDebugMessage (QtMsgType p_messageType, const char* p_messageText);
     static Logging* instance();
 
 private:

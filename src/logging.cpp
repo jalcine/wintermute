@@ -41,36 +41,41 @@ Logging* Logging::instance()
     return s_inst;
 }
 
-void Logging::catchQDebugMessage (QtMsgType p_typ, const char* p_msg)
+void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_messageText)
 {
+    string str;
+#if WINTER_DEBUG_TIMESTAMPS
     const QTime tm = QTime::currentTime();
-    string str = "[ T+" + tm.toString (Qt::ISODate).toStdString() + ":" + QString::number (tm.msec()).toStdString()  + " ] <p:" + QString::number (QApplication::applicationPid()).toStdString() + "> ";
+    str = "[ T+" + tm.toString (Qt::ISODate).toStdString() + ":" + QString::number (tm.msec()).toStdString()  + " ] <p:" + QString::number (QApplication::applicationPid()).toStdString() + "> ";
+#endif
 
-    switch (p_typ) {
+    switch (p_messageType) {
     case QtDebugMsg:
         str += "D: ";
         break;
 
     case QtWarningMsg:
         str += "W:  ";
-        emit instance()->warningEncountered (p_msg);
+        emit instance()->warningEncountered (p_messageText);
         break;
 
     case QtCriticalMsg:
         str += "C:  ";
         qApp->beep();
-        emit instance()->criticalErrorEncountered (p_msg);
+        emit instance()->criticalErrorEncountered (p_messageText);
         break;
 
     case QtFatalMsg:
         str += "F: ";
         qApp->beep();
-        emit instance()->fatalErrorEncountered (p_msg);
+        emit instance()->fatalErrorEncountered (p_messageText);
         break;
     }
 
-    str += p_msg;
+    str += p_messageText;
+
     fprintf (stderr, "%s\n", str.c_str());
+    emit instance()->linePrinted(p_messageText);
 }
 }
 
