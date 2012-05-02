@@ -1,8 +1,27 @@
-## - Contains important variables required for building Wintermute.
-##
+# Provides some vital variables that are used by Wintermute.
+#
+#   WINTER_BUILD_TYPE
+#   WINTERMUTE_LIBRARTIES
+#
 
-## Useful options and variables
-set(CMAKE_INSTALL_PREFIX "/usr")
+#=============================================================================
+# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+#           (c) 2012 Adrian Borucki <adrian@thesii.org>
+#
+# This module is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+#=============================================================================
+# (To distribute this file outside of CMake, substitute the full
+#  License text for the above reference.)
+
+include(GNUInstallDirs)
+if (NOT DEFINED QT_DEFINITIONS)
+    include(FindQt4)
+endif (NOT DEFINED QT_DEFINITIONS)
+
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
 set(GENERIC_LIB_VERSION 0.0.1)
@@ -10,28 +29,25 @@ set(GENERIC_LIB_SOVERSION 0)
 set(WINTER_NON_GENERIC_LIB_VERSION 0.0.1)
 set(WINTER_NON_GENERIC_LIB_SOVERSION 1)
 
-set(WINTER_BUILD_TYPE                  "Debug")
-set(WINTER_INSTALL_DIR                 "/usr" CACHE PATH "Base installation path for Wintermute installation files.")
-set(WINTER_CMAKE_DIR                   "${WINTER_INSTALL_DIR}/share/cmake/Wintermute" CACHE PATH "CMake directory for Wintermute.")
-set(WINTER_BIN_INSTALL_DIR             "${WINTER_INSTALL_DIR}/bin" CACHE PATH "Binary installation path.")
-set(WINTER_LIB_INSTALL_DIR             "${WINTER_INSTALL_DIR}/lib" CACHE PATH "Library installation path.")
-set(WINTER_INCLUDE_INSTALL_DIR         "${WINTER_INSTALL_DIR}/include/wintermute" CACHE PATH "Header installation path.")
-set(WINTER_DATA_INSTALL_DIR            "${WINTER_INSTALL_DIR}/share/wintermute" CACHE PATH "Data installation path.")
-set(WINTER_PLUGIN_INSTALL_DIR          "${WINTER_LIB_INSTALL_DIR}/wintermute" CACHE PATH "Plugin installation path.")
-set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR  "${WINTER_INCLUDE_INSTALL_DIR}/plugins" CACHE PATH "Plugin header installation path.")
-set(WINTER_PLUGIN_DATA_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/plugins" CACHE PATH "Plugin data installation path.")
-set(WINTER_PLUGIN_SPEC_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/specs" CACHE PATH "Plugin specification installation path.")
-set(WINTER_LOCALE                      "en" CACHE STRING "The standard locale for Wintermute to use.")
-set(WINTER_QT_VERSION                  "4.7.1")
+set(WINTER_CMAKE_DIR                   "${CMAKE_ROOT}/Modules/Wintermute"             CACHE PATH "CMake directory for Wintermute.")
+set(WINTER_BIN_INSTALL_DIR             "${CMAKE_INSTALL_FULL_BINDIR}"                 CACHE PATH "Binary installation path.")
+set(WINTER_LIB_INSTALL_DIR             "${CMAKE_INSTALL_FULL_LIBDIR}"                 CACHE PATH "Library installation path.")
+set(WINTER_INCLUDE_INSTALL_DIR         "${CMAKE_INSTALL_FULL_INCLUDEDIR}/wintermute"  CACHE PATH "Header installation path.")
+set(WINTER_DATA_INSTALL_DIR            "${CMAKE_INSTALL_FULL_DATADIR}/wintermute"     CACHE PATH "Data installation path.")
+set(WINTER_PLUGIN_INSTALL_DIR          "${WINTER_LIB_INSTALL_DIR}/wintermute"         CACHE PATH "Plugin installation path.")
+set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR  "${WINTER_INCLUDE_INSTALL_DIR}/plugins"        CACHE PATH "Plugin header installation path.")
+set(WINTER_PLUGIN_DATA_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/plugins"           CACHE PATH "Plugin data installation path.")
+set(WINTER_PLUGIN_SPEC_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/specs"             CACHE PATH "Plugin specification installation path.")
 
-set(WINTERMUTE_COMPILE_DEFINITIONS )
-set(WINTERMUTE_COMPILE_FLAGS       "--std=c++0x -Wabi -Wall -Wextra -ggdb -Wctor-dtor-privacy -Wformat -Wunused -O0")
+set(WINTER_LOCALE                      "en"                                           CACHE STRING "The standard locale for Wintermute to use.")
+set(WINTER_QT_VERSION                  "4.7.2"                                        CACHE STRING "The minimum version of Qt to be used to build Wintermute.")
+set(WINTER_IS_PLUGIN                   OFF)
 
-## Standard CMake information.
-list(APPEND CMAKE_MODULE_DIR "${WINTER_INSTALL_DIR}/share/cmake-2.8/Modules"
-                             "${WINTER_INSTALL_DIR}/share/cmake/Modules")
+set(WINTERMUTE_COMPILE_DEFINITIONS     "WINTERMUTE;"                                  CACHE STRING "Compile definitions for Wintermute.")
+set(WINTERMUTE_COMPILE_FLAGS       "-std=c++0x -Wabi -Wall -Wextra -ggdb -Wctor-dtor-privacy -Wformat -Wunused -O0"
+                                                                                      CACHE STRING "Compilation files to be used with Wintermute.")
 
-## Default build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE ${WINTER_BUILD_TYPE})
-endif()
+set(CMAKE_RECENT_MODULE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
+list(APPEND CMAKE_MODULE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/cmake"
+                             "${CMAKE_RECENT_MODULE_DIR}"
+                             "${CMAKE_ROOT}/Modules")
