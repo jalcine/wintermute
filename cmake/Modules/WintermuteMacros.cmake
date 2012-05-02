@@ -2,6 +2,7 @@
 # This module provides a collection of macros and does some tidy work foreach(
 # Wintermute development.
 #
+
 #=============================================================================
 # Copyright (c) 2012 Jacky Alcine   <jacky.alcine@thesii.org>
 #           (c) 2012 Adrian Borucki <adrian@thesii.org>
@@ -22,35 +23,33 @@ include(UseWintermute)
 
 ## Set up documentation.
 macro(wntr_make_docs)
-    cmake_parse_arguments(docs "" "PATH" "" ${ARGN})
-    if (NOT _wntr_set_docs)
-        include(Documentation)
-        if(DOXYGEN_FOUND)
-            find_program(HAVE_DOT dot)
-            if(HAVE_DOT)
-                message(STATUS "Found 'dot' program, Doxygen will use it to generate graphs for documentation.")
-                set(HAVE_DOT YES)
-            else(HAVE_DOT)
-                set(HAVE_DOT NO)
-            endif(HAVE_DOT)
+    set(__var_optional USE_EXAMPLES)
+    set(__var_single   EXAMPLE_PATH
+                       EXCLUDE_PATH
+                       IMAGE_PATH
+                       VERSION
+                       PATH)
 
-            set(_wntr_set_docs true)
+    cmake_parse_arguments(docs "${__var_optional}" "${__var_single}" "" ${ARGN})
 
-            set(_docfile_logo "${WINTER_CURRENT_CMAKE_DIR}/wintermute.png")
+    message("Documentation Sources Path: ${docs_PATH}")
+    message("${ARGN}")
+    include(Documentation)
+    if (DOXYGEN_FOUND)
+        configure_file("${WINTER_CURRENT_CMAKE_DIR}/Doxyfile.in"
+                        "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
 
-            configure_file("${WINTER_CURRENT_CMAKE_DIR}/Doxyfile.in"
-                           "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
+        add_custom_target(docs
+            ${DOXYGEN_EXECUTABLE} Doxyfile
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+            COMMENT "Generating API documentation with Doxygen...")
 
-            add_custom_target(docs
-                ${DOXYGEN_EXECUTABLE} Doxyfile
-                WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-                COMMENT "Generating API documentation with Doxygen...")
+        install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html/
+                DESTINATION ${docs_PATH})
 
-            install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html/
-                    DESTINATION ${docs_PATH})
-
-        endif(DOXYGEN_FOUND)
-    endif (NOT _wntr_set_docs)
+    else (DOXYGEN_FOUND)
+        message(STATUS "Doxygen wasn't found; can't generate documentation of C/C++ sources.")
+    endif(DOXYGEN_FOUND)
 endmacro(wntr_make_docs)
 
 macro(PKGCONFIG_GETVAR _package _var _output_variable)
@@ -122,3 +121,52 @@ macro(winter_define_plugin)
     install(FILES "${__specpath}"
             DESTINATION "${WINTER_PLUGIN_SPEC_INSTALL_DIR}")
 endmacro(winter_define_plugin)
+
+macro(winter_install_plugin)
+    set(__val_optional)
+    set(__val_single TARGET)
+    set(__val_multi)
+
+    cmake_parse_arguments(WIP "${__val_optional}"
+                              "${__val_single}"
+                              "${__val_multi}"
+                          ${ARGN})
+
+    install(TARGETS ${WIP_TARGET}
+        EXPORT "${WIP_TARGET}LibraryDepends"
+        LIBRARY DESTINATION "${WINTER_PLUGIN_INSTALL_DIR}")
+
+    install(EXPORT "${WIP_TARGET}LibraryDepends"
+        DESTINATION "${WNTRDATA_CMAKE_DIR}")
+
+    install(TARGETS ${WIP_TARGET}
+            LIBRARY DESTINATION "${WINTER_PLUGIN_INSTALL_DIR}")
+
+    # Let the build system know you're building a plug-in.
+    set(WINTER_IS_PLUGIN ON)
+endmacro(winter_install_plugin)
+
+macro(winter_define_api)
+    set(__val_optional)
+    set(__val_single UUID
+                     NAME_FRIENDLY)
+    set(__val_multi)
+
+    cmake_parse_arguments(WAPI
+        "${__val_optional}" "${__val_single}" "${__val_multi}"
+        ${ARGN})
+
+    set(_WAPI_FEATURE_NAME "_feature_${WAPI_UUID}")
+
+endmacro(winter_define_api)
+
+macro(winter_define_backend)
+set(__val_optional)
+    set(__val_single UUID
+                     NAME_FRIENDLY)
+    set(__val_multi)
+
+    cmake_parse_arguments(WBACKEND
+        "${__val_optional}" "${__val_single}" "${__val_multi}"
+        ${ARGN})
+endmacro(winter_define_backend)
