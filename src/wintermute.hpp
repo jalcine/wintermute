@@ -25,8 +25,9 @@
  *
  * @mainpage Wintermute API Documentation
  * @section intro Introduction
- * Wintermute is written mainly in C++. It features a plug-in system (see Wintermute::Plugins::PluginBase),
- * inter-process communication (see Wintermute::IPC) and a centralized system that switches
+ * Wintermute is written mainly in the C++ programming language using the Qt library.
+ * It features a plug-in system (see Wintermute::Plugins::AbstractPlugin),
+ * inter-process communication (see Wintermute::IPC::System) and a centralized system that switches
  * between everything else. This API provides a peek into the core of Wintermute and presents
  * how these three components work together in order to provide the unique and rare user
  * experience that people experience when using Wintermute. You can find more information
@@ -34,7 +35,7 @@
  * visit <a href="http://www.thesii.org/wiki/Wintermute">Wintermute</a> on our Wiki and click
  * <em>Join the Team</em>. We hope to hear from you soon.
  *
- * - If you're interested in building a plug-in for Wintermute, visit Wintermute::Plugins::PluginBase.
+ * - If you're interested in building a plug-in for Wintermute, visit Wintermute::Plugins::AbstractPlugin.
  * - Visit the <a href="http://www.thesii.org/wiki">Synthetic Intellect Institute</a>'s Wiki page for Wintermute!
  */
 
