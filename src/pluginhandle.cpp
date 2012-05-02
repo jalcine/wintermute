@@ -26,6 +26,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include "ipc.hpp"
 #include "pluginhandle.hpp"
 #include "factory.hpp"
 
@@ -74,17 +75,35 @@ void PluginHandle::stop()
 void PluginHandle::start()
 {
     if (!m_prcss) {
+        QStringList args;
+        args << "--" WINTER_COMMAND_LINE_IPC     << WINTER_COMMAND_LINE_IPC_PLUGIN
+             << "--" WINTER_COMMAND_LINE_FACTORY << m_uuid;
+
         m_prcss = new QProcess (Factory::instance());
         connect (m_prcss, SIGNAL (started()), this, SLOT (catchStart()));
         connect (m_prcss, SIGNAL (error (QProcess::ProcessError)), this, SLOT (catchError (QProcess::ProcessError)));
         connect (m_prcss, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (catchExit (int, QProcess::ExitStatus)));
+        connect (m_prcss, SIGNAL (readyReadStandardOutput()), this, SLOT (on_process_readyReadStdOut()));
+        connect (m_prcss, SIGNAL (readyReadStandardError()), this, SLOT (on_process_readyReadStdErr()));
 
-        m_prcss->setProcessChannelMode (QProcess::ForwardedChannels);
-        m_prcss->start (QApplication::applicationFilePath(), QStringList() << "--ipc" << "plugin" << "--plugin" << m_uuid);
-        qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << m_uuid;
+        m_prcss->setProcessChannelMode (QProcess::SeparateChannels);
+
+        if (m_prcss->startDetached (QApplication::applicationFilePath(), args)) {
+            qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << m_uuid;
+        }
     }
     else
         qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has already started in pid" << m_prcss->pid();
+}
+
+void PluginHandle::on_process_readyReadStdErr()
+{
+
+}
+
+void PluginHandle::on_process_readyReadStdOut()
+{
+
 }
 
 bool PluginHandle::isActive()

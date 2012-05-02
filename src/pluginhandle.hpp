@@ -24,8 +24,8 @@
  * @date 04/22/12 5:43:18 AM
  */
 
-#ifndef _PLUGINHANDLE_HPP_
-#define _PLUGINHANDLE_HPP_
+#ifndef WINTER_PLUGINHANDLE_HPP
+#define WINTER_PLUGINHANDLE_HPP
 
 #include <QString>
 #include <QSettings>
@@ -57,9 +57,6 @@ private:
     const QString m_uuid;
     QProcess* m_prcss;
     QSettings* m_settings;
-    void doCrashed (const QString&);
-    void doLoaded (const QString&);
-    void doUnloaded (const QString&);
 
 public:
     /**
@@ -132,6 +129,8 @@ public slots:
      * @brief Starts the plug-in's process.
      */
     void start();
+    void on_process_readyReadStdOut();
+    void on_process_readyReadStdErr();
 
 private slots:
     void catchStart();
@@ -142,5 +141,5 @@ private slots:
 } // namespaces
 }
 
-#endif // _PLUGINHANDLE_HPP_
+#endif // WINTER_PLUGINHANDLE_HPP
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
