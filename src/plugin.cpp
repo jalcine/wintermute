@@ -178,12 +178,12 @@ double AbstractPlugin::version() const
 double AbstractPlugin::compatVersion() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Version/Compat", WNTR_VERSION).toDouble();
+    return d->m_sttngs->value ("Version/Compat", WINTER_VERSION).toDouble();
 }
 
 bool AbstractPlugin::isSupported() const
 {
-    return WNTR_VERSION >= compatVersion();
+    return WINTER_VERSION >= compatVersion();
 }
 
 QStringList AbstractPlugin::plugins() const
@@ -310,9 +310,9 @@ void AbstractPlugin::resetAttributes()
 bool AbstractPlugin::loadLibrary() const
 {
     Q_D (const AbstractPlugin);
-    QApplication::addLibraryPath (WNTR_PLUGIN_PATH);
+    QApplication::addLibraryPath (WINTER_PLUGIN_PATH);
     const QString plgnLibrary = d->m_sttngs->value ("Version/Library").toString();
-    const QString plgPth = QString (WNTR_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
+    const QString plgPth = QString (WINTER_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
     d->m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
     d->m_plgnLdr->setLoadHints(QLibrary::ResolveAllSymbolsHint);
     qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Loaded library for " << name() << "?" << d->m_plgnLdr->load();
