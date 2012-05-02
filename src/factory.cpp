@@ -155,7 +155,7 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
         }
     }
     else {
-        qDebug() << "Inserting plug-in" << p_uuid << "into the pool.";
+        qDebug() << "(core) [Factory] Inserting plug-in" << p_uuid << "into the pool.";
         PluginHandle* inst = new PluginHandle (p_uuid, Factory::getPluginSettings (p_uuid));
         instance()->d_func()->m_plgnPool.insert (p_uuid, inst);
     }
@@ -176,7 +176,7 @@ QStringList Factory::loadedPlugins ()
 
 QStringList Factory::allPlugins ()
 {
-    QDir dir (WNTR_PLUGINSPEC_PATH);
+    QDir dir (WINTER_PLUGINSPEC_PATH);
     dir.setFilter (QDir::Files | QDir::Readable | QDir::NoSymLinks);
     dir.setNameFilters (QString ("*.spec").split (" "));
     dir.setSorting (QDir::Name);
@@ -270,7 +270,7 @@ void Factory::shutdown ()
 
 QSettings* Factory::getPluginSettings (const QString& p_plgnUuid)
 {
-    const QString plgnSpecPath = QString (WNTR_PLUGINSPEC_PATH) + "/" + p_plgnUuid + ".spec";
+    const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_plgnUuid + ".spec";
 
     if (!QFile::exists (plgnSpecPath)) {
         qWarning() << "(core) [Factory]" << plgnSpecPath << "does not exist.";
@@ -320,11 +320,11 @@ bool Factory::loadBackendPlugin (const QString& p_uuid)
     const QString plgnTyp = Factory::attribute (p_uuid, "Plugin/Type").toString();
 
     if (plgnTyp == "Backend" && currentPlugin() && currentPlugin()->uuid() != apiUuid) {
-        const QDBusMessage callRunningList = QDBusMessage::createMethodCall (WNTR_DBUS_FACTORY_NAME, WNTR_DBUS_FACTORY_OBJNAME, WNTR_DBUS_FACTORY_OBJPATH, "loadedPlugins");
+        const QDBusMessage callRunningList = QDBusMessage::createMethodCall (WINTER_DBUS_FACTORY_NAME, WINTER_DBUS_FACTORY_OBJNAME, WINTER_DBUS_FACTORY_OBJPATH, "loadedPlugins");
         const QDBusMessage replyRunningList = QDBusConnection::sessionBus ().call (callRunningList, QDBus::BlockWithGui);
 
         if (replyRunningList.arguments().at (0).toStringList().contains (apiUuid)) {
-            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (QString (WNTR_DBUS_PLUGIN_NAME) + "." + apiUuid, WNTR_DBUS_PLUGIN_OBJNAME, WNTR_DBUS_PLUGIN_OBJPATH, "loadBackend");
+            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (QString (WINTER_DBUS_PLUGIN_NAME) + "." + apiUuid, WINTER_DBUS_PLUGIN_OBJNAME, WINTER_DBUS_PLUGIN_OBJPATH, "loadBackend");
             callLoadBackend << p_uuid;
             const QDBusMessage replyLoadBackend = QDBusConnection::sessionBus ().call (callLoadBackend, QDBus::BlockWithGui);
 
@@ -344,5 +344,5 @@ bool Factory::loadBackendPlugin (const QString& p_uuid)
     return false;
 }
 
-#include "factory.hpp.moc"
+#include "factory.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
