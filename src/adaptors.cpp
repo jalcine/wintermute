@@ -34,14 +34,15 @@
 #include "core.hpp"
 #include "backend.hpp"
 #include "ipc.hpp"
-
 #include "plugin.hpp"
 #include "factory.hpp"
 #include "pluginhandle.hpp"
+#include "config.hpp"
 
 using namespace Wintermute;
 using namespace Wintermute::IPC;
 using namespace Wintermute::Plugins;
+using Wintermute::AbstractAdaptor;
 
 GenericAdaptorPrivate::GenericAdaptorPrivate (GenericAdaptor* p_qPtr) : q_ptr (p_qPtr)
 {
@@ -51,11 +52,13 @@ GenericAdaptorPrivate::GenericAdaptorPrivate (GenericAdaptor* p_qPtr) : q_ptr (p
 void GenericAdaptorPrivate::detect() const
 {
     Q_Q (const GenericAdaptor);
+
     m_tmr->stop();
     const bool prv = m_core;
-    QDBusMessage ping = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "ping");
+    QDBusMessage ping = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, "/Master", WINTER_DBUS_MASTER_NAME, "ping");
     ping << System::module ();
     ping.setAutoStartService (true);
+
     QDBusMessage pingReply = IPC::System::bus ()->call (ping, QDBus::BlockWithGui);
     m_core = pingReply.type () != QDBusMessage::ErrorMessage;
 
@@ -70,11 +73,16 @@ void GenericAdaptorPrivate::detect() const
         }
     }
 
+#if WINTER_VERBOSE_PINGS
+
     if (pingReply.type () == QDBusMessage::ErrorMessage) {
-        //qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
-        /*if (!Core::arguments().value ("daemon").toBool ())
-         *            CoreAdaptor::haltSystem ();*/
+        qDebug() << "(core) [D-Bus] Pong from core module:" << pingReply.errorMessage ();
+
+        if (!Core::arguments().value ("daemon").toBool ())
+            CoreAdaptor::haltSystem ();
     }
+
+#endif
 
     m_tmr->start ();
 }
@@ -92,10 +100,16 @@ GenericAdaptor::GenericAdaptor (QObject* p_parent) : QDBusAbstractAdaptor (p_par
     if (IPC::System::module() != "master") {
         d->m_tmr = new QTimer (this);
         d->detect();
-        connect (d->m_tmr, SIGNAL (timeout()), this, SLOT (detect()));
+        connect (d->m_tmr, SIGNAL (timeout()), this, SLOT(doDetect()));
         d->m_tmr->setInterval (1000);
         d->m_tmr->start();
     }
+}
+
+void GenericAdaptor::doDetect()
+{
+    Q_D(GenericAdaptor);
+    d->detect();
 }
 
 int GenericAdaptor::pid() const
@@ -150,18 +164,18 @@ PluginHandleAdaptor::PluginHandleAdaptor (AbstractPlugin* p_plgn) : AbstractAdap
     }
     else {
         connect (QApplication::instance (), SIGNAL (aboutToQuit()), this, SIGNAL (aboutToQuit()));
-        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME, "/Factory",
-                                                WNTR_DBUS_FACTORY_NAME, "pluginCantLoad",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, "/Factory",
+                                                WINTER_DBUS_FACTORY_NAME, "pluginCantLoad",
                                                 this, SIGNAL (pluginCantLoad (QString)));
-        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME, "/Factory",
-                                                WNTR_DBUS_FACTORY_NAME, "pluginLoaded",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, "/Factory",
+                                                WINTER_DBUS_FACTORY_NAME, "pluginLoaded",
                                                 this, SIGNAL (pluginLoaded (QString)));
-        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME, "/Factory",
-                                                WNTR_DBUS_FACTORY_NAME, "pluginUnloaded",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, "/Factory",
+                                                WINTER_DBUS_FACTORY_NAME, "pluginUnloaded",
                                                 this, SIGNAL (pluginUnloaded (QString)));
 
-        QDBusConnection::sessionBus ().connect (WNTR_DBUS_SERVICE_NAME, "/Factory",
-                                                WNTR_DBUS_FACTORY_NAME, "aboutToQuit",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, "/Factory",
+                                                WINTER_DBUS_FACTORY_NAME, "aboutToQuit",
                                                 this, SLOT (aboutToQuit()));
 
         setParent (p_plgn);
@@ -186,7 +200,10 @@ void PluginHandleAdaptor::loadBackend (const QString& p_uuid)
     }
 }
 
-CoreAdaptor::CoreAdaptor() : AbstractAdaptor (Core::instance()) { }
+CoreAdaptor::CoreAdaptor() : AbstractAdaptor (Core::instance())
+{
+
+}
 
 const QVariantMap CoreAdaptor::arguments() const
 {
@@ -196,13 +213,15 @@ const QVariantMap CoreAdaptor::arguments() const
 void CoreAdaptor::ping (const QString& p_src)
 {
     (p_src.length() == 0) + 0;
-    //qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
+#if WINTER_VERBOSE_PINGS
+    qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
+#endif
 }
 
 void CoreAdaptor::quit () const
 {
     emit aboutToQuit ();
-    QDBusMessage msg = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Factory", WNTR_DBUS_FACTORY_NAME, "quit");
+    QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, "/Factory", WINTER_DBUS_FACTORY_NAME, "quit");
     QDBusConnection::sessionBus ().call (msg, QDBus::NoBlock);
     haltSystem ();
 }
@@ -210,7 +229,7 @@ void CoreAdaptor::quit () const
 void CoreAdaptor::haltSystem ()
 {
     if (Core::arguments().value ("ipc").toString () != "master") {
-        QDBusMessage call = QDBusMessage::createMethodCall (WNTR_DBUS_SERVICE_NAME, "/Master", WNTR_DBUS_MASTER_NAME, "haltSystem");
+        QDBusMessage call = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, "/Master", WINTER_DBUS_MASTER_NAME, "haltSystem");
         QDBusConnection::sessionBus ().send (call);
     }
 
