@@ -42,10 +42,6 @@ Diagnoser::Diagnoser (QString& p_newLabel, bool p_autoRegister, QObject* p_paren
         Diagnoser::registerDiagnoser (this);
 }
 
-Diagnoser::~Diagnoser()
-{
-}
-
 QString Diagnoser::getLabel()
 {
     return label;
@@ -67,6 +63,10 @@ void Diagnoser::removeDiagnoser (QString& label)
 Diagnoser* Diagnoser::getDiagnoser (QString& label)
 {
     return Diagnoser::diagnosers.value (label);
+}
+
+Diagnoser::~Diagnoser()
+{
 }
 
 #include "diagnoser.moc"

@@ -24,8 +24,8 @@
  * @date 04/22/12 5:41:05 AM
  */
 
-#ifndef _DIAGNOSER_HPP_
-#define _DIAGNOSER_HPP_
+#ifndef WINTER_DIAGNOSER_HPP_
+#define WINTER_DIAGNOSER_HPP_
 
 #include <QObject>
 #include <QString>
@@ -38,9 +38,9 @@ namespace Diagnostics
 
 /**
  * @brief Base diagnoser class
- * This class represents one of major WCore's components: diagnostics performer
+ * This class represents one of major Wintermute's components: diagnostics performer
  * & reporter. Its role is to provide statistics about system's vitality and
- * its used for reporting and self-assesment.
+ * its used for reporting and self-assessment.
  */
 class Diagnoser : public QObject
 {
@@ -61,7 +61,7 @@ public:
      * @param autoRegister If true, automatically registers itself.
      * @param parent QObject parent.
      */
-    Diagnoser (QString&, bool = true, QObject* = 0);
+    Diagnoser (QString& p_newLabel, bool p_autoRegister = true, QObject* p_parent = 0);
 
     virtual ~Diagnoser();
 
@@ -92,5 +92,5 @@ public:
 };
 } // namespaces
 }
-#endif // _DIAGNOSER_HPP_
+#endif // WINTER_DIAGNOSER_HPP_
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
