@@ -18,21 +18,19 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef WINTERMUTE_PLUGIN_HXX_
-#define WINTERMUTE_PLUGIN_HXX_
+#ifndef WINTERMUTE_PLUGINPRIVATE_HPP
+#define WINTERMUTE_PLUGINPRIVATE_HPP
 
-#include <QtGlobal>
+#include <global.hpp>
 
 class QPluginLoader;
 class QSettings;
 
-namespace Wintermute
-{
-namespace Plugins
-{
+WINTER_FORWARD_DECLARE_CLASS(Factory);
+WINTER_FORWARD_DECLARE_CLASS(ShellPlugin);
+WINTER_FORWARD_DECLARE_CLASS(AbstractPlugin);
 
-class Factory;
-class ShellPlugin;
+WINTER_BEGIN_NAMESPACE
 
 struct AbstractPluginPrivate {
     Q_DECLARE_PUBLIC (AbstractPlugin)
@@ -40,7 +38,7 @@ struct AbstractPluginPrivate {
     friend class ShellPlugin;
 
 private:
-    mutable QPluginLoader* m_plgnLdr;
+    mutable QPluginLoader* pluginLoader;
     AbstractPlugin* q_ptr;
     bool loadPlugins() const;
     bool loadPackages() const;
@@ -51,12 +49,12 @@ private:
 public:
     AbstractPluginPrivate (AbstractPlugin* p_qPtr);
     virtual ~AbstractPluginPrivate();
-    QSettings* m_sttngs;
-    QSettings* m_cnfg;
+    QSettings* settings;
+    QSettings* configuration;
 
 };
-}
-}
+
+WINTER_END_NAMESPACE
 
 #endif
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -21,23 +21,30 @@
  * @author Wintermute Development <wntr-devel@thesii.org>
  */
 
-#ifndef WINTERMUTE_PLUGIN_HPP_
-#define WINTERMUTE_PLUGIN_HPP_
+#ifndef WINTERMUTE_PLUGIN_HPP
+#define WINTERMUTE_PLUGIN_HPP
 
 #include <QHash>
+#include <QString>
 #include <QSettings>
+#include <QtPlugin>
 #include <QPluginLoader>
 
-#include <config.hpp>
-#include <adaptors.hpp>
+#include <global.hpp>
 
-namespace Wintermute
-{
-namespace Plugins
-{
+#define WINTER_DEFINE_PLUGIN(LIBRARY, CLASS) \
+    Q_EXPORT_PLUGIN2(LIBRARY, CLASS) \
 
-class Factory;
-struct AbstractPluginPrivate;
+ WINTER_FORWARD_DECLARE_CLASS (Factory)
+ WINTER_FORWARD_DECLARE_CLASS (AbstractPlugin)
+ WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
+
+ WINTER_BEGIN_NAMESPACE
+
+/**
+ * @brief Represents a named set of plugins.
+ */
+typedef QHash<const QString, AbstractPlugin*> PluginTable;
 
 /**
  * @brief Abstract class representing the outlining information of a plug-in.
@@ -45,34 +52,31 @@ struct AbstractPluginPrivate;
  * The AbstractPlugin class is an abstract class laying out how the required bits of information
  * that a shared library or any other exectuable code that wish to add more functionality
  * to Wintermute. It's important that plug-in developers provide implementations of the
- * virtually defined methods, or their plug-in will fail to load. It is required that
- * in the definition of your plug-in's code (not within the header files, but rather in the source code)
- * that you include the header file &lt;QtPlugin&gt; and define the Q_EXPORT_PLUGIN2() macro. Your
+ * virtually defined methods, or their plug-in will fail to load. Your
  * plug-in must also define a copy constructor.
  *
  * @code
  * #include <QObject>
- * #include <QtPlugin>
- * #include <plugins.hpp>
+ * #include <wintermute/plugin.hpp>
  *
  * using namespace Wintermute::Plugins;
  * using Wintermute::Plugins::AbstractPlugin;
  *
  * namespace Foo {
- *      class Bar : public AbstractPlugin {
- *          public:
- *              Bar() : m_magicNumber(0) { }
- *              Bar(const Bar &p_bar) : m_magicNumber(p_bar.magicNumber) { }
- *              virtual ~Bar();
+ * class Bar : public AbstractPlugin {
+ *    public:
+ *      Bar() : m_magicNumber(0) { }
+ *      Bar(const Bar &p_bar) : m_magicNumber(p_bar.magicNumber) { }
+ *      virtual ~Bar();
  *
- *              /// definition of virtual methods
+ *      /// definition of virtual methods
  *
- *          private:
- *              int m_magicNumber;
- *      };
+ *    private:
+ *      int m_magicNumber;
+ * };
  * }
  *
- * Q_EXPORT_PLUGIN2(Bar, Foo::Bar)
+ * WINTER_DEFINE_PLUGIN(Bar, Foo::Bar)
  * @endcode
  *
  * @attention It's important to note that you must define the Q_EXPORT_PLUGIN2() macro <i>outside</i>
@@ -80,30 +84,44 @@ struct AbstractPluginPrivate;
  *
  * @todo Add conflicting plug-ins as a specification addition.
  */
-class AbstractPlugin : public QObject
+class WINTER_EXPORT AbstractPlugin : public QObject
 {
-    friend class Factory;
-    friend class PluginHandleAdaptor;
-
     Q_OBJECT
-    Q_PROPERTY (const double Version READ version)
-    Q_PROPERTY (const double CompatibleVersion READ compatVersion)
-    Q_PROPERTY (const QString UUID READ uuid)
-    Q_PROPERTY (const QString Name READ name)
-    Q_PROPERTY (const QString Author READ author)
-    Q_PROPERTY (const QString VendorName READ vendorName)
-    Q_PROPERTY (const QString Description READ description)
-    Q_PROPERTY (const QString WebPage READ webPage)
-    Q_PROPERTY (const QStringList Packages READ packages)
-    Q_PROPERTY (const QStringList Plugins READ plugins)
-
-private:
+    Q_PROPERTY (double Version READ version)
+    Q_PROPERTY (double CompatibleVersion READ compatVersion)
+    Q_PROPERTY (QString UUID READ uuid)
+    Q_PROPERTY (QString Name READ name)
+    Q_PROPERTY (QString Author READ author)
+    Q_PROPERTY (QString VendorName READ vendorName)
+    Q_PROPERTY (QString Description READ description)
+    Q_PROPERTY (QString WebPage READ webPage)
+    Q_PROPERTY (QStringList Packages READ packages)
+    Q_PROPERTY (QStringList Plugins READ plugins)
+    friend class Factory;
     QScopedPointer<AbstractPluginPrivate> d_ptr;
+    AbstractPlugin* obtainInstance() const;
 
 protected:
-    Q_DECLARE_PRIVATE(AbstractPlugin)
+    Q_DECLARE_PRIVATE (AbstractPlugin)
     bool loadLibrary() const;
     bool loadRequiredComponents() const;
+    void obtainPlugin (QString depName);
+
+protected slots:
+    /**
+     * @brief Reimplement this method to define the initialization code of your plug-in.
+     *
+     * This is run after the initialized() signal is emitted.
+     */
+    virtual void start() const = 0;
+
+    /**
+     * @brief Reimplement this method to define the deinitialization code of your plug-in.
+     *
+     * This is run after the deinitialized() signal is emitted.
+     */
+    virtual void stop() const = 0;
+
 
 public:
     /**
@@ -143,8 +161,6 @@ public:
 
     /**
      * @brief Represents a Universally Unique Identifier (UUID) for the plug-in.
-     * @note On Linux systems, the program 'uuidgen -t' could generate an unique UUID for you to define in your
-     *       plug-in specification file.
      */
     QString uuid() const;
 
@@ -192,7 +208,7 @@ public:
      * @note The comma is required if you are listing more than one plug-in.
      *
      * @note Version information is not yet supported.
-     * @todo Implement depenency checking with triples like (something similar to dpkg's versioning scheme or pkg-config's):
+     * @todo Implement dependency checking with triples like (something similar to dpkg's versioning scheme or pkg-config's):
      * @code
      *       foo-bar (= 0.01)
      *       foo-bar (>= 0.01) | hello-world (>> 0.02)
@@ -202,10 +218,10 @@ public:
     QStringList plugins() const;
 
     /**
-     * @brief Determines if the dependencies of this plug-in have been satisified.
+     * @brief Determines if the dependencies of this plug-in have been satisfied.
      * @see plugins
      */
-    bool hasPlugins() const;
+    bool hasNeededPlugins() const;
 
     /**
      * @brief Returns a QStringList of system packages that this plug-in requires to operate.
@@ -216,7 +232,7 @@ public:
      * @brief Determines if the packages of this plug-in have been satisified.
      * @see packages
      */
-    bool hasPackages() const;
+    bool hasNeededPackages() const;
 
     /**
      * @brief Determines whether or not this plug-in is able to run without issues, in terms of versioning.
@@ -253,7 +269,6 @@ public:
      * @brief Resets the attributes of the plug-in to default.
      */
     void resetAttributes();
-    void obtainPlugin (QString depName);
 
 signals:
     /**
@@ -267,33 +282,11 @@ signals:
     * This is usually raised right before the Core begin to deinitialize.
     */
     void stopped() const;
-
-private:
-    AbstractPlugin* obtainInstance() const;
-
-protected slots:
-    /**
-     * @brief Reimplement this method to define the initialization code of your plug-in.
-     * This is run after the initialized() signal is emitted.
-     */
-    virtual void start() const = 0;
-
-    /**
-     * @brief Reimplement this method to define the deinitialization code of your plug-in.
-     * This is run after the deinitialized() signal is emitted.
-     */
-    virtual void stop() const = 0;
 };
 
-/**
- * @brief Represents a named set of plugins.
- */
-typedef QHash<const QString, AbstractPlugin*> PluginTable;
+WINTER_END_NAMESPACE
 
-} // namespaces
-}
-
-Q_DECLARE_INTERFACE (Wintermute::Plugins::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin")
+Q_DECLARE_INTERFACE (WINTER_NAMESPACE::AbstractPlugin, "org.thesii.Wintermute.AbstractPlugin")
 
 #endif // _ABSTRACTPLUGIN_HPP_
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

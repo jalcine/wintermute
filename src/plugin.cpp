@@ -26,17 +26,16 @@
 #include <QDebug>
 #include <QApplication>
 
-#include <core.hpp>
-#include <config.hpp>
-#include <factory.hpp>
-#include <shellplugin.hpp>
-#include <pluginprivate.hpp>
-#include <plugin.hpp>
+#include "core.hpp"
+#include "factory.hpp"
+#include "shellplugin.hpp"
+#include "pluginprivate.hpp"
+#include "plugin.hpp"
 
-using namespace Wintermute::Plugins;
+WINTER_USE_NAMESPACE
 
 AbstractPluginPrivate::AbstractPluginPrivate (AbstractPlugin* p_qPtr) :
-m_plgnLdr (0), q_ptr (p_qPtr), m_sttngs (0), m_cnfg (0)
+pluginLoader (0), q_ptr (p_qPtr), settings (0), configuration (0)
 {
 
 }
@@ -93,7 +92,7 @@ bool AbstractPluginPrivate::loadPlugins() const
             }
             else {
                 qWarning() << "(core) [AbstractPluginPrivate::loadPlugins] Unable to load symbols of dependency"
-                << gnrc->name() << ":" << gnrc->d_func()->m_plgnLdr->errorString();
+                << gnrc->name() << ":" << gnrc->d_func()->pluginLoader->errorString();
 
                 return false;
             }
@@ -105,8 +104,8 @@ bool AbstractPluginPrivate::loadPlugins() const
 
 void AbstractPluginPrivate::loadSettings (const QString& p_uuid)
 {
-    m_sttngs = Factory::getPluginSettings (p_uuid);
-    m_cnfg = new QSettings ("Synthetic Intellect Institute", p_uuid);
+    settings = Factory::getPluginSettings (p_uuid);
+    configuration = new QSettings ("Synthetic Intellect Institute", p_uuid);
 }
 
 AbstractPluginPrivate::~AbstractPluginPrivate()
@@ -123,7 +122,7 @@ AbstractPlugin::AbstractPlugin (QPluginLoader* p_pluginLoader) :
     QObject (p_pluginLoader), d_ptr (new AbstractPluginPrivate (this))
 {
     Q_D (AbstractPlugin);
-    d->m_plgnLdr = p_pluginLoader;
+    d->pluginLoader = p_pluginLoader;
 }
 
 AbstractPlugin::AbstractPlugin (const AbstractPlugin& p_other) : QObject (p_other.parent()),
@@ -136,49 +135,49 @@ AbstractPlugin::AbstractPlugin (const AbstractPlugin& p_other) : QObject (p_othe
 QString AbstractPlugin::author() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Description/Author").toString();
+    return d->settings->value ("Description/Author").toString();
 }
 
 QString AbstractPlugin::name() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Description/Name").toString();
+    return d->settings->value ("Description/Name").toString();
 }
 
 QString AbstractPlugin::vendorName() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Description/Vendor").toString();
+    return d->settings->value ("Description/Vendor").toString();
 }
 
 QString AbstractPlugin::uuid() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Version/UUID").toString();
+    return d->settings->value ("Version/UUID").toString();
 }
 
 QString AbstractPlugin::description() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Description/Blurb").toString();
+    return d->settings->value ("Description/Blurb").toString();
 }
 
 QString AbstractPlugin::webPage() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Description/WebPage").toString();
+    return d->settings->value ("Description/WebPage").toString();
 }
 
 double AbstractPlugin::version() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Version/Plugin").toDouble();
+    return d->settings->value ("Version/Plugin").toDouble();
 }
 
 double AbstractPlugin::compatVersion() const
 {
     Q_D (const AbstractPlugin);
-    return d->m_sttngs->value ("Version/Compat", WINTER_VERSION).toDouble();
+    return d->settings->value ("Version/Compat", WINTER_VERSION).toDouble();
 }
 
 bool AbstractPlugin::isSupported() const
@@ -189,13 +188,13 @@ bool AbstractPlugin::isSupported() const
 QStringList AbstractPlugin::plugins() const
 {
     Q_D (const AbstractPlugin);
-    QStringList dep = d->m_sttngs->value ("Depends/Plugins").toStringList();
+    QStringList dep = d->settings->value ("Depends/Plugins").toStringList();
     dep.removeDuplicates();
     dep.removeAll ("None");
     return dep;
 }
 
-bool AbstractPlugin::hasPlugins() const
+bool AbstractPlugin::hasNeededPlugins() const
 {
     const QStringList deps = this->plugins();
     foreach (const QString dep, deps) {
@@ -262,7 +261,7 @@ bool AbstractPlugin::hasPlugins() const
 QStringList AbstractPlugin::packages() const
 {
     Q_D (const AbstractPlugin);
-    QStringList dep = d->m_sttngs->value ("Depends/Packages").toStringList();
+    QStringList dep = d->settings->value ("Depends/Packages").toStringList();
     dep.removeDuplicates();
     dep.removeAll ("None");
     return dep;
@@ -270,7 +269,7 @@ QStringList AbstractPlugin::packages() const
 
 /// @note This method requires code from QPackageKit.
 /// @note issue #0000029
-bool AbstractPlugin::hasPackages() const
+bool AbstractPlugin::hasNeededPackages() const
 {
     const QStringList deps = this->packages();
 
@@ -286,10 +285,10 @@ bool AbstractPlugin::hasPackages() const
 QVariant AbstractPlugin::attribute (const QString& p_attributePath) const
 {
     Q_D (const AbstractPlugin);
-    QVariant val = d->m_cnfg->value (p_attributePath);
+    QVariant val = d->configuration->value (p_attributePath);
 
     if (val.isNull() || !val.isValid())
-        val = d->m_cnfg->value ("Configuration/" + QString (p_attributePath).replace ("/", ":"));
+        val = d->configuration->value ("Configuration/" + QString (p_attributePath).replace ("/", ":"));
 
     return val;
 }
@@ -297,32 +296,32 @@ QVariant AbstractPlugin::attribute (const QString& p_attributePath) const
 void AbstractPlugin::setAttribute (const QString& p_attributePath, const QVariant& p_attributeValue)
 {
     Q_D (AbstractPlugin);
-    d->m_cnfg->setValue (p_attributePath, p_attributeValue);
+    d->configuration->setValue (p_attributePath, p_attributeValue);
 }
 
 /// @note issue #0000030
 void AbstractPlugin::resetAttributes()
 {
     Q_D (AbstractPlugin);
-    d->m_cnfg->clear();
+    d->configuration->clear();
 }
 
 bool AbstractPlugin::loadLibrary() const
 {
     Q_D (const AbstractPlugin);
     QApplication::addLibraryPath (WINTER_PLUGIN_PATH);
-    const QString plgnLibrary = d->m_sttngs->value ("Version/Library").toString();
+    const QString plgnLibrary = d->settings->value ("Version/Library").toString();
     const QString plgPth = QString (WINTER_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
-    d->m_plgnLdr = new QPluginLoader (plgPth, Factory::instance());
-    d->m_plgnLdr->setLoadHints(QLibrary::ResolveAllSymbolsHint);
-    qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Loaded library for " << name() << "?" << d->m_plgnLdr->load();
+    d->pluginLoader = new QPluginLoader (plgPth, Factory::instance());
+    d->pluginLoader->setLoadHints(QLibrary::ResolveAllSymbolsHint);
+    qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Loaded library for " << name() << "?" << d->pluginLoader->load();
 
-    if (!d->m_plgnLdr->isLoaded())
+    if (!d->pluginLoader->isLoaded())
         qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Error loading library"
                  << plgPth << endl
-                 << d->m_plgnLdr->errorString();
+                 << d->pluginLoader->errorString();
 
-    return d->m_plgnLdr->isLoaded();
+    return d->pluginLoader->isLoaded();
 }
 
 bool AbstractPlugin::loadRequiredComponents() const
@@ -353,8 +352,8 @@ AbstractPlugin* AbstractPlugin::obtainInstance() const
 {
     Q_D (const AbstractPlugin);
 
-    if (d->m_plgnLdr->isLoaded()) {
-        QObject* plgnInstance = d->m_plgnLdr->instance();
+    if (d->pluginLoader->isLoaded()) {
+        QObject* plgnInstance = d->pluginLoader->instance();
 
         if (plgnInstance->inherits (staticMetaObject.className())) {
             return dynamic_cast< AbstractPlugin* > (plgnInstance);
@@ -371,9 +370,9 @@ AbstractPlugin* AbstractPlugin::obtainInstance() const
 AbstractPlugin::~AbstractPlugin()
 {
     Q_D (AbstractPlugin);
-    d->m_plgnLdr->unload();
-    d->m_plgnLdr->deleteLater();
-    d->m_sttngs->deleteLater();
+    d->pluginLoader->unload();
+    d->pluginLoader->deleteLater();
+    d->settings->deleteLater();
 }
 
 #include "plugin.moc"
