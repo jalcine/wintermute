@@ -25,43 +25,197 @@
  * Required for the core of Wintermute.
  */
 
-#ifndef WINTERMUTE_CONFIG_HPP
-#define WINTERMUTE_CONFIG_HPP
+#ifndef WINTERMUTE_GLOBAL_HPP
+#define WINTERMUTE_GLOBAL_HPP
 
-// D-Bus Section
+// Since we don't need sessions...
+#undef QT_NO_SESSIONMANAGER
+
+#include <QtGlobal>
+#include <QDebug>
+
+// Build-time variables.
+#cmakedefine01 DEBUG
+#cmakedefine01 WINTER_DEPRECATED_WARNINGS
+
+// ** Symbol exporting **
+#define WINTER_IMPORT_SYMBOL Q_DECL_IMPORT
+#define WINTER_EXPORT_SYMBOL Q_DECL_EXPORT
+
+#ifdef WINTER_EXPORT
+# define WINTER_EXPORT WINTER_EXPORT_SYMBOL
+#else
+# define WINTER_EXPORT WINTER_IMPORT_SYMBOL
+#endif
+
+// *** D-Bus related macros ***
 #define WINTER_DBUS_SERVICE_NAME "org.thesii.Wintermute"
 
-#define WINTER_DBUS_FACTORY_NAME WINTER_DBUS_SERVICE_NAME".Factory"
-#define WINTER_DBUS_FACTORY_OBJNAME "/Factory"
-#define WINTER_DBUS_FACTORY_OBJPATH WINTER_DBUS_SERVICE_NAME".Factory"
+#define WINTER_DBUS_FACTORY         "Factory"
+#define WINTER_DBUS_FACTORY_NAME    WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_FACTORY
+#define WINTER_DBUS_FACTORY_OBJNAME "/"WINTER_DBUS_FACTORY
+#define WINTER_DBUS_FACTORY_OBJPATH WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_FACTORY
 
-#define WINTER_DBUS_MASTER_NAME WINTER_DBUS_SERVICE_NAME".Master"
+#define WINTER_DBUS_MASTER          "Master"
+#define WINTER_DBUS_MASTER_NAME     WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_MASTER
+#define WINTER_DBUS_MASTER_OBJNAME  "/"WINTER_DBUS_MASTER
+#define WINTER_DBUS_MASTER_OBJPATH  WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_MASTER
 
-#define WINTER_DBUS_PLUGIN_NAME WINTER_DBUS_SERVICE_NAME".Plugin"
-#define WINTER_DBUS_PLUGIN_OBJNAME "/Plugin"
-#define WINTER_DBUS_PLUGIN_OBJPATH WINTER_DBUS_SERVICE_NAME".Plugin"
+#define WINTER_DBUS_PLUGIN          "Plugin"
+#define WINTER_DBUS_PLUGIN_NAME     WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_PLUGIN
+#define WINTER_DBUS_PLUGIN_OBJNAME  "/"WINTER_DBUS_PLUGIN
+#define WINTER_DBUS_PLUGIN_OBJPATH  WINTER_DBUS_SERVICE_NAME"."WINTER_DBUS_PLUGIN
 
-// Project Information
-#define WINTER_VERSION @WINTERMUTE_VERSION@
+#define WINTER_DBUS_VERBOSE_PINGS false
+#define WINTER_DBUS_UPDATE_TIMEOUT 1000
 
-// Plug-in System Data
-#define WINTER_PLUGIN_PATH "@WINTER_PLUGIN_INSTALL_DIR@"
+// *** Versioning tools ***
+#define WINTER_VERSION_STR "@WINTERMUTE_VERSION@"
+#define WINTER_VERSION     @WINTERMUTE_VERSION@
+#define WINTER_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
+
+// *** Plug-in specific data ***
+#define WINTER_PLUGIN_PATH     "@WINTER_PLUGIN_INSTALL_DIR@"
 #define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGIN_SPEC_INSTALL_DIR@"
 
-// Build-time Configuration
-#define WINTER_LOCALE "@WINTER_LOCALE@"
-#define WINTER_DATA_DIR "@WINTER_DATA_INSTALL_DIR@"
-#define WINTER_WITH_GUI @WITH_GUI_SUPPORT@
-#define WINTER_VERBOSE_PINGS false
+// *** Build-time specific about UI.
 #define WINTER_DEBUG_TIMESTAMPS false
 
-// Debugging levels.
+// *** Exit codes ***
+// Codes with 0fX are reserved by Wintermute's internal system.
+#define WINTER_EXITCODE_NORMAL                0x000
+#define WINTER_EXITCODE_FATAL                 0xfff
+
+// Codes with 01X are for D-Bus.
+#define WINTER_EXITCODE_DBUS_UNKNOWNERROR     0x010
+#define WINTER_EXITCODE_DBUS_MULTIPLEINSTANCE 0x011
+
+// *** Debug output levels ***
 #define WINTER_DEBUG_NONE     0x0
 #define WINTER_DEBUG_INFO     0x1
 #define WINTER_DEBUG_WARN     0x2
 #define WINTER_DEBUG FATAL    0x3
 #define WINTER_DEBUG_CRITICAL 0x4
 
-#endif // WINTERMUTE_CONFIG_HPP
+// *** Namespace and forward declaration utilities. ***
+#define WINTER_NAMESPACE Wintermute
+#define WINTER_PREPEND_NAMESPACE(name) ::WINTER_NAMESPACE::name
+#define WINTER_USE_NAMESPACE using namespace ::WINTER_NAMESPACE;
+#define WINTER_BEGIN_NAMESPACE namespace WINTER_NAMESPACE {
+#define WINTER_END_NAMESPACE }
+#define WINTER_FORWARD_DECLARE_CLASS(name) \
+        WINTER_BEGIN_NAMESPACE class name; WINTER_END_NAMESPACE\
+        using WINTER_PREPEND_NAMESPACE(name);
+
+#define WINTER_FORWARD_DECLARE_STRUCT(name) \
+        WINTER_BEGIN_NAMESPACE struct name; WINTER_END_NAMESPACE\
+        using WINTER_PREPEND_NAMESPACE(name);
+
+#ifdef WINTER_NAMESPACE
+    namespace WINTER_NAMESPACE { }
+#endif
+
+// *** Opaque pointer add-ons ***
+#define WINTER_DECLARE_PRIVATE_TEMPLATE(Class,T) \
+inline Class##Private<T>* d_func() { return reinterpret_cast<Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
+inline const Class##Private<T>* d_func() const { return reinterpret_cast<const Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
+friend class Class##Private<T>;
+
+#define WINTER_DECLARE_PUBLIC(Class,T) \
+inline Class<T>* q_func() { return static_cast<Class<T> *>(q_ptr); } \
+inline const Class<T>* q_func() const { return static_cast<const Class<T> *>(q_ptr); } \
+friend class Class<T>;
+
+#define WINTER_D_Q_TEMPLATE(Class,T) Class##Private<T> * const d = d_func()
+#define WINTER_Q_Q_TEMPLATE(Class,T) Class<T> * const q = q_func()
+
+
+// Nifty debugging macros.
+#define TRACE_MSG fprintf(stderr, __FUNCTION__     \
+"() [%s:%d] here I am\n", \
+__FILE__, __LINE__)
+
+#define WINTER_SINGLETON(Type) \
+private:\
+    static Type* __s_instance;\
+    Type();\
+\
+public:\
+        inline static Type* instance ( )\
+        {\
+            if (__s_instance == 0)\
+            {\
+                __s_instance = new Type;\
+                qDebug() << "[WINTER_SINGLETON()] Created singleton instance of " #Type << ".";\
+            }\
+\
+            return __s_instance;\
+        }\
+
+#define WINTER_SINGLETON_DEFINE(Type) Type* Type::__s_instance = 0;
+
+/**
+ * @def WINTER_DEPRECATED
+ * @ingroup WintermuteMacros
+ *
+ * The WINTER_DEPRECATED macro can be used to trigger compile-time warnings
+ * with newer compilers when deprecated functions are used.
+ *
+ * For non-inline functions, the macro gets inserted at front of the
+ * function declaration, right before the return type:
+ *
+ * \code
+ * WINTER_DEPRECATED void deprecatedFunctionA();
+ * WINTER_DEPRECATED int deprecatedFunctionB() const;
+ * \endcode
+ *
+ * For functions which are implemented inline,
+ * the WINTER_DEPRECATED macro is inserted at the front, right before the return
+ * type, but after "static", "inline" or "virtual":
+ *
+ * \code
+ * WINTER_DEPRECATED void deprecatedInlineFunctionA() { .. }
+ * virtual WINTER_DEPRECATED int deprecatedInlineFunctionB() { .. }
+ * static WINTER_DEPRECATED bool deprecatedInlineFunctionC() { .. }
+ * inline WINTER_DEPRECATED bool deprecatedInlineFunctionD() { .. }
+ * \endcode
+ *
+ * You can also mark whole structs or classes as deprecated, by inserting the
+ * WINTER_DEPRECATED macro after the struct/class keyword, but before the
+ * name of the struct/class:
+ *
+ * \code
+ * class WINTER_DEPRECATED DeprecatedClass { };
+ * struct WINTER_DEPRECATED DeprecatedStruct { };
+ * \endcode
+ *
+ * \note
+ * WINTER_DEPRECATED cannot be used for constructors,
+ * use WINTER_CONSTRUCTOR_DEPRECATED instead.
+ */
+
+#ifdef WINTER_WARNINGS_DEPRECATED
+# ifndef WINTER_DEPRECATED
+#  define WINTER_DEPRECATED Q_DECL_DEPRECATED
+# endif
+
+# ifdef __GNUC__
+#  if __GNUC__ == 3 && __GNUC_MINOR__ <= 3
+#   define WINTER_CONSTRUCTOR_DEPRECATED
+#  else
+#   define WINTER_CONSTRUCTOR_DEPRECATED Q_DECL_CONSTRUCTOR_DEPRECATED
+#  endif
+# else
+#  define WINTER_CONSTRUCTOR_DEPRECATED Q_DECL_CONSTRUCTOR_DEPRECATED
+# endif
+
+#else
+# undef WINTER_CONSTRUCTOR_DEPRECATED
+# undef WINTER_DEPRECATED
+#endif
+
+#define QT_DEPRECATED_WARNINGS WINTER_WARNINGS_DEPRECATED
+
+#endif // WINTERMUTE_GLOBAL_HPP
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
