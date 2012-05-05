@@ -18,11 +18,12 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <plugin.hpp>
-#include <pluginprivate.hpp>
-#include <shellplugin.hpp>
+#include "plugin.hpp"
+#include "pluginprivate.hpp"
+#include "shellplugin.hpp"
 
-using namespace Wintermute::Plugins;
+WINTER_USE_NAMESPACE
+
 ShellPlugin::ShellPlugin() : AbstractPlugin()
 {
 }

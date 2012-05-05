@@ -18,13 +18,16 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef WINTERMUTE_SHELLPLUGIN_H_
-#define WINTERMUTE_SHELLPLUGIN_H_
+#ifndef WINTERMUTE_SHELLPLUGIN_HPP
+#define WINTERMUTE_SHELLPLUGIN_HPP
 
-namespace Wintermute
-{
-namespace Plugins
-{
+#include <global.hpp>
+#include <plugin.hpp>
+
+WINTER_FORWARD_DECLARE_CLASS(Factory)
+
+WINTER_BEGIN_NAMESPACE
+
 /**
  * @brief A helper class for plug-ins.
  * Shell plug-ins allows the Factory to learn about a plug-in configuration
@@ -43,12 +46,11 @@ public:
     virtual ~ShellPlugin();
 
 private:
-    virtual void start () const { }
-    virtual void stop () const { }
+    virtual inline void start () const { }
+    virtual inline void stop () const { }
 };
 
-}
-}
+WINTER_END_NAMESPACE
 
 #endif
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
