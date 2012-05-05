@@ -16,3 +16,10 @@ in a collaborative manner.
   * Allow detection of already installed plug-ins using find_package()
     - Should allow plug-ins to resolve build dependencies.
 * Decouple the use of QApplication and make Wintermute not rely on X.
+* Allow plug-ins to run as a stand-alone to Wintermute.
+ * Allow said plug-ins to reconnect with Wintermute.
+* Work on abstracting the IPC control of Wintermute.
+ - Could implement a custom language to do procedural calls.
+ - With that, you could implement IPC for different platforms (Windows, Mac OS X, Linux).
+ - Implementing a language as such could allow for REST API communications to Wintermute.
+ - This could allow Wintermute instances to run in a cluster at top speed.
