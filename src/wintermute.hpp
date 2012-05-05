@@ -39,17 +39,18 @@
  * - Visit the <a href="http://www.thesii.org/wiki">Synthetic Intellect Institute</a>'s Wiki page for Wintermute!
  */
 
-#ifndef WINTERMUTE_META_HPP
-#define WINTERMUTE_META_HPP
+#ifndef WINTERMUTE_HPP
+#define WINTERMUTE_HPP
 
-// Let's pull everything in one giant header.
-#include "config.hpp"
+#include "global.hpp"
 #include "core.hpp"
 #include "ipc.hpp"
 #include "backend.hpp"
 #include "adaptors.hpp"
 #include "factory.hpp"
-#include "plugins.hpp"
+#include "plugin.hpp"
+#include "pluginhandle.hpp"
+#include "logging.hpp"
 
-#endif /* WINTERMUTE_META_HPP */
+#endif /* WINTERMUTE_HPP_ */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
