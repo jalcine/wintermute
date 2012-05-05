@@ -24,33 +24,31 @@
  * @date 04/22/12 5:42:03 AM
  */
 
-#ifndef WINTER_IPC_HPP
-#define WINTER_IPC_HPP
+#ifndef WINTERMUTE_IPC_HPP
+#define WINTERMUTE_IPC_HPP
 
 #define WINTER_COMMAND_LINE_IPC         "ipc"
 #define WINTER_COMMAND_LINE_IPC_CORE    "root"
 #define WINTER_COMMAND_LINE_IPC_PLUGIN  "plugin"
 
-#include <QtDBus/QDBusInterface>
 #include <QVariantMap>
-#include <config.hpp>
-#include <adaptors.hpp>
+#include <global.hpp>
 
-namespace Wintermute
-{
-namespace Plugins
-{
-struct Factory;    //forward class decl;
-}
-namespace IPC
-{
+class QDBusAbstractAdaptor;
+class QDBusConnection;
+
+WINTER_FORWARD_DECLARE_CLASS(Core)
+WINTER_FORWARD_DECLARE_CLASS(AbstractAdaptor)
+WINTER_FORWARD_DECLARE_STRUCT(IPCPrivate)
+
+WINTER_BEGIN_NAMESPACE
 
 /**
  * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
  *
  * This class manages the inter process communication of Wintermute. It handles the
- * incoming and outcoming requests of data, and allows Wintermute to fork off into
- * the approriate processes that represent it. Wintermute uses D-Bus to do the inter
+ * incoming and out-coming requests of data, and allows Wintermute to fork off into
+ * the appropriate processes that represent it. Wintermute uses D-Bus to do the inter
  * communications and also can manage external resource requests. This makes it possible
  * to extend Wintermute's public API to other applications or even languages that can
  * work with D-Bus.
@@ -61,9 +59,10 @@ namespace IPC
  * - <b>Master</b>: Represents the core module, or the master daemon that'll be a means
  * of regulating the sub processes.
  *
- * - <b>Plugin</b>: Represents the plugin module. Plug-ins are run in their process, allowing them
- * to take advantage of their own work, and prevents system failure if the plug-in happens to
- * crash.
+ * - <b>Plug-in</b>: Represents the plug-in module. Plug-ins are run in their process,
+ * allowing them to take advantage of their own work process, and prevents system failure
+ * if the plug-in happens to crash. Having a plug-in run in its own process also allows
+ * us to work reliably.
  *
  * @section N02 D-Bus
  *
@@ -78,19 +77,19 @@ namespace IPC
  *
  * Plug-ins each have their own D-Bus domain (since they're run in a sandbox; see @c PluginInstance).
  * The domain would be a subset of <b>org.thesii.Wintermute.Plugin-{PLUGIN_UUID}</b>. This allow remote access
- * of plug-ins from processes and remoting loading of plug-ins whenever needed. Plug-ins domains
+ * of plug-ins from processes and remote loading of plug-ins whenever needed. Plug-ins domains
  * are able to run certain exposed parts of a plug-in by using the <b>invoke()</b> method (see @c PluginBase)
  * and thus allowing a dynamic API based on plug-ins for Wintermute.
  *
  * @see CoreAdaptor, PluginBase, PluginInstance, Factory
- * @class System ipc.hpp "src/ipc.hpp"
  */
-class System : public QObject
+class IPC : public QObject
 {
-    friend class Plugins::Factory;
     Q_OBJECT
-    Q_CLASSINFO ("objectName", "IPC Singelton")
-    Q_DISABLE_COPY (System)
+    Q_DISABLE_COPY (IPC)
+    Q_DECLARE_PRIVATE(IPC)
+    WINTER_SINGLETON (IPC)
+    friend class Core;
 
 signals:
     /**
@@ -117,9 +116,7 @@ public:
      * @brief Obtains the current module.
      * @return The name of the running module.
      */
-    static inline const QString module() {
-        return instance()->m_appMod;
-    }
+    static const QString module();
 
     /**
      * @brief Obtains the currently running bus.
@@ -133,26 +130,23 @@ public:
      */
     static AbstractAdaptor* adaptor();
 
+    static void setAdaptor(AbstractAdaptor* p_adaptor);
+
     /**
      * @brief Registers an Adaptor onto the current D-Bus bus.
      * @fn registerObject
      * @param QString The name of the Adaptor.
      * @param Adaptor* The Adaptor to be added.
      */
-    static bool registerObject (const QString&, QDBusAbstractAdaptor*);
-
-    static System* instance();
+    static bool registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor);
 
 private:
-    System (QObject* = 0);
-    ~System();
-    QString m_appMod;
-    QDBusConnection* m_cnntn;
-    AbstractAdaptor* m_adapt;
-    static System* s_inst;
+    virtual ~IPC();
+    static void handleExit();
+    QScopedPointer<IPCPrivate> d_ptr;
 };
-} // namespaces
-}
+
+WINTER_END_NAMESPACE
 
 #endif /* IPC_HPP */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

@@ -24,61 +24,81 @@
  * @date 04/22/12 5:41:48 AM
  */
 
-#include <QtDBus>
+#include <QApplication>
 #include <QProcess>
-#include "ipc.hpp"
-#include "core.hpp"
-#include "config.hpp"
-#include "adaptors.hpp"
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDBusAbstractAdaptor>
+
+#include "global.hpp"
 #include "factory.hpp"
+#include "adaptors.hpp"
+#include "core.hpp"
+#include "ipc.hpp"
+#include "ipcprivate.hpp"
 
-namespace Wintermute
+WINTER_USE_NAMESPACE
+WINTER_SINGLETON_DEFINE (IPC)
+
+IPCPrivate::IPCPrivate (IPC* p_qPtr) : q_ptr (p_qPtr), connection (0), adaptor (0)
 {
-namespace IPC
+
+}
+
+IPCPrivate::~IPCPrivate()
 {
-System* System::s_inst = new System;
+    adaptor->deleteLater();
+    connection->disconnectFromPeer ("Wintermute");
+    connection->disconnectFromBus ("Wintermute");
+}
 
-System::System (QObject* p_obj) : QObject (p_obj) { }
-
-System::~System() { }
-
-void System::start()
+IPC::IPC() : QObject (qApp->instance()), d_ptr (new IPCPrivate (this))
 {
-    instance()->m_cnntn = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
-    instance()->m_appMod = Core::arguments().value (WINTER_COMMAND_LINE_IPC).toString().toLower();
+
+}
+
+const QString IPC::module()
+{
+    return Core::arguments().value (WINTER_COMMAND_LINE_IPC).toString().toLower();
+}
+
+void IPC::start()
+{
+    instance()->d_func()->connection = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
     bool serviceRegistered = false;
     const QString plgn = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
     QString serviceName = WINTER_DBUS_SERVICE_NAME;
     QString objectName;
-    qDebug() << "(core) [IPC::System]" << "Mode:" << instance()->m_appMod;
 
-    if (instance()->m_appMod == WINTER_COMMAND_LINE_IPC_CORE) {
+    qDebug() << "(core) [IPC::start()]" << "Wintermute's operating in" << module() << "mode.";
+
+    if (module() == WINTER_COMMAND_LINE_IPC_CORE) {
         objectName = "master";
-        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (startup()));
-        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (shutdown()));
+        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (startup()));
+        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (shutdown()));
 
         CoreAdaptor* coreAdaptor = new CoreAdaptor;
-        Plugins::PluginFactoryAdaptor* pluginFactoryAdaptor = new Plugins::PluginFactoryAdaptor;
+        FactoryAdaptor* pluginFactoryAdaptor = new FactoryAdaptor;
 
-        registerObject ("/Master", coreAdaptor);
-        registerObject ("/Factory", pluginFactoryAdaptor);
-        instance()->m_adapt = coreAdaptor;
+        registerObject (WINTER_DBUS_MASTER_OBJNAME, coreAdaptor);
+        registerObject (WINTER_DBUS_FACTORY_OBJNAME, pluginFactoryAdaptor);
+        instance()->d_func()->adaptor = coreAdaptor;
     }
-    else if (instance()->m_appMod == WINTER_COMMAND_LINE_IPC_PLUGIN) {
+    else if (module() == WINTER_COMMAND_LINE_IPC_PLUGIN) {
         objectName = "Plugin." + plgn;
-        connect (Core::instance(), SIGNAL (started()), Plugins::Factory::instance(), SLOT (loadStandardPlugin()));
-        connect (Core::instance(), SIGNAL (stopped()), Plugins::Factory::instance(), SLOT (unloadStandardPlugin()));
+        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (loadStandardPlugin()));
+        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (unloadStandardPlugin()));
     }
 
     if (objectName != "master") serviceName += "." + objectName;
 
-    if (instance()->m_cnntn->registerService (serviceName))
+    if (bus()->registerService (serviceName))
         serviceRegistered = true;
 
     if (!serviceRegistered && objectName == "master") {
         qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << serviceName << ")"
                  << "under the same user on the same computer";
-        Core::exit (1);
+        Core::exit (WINTER_EXITCODE_DBUS_MULTIPLEINSTANCE);
     }
 
     if (serviceRegistered)
@@ -87,8 +107,7 @@ void System::start()
     emit instance()->registerDataTypes();
 }
 
-/// @todo Find a way to expose adaptors _properly_ over D-Bus.
-bool System::registerObject (const QString& p_pth, QDBusAbstractAdaptor* p_obj)
+bool IPC::registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor)
 {
     QDBusConnection::RegisterOptions opts = QDBusConnection::ExportAllContents
                                             | QDBusConnection::ExportAllSignals
@@ -98,38 +117,57 @@ bool System::registerObject (const QString& p_pth, QDBusAbstractAdaptor* p_obj)
                                             | QDBusConnection::ExportChildObjects
                                             | QDBusConnection::ExportAdaptors;
 
-    if (instance()->m_cnntn->objectRegisteredAt (p_pth)) {
-        qDebug() << "(core) [D-Bus] Object" << p_pth << "already registered on" << instance()->m_cnntn->interface ()->service ();
+    if (bus()->objectRegisteredAt (p_path)) {
+        qDebug() << "(core) [D-Bus] Object" << p_path << "already registered on" << bus()->interface ()->service ();
         return false;
     }
     else {
-        qDebug() << "(core) [D-Bus] Registered" << p_pth << "on" << instance()->m_cnntn->interface ()->connection().name() << "with" << p_obj->metaObject()->className() << ".";
-        return instance()->m_cnntn->registerObject (p_pth , p_obj, opts);
+        qDebug() << "(core) [D-Bus] Registered" << p_path << "on"
+                 << bus()->interface ()->connection().name() << "with"
+                 << p_adaptor->metaObject()->className() << ".";
+        return bus()->registerObject (p_path , p_adaptor, opts);
     }
 
     return false;
 }
 
-void System::stop ()
+void IPC::stop ()
 {
-    instance()->m_cnntn->disconnectFromBus (instance()->m_cnntn->name());
+    bus()->disconnectFromBus (bus()->name());
 }
 
-QDBusConnection* System::bus()
+QDBusConnection* IPC::bus()
 {
-    return instance()->m_cnntn;
+    return instance()->d_func()->connection;
 }
 
-AbstractAdaptor* System::adaptor ()
+AbstractAdaptor* IPC::adaptor ()
 {
-    return instance()->m_adapt;
+    return instance()->d_func()->adaptor;
 }
 
-System* System::instance()
+void IPC::setAdaptor (AbstractAdaptor* p_adaptor)
 {
-    return s_inst;
+    if (instance()->d_func()->adaptor == 0) {
+        instance()->d_func()->adaptor = p_adaptor;
+    }
 }
+
+void IPC::handleExit()
+{
+    if ( (module () != "master" && Core::arguments ().value ("help") == "ignore")) {
+        qDebug() << "(core) [" << module () << "] Closing root appplication...";
+        QDBusMessage msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit");
+        QDBusMessage reply = bus ()->call (msg, QDBus::Block);
+
+        if (reply.type () == QDBusMessage::ErrorMessage)
+            qDebug() << "(core) [" << module () << "] Can't terminate master module of Wintermute:" << reply.errorName();
+    }
 }
+
+IPC::~IPC()
+{
+    d_ptr.reset();
 }
 
 #include "ipc.moc"
