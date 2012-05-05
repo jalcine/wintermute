@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 2.8)
 ## Modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+## Options for Wintermute's build.
+option(WINTER_DEPRECATED_WARNINGS "Should Wintermute report warnings about deprecated methods?" ON)
+
 ## Packages
 find_package(PackageKitQt2 REQUIRED)
 find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
