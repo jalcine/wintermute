@@ -26,21 +26,23 @@
  * @date 05/02/12 2:02:28 PM
  */
 
-#ifndef WINTERMUTE_FACTORY_HPP_
-#define WINTERMUTE_FACTORY_HPP_
+#ifndef WINTERMUTE_FACTORY_HPP
+#define WINTERMUTE_FACTORY_HPP
 
-#define WINTER_COMMAND_LINE_FACTORY     "plugin"
+#define WINTER_COMMAND_LINE_FACTORY        "plugin"
+#define WINTER_COMMAND_LINE_FACTORY_DAEMON "daemon"
 
 #include <global.hpp>
 #include <plugin.hpp>
 #include <pluginhandle.hpp>
 
-namespace Wintermute
-{
-namespace Plugins
-{
+WINTER_FORWARD_DECLARE_STRUCT(FactoryPrivate)
+WINTER_FORWARD_DECLARE_STRUCT(AbstractPluginPrivate)
 
-struct FactoryPrivate;
+WINTER_BEGIN_NAMESPACE
+
+class Factory;
+
 /**
  * @brief Provides factory management of plug-ins.
  *
@@ -52,13 +54,14 @@ struct FactoryPrivate;
  * @class Factory plugins.hpp "include/wintermute/plugins.hpp"
  * @see AbstractPlugin
  */
-class WNTR_EXPORT Factory : public QObject
+class WINTER_EXPORT Factory : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY (Factory)
     Q_DECLARE_PRIVATE (Factory)
     WINTER_SINGLETON (Factory)
     friend class AbstractPluginPrivate;
+    QScopedPointer<FactoryPrivate> d_ptr;
 
 signals:
     /**
@@ -154,9 +157,6 @@ protected:
      */
     static bool loadBackendPlugin (const QString& p_uuid);
 
-private:
-    QScopedPointer<FactoryPrivate> d_ptr;
-
 private slots:
     /**
      * @brief Loads the plug-in defined to be executed from the command-line.
@@ -175,25 +175,24 @@ private slots:
      * @fn doPluginLoad
      * @param string The UUID of the plug-in.
      */
-    static void doPluginLoad (const QString&);
+    static void doPluginLoad (const QString& p_uuid);
 
     /**
      * @brief Represents the notifying of a plug-in's unloading from the plug-in pool.
      * @fn doPluginUnload
      * @param string The UUID of the plug-in.
      */
-    static void doPluginUnload (const QString&);
+    static void doPluginUnload (const QString& p_uuid);
 
     /**
      * @brief Represents the notifying of a plug-in's crash.
      * @fn doPluginCrash
      * @param string The UUID of the plug-in.
      */
-    static void doPluginCrash (const QString&);
+    static void doPluginCrash (const QString& p_uuid);
 };
 
-} // namespaces
-}
+WINTER_END_NAMESPACE
 
 #endif // _FACTORY_HPP_
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

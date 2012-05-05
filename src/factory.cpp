@@ -22,21 +22,21 @@
  */
 
 #include <QApplication>
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QDebug>
 #include <QDir>
 
-#include <core.hpp>
-#include <adaptors.hpp>
-#include <plugin.hpp>
-#include <ipc.hpp>
-#include <factoryprivate.hpp>
-#include <shellplugin.hpp>
-#include <pluginprivate.hpp>
-#include <factory.hpp>
+#include "core.hpp"
+#include "adaptors.hpp"
+#include "ipc.hpp"
+#include "shellplugin.hpp"
+#include "plugin.hpp"
+#include "pluginprivate.hpp"
+#include "factoryprivate.hpp"
+#include "factory.hpp"
 
-using namespace Wintermute;
-using namespace Wintermute::Plugins;
-
+WINTER_USE_NAMESPACE
 WINTER_SINGLETON_DEFINE (Factory)
 
 Factory::Factory() : QObject (Core::instance()), d_ptr (new FactoryPrivate)
@@ -45,44 +45,44 @@ Factory::Factory() : QObject (Core::instance()), d_ptr (new FactoryPrivate)
 
 void Factory::startup()
 {
-    const bool isDaemon = Core::arguments().value ("daemon").toBool();
+    const bool isDaemon = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY_DAEMON).toBool();
 
     if (!isDaemon) {
         qDebug() << "(core) [Factory] Starting up...";
         QSettings* settings = new QSettings ("Synthetic Intellect Institute", "Wintermute");
-        const QVariant vrtAutoStartPlugins = settings->value ("Plugins/AutoStart");
+        const QVariant autoStartPlugins = settings->value ("Plugins/AutoStart");
 
-        if (vrtAutoStartPlugins.isValid()) {
-            QStringList autoPluginList = vrtAutoStartPlugins.toStringList();
+        if (autoStartPlugins.isValid()) {
+            QStringList autoPluginList = autoStartPlugins.toStringList();
 
             if (!autoPluginList.isEmpty()) {
-                foreach (QString plgnUuid, autoPluginList) {
+                Q_FOREACH (QString uuid, autoPluginList) {
                     bool isDisabled = false;
 
-                    if (plgnUuid.at (0) == QString ("*").at (0)) {
-                        plgnUuid.remove ("*");
+                    if (uuid.startsWith ("*")) {
+                        uuid.remove ("*");
                         isDisabled = true;
                     }
 
-                    QSettings* pluginSettings = Factory::getPluginSettings (plgnUuid);
+                    QSettings* pluginSettings = Factory::getPluginSettings (uuid);
 
                     if (!pluginSettings) {
-                        qWarning() << "Settings of plug-in with UUID" << plgnUuid
+                        qWarning() << "Settings of plug-in with UUID" << uuid
                                    << "are not accessible." << "Setting Description/Name field to UUID.";
-                        Factory::setAttribute (plgnUuid, "Description/Name", QVariant (plgnUuid));
+                        Factory::setAttribute (uuid, "Description/Name", QVariant (uuid));
                         isDisabled = true;
                     }
 
                     if (isDisabled) {
                         qDebug() << "(core) [Factory] Plugin"
-                                 << Factory::attribute (plgnUuid, "Description/Name").toString()
+                                 << Factory::attribute (uuid, "Description/Name").toString()
                                  << "disabled for start-up.";
                     }
                     else {
                         qDebug() << "(core) [Factory] Obtaining plugin"
-                                 << Factory::attribute (plgnUuid, "Description/Name").toString()
+                                 << Factory::attribute (uuid, "Description/Name").toString()
                                  << "...";
-                        Factory::loadPlugin (plgnUuid);
+                        Factory::loadPlugin (uuid);
                     }
                 }
             }
@@ -108,7 +108,7 @@ void Factory::startup()
 
 AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
 {
-    if (IPC::System::module () == "plugin") {
+    if (IPC::module () == WINTER_COMMAND_LINE_IPC_PLUGIN) {
         AbstractPlugin* plgnBase = 0;
 
         // Is the plug-in enabled?
@@ -131,8 +131,8 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
         if (!gnrcPlgn->loadLibrary()) {
             qWarning() << "(plugin) [Factory] Error loading plug-in" << gnrcPlgn->name();
 
-            if (gnrcPlgn->d_func()->m_plgnLdr)
-                qDebug() << "(plugin) [Factory] Library loading error: " << gnrcPlgn->d_func()->m_plgnLdr->errorString();
+            if (gnrcPlgn->d_func()->pluginLoader)
+                qDebug() << "(plugin) [Factory] Library loading error: " << gnrcPlgn->d_func()->pluginLoader->errorString();
 
             emit Factory::instance()->pluginCrashed (p_uuid);
             return 0;
@@ -141,10 +141,10 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
         plgnBase = gnrcPlgn->obtainInstance();
 
         if (plgnBase) {
-            plgnBase->d_func()->m_plgnLdr = gnrcPlgn->d_func()->m_plgnLdr;
+            plgnBase->d_func()->pluginLoader = gnrcPlgn->d_func()->pluginLoader;
             plgnBase->d_func()->loadSettings (p_uuid);
             plgnBase->d_func()->doStart();
-            instance()->d_func()->s_rtPlgn = plgnBase;
+            instance()->d_func()->rootPlugin = plgnBase;
             emit Factory::instance ()->pluginLoaded (plgnBase->uuid ());
             qDebug() << "(plugin) [Factory] Plug-in" << plgnBase->name () << "loaded.";
             return plgnBase;
@@ -157,7 +157,7 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
     else {
         qDebug() << "(core) [Factory] Inserting plug-in" << p_uuid << "into the pool.";
         PluginHandle* inst = new PluginHandle (p_uuid, Factory::getPluginSettings (p_uuid));
-        instance()->d_func()->m_plgnPool.insert (p_uuid, inst);
+        instance()->d_func()->pool.insert (p_uuid, inst);
     }
 
     return 0;
@@ -167,7 +167,7 @@ QStringList Factory::loadedPlugins ()
 {
     QStringList uuids;
 
-    foreach (PluginHandle * instance, instance()->d_func()->m_plgnPool) {
+    foreach (PluginHandle * instance, instance()->d_func()->pool) {
         uuids << instance->uuid();
     }
 
@@ -188,7 +188,7 @@ void Factory::unloadPlugin (const QString& p_uuid)
     doPluginUnload (p_uuid);
 
     //qDebug() << Factory::PluginHandle ()->m_plgnPool.count ();
-    if (instance()->d_func()->m_plgnPool.count () == 0) {
+    if (instance()->d_func()->pool.count () == 0) {
         qWarning() << "(core) [Factory] No plug-ins running; exitting..";
         Core::quit();
     }
@@ -200,12 +200,12 @@ void Factory::loadStandardPlugin()
 
     qDebug() << "(core) [Factory] Generating plug-in" << Factory::attribute (plgnUuid, "Description/Name").toString() << "UUID:" << plgnUuid << "...";
 
-    instance()->d_func()->s_rtPlgn = loadPlugin (plgnUuid);
+    instance()->d_func()->rootPlugin = loadPlugin (plgnUuid);
 
-    if (instance()->d_func()->s_rtPlgn) {
-        PluginHandleAdaptor* adpt = new PluginHandleAdaptor (instance()->d_func()->s_rtPlgn);
-        IPC::System::registerObject ("/Plugin", adpt);
-        IPC::System::instance()->m_adapt = adpt;
+    if (instance()->d_func()->rootPlugin) {
+        PluginAdaptor* adpt = new PluginAdaptor (instance()->d_func()->rootPlugin);
+        IPC::registerObject ("/Plugin", adpt);
+        IPC::setAdaptor(adpt);
     }
     else {
         qDebug() << "(core) [Factory] Unable to load standard plug-in; exiting.";
@@ -215,8 +215,8 @@ void Factory::loadStandardPlugin()
 
 AbstractPlugin* Factory::currentPlugin()
 {
-    if (IPC::System::module() == "plugin")
-        return instance()->d_func()->s_rtPlgn;
+    if (IPC::module() == "plugin")
+        return instance()->d_func()->rootPlugin;
     else {
         qWarning() << "(core) [Factory] This isn't a plug-in PluginHandle; can't find the current plug-in!";
         return 0;
@@ -230,28 +230,28 @@ void Factory::unloadStandardPlugin ()
     unloadPlugin (plgnUuid);
 }
 
-void Factory::doPluginCrash (const QString& p_plgnUuid)
+void Factory::doPluginCrash (const QString& p_uuid)
 {
-    qDebug() << "(core) [Factory] Plug-in" << p_plgnUuid << "crashed.";
-    doPluginUnload (p_plgnUuid);
-    emit instance()->pluginCrashed (p_plgnUuid);
+    qDebug() << "(core) [Factory] Plug-in" << p_uuid << "crashed.";
+    doPluginUnload (p_uuid);
+    emit instance()->pluginCrashed (p_uuid);
 }
 
-void Factory::doPluginLoad (const QString& p_plgName)
+void Factory::doPluginLoad (const QString& p_uuid)
 {
-    qDebug() << "(core) [Factory] Plug-in" << p_plgName << "fully loaded.";
-    emit instance()->pluginLoaded (p_plgName);
+    qDebug() << "(core) [Factory] Plug-in" << p_uuid << "fully loaded.";
+    emit instance()->pluginLoaded (p_uuid);
 }
 
-void Factory::doPluginUnload (const QString& p_plgnUuid)
+void Factory::doPluginUnload (const QString& p_uuid)
 {
-    if (loadedPlugins ().contains (p_plgnUuid)) {
-        PluginHandle* inst = instance()->d_func()->m_plgnPool.take (p_plgnUuid);
+    if (loadedPlugins ().contains (p_uuid)) {
+        PluginHandle* inst = instance()->d_func()->pool.take (p_uuid);
 
         if (inst) {
             inst->stop ();
-            emit instance()->pluginUnloaded (p_plgnUuid);
-            qDebug() << "(core) [Factory] Plug-in" << attribute (p_plgnUuid, "Description/Name").toString () << "unloaded.";
+            emit instance()->pluginUnloaded (p_uuid);
+            qDebug() << "(core) [Factory] Plug-in" << attribute (p_uuid, "Description/Name").toString () << "unloaded.";
         }
     }
 }
@@ -261,27 +261,27 @@ void Factory::shutdown ()
 {
     qDebug() << "(core) [Factory] Unloading plugins..";
 
-    foreach (PluginHandle * inst, instance()->d_func()->m_plgnPool) {
+    foreach (PluginHandle * inst, instance()->d_func()->pool) {
         unloadPlugin (inst->uuid ());
     }
 
     qDebug() << "(core) [Factory] Plugins unloaded.";
 }
 
-QSettings* Factory::getPluginSettings (const QString& p_plgnUuid)
+QSettings* Factory::getPluginSettings (const QString& p_uuid)
 {
-    const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_plgnUuid + ".spec";
+    const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_uuid + ".spec";
 
     if (!QFile::exists (plgnSpecPath)) {
         qWarning() << "(core) [Factory]" << plgnSpecPath << "does not exist.";
         QSettings* newSettings = new QSettings;
         newSettings->setValue ("Misc/HaveSpec", QVariant (false));
-        //Factory::pluginSettings.insert(p_plgnUuid, newSettings);
+        //Factory::pluginSettings.insert(p_uuid, newSettings);
         return NULL;
     }
 
     QSettings* newSettings = new QSettings (plgnSpecPath, QSettings::IniFormat, Factory::instance());
-    //Factory::pluginSettings.insert(p_plgnUuid, newSettings);
+    //Factory::pluginSettings.insert(p_uuid, newSettings);
     return newSettings;
 }
 
@@ -297,7 +297,7 @@ QVariant Factory::attribute (const QString& p_uuid, const QString& p_attributePa
 
 AbstractPlugin* Factory::obtainPlugin (const QString& p_uuid)
 {
-    QHash<const QString, AbstractPlugin*> table = instance()->d_func()->s_plgnLst;
+    QHash<const QString, AbstractPlugin*> table = instance()->d_func()->plugins;
 
     if (table.contains (p_uuid)) {
         return table.value (p_uuid);

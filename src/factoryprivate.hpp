@@ -21,21 +21,19 @@
 #define WINTERMUTE_FACTORY_HXX_
 
 #include <QHash>
+#include <global.hpp>
 
-namespace Wintermute
-{
-namespace Plugins
-{
-
-class PluginHandle;
+WINTER_FORWARD_DECLARE_CLASS(PluginHandle)
+WINTER_FORWARD_DECLARE_CLASS(AbstractPlugin)
+WINTER_BEGIN_NAMESPACE
 
 struct FactoryPrivate {
-    AbstractPlugin* s_rtPlgn;
-    QHash<const QString, AbstractPlugin*> s_plgnLst;
-    QHash<const QString, PluginHandle*> m_plgnPool;
+    AbstractPlugin* rootPlugin;
+    QHash<const QString, AbstractPlugin*> plugins;
+    QHash<const QString, PluginHandle*> pool;
 };
-}
-}
+
+WINTER_END_NAMESPACE
 
 #endif
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
