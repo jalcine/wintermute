@@ -26,49 +26,49 @@
 #include <QObject>
 #include <QStringList>
 #include <QVariantMap>
-#include <QtDBus/QDBusAbstractAdaptor>
+#include <QDBusAbstractAdaptor>
+#include <global.hpp>
 
 class QTimer;
 class QSettings;
 class QDBusMessage;
 
-namespace Wintermute
-{
-namespace IPC
-{
-struct GenericAdaptorPrivate;
+WINTER_FORWARD_DECLARE_STRUCT(AbstractAdaptorPrivate)
+WINTER_FORWARD_DECLARE_CLASS(AbstractPlugin)
+
+WINTER_BEGIN_NAMESPACE
 
 /**
  * @brief The foundational adaptor for Wintermute's IPC.
  *
  * Wintermute uses D-Bus on Linux systems as its means of achieving a
  * stabilized layer of inter-process communication. In doing so, a foundational
- * and optimized base for said transactions are required. The GenericAdaptor
+ * and optimized base for said transactions are required. The AbstractAdaptor
  * serves as a base for communicating between multiple processes of Wintermute.
  *
  * @see Plugins::PluginFactoryAdaptor
  * @see Plugins::PluginPluginHandleAdaptor
  * @see CoreAdaptor
  */
-class GenericAdaptor : public QDBusAbstractAdaptor
+class AbstractAdaptor : public QDBusAbstractAdaptor
 {
     Q_OBJECT
     Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Adaptor")
 
 private:
-    QScopedPointer<GenericAdaptorPrivate> d_ptr;
+    QScopedPointer<AbstractAdaptorPrivate> d_ptr;
     Q_SLOT void doDetect();
 
 protected:
-    Q_DECLARE_PRIVATE(GenericAdaptor)
+    Q_DECLARE_PRIVATE(AbstractAdaptor)
 
 public:
     /**
      * @brief Default constructor.
-     * @fn GenericAdaptor
+     * @fn AbstractAdaptor
      * @param The QObject to set as this parent.
      */
-    explicit GenericAdaptor (QObject* p_parent = 0);
+    explicit AbstractAdaptor (QObject* p_parent = 0);
 
     /**
      * @brief Obtains the module's name.
@@ -107,13 +107,7 @@ signals:
 public slots:
     virtual void quit() const = 0;
 };
-}
 
-typedef IPC::GenericAdaptor AbstractAdaptor;
-
-namespace Plugins
-{
-struct AbstractPlugin;
 
 /**
  * @brief An adaptor representing the management work of the plug-in factory.
@@ -122,9 +116,9 @@ struct AbstractPlugin;
  * plug-ins loaded in Wintermute. It merely serves as a means of exposure
  * for the Factory interfacing class.
  *
- * @see Plugins::Factory
+ * @see Factory
  */
-class PluginFactoryAdaptor : public AbstractAdaptor
+class FactoryAdaptor : public AbstractAdaptor
 {
     Q_OBJECT
     Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Factory")
@@ -134,47 +128,45 @@ public:
      * @brief Default constructor.
      * @fn PluginFactoryAdaptor
      */
-    explicit PluginFactoryAdaptor();
+    explicit FactoryAdaptor();
 
 signals:
-    void pluginLoaded (const QString&) const;
-    void pluginUnloaded (const QString&) const;
-    void pluginCantLoad (const QString&) const;
-    void pluginCrashed (const QString&) const;
+    void pluginLoaded (const QString& p_uuid) const;
+    void pluginUnloaded (const QString& p_uuid) const;
+    void pluginCantLoad (const QString& p_uuid) const;
+    void pluginCrashed (const QString& p_uuid) const;
 
 public slots:
     virtual void quit() const;
-    void loadPlugin (const QString&);
-    void unloadPlugin (const QString&);
-    const QStringList allPlugins() const;
-    const QStringList loadedPlugins() const;
+    Q_INVOKABLE void loadPlugin (const QString& p_uuid);
+    Q_INVOKABLE void unloadPlugin (const QString& p_uuid);
+    Q_INVOKABLE QStringList allPlugins() const;
+    Q_INVOKABLE QStringList loadedPlugins() const;
 };
 
-class PluginHandleAdaptor : public AbstractAdaptor
+class PluginAdaptor : public AbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.PluginInstance")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Plugin")
 
 public:
-    explicit PluginHandleAdaptor (Plugins::AbstractPlugin*);
+    explicit PluginAdaptor (AbstractPlugin* p_plugin);
 
 signals:
-    void pluginLoaded (const QString&) const;
-    void pluginUnloaded (const QString&) const;
-    void pluginCantLoad (const QString&) const;
+    void pluginLoaded (const QString& p_uuid) const;
+    void pluginUnloaded (const QString& p_uuid) const;
+    void pluginCantLoad (const QString& p_uuid) const;
 
 public slots:
     virtual void quit() const;
-    virtual void loadBackend (const QString&);
+    virtual void loadBackend (const QString& p_uuid);
 };
-
-} // end namespace
 
 class CoreAdaptor : public AbstractAdaptor
 {
     Q_OBJECT
     Q_PROPERTY (const QVariantMap Arguments READ arguments)
-    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Master")
+    Q_CLASSINFO ("D-Bus Interface", "org.thesii.Wintermute.Core")
 
 public:
     explicit CoreAdaptor();
@@ -185,7 +177,8 @@ public slots:
     const QVariantMap arguments() const;
     Q_INVOKABLE Q_NOREPLY void ping (const QString&);
 };
-} // namespace
+
+WINTER_END_NAMESPACE
 
 #endif // WINTERMUTE_ADAPTORS_HPP
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

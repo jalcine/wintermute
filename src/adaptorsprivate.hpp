@@ -19,20 +19,20 @@
  */
 
 #include <QTimer>
-namespace Wintermute
-{
-namespace IPC
-{
-    class GenericAdaptor;
-struct GenericAdaptorPrivate {
-    Q_DECLARE_PUBLIC(GenericAdaptor)
-    GenericAdaptorPrivate(GenericAdaptor* p_qPtr);
-    virtual ~GenericAdaptorPrivate();
-    QTimer* m_tmr;
-    mutable bool m_core;
+#include <global.hpp>
+
+WINTER_BEGIN_NAMESPACE
+
+class AbstractAdaptor;
+struct AbstractAdaptorPrivate {
+    Q_DECLARE_PUBLIC (AbstractAdaptor)
+    AbstractAdaptorPrivate (AbstractAdaptor* p_qPtr);
+    virtual ~AbstractAdaptorPrivate();
+    QTimer* timer;
+    mutable bool isCore;
     void detect() const;
-    GenericAdaptor* q_ptr;
+    AbstractAdaptor* q_ptr;
 };
-}
-}
+
+WINTER_END_NAMESPACE
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
