@@ -28,21 +28,16 @@
 #include <QStringList>
 #include <QObject>
 
-namespace Wintermute
-{
-namespace Plugins
-{
-class AbstractPlugin;
-}
-namespace Backends
-{
-class AbstractFramework;
-class AbstractBackend;
+#include <global.hpp>
+
+WINTER_FORWARD_DECLARE_CLASS(AbstractFramework)
+WINTER_FORWARD_DECLARE_CLASS(AbstractBackend)
+WINTER_FORWARD_DECLARE_CLASS(AbstractPlugin)
+
+WINTER_BEGIN_NAMESPACE
 
 typedef QMap<QString, AbstractBackend*> BackendList;
 typedef QMap<QString, AbstractFramework*> FrameworkList;
-
-using Wintermute::Plugins::AbstractPlugin;
 
 class AbstractFramework : public QObject
 {
@@ -205,8 +200,7 @@ private:
     static BackendList s_lst;
 };
 
-} // namespaces
-}
+WINTER_END_NAMESPACE
 
 #endif
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

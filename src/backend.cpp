@@ -23,17 +23,14 @@
  * @author Jacky Alciné <jackyalcine@gmail.com>
  * @date 04/18/12 4:22:13 PM
  */
+
 #include <QDebug>
 #include "backend.hpp"
 #include "plugin.hpp"
 #include "factory.hpp"
 
-using namespace Wintermute::Plugins;
+WINTER_USE_NAMESPACE
 
-namespace Wintermute
-{
-namespace Backends
-{
 BackendList AbstractBackend::s_lst;
 FrameworkList AbstractFramework::s_frmk;
 
@@ -41,7 +38,7 @@ AbstractFramework::AbstractFramework (AbstractPlugin* p_plugin, QObject* p_paren
     m_bckndLst(), m_dfltBcknd(), m_plgn (p_plugin)
 {
     if (p_plugin == 0)
-        p_plugin = Plugins::Factory::currentPlugin();
+        p_plugin = Factory::currentPlugin();
 
     connect (m_plgn, SIGNAL (started()), this, SLOT (start()));
     connect (m_plgn, SIGNAL (stopped()), this, SLOT (stop()));
@@ -176,7 +173,7 @@ AbstractBackend::AbstractBackend (AbstractPlugin* p_plugin, QObject* p_prnt) : Q
     m_plgn (p_plugin)
 {
     if (p_plugin == 0)
-        p_plugin = Plugins::Factory::currentPlugin();
+        p_plugin = Factory::currentPlugin();
 
     if (AbstractBackend::s_lst.contains (m_plgn->uuid())) {
         qWarning() << "(core) [AbstractBackend] Plugin" << m_plgn->uuid() << "already registered.";
@@ -218,10 +215,8 @@ AbstractBackend::~AbstractBackend()
 {
     AbstractBackend::s_lst.remove (m_plgn->uuid());
 }
-}
-}
 
-QString Wintermute::Backends::AbstractBackend::id() const
+QString AbstractBackend::id() const
 {
     return m_id;
 }
