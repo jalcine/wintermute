@@ -21,7 +21,8 @@
  */
 
 #include "logging.hpp"
-#include "config.hpp"
+#include "global.hpp"
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
