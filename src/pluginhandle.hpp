@@ -24,23 +24,22 @@
  * @date 04/22/12 5:43:18 AM
  */
 
-#ifndef WINTER_PLUGINHANDLE_HPP
-#define WINTER_PLUGINHANDLE_HPP
+#ifndef WINTERMUTE_PLUGINHANDLE_HPP
+#define WINTERMUTE_PLUGINHANDLE_HPP
 
-#include <QString>
-#include <QSettings>
+#include <QObject>
 #include <QProcess>
+#include <QSettings>
 
-namespace Wintermute
-{
-namespace Plugins
-{
+#include <global.hpp>
 
-// Forward declarations
-class Factory;
+WINTER_FORWARD_DECLARE_CLASS(Factory)
+WINTER_FORWARD_DECLARE_STRUCT(PluginHandlePrivate)
+
+WINTER_BEGIN_NAMESPACE
 
 /**
- * @brief Provides the Factory with a controllable instnace of a plugin.
+ * @brief Provides the Factory with a controllable instance of a plugin.
  *
  * @see Factory, AbstractPlugin
  */
@@ -49,97 +48,38 @@ class PluginHandle : public QObject
     friend class Factory;
 
     Q_OBJECT
+    Q_DECLARE_PRIVATE(PluginHandle)
     Q_DISABLE_COPY (PluginHandle)
-    Q_PROPERTY (const bool Active READ isActive)
-    Q_PROPERTY (const QString Name READ name)
-
-private:
-    const QString m_uuid;
-    QProcess* m_prcss;
-    QSettings* m_settings;
+    Q_PROPERTY (bool Active READ isActive)
+    Q_PROPERTY (QString Name READ name)
+    QScopedPointer<PluginHandlePrivate> d_ptr;
 
 public:
-    /**
-     * @brief Null constructor.
-     */
-    PluginHandle();
-
-    /**
-     * @brief Destructor.
-     **/
+    explicit PluginHandle (const QString& p_uuid, QSettings* p_settings);
     virtual ~PluginHandle();
-
-    /**
-     * @brief Default constructor.
-     * @param p_uuid The UUID of the plug-in.
-     * @param p_stgs The QSettings of the plug-in.
-     */
-    explicit PluginHandle (const QString&, QSettings*);
-
-    /**
-     * @brief Determines if the plug-in's currently active.
-     */
-    bool isActive();
-
-    /**
-     * @brief Obtains the UUID of the captured plug-in.
-     */
-    QString uuid();
-
-    /**
-     * @brief Obtains the friendly name of the captured plug-in.
-     */
-    QString name();
-
-    /**
-     * @brief Obtains the representative QSettings of the plug-in.
-     */
-    QSettings* settings();
+    bool isActive() const;
+    QString uuid() const;
+    QString name() const;
+    QSettings* settings() const;
 
 signals:
-    /**
-     * @brief Emitted when the process of the plug-in experiences a crash.
-     * @fn crashed
-     */
-    void crashed();
-    void crashed (const QString&);
-
-    /**
-     * @brief Emitted when the process of the plug-in starts.
-     * @fn started
-     */
-    void started();
-    void started (const QString&);
-
-    /**
-     * @brief Emitted when the process of the plug-in stops.
-     * @fn stopped
-     */
-    void stopped();
-    void stopped (const QString&);
+    void crashed (const QString& p_uuid = QString::null);
+    void started (const QString& p_uuid = QString::null);
+    void stopped (const QString& p_uuid = QString::null);
 
 public slots:
-
-    /**
-     * @brief Halts the plug-in's process.
-     */
     void stop();
-
-    /**
-     * @brief Starts the plug-in's process.
-     */
     void start();
-    void on_process_readyReadStdOut();
-    void on_process_readyReadStdErr();
 
 private slots:
+    void on_process_readyReadStdOut();
+    void on_process_readyReadStdErr();
     void catchStart();
-    void catchError (const QProcess::ProcessError&);
+    void catchError (const QProcess::ProcessError& p_err) const;
     void catchExit (int, const QProcess::ExitStatus&);
 };
 
-} // namespaces
-}
+WINTER_END_NAMESPACE
 
 #endif // WINTER_PLUGINHANDLE_HPP
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

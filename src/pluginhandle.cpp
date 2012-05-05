@@ -24,40 +24,41 @@
  * @date 04/22/12 5:43:06 AM
  */
 
-#include <QApplication>
 #include <QDebug>
+#include <QApplication>
+
 #include "ipc.hpp"
-#include "pluginhandle.hpp"
 #include "factory.hpp"
+#include "pluginhandle.hpp"
+#include "pluginhandleprivate.hpp"
 
-// Namespaces
-using namespace Wintermute::Plugins;
+WINTER_USE_NAMESPACE
 
-PluginHandle::PluginHandle() : QObject (Factory::instance()),
-    m_uuid (QString::null),
-    m_prcss (NULL),
-    m_settings (NULL)
+PluginHandlePrivate::PluginHandlePrivate (PluginHandle* p_qPtr) : q_ptr (p_qPtr),
+    uuid(), process (0), settings (0)
 {
 
 }
 
-PluginHandle::PluginHandle (const PluginHandle& p_plgnInst) : QObject (p_plgnInst.parent()),
-    m_uuid (p_plgnInst.m_uuid),
-    m_prcss (p_plgnInst.m_prcss),
-    m_settings (p_plgnInst.m_settings)
+PluginHandlePrivate::~PluginHandlePrivate()
+{
+}
+
+PluginHandle::PluginHandle (const PluginHandle& p_other) : QObject (p_other.parent()),
+    d_ptr (p_other.d_ptr.data())
 {
 
 }
 
-PluginHandle::PluginHandle (const QString& p_plgnUuid, QSettings* p_settings) : QObject (Factory::instance()),
-    m_uuid (p_plgnUuid),
-    m_prcss (NULL),
-    m_settings (p_settings)
+PluginHandle::PluginHandle (const QString& p_uuid, QSettings* p_settings) : QObject (Factory::instance()),
+    d_ptr (new PluginHandlePrivate (this))
 {
-    connect (this, SIGNAL (destroyed (QObject*)), this, SLOT (stop()));
-    connect (this, SIGNAL (crashed (QString)), Factory::instance(), SLOT (doPluginCrash (QString)));
-    connect (this, SIGNAL (started (QString)), Factory::instance(), SLOT (doPluginLoad (QString)));
-    connect (this, SIGNAL (stopped (QString)), Factory::instance(), SLOT (doPluginUnload (QString)));
+    Q_D(PluginHandle);
+    d->uuid = p_uuid;
+    d->settings = p_settings;
+    QObject::connect (this, SIGNAL (crashed (QString)), Factory::instance(), SLOT (doPluginCrash (QString)));
+    QObject::connect (this, SIGNAL (started (QString)), Factory::instance(), SLOT (doPluginLoad (QString)));
+    QObject::connect (this, SIGNAL (stopped (QString)), Factory::instance(), SLOT (doPluginUnload (QString)));
     start();
 }
 
@@ -68,32 +69,38 @@ PluginHandle::~PluginHandle()
 
 void PluginHandle::stop()
 {
-    m_prcss->terminate();
-    m_prcss->close();
+    Q_D (PluginHandle);
+
+    if (d->process) {
+        d->process->terminate();
+        d->process->close();
+    }
 }
 
 void PluginHandle::start()
 {
-    if (!m_prcss) {
+    Q_D (PluginHandle);
+
+    if (!d->process) {
         QStringList args;
         args << "--" WINTER_COMMAND_LINE_IPC     << WINTER_COMMAND_LINE_IPC_PLUGIN
-             << "--" WINTER_COMMAND_LINE_FACTORY << m_uuid;
+             << "--" WINTER_COMMAND_LINE_FACTORY << d->uuid;
 
-        m_prcss = new QProcess (Factory::instance());
-        connect (m_prcss, SIGNAL (started()), this, SLOT (catchStart()));
-        connect (m_prcss, SIGNAL (error (QProcess::ProcessError)), this, SLOT (catchError (QProcess::ProcessError)));
-        connect (m_prcss, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (catchExit (int, QProcess::ExitStatus)));
-        connect (m_prcss, SIGNAL (readyReadStandardOutput()), this, SLOT (on_process_readyReadStdOut()));
-        connect (m_prcss, SIGNAL (readyReadStandardError()), this, SLOT (on_process_readyReadStdErr()));
+        d->process = new QProcess (Factory::instance());
+        QObject::connect (d->process, SIGNAL (started()), this, SLOT (catchStart()));
+        QObject::connect (d->process, SIGNAL (error (QProcess::ProcessError)), this, SLOT (catchError (QProcess::ProcessError)));
+        QObject::connect (d->process, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (catchExit (int, QProcess::ExitStatus)));
+        QObject::connect (d->process, SIGNAL (readyReadStandardOutput()), this, SLOT (on_process_readyReadStdOut()));
+        QObject::connect (d->process, SIGNAL (readyReadStandardError()), this, SLOT (on_process_readyReadStdErr()));
 
-        m_prcss->setProcessChannelMode (QProcess::SeparateChannels);
+        d->process->setProcessChannelMode (QProcess::SeparateChannels);
 
-        if (m_prcss->startDetached (QApplication::applicationFilePath(), args)) {
-            qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << m_uuid;
+        if (d->process->startDetached (QApplication::applicationFilePath(), args)) {
+            qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << d->uuid;
         }
     }
     else
-        qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has already started in pid" << m_prcss->pid();
+        qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has already started in pid" << d->process->pid();
 }
 
 void PluginHandle::on_process_readyReadStdErr()
@@ -106,24 +113,31 @@ void PluginHandle::on_process_readyReadStdOut()
 
 }
 
-bool PluginHandle::isActive()
+bool PluginHandle::isActive() const
 {
-    return (m_prcss != NULL && m_prcss->state() == QProcess::Running) && !m_uuid.isEmpty();
+    Q_D (const PluginHandle);
+    return (d->process && d->process->state() == QProcess::Running) && !d->uuid.isEmpty();
 }
 
-QSettings* PluginHandle::settings()
+QSettings* PluginHandle::settings() const
 {
-    return m_settings;
+    Q_D (const PluginHandle);
+    return d->settings;
 }
 
-QString PluginHandle::uuid()
+QString PluginHandle::uuid() const
 {
-    return m_uuid;
+    Q_D (const PluginHandle);
+    return d->uuid;
 }
 
-QString PluginHandle::name()
+QString PluginHandle::name() const
 {
-    return m_settings->value ("Description/Name").toString();
+    if (settings()) {
+        return settings()->value ("Description/Name").toString();
+    }
+
+    return QString::null;
 }
 
 void PluginHandle::catchExit (int p_exitCode, const QProcess::ExitStatus& p_exitStatus)
@@ -163,12 +177,14 @@ void PluginHandle::catchStart()
 }
 
 /// @todo Implement more efficient error-handling here (i.e.: what signal was sent, how it crashed, etc.).
-void PluginHandle::catchError (const QProcess::ProcessError& p_err)
+void PluginHandle::catchError (const QProcess::ProcessError& p_err) const
 {
+    Q_D (const PluginHandle);
+
     switch (p_err) {
     case QProcess::Crashed:
 
-        if (m_prcss->exitCode() != 0)
+        if (d->process->exitCode() != 0)
             qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has crashed.";
 
         break;
@@ -178,7 +194,7 @@ void PluginHandle::catchError (const QProcess::ProcessError& p_err)
         break;
 
     default:
-        qDebug() << m_prcss->errorString();
+        qDebug() << d->process->errorString();
         break;
     }
 }
