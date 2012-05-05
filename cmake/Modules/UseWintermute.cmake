@@ -1,5 +1,7 @@
 # Internal file for use of Wintermute. This file is included if you do
-# find_package(Wintermute).
+# find_package(Wintermute). This file automatically includes Qt's CMake
+# file (UseQt4.cmake) so you need only include this file as a convenience
+# wrapper.
 #
 
 #=============================================================================
@@ -15,6 +17,10 @@
 #  License text for the above reference.)
 
 include(WintermuteDefaults)
+if (NOT DEFINED QT4_FOUND)
+    include(FindQt4)
+    include("${QT_USE_FILE}")
+endif(NOT DEFINED QT4_FOUND)
 
 ##
 ## Prerequisites
@@ -30,6 +36,7 @@ if (PROJECT_LABEL STREQUAL "Wintermute")
     set(WINTER_CURRENT_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake")
 else(PROJECT_LABEL STREQUAL "Wintermute")
     set(WINTER_CURRENT_CMAKE_DIR "${WINTER_CMAKE_DIR}")
+    list(APPEND CMAKE_MODULE_PATH "${WINTER_CMAKE_DIR}")
 endif(PROJECT_LABEL STREQUAL "Wintermute")
 
 ##
@@ -42,7 +49,6 @@ endif(PROJECT_LABEL STREQUAL "Wintermute")
 ##       folder even if there's a top-level project uninstall target defined.
 ##
 if (NOT TARGET uninstall)
-    message("${WINTER_CURRENT_CMAKE_DIR}")
     set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_CURRENT_CMAKE_DIR}/cmake_uninstall.cmake.in")
 
     configure_file("${CMAKE_UNINSTALL_TEMPLATE}"

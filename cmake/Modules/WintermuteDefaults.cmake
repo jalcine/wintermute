@@ -1,3 +1,4 @@
+cmake_policy(SET CMP0017 NEW)
 # Provides some vital variables that are used by Wintermute.
 #
 #   WINTER_BUILD_TYPE
@@ -29,11 +30,12 @@ set(GENERIC_LIB_SOVERSION 0)
 set(WINTER_NON_GENERIC_LIB_VERSION 0.0.1)
 set(WINTER_NON_GENERIC_LIB_SOVERSION 1)
 
-set(WINTER_CMAKE_DIR                   "${CMAKE_ROOT}/Modules/Wintermute"             CACHE PATH "CMake directory for Wintermute.")
 set(WINTER_BIN_INSTALL_DIR             "${CMAKE_INSTALL_FULL_BINDIR}"                 CACHE PATH "Binary installation path.")
 set(WINTER_LIB_INSTALL_DIR             "${CMAKE_INSTALL_FULL_LIBDIR}"                 CACHE PATH "Library installation path.")
 set(WINTER_INCLUDE_INSTALL_DIR         "${CMAKE_INSTALL_FULL_INCLUDEDIR}/wintermute"  CACHE PATH "Header installation path.")
 set(WINTER_DATA_INSTALL_DIR            "${CMAKE_INSTALL_FULL_DATADIR}/wintermute"     CACHE PATH "Data installation path.")
+set(WINTER_CMAKE_DIR                   "${WINTER_DATA_INSTALL_DIR}/cmake"             CACHE PATH "CMake directory for Wintermute's data.")
+set(WINTER_CMAKE_DATA_DIR              "${WINTER_CMAKE_DIR}/data"                     CACHE PATH "Path to directory for CMake-related for Wintermute.")
 set(WINTER_PLUGIN_INSTALL_DIR          "${WINTER_LIB_INSTALL_DIR}/wintermute"         CACHE PATH "Plugin installation path.")
 set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR  "${WINTER_INCLUDE_INSTALL_DIR}/plugins"        CACHE PATH "Plugin header installation path.")
 set(WINTER_PLUGIN_DATA_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/plugins"           CACHE PATH "Plugin data installation path.")
@@ -48,6 +50,5 @@ set(WINTERMUTE_COMPILE_FLAGS       "-std=c++0x -Wabi -Wall -Wextra -ggdb -Wctor-
                                                                                       CACHE STRING "Compilation files to be used with Wintermute.")
 
 set(CMAKE_RECENT_MODULE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
-list(APPEND CMAKE_MODULE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/cmake"
-                             "${CMAKE_RECENT_MODULE_DIR}"
-                             "${CMAKE_ROOT}/Modules")
+
+list(APPEND CMAKE_MODULE_PATH ${WINTER_CMAKE_DIR})
