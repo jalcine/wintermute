@@ -20,13 +20,14 @@
 
 #include <QVariantMap>
 #include <QApplication>
+#include <global.hpp>
 
-class QApplication;
+WINTER_FORWARD_DECLARE_CLASS(Core)
 
-namespace Wintermute
-{
-class Core;
+WINTER_BEGIN_NAMESPACE
+
 struct CorePrivate {
+    Q_DECLARE_PUBLIC(Core)
     CorePrivate (Core* p_qPtr);
     ~CorePrivate();
     Core* q_ptr;            ///< The internal object that represents the core of Wintermute.
@@ -35,6 +36,22 @@ struct CorePrivate {
 
     void parseCommandLineArguments();
     void setDefaultArguments();
+    /**
+     * @brief Configures Wintermute's core.
+     *
+     * This method holds the instructions to set-up some imperative command line arguments.
+     * It then parses each argument and saves it to the global cache of arguments for other
+     * utilities to use.
+     *
+     * @fn Configure
+     * @param p_argc The command line argument passed representing the number of given arguments.
+     * @param p_argv The command line argument passed representing the value of each argument.
+     * @see Wintermute::Core::Initialize()
+     */
+    void configure (int& p_argc, char** p_argv);
+
 };
-}
+
+WINTER_END_NAMESPACE
+
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

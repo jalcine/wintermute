@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include <QtDebug>
+#include <QStringList>
 #include <QSettings>
 #include <QDateTime>
 #include <QVariantMap>
@@ -33,13 +34,15 @@
 #include <QVariantMap>
 
 #include "ipc.hpp"
-#include "config.hpp"
+#include "global.hpp"
 #include "coreprivate.hpp"
 #include "core.hpp"
+#include "factory.hpp"
 
 using std::cout;
 using std::endl;
-using namespace Wintermute;
+
+WINTER_USE_NAMESPACE
 
 WINTER_SINGLETON_DEFINE (Core)
 
@@ -48,8 +51,24 @@ CorePrivate::CorePrivate (Core* p_qPtr) : q_ptr (p_qPtr), app (0), args()
     setDefaultArguments();
 }
 
-void CorePrivate::setDefaultArguments() {
-    args.insert(WINTER_COMMAND_LINE_IPC,"root");
+void CorePrivate::configure (int& p_argc, char** p_argv)
+{
+    Q_Q(Core);
+    app = new QApplication (p_argc, p_argv);
+    app->setApplicationName ("Wintermute");
+    app->setApplicationVersion (QString::number (WINTER_VERSION));
+    app->setOrganizationDomain ("thesii.org");
+    app->setOrganizationName ("Synthetic Intellect Institute");
+    q->connect (app, SIGNAL (aboutToQuit()), q, SLOT (stop()));
+    q->setParent (app);
+
+    parseCommandLineArguments();
+}
+
+void CorePrivate::setDefaultArguments()
+{
+    args.insert (WINTER_COMMAND_LINE_IPC, "root");
+    args.insert (WINTER_COMMAND_LINE_FACTORY_DAEMON, true);
 }
 
 void CorePrivate::parseCommandLineArguments()
@@ -76,9 +95,9 @@ void CorePrivate::parseCommandLineArguments()
             argumentName = QString (argument).replace ("-", "");
 
             if (hasArgumentValue) {
-                QStringList kargs = argumentName.split ("=", QString::KeepEmptyParts);
-                argumentName = kargs.first();
-                argumentValue = kargs.last();
+                QStringList comps = argumentName.split ("=", QString::KeepEmptyParts);
+                argumentName = comps.first();
+                argumentValue = comps.last();
                 resultingArgs.insert (argumentName, argumentValue);
                 argumentName = QString::null;
                 argumentValue = QVariant();
@@ -97,7 +116,7 @@ void CorePrivate::parseCommandLineArguments()
         }
     }
 
-    args.unite(resultingArgs);
+    args.unite (resultingArgs);
 }
 
 CorePrivate::~CorePrivate()
@@ -105,34 +124,15 @@ CorePrivate::~CorePrivate()
 
 }
 
-Core::Core() : QObject (qApp->instance()), d_ptr (new CorePrivate (this))
+Core::Core() : QObject (0), d_ptr (new CorePrivate (this))
 {
 
 }
 
-Core::Core (int& p_argc, char** p_argv) : QObject (qApp->instance()),
-    d_ptr (new CorePrivate (this))
+void Core::boot (int& p_argc, char** p_argv)
 {
-    configure (p_argc, p_argv);
+    instance()->d_func()->configure (p_argc, p_argv);
     start();
-}
-
-void Core::configure (int& p_argc, char** p_argv)
-{
-    CorePrivate* d = instance()->d_func();
-    QString ipcMod = "master";
-    d->app = new QApplication (p_argc, p_argv);
-    d->app->setApplicationName ("Wintermute");
-    d->app->setApplicationVersion (QString::number (WINTER_VERSION));
-    d->app->setOrganizationDomain ("thesii.org");
-    d->app->setOrganizationName ("Synthetic Intellect Institute");
-    connect (d->app, SIGNAL (aboutToQuit()), instance(), SLOT (stop()));
-    instance()->setParent (d->app);
-
-    d->parseCommandLineArguments();
-
-    if (d->args.count (WINTER_COMMAND_LINE_IPC) != 0)
-        ipcMod = d->args.value (WINTER_COMMAND_LINE_IPC).toString();
 }
 
 QVariantMap Core::arguments()
@@ -153,9 +153,9 @@ void Core::start()
              << "Artificial intelligence for Common Man. (Licensed under the GPL3+)" << endl;
     }
 
-    IPC::System::start();
+    IPC::start();
 
-    if (IPC::System::module() == "master") {
+    if (IPC::module() == "master") {
         QSettings* settings = new QSettings ("Synthetic Intellect Institute", "Wintermute");
         QDateTime lstDate = settings->value ("Statistics/StartupDate", QDateTime::currentDateTime()).toDateTime();
         settings->setValue ("Statistics/StartupDate", QDateTime::currentDateTime());
@@ -168,32 +168,27 @@ void Core::start()
 
 void Core::exit (const int p_exitCode, const bool p_closeRootApplication)
 {
-    qDebug() << "(core) [" << IPC::System::module () << "] Exitting...";
+    qDebug() << "(core) [" << IPC::module () << "] Exitting Wintermute's main event loop...";
 
-    if ( (IPC::System::module () != "master" && arguments ().value ("help") == "ignore") && p_closeRootApplication) {
-        qDebug() << "(core) [" << IPC::System::module () << "] Closing root appplication...";
-        QDBusMessage msg = QDBusMessage::createMethodCall ("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit");
-        QDBusMessage reply = IPC::System::bus ()->call (msg, QDBus::Block);
-
-        if (reply.type () == QDBusMessage::ErrorMessage)
-            qDebug() << "(core) [" << IPC::System::module () << "] Can't terminate master module of Wintermute:" << reply.errorName();
+    if (p_closeRootApplication){
+        IPC::handleExit();
     }
 
-    qDebug() << "(core) [" << IPC::System::module () << "] Exitted.";
+    qDebug() << "(core) [" << IPC::module () << "] Exited Wintermute's main event loop'.";
     QApplication::exit (p_exitCode);
 }
 
 void Core::quit()
 {
-    Core::exit (0);
+    Core::exit (WINTER_EXITCODE_NORMAL);
 }
 
 void Core::stop ()
 {
-    qDebug() << "(core) [" << IPC::System::module() << "] Stopping...";
-    IPC::System::stop ();
+    qDebug() << "(core) [" << IPC::module() << "] Stopping Wintermute's core...";
+    IPC::stop ();
     emit instance()->stopped ();
-    qDebug() << "(core) [" << IPC::System::module() << "] Process stopped.";
+    qDebug() << "(core) [" << IPC::module() << "] Core of Wintermute stopped.";
 }
 
 #include "core.moc"

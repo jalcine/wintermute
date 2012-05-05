@@ -24,21 +24,19 @@
 #ifndef WINTERMUTE_CORE_HPP
 #define WINTERMUTE_CORE_HPP
 
-// Qt
 #include <QObject>
 #include <QVariantMap>
 
-// Local
 #include <global.hpp>
 #include <diagnoser.hpp>
 
 class QApplication;
 class QSocketNotifier;
 
-namespace Wintermute
-{
+WINTER_FORWARD_DECLARE_STRUCT(CorePrivate)
 
-struct CorePrivate;
+WINTER_BEGIN_NAMESPACE
+
 /**
  * @brief The central management class of Wintermute.
  *
@@ -60,19 +58,6 @@ class Core : public QObject
 public:
 
     /**
-     * @brief Default constructor.
-     *
-     * @attention This constructor should NEVER be used, it's called by the main()
-     * method of Wintermute, and needs never to be called again.
-     *
-     * @fn Core
-     * @param argc The command line argument passed representing the number of given arguments.
-     * @param argv The command line argument passed representing the value of each argument.
-     * @internal
-     */
-    explicit Core (int& p_argv, char** p_argc);
-
-    /**
      * @brief Obtains a pointer to the current arguments.
      *
      * This map contains a normalized list of the arguments that were passed on the
@@ -85,6 +70,19 @@ public:
      * @fn arguments
      */
     static QVariantMap arguments();
+
+    /**
+     * @brief Default constructor.
+     *
+     * @attention This constructor should NEVER be used, it's called by the main()
+     * method of Wintermute, and needs never to be called again.
+     *
+     * @fn Core
+     * @param argc The command line argument passed representing the number of given arguments.
+     * @param argv The command line argument passed representing the value of each argument.
+     * @internal
+     */
+    static void boot(int& p_argv, char** p_argc);
 
     /**
      * @brief Ends the program; with an optional exit code.
@@ -124,21 +122,6 @@ signals:
      */
     void stopped() const;
 
-protected:
-    /**
-     * @brief Configures Wintermute's core.
-     *
-     * This method holds the instructions to set-up some imperative command line arguments.
-     * It then parses each argument and saves it to the global cache of arguments for other
-     * utilities to use.
-     *
-     * @fn Configure
-     * @param p_argc The command line argument passed representing the number of given arguments.
-     * @param p_argv The command line argument passed representing the value of each argument.
-     * @see Wintermute::Core::Initialize()
-     */
-    static void configure (int& p_argc, char** p_argv);
-
 protected slots:
 
     /**
@@ -165,7 +148,8 @@ protected slots:
 private:
     QScopedPointer<CorePrivate> d_ptr;
 };
-} // namespace
+
+WINTER_END_NAMESPACE
 
 #endif /* WINTERMUTE_CORE_HPP */
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
