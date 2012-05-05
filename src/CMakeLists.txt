@@ -5,11 +5,10 @@ include(WintermuteMacros)
 include(UseWintermute)
 
 ## Configures
-configure_file("${PROJECT_SOURCE_DIR}/config.hpp.in"
-               "${PROJECT_SOURCE_DIR}/config.hpp" @ONLY)
+configure_file("${PROJECT_SOURCE_DIR}/global.hpp.in"
+               "${PROJECT_SOURCE_DIR}/global.hpp" @ONLY)
 
-file(GLOB WINTERMUTE_SOURCES "*.cpp")
-file(GLOB WINTERMUTE_HEADERS "*.hpp")
+file(GLOB_RECURSE WINTERMUTE_SOURCES "*.cpp")
 
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR}
@@ -29,14 +28,16 @@ list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTER_PLUGIN_INCLUDE_INSTALL_D
 
 include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 
-QT4_AUTOMOC(${WINTERMUTE_SOURCES})
-
+wntr_automoc("${WINTERMUTE_SOURCES}")
 wntr_make_docs(PATH "${PROJECT_SOURCE_DIR}")
 
 ## Targets
 add_executable(wintermute ${WINTERMUTE_SOURCES})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 set_target_properties(wintermute PROPERTIES
+    DEFINE_SYMBOL "WINTER_EXPORT"
+    VERSION ${WINTERMUTE_VERSION}
+    COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
     COMPILE_FLAGS "${WINTERMUTE_COMPILE_FLAGS}")
 
 ## Installs
@@ -44,6 +45,8 @@ install(TARGETS wintermute
         RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
         COMPONENT bin)
 
-install(FILES ${WINTERMUTE_HEADERS}
-        DESTINATION "${WINTER_INCLUDE_INSTALL_DIR}"
-        COMPONENT dev)
+wntr_install_headers(HEADERS_PATH "${PROJECT_SOURCE_DIR}"
+                     DESTINATION  "${WINTER_INCLUDE_INSTALL_DIR}")
+
+configure_file("${CMAKE_SOURCE_DIR}/cmake/Modules/FindWintermute.cmake.in"
+               "${CMAKE_BINARY_DIR}/InstallFiles/FindWintermute.cmake" @ONLY)
