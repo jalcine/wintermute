@@ -1,0 +1,41 @@
+# Finds @WIP_EXPORT_NAME@ and its development files.
+#
+#   @WIP_PACKAGE_PREFIX@_VERSION     - the current installed version of Wintermute.
+#   @WIP_PACKAGE_PREFIX@_INCLUDE_DIR
+#   @WIP_PACKAGE_PREFIX@_INCLUDE_DIRS
+#   @WIP_PACKAGE_PREFIX@_LIBRARIES
+#   @WIP_PACKAGE_PREFIX@_COMPILE_FLAGS
+#   @WIP_PACKAGE_PREFIX@_COMPILE_DEFINITONS
+#
+#
+
+#=============================================================================
+# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+#
+# This module is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+#=============================================================================
+# (To distribute this file outside of CMake, substitute the full
+#  License text for the above reference.)
+
+include(FindPackageHandleStandardArgs)
+include(UseWintermute)
+
+set(@WIP_PACKAGE_PREFIX@_UUID                 "@@WIP_PACKAGE_PREFIX@_UUID@")
+set(@WIP_PACKAGE_PREFIX@_VERSION              "@@WIP_PACKAGE_PREFIX@_VERSION@")
+set(@WIP_PACKAGE_PREFIX@_LIBRARY              "@@WIP_PACKAGE_PREFIX@_LIBRARY@")
+set(@WIP_PACKAGE_PREFIX@_LIBRARIES            "@@WIP_PACKAGE_PREFIX@_LIBRARIES@")
+set(@WIP_PACKAGE_PREFIX@_INCLUDE_DIR          "@@WIP_PACKAGE_PREFIX@_INCLUDE_DIR@")
+set(@WIP_PACKAGE_PREFIX@_LIBRARY_DIR          "@@WIP_PACKAGE_PREFIX@_LIBRARY_DIR@")
+set(@WIP_PACKAGE_PREFIX@_INCLUDE_DIRS         "@@WIP_PACKAGE_PREFIX@_INCLUDE_DIRS@")
+set(@WIP_PACKAGE_PREFIX@_COMPILE_FLAGS        "@@WIP_PACKAGE_PREFIX@_COMPILE_FLAGS@")
+set(@WIP_PACKAGE_PREFIX@_COMPILE_DEFINITIONS  "@@WIP_PACKAGE_PREFIX@_COMPILE_DEFINITIONS@")
+
+find_package_handle_standard_args(@WIP_EXPORT_NAME@
+    REQUIRED_VARS @WIP_PACKAGE_PREFIX@_LIBRARY @WIP_PACKAGE_PREFIX@_INCLUDE_DIR
+    VERSION_VAR   @WIP_PACKAGE_PREFIX@_VERSION)
+
+include("@WINTER_CMAKE_DIR@/@__TARGET_EXPORT@.cmake")
