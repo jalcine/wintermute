@@ -33,8 +33,10 @@
 
 #include <QtGlobal>
 #include <QDebug>
+#include <QDataStream>
+#include <QMetaType>
 
-// Build-time variables.
+// ** Build-time variables from CMake. **
 #cmakedefine01 DEBUG
 #cmakedefine01 WINTER_DEPRECATED_WARNINGS
 
@@ -114,6 +116,12 @@
 #ifdef WINTER_NAMESPACE
     namespace WINTER_NAMESPACE { }
 #endif
+
+// ** Hooks for Qt's QMetaType system **
+#define WINTER_DECLARE_METATYPE(Class) \
+QDataStream &operator<<(QDataStream &out, const Class &obj);\
+QDataStream &operator>>(QDataStream &in, Class &obj);\
+Q_DECLARE_TYPE(Class)
 
 // *** Opaque pointer add-ons ***
 #define WINTER_DECLARE_PRIVATE_TEMPLATE(Class,T) \
