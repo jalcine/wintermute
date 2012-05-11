@@ -35,7 +35,7 @@
 WINTER_USE_NAMESPACE
 
 AbstractPluginPrivate::AbstractPluginPrivate (AbstractPlugin* p_qPtr) :
-pluginLoader (0), q_ptr (p_qPtr), settings (0), configuration (0)
+    pluginLoader (0), q_ptr (p_qPtr), settings (0), configuration (0)
 {
 
 }
@@ -71,28 +71,38 @@ bool AbstractPluginPrivate::loadPlugins() const
     Q_Q (const AbstractPlugin);
     const QStringList plgnLst = q->plugins();
     qDebug () << "(core) [AbstractPluginPrivate::loadPlugins()] Loading plug-ins for"
-    << q->name () << ";"
-    << plgnLst.length () << "plug-in(s) to be loaded.";
+              << q->name () << ";"
+              << plgnLst.length () << "plug-in(s) to be loaded.";
 
-    foreach (const QString plgn, plgnLst) {
-        const QString plgnUuid = plgn.split (" ").at (0);
+    foreach (const QString plgnDepStr, plgnLst) {
+        QString plgnUuid;
+        ShellPlugin* gnrc = 0;
+
+        if (plgnDepStr.contains (" ")) {
+            // @todo: Add plug-in version resolution code.
+        }
+        else {
+            plgnUuid = plgnDepStr;
+        }
+
+        gnrc = new ShellPlugin (plgnUuid);
+        qDebug() << plgnUuid;
 
         if (Factory::loadedPlugins().contains (plgnUuid))
             qDebug () << "(core) [AbstractPluginPrivate::loadPlugins()] Dependency"
-            << Factory::attribute (plgnUuid, "Description/Name").toString()
-            << "already loaded.";
+                      << gnrc->name()
+                      << "already loaded.";
         else {
-            ShellPlugin* gnrc = new ShellPlugin (plgnUuid);
             qDebug() << "(core) [AbstractPluginPrivate::loadPlugins()] Loading dependency"
-            << gnrc->name() << "...";
+                     << gnrc->name() << "...";
 
             if (gnrc->loadLibrary()) {
                 qWarning() << "(core) [AbstractPluginPrivate::loadPlugins()] Loaded symbols of plug-in"
-                << Factory::attribute (plgnUuid, "Description/Name").toString() << ".";
+                           << Factory::attribute (plgnUuid, "Description/Name").toString() << ".";
             }
             else {
                 qWarning() << "(core) [AbstractPluginPrivate::loadPlugins] Unable to load symbols of dependency"
-                << gnrc->name() << ":" << gnrc->d_func()->pluginLoader->errorString();
+                           << gnrc->name() << ":" << gnrc->d_func()->pluginLoader->errorString();
 
                 return false;
             }
@@ -141,7 +151,12 @@ QString AbstractPlugin::author() const
 QString AbstractPlugin::name() const
 {
     Q_D (const AbstractPlugin);
-    return d->settings->value ("Description/Name").toString();
+
+    if (d->settings->contains ("Description/Name")) {
+        return d->settings->value ("Description/Name").toString();
+    }
+
+    return QString::null;
 }
 
 QString AbstractPlugin::vendorName() const
@@ -188,10 +203,21 @@ bool AbstractPlugin::isSupported() const
 QStringList AbstractPlugin::plugins() const
 {
     Q_D (const AbstractPlugin);
-    QStringList dep = d->settings->value ("Depends/Plugins").toStringList();
-    dep.removeDuplicates();
-    dep.removeAll ("None");
-    return dep;
+    const QVariant vrnt = d->settings->value ("Dependencies/Plugins");
+
+    if (vrnt.isValid() && !vrnt.isNull()) {
+        QStringList dep = vrnt.toString().split (";");
+        dep.removeDuplicates();
+        dep.removeAll ("None");
+        dep.removeAll (QString::null);
+        qDebug() << "Plug-ins: " << dep;
+        return dep;
+    }
+
+    qDebug() << d->settings->fileName();
+    QFile sett (d->settings->fileName());
+    qDebug() << sett.readAll();
+    return QStringList();
 }
 
 bool AbstractPlugin::hasNeededPlugins() const
@@ -261,7 +287,7 @@ bool AbstractPlugin::hasNeededPlugins() const
 QStringList AbstractPlugin::packages() const
 {
     Q_D (const AbstractPlugin);
-    QStringList dep = d->settings->value ("Depends/Packages").toStringList();
+    QStringList dep = d->settings->value ("Dependencies/Packages").toStringList();
     dep.removeDuplicates();
     dep.removeAll ("None");
     return dep;
@@ -313,7 +339,7 @@ bool AbstractPlugin::loadLibrary() const
     const QString plgnLibrary = d->settings->value ("Version/Library").toString();
     const QString plgPth = QString (WINTER_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
     d->pluginLoader = new QPluginLoader (plgPth, Factory::instance());
-    d->pluginLoader->setLoadHints(QLibrary::ResolveAllSymbolsHint);
+    d->pluginLoader->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint | QLibrary::LoadArchiveMemberHint);
     qDebug() << "(plugin) [AbstractPlugin::loadLibrary()] Loaded library for " << name() << "?" << d->pluginLoader->load();
 
     if (!d->pluginLoader->isLoaded())
@@ -372,8 +398,12 @@ AbstractPlugin::~AbstractPlugin()
     Q_D (AbstractPlugin);
     d->pluginLoader->unload();
     d->pluginLoader->deleteLater();
+    d->settings->sync();
+    d->configuration->sync();
+    d->configuration->deleteLater();
     d->settings->deleteLater();
 }
 
 #include "plugin.moc"
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;
+
