@@ -3,10 +3,14 @@
 # Wintermute development.
 #
 #
-# macro wntr_make_docs(PATH <path>
-#                      VERSION <version>)
+#   - macro wntr_make_docs(PATH <path>
+#                          INSTALL_PATH <path>
+#                          VERSION <version>
+#                          [EXAMPLE_PATH <examples>]
+#                          [EXCLUDE_PATH <path>]
+#                          [IMAGE_PATH <path>]
+#                          [USE_EXAMPLES])
 #
-# macro wntr
 
 #=============================================================================
 # Copyright (c) 2012 Jacky Alcine   <jacky.alcine@thesii.org>
@@ -20,6 +24,8 @@
 #=============================================================================
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
+
+# @todo Add documentation about macros used in Wintermute.
 
 find_package(PkgConfig)
 include(WintermuteDefaults)
@@ -48,6 +54,7 @@ macro(wntr_make_docs)
                 WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
                 COMMENT "Generating API documentation with Doxygen...")
 
+            # We only want the generated HTML, nothing more.
             install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html/
                     DESTINATION ${docs_INSTALL_PATH})
 
@@ -82,16 +89,25 @@ macro(pkgconfig_getvar _package _var _output_variable)
 
 endmacro(pkgconfig_getvar _package _var _output_variable)
 
-
 macro(dbus_add_activation_service _sources)
-    PKGCONFIG_GETVAR(dbus-1 session_bus_services_dir _install_dir)
+    pkgconfig_getvar(dbus-1 session_bus_services_dir _install_dir)
+    string(STRIP "${_install_dir}" _install_dir)
+
     foreach (_i ${_sources})
         get_filename_component(_service_file ${_i} ABSOLUTE)
         string(REGEX REPLACE "\\.service.*$" ".service" _output_file ${_i})
-        set(_target ${CMAKE_CURRENT_BINARY_DIR}/${_output_file})
-        configure_file(${_service_file} ${_target})
-        install(FILES ${_target} DESTINATION ${_install_dir})
-    endforeach (_i ${ARGN})
+        set(_target "${CMAKE_CURRENT_BINARY_DIR}/${_output_file}")
+
+        configure_file("${_service_file}"
+                       "${_target}" @ONLY)
+
+        option(WINTER_INSTALL_DBUS_SERVICES "Install D-Bus services?" OFF)
+        if (WINTER_INSTALL_DBUS_SERVICES)
+            install(FILES ${_target}
+                    DESTINATION "${_install_dir}")
+        endif(WINTER_INSTALL_DBUS_SERVICES)
+    endforeach (_i ${_sources})
+
 endmacro(dbus_add_activation_service _sources)
 
 macro(wntr_define_plugin)
@@ -107,6 +123,7 @@ macro(wntr_define_plugin)
                      VERSION_PLUGIN
                      NAME_FRIENDLY
                      NAME_TARGET
+                     NAME_DBUS
                      UUID
                      URL
                      TYPE
@@ -121,8 +138,14 @@ macro(wntr_define_plugin)
     endif (NOT DEFINED WDP_ENABLED)
 
     set(__specpath "${PROJECT_BINARY_DIR}/${WDP_UUID}.spec")
+    set(__DBUS_SERVICE "${CMAKE_BINARY_DIR}/org.thesii.Wintermute.Plugin.${WDP_NAME_DBUS}.service")
+
     configure_file("${WINTER_CURRENT_CMAKE_DIR}/pluginspec.in"
                    "${__specpath}" @ONLY)
+    configure_file("${WINTER_CURRENT_CMAKE_DIR}/plugin-dbus-service.cmake.in"
+                   "${__DBUS_SERVICE}" @ONLY)
+
+    dbus_add_activation_service(${__DBUS_SERVICE})
 
     install(FILES "${__specpath}"
             DESTINATION "${WINTER_PLUGIN_SPEC_INSTALL_DIR}")
@@ -144,7 +167,6 @@ macro(wntr_install_plugin)
 
     set(__TARGET_EXPORT "${WIP_EXPORT_NAME}LibraryDepends")
     set(__FIND_PLUGIN  "${CMAKE_BINARY_DIR}/Find${WIP_EXPORT_NAME}.cmake")
-    set(__DBUS_SERVICE "${CMAKE_BINARY_DIR}/org.thesii.Wintermute.Plugin.${WIP_DBUS_NAME}.service")
 
     set_target_properties(${WIP_TARGET} PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
@@ -155,17 +177,12 @@ macro(wntr_install_plugin)
     get_target_property(tp ${WIP_TARGET} PREFIX)
     get_target_property(ts ${WIP_TARGET} SUFFIX)
     get_target_property(to ${WIP_TARGET} OUTPUT_NAME)
-    set(${WIP_PACKAGE_PREFIX}_LIBRARY      "${WINTER_PLUGIN_INSTALL_DIR}/${tp}${to}${ts}")
+    set(${WIP_PACKAGE_PREFIX}_LIBRARY     "${WINTER_PLUGIN_INSTALL_DIR}/${tp}${to}${ts}")
     set(${WIP_PACKAGE_PREFIX}_LIBRARY_DIR "${WINTER_PLUGIN_INSTALL_DIR}")
 
     configure_file("${WINTER_CURRENT_CMAKE_DIR}/FindPlugin.cmake.in"
                    "${__FIND_PLUGIN}" @ONLY)
     configure_file("${__FIND_PLUGIN}" "${__FIND_PLUGIN}" @ONLY)
-
-    configure_file("${WINTER_CURRENT_CMAKE_DIR}/dbus_service.cmake.in"
-                   "${__DBUS_SERVICE}" @ONLY)
-
-    dbus_add_activation_service(${__DBUS_SERVICE})
 
     install(TARGETS ${WIP_TARGET}
             EXPORT "${__TARGET_EXPORT}"
@@ -179,7 +196,7 @@ macro(wntr_install_plugin)
 
     wntr_install_headers(HEADERS_PATH  "${WIP_HEADERS_PATH}"
                          DESTINATION   "${WIP_HEADERS_DESTINATION}")
-# Let the build system know you're building a plug-in.
+    # Let the build system know you're building a plug-in.
     set(WINTER_IS_PLUGIN ON)
 endmacro(wntr_install_plugin)
 
@@ -196,21 +213,28 @@ macro(wntr_install_headers)
 
     file(GLOB_RECURSE headers RELATIVE "${WIH_HEADERS_PATH}" "*.hpp")
     foreach(header ${headers})
-        set(__file )
+        set(__file)
         set(__pos -1)
-        set(__prefix )
+        set(__prefix)
         set(__path "${WIH_DESTINATION}")
+
+        # Remove all double-quotes; it happens and remove the base inclusion path.
         string(REPLACE "//" "/" header "${header}")
         string(REPLACE "${PROJECT_SOURCE_DIR}/" "" header "${header}")
-        string(REPLACE "${__prefix}" "" __file "${__prefix}")
+
+        # Get the filename of the header.
+        get_filename_component(_filename "${header}" NAME)
+
+        # Get the position of the last trailing slash in the path leftover for extraction.
         string(FIND "${header}" "/" __pos REVERSE)
+
         if (NOT(__pos EQUAL -1))
-            string(SUBSTRING "${header}" ${__pos} -1 __file)
-            string(REPLACE "/" "" __file "${__file}")
-            string(REPLACE "/${__file}" "" __prefix "${header}")
+            # This is a file below the specified directory, preserve the prefix.
+            string(REPLACE "/${_filename}" "" __prefix "${header}")
             set(__prefix "/${__prefix}")
             set(__path "${__path}${__prefix}")
         else (NOT(__pos EQUAL -1))
+            # This file is at the base level, nothing to see here.
             set(__prefix )
         endif (NOT(__pos EQUAL -1))
 
