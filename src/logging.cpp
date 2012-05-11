@@ -22,6 +22,9 @@
 
 #include "logging.hpp"
 #include "global.hpp"
+#include "factory.hpp"
+#include "ipc.hpp"
+#include "core.hpp"
 
 #include <cstdlib>
 #include <cstdio>
@@ -30,9 +33,8 @@
 
 using namespace std;
 using std::string;
+using namespace Wintermute;
 
-namespace Wintermute
-{
 Logging* Logging::s_inst = new Logging;
 
 Logging::Logging() : QObject() { }
@@ -56,12 +58,12 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
         break;
 
     case QtWarningMsg:
-        str += "W:  ";
+        str += "W: ";
         emit instance()->warningEncountered (p_messageText);
         break;
 
     case QtCriticalMsg:
-        str += "C:  ";
+        str += "C: ";
         qApp->beep();
         emit instance()->criticalErrorEncountered (p_messageText);
         break;
@@ -73,11 +75,25 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
         break;
     }
 
+    if (IPC::module() == WINTER_COMMAND_LINE_IPC_CORE) {
+        str += "(core) ";
+    }
+    else {
+        str += "(plugin:";
+        if (Factory::currentPlugin() == 0){
+            str += "**loading**";
+        } else {
+            QString uuid = Core::arguments().value(WINTER_COMMAND_LINE_IPC_PLUGIN).toString();
+            str += Factory::attribute(uuid,"Description/Name").toString().toStdString();
+        }
+
+        str += ") ";
+    }
+
     str += p_messageText;
 
     fprintf (stderr, "%s\n", str.c_str());
-    emit instance()->linePrinted(p_messageText);
-}
+    emit instance()->linePrinted (p_messageText);
 }
 
 #include "logging.moc"
