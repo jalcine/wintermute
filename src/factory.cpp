@@ -205,7 +205,7 @@ void Factory::loadStandardPlugin()
     if (instance()->d_func()->rootPlugin) {
         PluginAdaptor* adpt = new PluginAdaptor (instance()->d_func()->rootPlugin);
         IPC::registerObject ("/Plugin", adpt);
-        IPC::setAdaptor(adpt);
+        IPC::setAdaptor (adpt);
     }
     else {
         qDebug() << "(core) [Factory] Unable to load standard plug-in; exiting.";
@@ -218,7 +218,7 @@ AbstractPlugin* Factory::currentPlugin()
     if (IPC::module() == "plugin")
         return instance()->d_func()->rootPlugin;
     else {
-        qWarning() << "(core) [Factory] This isn't a plug-in PluginHandle; can't find the current plug-in!";
+        qWarning() << "(core) [Factory] This isn't a plug-in handle; can't find the current plug-in!";
         return 0;
     }
 }
@@ -276,12 +276,10 @@ QSettings* Factory::getPluginSettings (const QString& p_uuid)
         qWarning() << "(core) [Factory]" << plgnSpecPath << "does not exist.";
         QSettings* newSettings = new QSettings;
         newSettings->setValue ("Misc/HaveSpec", QVariant (false));
-        //Factory::pluginSettings.insert(p_uuid, newSettings);
         return NULL;
     }
 
     QSettings* newSettings = new QSettings (plgnSpecPath, QSettings::IniFormat, Factory::instance());
-    //Factory::pluginSettings.insert(p_uuid, newSettings);
     return newSettings;
 }
 
