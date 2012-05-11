@@ -8,7 +8,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 option(WINTER_DEPRECATED_WARNINGS "Should Wintermute report warnings about deprecated methods?" ON)
 
 ## Packages
-find_package(PackageKitQt2 REQUIRED)
 find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtGui
