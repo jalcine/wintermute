@@ -100,6 +100,7 @@ signals:
     void registerDataTypes();
 
 public:
+    virtual ~IPC();
     /**
      * Starts up the IPC system by storing the type of module that Wintermute's
      * running under and executing the code required to render that module.
@@ -141,7 +142,6 @@ public:
     static bool registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor);
 
 private:
-    virtual ~IPC();
     static void handleExit();
     QScopedPointer<IPCPrivate> d_ptr;
 };

@@ -92,8 +92,7 @@ void IPC::start()
 
     if (objectName != "master") serviceName += "." + objectName;
 
-    if (bus()->registerService (serviceName))
-        serviceRegistered = true;
+    serviceRegistered = bus()->registerService (serviceName);
 
     if (!serviceRegistered && objectName == "master") {
         qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << serviceName << ")"
