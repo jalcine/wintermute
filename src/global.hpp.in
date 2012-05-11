@@ -35,6 +35,7 @@
 #include <QDebug>
 #include <QDataStream>
 #include <QMetaType>
+#include <QSharedPointer>
 
 // ** Build-time variables from CMake. **
 #cmakedefine01 DEBUG
@@ -121,7 +122,7 @@
 #define WINTER_DECLARE_METATYPE(Class) \
 QDataStream &operator<<(QDataStream &out, const Class &obj);\
 QDataStream &operator>>(QDataStream &in, Class &obj);\
-Q_DECLARE_TYPE(Class)
+Q_DECLARE_METATYPE(Class); \
 
 // *** Opaque pointer add-ons ***
 #define WINTER_DECLARE_PRIVATE_TEMPLATE(Class,T) \
@@ -145,22 +146,24 @@ __FILE__, __LINE__)
 
 #define WINTER_SINGLETON(Type) \
 private:\
-    static Type* __s_instance;\
     Type();\
+    inline static void __doDeleteLater() {\
+        qDebug() << "[WINTER_SINGLETON()] Deleting singleton instance of " #Type << ".";\
+    }\
+    static Type* __instance;\
 \
 public:\
-        inline static Type* instance ( )\
+    static inline Type* instance ( )\
+    {\
+        if (__instance == 0)\
         {\
-            if (__s_instance == 0)\
-            {\
-                __s_instance = new Type;\
-                qDebug() << "[WINTER_SINGLETON()] Created singleton instance of " #Type << ".";\
-            }\
-\
-            return __s_instance;\
+            __instance = new Type;\
+            qDebug() << "[WINTER_SINGLETON()] Created singleton instance of " #Type << ".";\
         }\
+        return __instance;\
+    }\
 
-#define WINTER_SINGLETON_DEFINE(Type) Type* Type::__s_instance = 0;
+#define WINTER_SINGLETON_DEFINE(Type) Type* Type::__instance = 0;
 
 /**
  * @def WINTER_DEPRECATED
