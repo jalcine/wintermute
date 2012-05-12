@@ -80,11 +80,15 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
     }
     else {
         str += "(plugin:";
-        if (Factory::currentPlugin() == 0){
+        QString uuid = Core::arguments().value (WINTER_COMMAND_LINE_IPC_PLUGIN).toString();
+
+        if (Factory::currentPlugin() == 0) {
             str += "**loading**";
-        } else {
-            QString uuid = Core::arguments().value(WINTER_COMMAND_LINE_IPC_PLUGIN).toString();
-            str += Factory::attribute(uuid,"Description/Name").toString().toStdString();
+        }
+        else {
+            if (Factory::obtainPlugin (uuid)) {
+                str += Factory::attribute (uuid, "Description/Name").toString().toStdString();
+            }
         }
 
         str += ") ";
