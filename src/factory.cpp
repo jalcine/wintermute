@@ -273,7 +273,6 @@ QSettings* Factory::getPluginSettings (const QString& p_uuid)
     const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_uuid + ".spec";
 
     if (!QFile::exists (plgnSpecPath)) {
-        qWarning() << "(core) [Factory]" << plgnSpecPath << "does not exist.";
         QSettings* newSettings = new QSettings;
         newSettings->setValue ("Misc/HaveSpec", QVariant (false));
         return NULL;

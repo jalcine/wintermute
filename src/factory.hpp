@@ -36,8 +36,8 @@
 #include <plugin.hpp>
 #include <pluginhandle.hpp>
 
-WINTER_FORWARD_DECLARE_STRUCT(FactoryPrivate)
-WINTER_FORWARD_DECLARE_STRUCT(AbstractPluginPrivate)
+WINTER_FORWARD_DECLARE_STRUCT (FactoryPrivate)
+WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
 
 WINTER_BEGIN_NAMESPACE
 
@@ -137,10 +137,39 @@ public:
      */
     static QStringList allPlugins();
 
+    /**
+     * @brief Obtains the currently loaded plug-in.
+     *
+     * Typically, if this is running a plug-in module (IPC::module() == WINTER_COMMAND_LINE_IPC_PLUGIN),
+     * then this'll return a pointer to the running plug-in instance.
+     *
+     * @return A pointer to a AbstractPlugin that represents the currently loaded plug-in; NULL otherwise.
+     **/
     static AbstractPlugin* currentPlugin();
+
+    /**
+     * @brief Obtains the value of an attribute of a plug-in's configuration.
+     *
+     * @param p_uuid The UUID of the plug-in.
+     * @param p_attributePath The path of the configuration option in question.
+     **/
     static QVariant attribute (const QString& p_uuid, const QString& p_attributePath);
+
+    /**
+     * @brief Sets an attribute with a given value for a plug-in's configuration.
+     *
+     * @param p_uuid The UUID of the plug-in.
+     * @param p_attributePath The path of the configuration option in question.
+     * @param p_attributeValue The value to be used.
+     **/
     static void setAttribute (const QString& p_uuid, const QString& p_attributePath, const QVariant& p_attributeValue);
-    static AbstractPlugin* obtainPlugin(const QString& p_uuid);
+
+    /**
+     * @brief Obtains a plug-in from the loaded pool.
+     *
+     * @param p_uuid The UUID of the plug-in.
+     **/
+    static AbstractPlugin* obtainPlugin (const QString& p_uuid);
 
 protected:
     /**
