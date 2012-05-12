@@ -35,11 +35,11 @@
 #define WINTER_DEFINE_PLUGIN(LIBRARY, CLASS) \
     Q_EXPORT_PLUGIN2(LIBRARY, CLASS) \
 
- WINTER_FORWARD_DECLARE_CLASS (Factory)
- WINTER_FORWARD_DECLARE_CLASS (AbstractPlugin)
- WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
+WINTER_FORWARD_DECLARE_CLASS (Factory)
+WINTER_FORWARD_DECLARE_CLASS (AbstractPlugin)
+WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
 
- WINTER_BEGIN_NAMESPACE
+WINTER_BEGIN_NAMESPACE
 
 /**
  * @brief Represents a named set of plugins.
@@ -79,8 +79,8 @@ typedef QHash<const QString, AbstractPlugin*> PluginTable;
  * WINTER_DEFINE_PLUGIN(Bar, Foo::Bar)
  * @endcode
  *
- * @attention It's important to note that you must define the Q_EXPORT_PLUGIN2() macro <i>outside</i>
- * the scope of any namespace declarations.
+ * @attention It's important to note that you must define the WINTER_DEFINE_PLUGIN()
+ * macro <i>outside</i> the scope of any namespace declarations.
  *
  * @todo Add conflicting plug-ins as a specification addition.
  */
@@ -98,7 +98,7 @@ class WINTER_EXPORT AbstractPlugin : public QObject
     Q_PROPERTY (QStringList Packages READ packages)
     Q_PROPERTY (QStringList Plugins READ plugins)
     friend class Factory;
-    QScopedPointer<AbstractPluginPrivate> d_ptr;
+    QSharedPointer<AbstractPluginPrivate> d_ptr;
     AbstractPlugin* obtainInstance() const;
 
 protected:
