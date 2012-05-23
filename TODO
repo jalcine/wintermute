@@ -23,3 +23,8 @@ in a collaborative manner.
  - With that, you could implement IPC for different platforms (Windows, Mac OS X, Linux).
  - Implementing a language as such could allow for REST API communications to Wintermute.
  - This could allow Wintermute instances to run in a cluster at top speed.
+* Add a few macros for debugging output that could interface with QDebug.
+ - It'd work like qDebug(), except that it'd pass the name of the executing class
+   if it has QMetaObject support to make output like:
+   (plugin:WapiData) [DomFormSourcePrivate/Debug] form.cpp:40 ) *MESSAGE*
+ - Parts of the debugging output can be toggled on and off.
