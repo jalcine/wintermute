@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-
-configure_file("spec.in"
-     "${PROJECT_BINARY_DIR}/InstallFiles/${WNTRLING_UUID}.spec" @ONLY)
-
-install(FILES "${PROJECT_BINARY_DIR}/InstallFiles/${WNTRLING_UUID}.spec"
-    DESTINATION "${WINTER_PLUGIN_SPEC_INSTALL_DIR}")
