@@ -22,20 +22,29 @@
 #include <QApplication>
 #include <global.hpp>
 
-WINTER_FORWARD_DECLARE_CLASS(Core)
+class QSocketNotifier;
+WINTER_FORWARD_DECLARE_CLASS (Core)
 
 WINTER_BEGIN_NAMESPACE
 
-struct CorePrivate {
-    Q_DECLARE_PUBLIC(Core)
+struct CorePrivate{
+    Q_DECLARE_PUBLIC (Core)
     CorePrivate (Core* p_qPtr);
     ~CorePrivate();
     Core* q_ptr;            ///< The internal object that represents the core of Wintermute.
     QApplication* app;      ///< Holds the object representing the current Q(Core)Application.
     QVariantMap args;       ///< Holds the map containing the arguments passed to Wintermute in a normalized format.
 
+    /**
+     * @brief Does the work of obtaining and interpreting the command line arguments.
+     **/
     void parseCommandLineArguments();
+
+    /**
+     * @brief Configures the default arguments to be used on the command-line.
+     **/
     void setDefaultArguments();
+
     /**
      * @brief Configures Wintermute's core.
      *

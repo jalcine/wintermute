@@ -1,26 +1,28 @@
-/*
- * @section lcns Licensing
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+/***
+ *  This file is part of the Wintermute project.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-/**
- * @file core.hpp
- * @author Wintermute Development <wntr-devel@thesii.org>
+ *  Wintermute is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
+ *  Wintermute is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with Wintermute .
+ *  If not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @date 05/14/12 4:26:11 PM
+ */
 #ifndef WINTERMUTE_CORE_HPP
 #define WINTERMUTE_CORE_HPP
 
@@ -33,7 +35,7 @@
 class QApplication;
 class QSocketNotifier;
 
-WINTER_FORWARD_DECLARE_STRUCT(CorePrivate)
+WINTER_FORWARD_DECLARE_STRUCT (CorePrivate)
 
 WINTER_BEGIN_NAMESPACE
 
@@ -52,8 +54,8 @@ WINTER_BEGIN_NAMESPACE
 class Core : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Core)
-    WINTER_SINGLETON(Core)
+    Q_DECLARE_PRIVATE (Core)
+    WINTER_SINGLETON (Core)
 
 public:
 
@@ -82,7 +84,7 @@ public:
      * @param argv The command line argument passed representing the value of each argument.
      * @internal
      */
-    static void boot(int& p_argv, char** p_argc);
+    static void boot (int& p_argv, char** p_argc);
 
     /**
      * @brief Ends the program; with an optional exit code.

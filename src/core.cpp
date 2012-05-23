@@ -23,6 +23,7 @@
  * @author Jacky Alciné <jackyalcine@gmail.com>
  * @date 05/02/12 1:23:32 PM
  */
+
 #include <iostream>
 
 #include <QtDebug>
@@ -53,7 +54,7 @@ CorePrivate::CorePrivate (Core* p_qPtr) : q_ptr (p_qPtr), app (0), args()
 
 void CorePrivate::configure (int& p_argc, char** p_argv)
 {
-    Q_Q(Core);
+    Q_Q (Core);
     app = new QApplication (p_argc, p_argv);
     app->setApplicationName ("Wintermute");
     app->setApplicationVersion (QString::number (WINTER_VERSION));
@@ -68,7 +69,7 @@ void CorePrivate::configure (int& p_argc, char** p_argv)
 void CorePrivate::setDefaultArguments()
 {
     args.insert (WINTER_COMMAND_LINE_IPC, "root");
-    args.insert (WINTER_COMMAND_LINE_FACTORY_DAEMON, true);
+    args.insert (WINTER_COMMAND_LINE_FACTORY_DAEMON, false);
 }
 
 void CorePrivate::parseCommandLineArguments()
@@ -170,7 +171,7 @@ void Core::exit (const int p_exitCode, const bool p_closeRootApplication)
 {
     qDebug() << "(core) [" << IPC::module () << "] Exitting Wintermute's main event loop...";
 
-    if (p_closeRootApplication){
+    if (p_closeRootApplication) {
         IPC::handleExit();
     }
 
