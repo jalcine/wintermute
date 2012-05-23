@@ -33,7 +33,8 @@
 
 using namespace std;
 using std::string;
-using namespace Wintermute;
+
+WINTER_USE_NAMESPACE
 
 Logging* Logging::s_inst = new Logging;
 
@@ -83,7 +84,7 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
         QString uuid = Core::arguments().value (WINTER_COMMAND_LINE_IPC_PLUGIN).toString();
 
         if (Factory::currentPlugin() == 0) {
-            str += "**loading**";
+            str += "??";
         }
         else {
             if (Factory::obtainPlugin (uuid)) {

@@ -31,11 +31,12 @@
 #include "factory.hpp"
 #include "pluginhandle.hpp"
 #include "pluginhandleprivate.hpp"
+#include "shellplugin.hpp"
 
 WINTER_USE_NAMESPACE
 
 PluginHandlePrivate::PluginHandlePrivate (PluginHandle* p_qPtr) : q_ptr (p_qPtr),
-    uuid(), process (0), settings (0)
+    uuid(), process (0), settings (0), watcher(new QFileSystemWatcher(p_qPtr))
 {
 
 }
@@ -59,6 +60,7 @@ PluginHandle::PluginHandle (const QString& p_uuid, QSettings* p_settings) : QObj
     QObject::connect (this, SIGNAL (crashed (QString)), Factory::instance(), SLOT (doPluginCrash (QString)));
     QObject::connect (this, SIGNAL (started (QString)), Factory::instance(), SLOT (doPluginLoad (QString)));
     QObject::connect (this, SIGNAL (stopped (QString)), Factory::instance(), SLOT (doPluginUnload (QString)));
+    QObject::connect(d->watcher,SIGNAL(fileChanged(QString)),this,SLOT(on_watcher_fileChanged(QString)));
     start();
 }
 
@@ -74,6 +76,7 @@ void PluginHandle::stop()
     if (d->process) {
         d->process->terminate();
         d->process->close();
+        d->process->deleteLater();
     }
 }
 
@@ -96,11 +99,16 @@ void PluginHandle::start()
         d->process->setProcessChannelMode (QProcess::SeparateChannels);
 
         if (d->process->startDetached (QApplication::applicationFilePath(), args)) {
-            qDebug() << "(core) [PluginPluginHandle] Forked process for plug-in" << d->uuid;
+            qDebug() << "(core) [PluginHandle] Forked process for plug-in" << d->uuid;
         }
+
+        const QString library = d->settings->value ("Version/Library").toString();
+        const QString libraryPth = QString (WINTER_PLUGIN_PATH) + "/lib" + library + ".so";
+        qDebug() << "[PluginHandle] Watching library file" << libraryPth << "...";
+        d->watcher->addPath(libraryPth);
     }
     else
-        qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has already started in pid" << d->process->pid();
+        qDebug() << "(core) [PluginHandle] Plug-in" << name() << "has already started in pid" << d->process->pid();
 }
 
 void PluginHandle::on_process_readyReadStdErr()
@@ -146,7 +154,7 @@ void PluginHandle::catchExit (int p_exitCode, const QProcess::ExitStatus& p_exit
     case QProcess::NormalExit:
 
         if (p_exitCode == 0) {
-            qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
+            qDebug() << "(core) [PluginHandle] Plug-in" << name() << "has exitted normally with code" << p_exitCode << ".";
             emit stopped();
         }
         else
@@ -157,7 +165,7 @@ void PluginHandle::catchExit (int p_exitCode, const QProcess::ExitStatus& p_exit
     case QProcess::CrashExit:
 
         if (p_exitCode != 0) {
-            qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has exitted abnormally with code" << p_exitCode << ".";
+            qDebug() << "(core) [PluginHandle] Plug-in" << name() << "has exitted abnormally with code" << p_exitCode << ".";
             emit crashed();
         }
         else catchExit (p_exitCode, QProcess::NormalExit);
@@ -172,7 +180,7 @@ void PluginHandle::catchExit (int p_exitCode, const QProcess::ExitStatus& p_exit
 
 void PluginHandle::catchStart()
 {
-    qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "running.";
+    qDebug() << "(core) [PluginHandle] Plug-in" << name() << "running.";
     emit started();
 }
 
@@ -185,17 +193,30 @@ void PluginHandle::catchError (const QProcess::ProcessError& p_err) const
     case QProcess::Crashed:
 
         if (d->process->exitCode() != 0)
-            qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has crashed.";
+            qDebug() << "(core) [PluginHandle] Plug-in" << name() << "has crashed.";
 
         break;
 
     case QProcess::FailedToStart:
-        qDebug() << "(core) [PluginPluginHandle] Plug-in" << name() << "has failed to start.";
+        qDebug() << "[PluginHandle] Plug-in" << name() << "has failed to start.";
         break;
 
     default:
         qDebug() << d->process->errorString();
         break;
+    }
+}
+
+void PluginHandle::on_watcher_fileChanged (const QString& p_path)
+{
+    Q_D (const PluginHandle);
+    const QString library = d->settings->value ("Version/Library").toString();
+    const QString libraryPth = QString (WINTER_PLUGIN_PATH) + "/lib" + library + ".so";
+
+    if (p_path == libraryPth){
+        qDebug() << "[PluginHandle] Library update. Forcing reloading of plug-in.";
+        stop();
+        start();
     }
 }
 

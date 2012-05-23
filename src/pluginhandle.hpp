@@ -70,6 +70,7 @@ signals:
 public slots:
     void stop();
     void start();
+    void on_watcher_fileChanged (const QString& p_path);
 
 private slots:
     void on_process_readyReadStdOut();

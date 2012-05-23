@@ -30,9 +30,10 @@
 #include <QObject>
 #include <QDebug>
 #include <QTime>
+#include <global.hpp>
 
-namespace Wintermute
-{
+WINTER_BEGIN_NAMESPACE
+
 class Logging;
 
 /// @todo Allow triggering the saving of such logs to disc.
@@ -58,7 +59,8 @@ private:
     Logging();
     static Logging* s_inst;
 };
-} // namespace
+
+WINTER_END_NAMESPACE
 
 #endif
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

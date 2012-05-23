@@ -25,6 +25,7 @@
  */
 
 #include <global.hpp>
+#include <QFileSystemWatcher>
 
 WINTER_FORWARD_DECLARE_CLASS(PluginHandle)
 
@@ -38,7 +39,7 @@ struct PluginHandlePrivate {
     QString uuid;
     QProcess* process;
     QSettings* settings;
-
+    QFileSystemWatcher* watcher;
 };
 
 WINTER_END_NAMESPACE
