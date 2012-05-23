@@ -31,6 +31,7 @@
 // Since we don't need sessions...
 #undef QT_NO_SESSIONMANAGER
 
+// Grab some standard headers from Qt; we'll need them.
 #include <QtGlobal>
 #include <QDebug>
 #include <QDataStream>
@@ -42,9 +43,26 @@
 #cmakedefine01 WINTER_DEPRECATED_WARNINGS
 
 // ** Symbol exporting **
+/**
+ * @def WINTER_EXPORT
+ * @ingroup WintermuteMacros
+ * @brief Determines the importing or exporting of dynamic symbols.
+ * @note If you're defining a library using Wintermute's headers but don't use
+ * pass WINTER_EXPORT as a variable, be sure to #define or #undef WINTER_EXPORT
+ * before including global.hpp.
+ *
+ * Use this macro to define the exporting or importing of symbols from a library.
+ * This macro is automatically updated by one of two values, WINTER_IMPORT_SYMBOL
+ * or WINTER_EXPORT_SYMBOL.
+ *
+ * @def WINTER_IMPORT_SYMBOL
+ * @ingroup WintermuteMacros
+ * @brief
+ */
 #define WINTER_IMPORT_SYMBOL Q_DECL_IMPORT
 #define WINTER_EXPORT_SYMBOL Q_DECL_EXPORT
 
+// Set up WINTER_EXPORT as defined.
 #ifdef WINTER_EXPORT
 # define WINTER_EXPORT WINTER_EXPORT_SYMBOL
 #else
@@ -119,10 +137,9 @@
 #endif
 
 // ** Hooks for Qt's QMetaType system **
-#define WINTER_DECLARE_METATYPE(Class) \
-QDataStream &operator<<(QDataStream &out, const Class &obj);\
-QDataStream &operator>>(QDataStream &in, Class &obj);\
-Q_DECLARE_METATYPE(Class); \
+#define WINTER_DECLARE_METATYPE_OPERATORS(Class) \
+QDataStream &operator<<(QDataStream &out);\
+QDataStream &operator>>(QDataStream &in);\
 
 // *** Opaque pointer add-ons ***
 #define WINTER_DECLARE_PRIVATE_TEMPLATE(Class,T) \
