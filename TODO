@@ -7,6 +7,7 @@ in a collaborative manner.
 
 * Have WINTERMUTE_VERSION be populated with a commitsh from Git (up to 10 characters) [0.1-devXXXXXXXX]
  - Could do the same for Bazaar and Subversion if one can do it in CMake.
+ - This would be the verbose version of the release version.
 * Create Doxygen tag files so sub-projects related to Wintermute can cross reference.
 * Drop Boost::ProgramOptions and implement a more flexible command-line parsing system. -- CHECK (jalcine)
 * Provide more of a unified building experience with CMake.
@@ -28,3 +29,6 @@ in a collaborative manner.
    if it has QMetaObject support to make output like:
    (plugin:WapiData) [DomFormSourcePrivate/Debug] form.cpp:40 ) *MESSAGE*
  - Parts of the debugging output can be toggled on and off.
+* Rewrite the plugin definition system to be implemented in anything but CMake definitions.
+ - Possibly JSON, much cleaner than XML.
+ - Move such information into the WntrSDK instead of being in the core definitions.
