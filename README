@@ -29,7 +29,7 @@ Please visit http://www.thesii.org/wiki/Wintermute#Download to see if your
 system is currently supported. Otherwise, see the INSTALL file for information
 about building Wintermute on your system.
 
-Plug-ins and Language Bindings
+## Plug-ins and Language Bindings
 
 We've currently added the ability to integrate and build plug-ins into
 Wintermute's core libraries. We're working on adding support for other language
