@@ -97,7 +97,7 @@ void IPC::start()
     if (!serviceRegistered && objectName == "master") {
         qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << serviceName << ")"
                  << "under the same user on the same computer";
-        Core::exit (WINTER_EXITCODE_DBUS_MULTIPLEINSTANCE);
+        Core::exit (WINTER_EXITCODE_DBUS | WINTER_EXITCODE_NORMAL);
     }
 
     if (serviceRegistered)

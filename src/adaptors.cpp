@@ -42,7 +42,7 @@
 
 WINTER_USE_NAMESPACE
 
-AbstractAdaptorPrivate::AbstractAdaptorPrivate (AbstractAdaptor* p_qPtr) : q_ptr (p_qPtr)
+AbstractAdaptorPrivate::AbstractAdaptorPrivate (AbstractAdaptor* p_qPtr) : q_ptr (p_qPtr), timer(0), isCore(false)
 {
 
 }

@@ -1,6 +1,6 @@
 # Finds Wintermute and its development files.
 #
-#   WINTERMUTE_VERSION                  - the current installed version of Wintermute.
+#   WINTERMUTE_VERSION
 #   WINTERMUTE_INCLUDE_DIR
 #   WINTERMUTE_INCLUDE_DIRS
 #   WINTERMUTE_LIBRARIES

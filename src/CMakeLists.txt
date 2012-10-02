@@ -8,7 +8,7 @@ include(UseWintermute)
 configure_file("${PROJECT_SOURCE_DIR}/global.hpp.in"
                "${PROJECT_SOURCE_DIR}/global.hpp" @ONLY)
 
-file(GLOB_RECURSE WINTERMUTE_SOURCES "*.cpp")
+file(GLOB WINTERMUTE_SOURCES "*.cpp")
 
 set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR}

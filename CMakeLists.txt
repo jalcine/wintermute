@@ -6,13 +6,18 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 ## Options for Wintermute's build.
 option(WINTER_DEPRECATED_WARNINGS "Should Wintermute report warnings about deprecated methods?" ON)
+option(WINTER_USE_QT_SESSIONS     "Will Wintermute utilize Qt's session storage?" OFF)
 
 ## Packages
+# Wintermute provides the QtGui library only to provide support for graphical
+# interfaces later into the future. This also allows for applications to display
+# such GUIs when needed. This might cause a problem in the future if we want to
+# make Wintermute lighter and use less libraries.
 find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
     QtCore
     QtGui
     QtDBus
-    REQUIRED)
+REQUIRED)
 
 ## Main variables
 set(PROJECT_LABEL "Wintermute")

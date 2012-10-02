@@ -3,15 +3,6 @@
 # Wintermute development.
 #
 #
-#   - macro wntr_make_docs(PATH <path>
-#                          INSTALL_PATH <path>
-#                          VERSION <version>
-#                          [EXAMPLE_PATH <examples>]
-#                          [EXCLUDE_PATH <path>]
-#                          [IMAGE_PATH <path>]
-#                          [USE_EXAMPLES])
-#
-
 #=============================================================================
 # Copyright (c) 2012 Jacky Alcine   <jacky.alcine@thesii.org>
 #           (c) 2012 Adrian Borucki <adrian@thesii.org>
@@ -31,7 +22,14 @@ find_package(PkgConfig)
 include(WintermuteDefaults)
 include(UseWintermute)
 
-## Set up documentation.
+## Set up documentation for a list of files in a directory.
+## Arguments:
+## - EXAMPLE_PATH - Locations at which example files can be found.
+## - EXCLUDE_PATH - Locations at where the documentation engine should not search for code.
+## - IMAGE_PATH   - Location at which the images are to be copied from into Doxygen.
+## - INSTALL_PATH - Location at which the documentation should be installed on the system.
+## - VERSION      - The version to display within the documentation.
+## - PATH
 macro(wntr_make_docs)
     set(__var_optional USE_EXAMPLES)
     set(__var_single   EXAMPLE_PATH
@@ -44,7 +42,9 @@ macro(wntr_make_docs)
     cmake_parse_arguments(docs "${__var_optional}" "${__var_single}" "" ${ARGN})
 
     include(Documentation)
+    
     if (BUILD_DOCUMENTATION)
+        
         if (DOXYGEN_FOUND)
             configure_file("${WINTER_CURRENT_CMAKE_DIR}/Doxyfile.in"
                             "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
@@ -59,15 +59,22 @@ macro(wntr_make_docs)
                     DESTINATION ${docs_INSTALL_PATH})
 
         else (DOXYGEN_FOUND)
-            message(STATUS "Doxygen wasn't found; can't generate documentation of C/C++ sources.")
+           message(WARNING "Doxygen wasn't found; can't generate documentation of sources.")
         endif(DOXYGEN_FOUND)
+        
     endif(BUILD_DOCUMENTATION)
+    
 endmacro(wntr_make_docs)
 
+## Obtains a variable as defined from the pkg-config system.
+## Arguments:
+## - _package = The name of the package to search for with PkgConfig.
+## - _var     = The variable to search for in '_package'.
+## - _output_variable = The resulting variable to hold the value of PkgConfig.
 macro(pkgconfig_getvar _package _var _output_variable)
   set(${_output_variable})
 
-  # if pkg-config has been found
+  # If pkg-config has been found, jump for joy!
   if(PKG_CONFIG_FOUND)
 
     execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE} ${_package} --exists
@@ -80,15 +87,19 @@ macro(pkgconfig_getvar _package _var _output_variable)
                       OUTPUT_VARIABLE ${_output_variable})
 
     else(NOT _return_VALUE)
-      message(WARNING "PkgConfig: ${_package} not found.")
+      message(FATAL_ERROR "[PkgConfig] ${_package} not found.")
     endif(NOT _return_VALUE)
 
   else(PKG_CONFIG_FOUND)
-    message(FATAL_ERROR "PkgConfig not found.")
+    message(FATAL_ERROR "[PkgConfig] Pkg-Config executable not found.")
   endif(PKG_CONFIG_FOUND)
-
+  
 endmacro(pkgconfig_getvar _package _var _output_variable)
 
+## Adds in a D-Bus service file for the specified binary.
+## Only works if D-Bus can be found.
+## Arguments;
+## - _sources = The D-Bus service file that will be installed to the platform.
 macro(dbus_add_activation_service _sources)
     pkgconfig_getvar(dbus-1 session_bus_services_dir _install_dir)
     string(STRIP "${_install_dir}" _install_dir)
@@ -110,6 +121,8 @@ macro(dbus_add_activation_service _sources)
 
 endmacro(dbus_add_activation_service _sources)
 
+# Defines a plug-in for Wintermute.
+# @todo This has to be reduced in workload, has to be an easier way.
 macro(wntr_define_plugin)
     set(__val_optional ENABLED)
     set(__val_multi DEPENDS_PLUGINS
@@ -134,7 +147,7 @@ macro(wntr_define_plugin)
                          ${ARGN})
 
     if (NOT DEFINED WDP_ENABLED)
-        set(WPD_ENABLED "true")
+        set(WPD_ENABLED TRUE)
     endif (NOT DEFINED WDP_ENABLED)
 
     set(__specpath "${PROJECT_BINARY_DIR}/${WDP_UUID}.spec")

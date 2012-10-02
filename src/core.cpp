@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <jacky.alcine@thesii.org>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <jacky.alcine@thesii.org>
  * @date 05/02/12 1:23:32 PM
  */
 
@@ -57,7 +57,7 @@ void CorePrivate::configure (int& p_argc, char** p_argv)
     Q_Q (Core);
     app = new QApplication (p_argc, p_argv);
     app->setApplicationName ("Wintermute");
-    app->setApplicationVersion (QString::number (WINTER_VERSION));
+    app->setApplicationVersion (WINTER_VERSION_STR);
     app->setOrganizationDomain ("thesii.org");
     app->setOrganizationName ("Synthetic Intellect Institute");
     q->connect (app, SIGNAL (aboutToQuit()), q, SLOT (stop()));

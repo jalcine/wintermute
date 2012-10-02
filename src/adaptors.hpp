@@ -144,6 +144,10 @@ public slots:
     Q_INVOKABLE QStringList loadedPlugins() const;
 };
 
+/**
+ * @class PluginAdaptor
+ * The PluginAdaptor represents
+ */
 class PluginAdaptor : public AbstractAdaptor
 {
     Q_OBJECT
@@ -162,6 +166,9 @@ public slots:
     virtual void loadBackend (const QString& p_uuid);
 };
 
+/**
+ * @class CoreAdaptor
+ */
 class CoreAdaptor : public AbstractAdaptor
 {
     Q_OBJECT

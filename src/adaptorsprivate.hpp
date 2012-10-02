@@ -1,7 +1,7 @@
 /***
  *  This file is part of Wintermute.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <jacky.alcine@thesii.org>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -24,15 +24,28 @@
 WINTER_BEGIN_NAMESPACE
 
 class AbstractAdaptor;
+
+/**
+ * @class AbstractAdaptorPrivate
+ * Handles the internal interactions of the AbstractAdaptor.
+ */
 struct AbstractAdaptorPrivate {
     Q_DECLARE_PUBLIC (AbstractAdaptor)
     AbstractAdaptorPrivate (AbstractAdaptor* p_qPtr);
     virtual ~AbstractAdaptorPrivate();
+
+    /**
+     * @fn detect
+     * Detects if the core instance of Wintermute is alive.
+     * @return void
+     */
+    void detect() const;
+
+    AbstractAdaptor* q_ptr;
     QTimer* timer;
     mutable bool isCore;
-    void detect() const;
-    AbstractAdaptor* q_ptr;
 };
 
 WINTER_END_NAMESPACE
+
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

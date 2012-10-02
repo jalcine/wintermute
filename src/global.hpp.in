@@ -14,7 +14,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- *
  */
 
 /**
@@ -28,8 +27,12 @@
 #ifndef WINTERMUTE_GLOBAL_HPP
 #define WINTERMUTE_GLOBAL_HPP
 
-// Since we don't need sessions...
-#undef QT_NO_SESSIONMANAGER
+// Determine if we'll use Qt's session utility.
+// Typically turned off.
+#define WINTER_USE_QT_SESSIONS @WINTER_USE_QT_SESSIONS@
+#if WINTER_USE_QT_SESSIONS
+# undef QT_NO_SESSIONMANAGER
+#endif
 
 // Grab some standard headers from Qt; we'll need them.
 #include <QtGlobal>
@@ -62,7 +65,7 @@
 #define WINTER_IMPORT_SYMBOL Q_DECL_IMPORT
 #define WINTER_EXPORT_SYMBOL Q_DECL_EXPORT
 
-// Set up WINTER_EXPORT as defined.
+// ** Set up WINTER_EXPORT as defined. **
 #ifdef WINTER_EXPORT
 # define WINTER_EXPORT WINTER_EXPORT_SYMBOL
 #else
@@ -103,23 +106,27 @@
 #define WINTER_DEBUG_TIMESTAMPS false
 
 // *** Exit codes ***
-// Codes with 0fX are reserved by Wintermute's internal system.
-#define WINTER_EXITCODE_NORMAL                0x000
-#define WINTER_EXITCODE_FATAL                 0xfff
+// This helps developers and Wintermute alike recognize the exit
+// state of an execution.
+
+// == Standard codes ==
+#define WINTER_EXITCODE_NORMAL                0x0000
+#define WINTER_EXITCODE_REBOOT                0x0001
+#define WINTER_EXITCODE_
+#define WINTER_EXITCODE_FATAL                 0xffff
 
 // Codes with 01X are for D-Bus.
-#define WINTER_EXITCODE_DBUS_UNKNOWNERROR     0x010
-#define WINTER_EXITCODE_DBUS_MULTIPLEINSTANCE 0x011
+#define WINTER_EXITCODE_DBUS                  0x0010
 
 // *** Debug output levels ***
-#define WINTER_DEBUG_NONE     0x0
-#define WINTER_DEBUG_INFO     0x1
-#define WINTER_DEBUG_WARN     0x2
-#define WINTER_DEBUG FATAL    0x3
-#define WINTER_DEBUG_CRITICAL 0x4
+#define WINTER_DEBUG_NONE     0x000
+#define WINTER_DEBUG_INFO     0x001
+#define WINTER_DEBUG_WARN     0x002
+#define WINTER_DEBUG FATAL    0x003
+#define WINTER_DEBUG_CRITICAL 0x004
 
 // *** Namespace and forward declaration utilities. ***
-#define WINTER_NAMESPACE Wintermute
+#define WINTER_NAMESPACE Wntr
 #define WINTER_PREPEND_NAMESPACE(name) ::WINTER_NAMESPACE::name
 #define WINTER_USE_NAMESPACE using namespace ::WINTER_NAMESPACE;
 #define WINTER_BEGIN_NAMESPACE namespace WINTER_NAMESPACE {
@@ -135,6 +142,9 @@
 #ifdef WINTER_NAMESPACE
     namespace WINTER_NAMESPACE { }
 #endif
+
+#define WINTER_DECLARE_METATYPE(Class) \
+Q_DECLARE_METATYPE(Class) \
 
 // ** Hooks for Qt's QMetaType system **
 #define WINTER_DECLARE_METATYPE_OPERATORS(Class) \
@@ -155,32 +165,28 @@ friend class Class<T>;
 #define WINTER_D_Q_TEMPLATE(Class,T) Class##Private<T> * const d = d_func()
 #define WINTER_Q_Q_TEMPLATE(Class,T) Class<T> * const q = q_func()
 
-
 // Nifty debugging macros.
-#define TRACE_MSG fprintf(stderr, __FUNCTION__     \
+#define TRACE_MSG fprintf(stderr, __FUNCTION__  \
 "() [%s:%d] here I am\n", \
 __FILE__, __LINE__)
 
 #define WINTER_SINGLETON(Type) \
 private:\
     Type();\
-    inline static void __doDeleteLater() {\
-        qDebug() << "[WINTER_SINGLETON()] Deleting singleton instance of " #Type << ".";\
-    }\
-    static Type* __instance;\
+    static Type* __inst;\
 \
 public:\
     static inline Type* instance ( )\
     {\
-        if (__instance == 0)\
+        if (__inst == 0)\
         {\
-            __instance = new Type;\
+            __inst = new Type;\
             qDebug() << "[WINTER_SINGLETON()] Created singleton instance of " #Type << ".";\
         }\
-        return __instance;\
+        return __inst;\
     }\
 
-#define WINTER_SINGLETON_DEFINE(Type) Type* Type::__instance = 0;
+#define WINTER_SINGLETON_DEFINE(Type) Type* Type::__inst = 0;
 
 /**
  * @def WINTER_DEPRECATED

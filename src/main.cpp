@@ -27,7 +27,7 @@
 #include <QApplication>
 #include "wintermute.hpp"
 
-using namespace Wintermute;
+WINTER_USE_NAMESPACE
 
 int main (int p_argc, char** p_argv)
 {
