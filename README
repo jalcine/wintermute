@@ -3,13 +3,14 @@
 =========================
 
 An artificial intelligence agent for the Linux desktop.
+
 ****
 
-## Introduction
+## Abstract
 
-This module represents the central application that is the skeletal glue
-of Wintermute. It binds all of the sub-components into one huge big blob
-of awesome :).
+This repository contains the source code and information to required to build
+the core instance that harbors each extension and form of Wintermute on desktop
+machines.
 
 ## About Wintermute
 
@@ -27,9 +28,9 @@ Ashton <dante.ashton@thesii.org>, CPU/CEO of the Synthetic Intellect Institute.
 ## Running Wintermute
 
 Wintermute may be already bundled up for your operating system distribution.
-Please visit http://www.thesii.org/wiki/Wintermute#Download to see if your
-system is currently supported. Otherwise, see the INSTALL file for information
-about building Wintermute on your system.
+Please visit the (Packages)[https://github.com/thesii.org/wiki/Downloads#Distributions]
+to see if your system is currently supported. Otherwise, see the `INSTALL` file for
+information about building Wintermute on your system.
 
 ## Plug-ins and Language Bindings
 
@@ -42,10 +43,10 @@ current bindings for the APIs for more information.
 ## Documentation
 
 Practically all of the documentation that's done for Wintermute is stored
-on-line at http://www.thesii.org/wiki. Feel free to not only search that
-site, but also enter our IRC channel (#sii or #sii-dev, both on
-FreeNode) to ask questions about Wintermute and how you can assist. Check out
-http://www.thesii.org/wiki/Development.
+on-line at (GitHub)[https://github.com/thesii/wintermute/wiki]. Feel free 
+to not only search the Wiki, but also enter our IRC channel (`#sii` or `#sii-dev`
+, both on FreeNode) to ask questions about Wintermute and how you can assist. Check out
+the [Contribs page](https://github.thesii/wintermute/wiki/Contributing).
 
 ## Reporting and Contributing to the Cause
 
