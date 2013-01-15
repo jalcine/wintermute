@@ -10,4 +10,3 @@ install(FILES ${TEMPLATE_FILES}
 
 add_subdirectory(Modules)
 add_subdirectory(doc)
-add_subdirectory(scripts)
