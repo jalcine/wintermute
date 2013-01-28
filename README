@@ -28,7 +28,7 @@ Ashton <dante.ashton@thesii.org>, CPU/CEO of the Synthetic Intellect Institute.
 ## Running Wintermute
 
 Wintermute may be already bundled up for your operating system distribution.
-Please visit the (Packages)[https://github.com/thesii.org/wiki/Downloads#Distributions]
+Please visit the [Packages](https://github.com/thesii.org/wiki/Downloads#Distributions)
 to see if your system is currently supported. Otherwise, see the `INSTALL` file for
 information about building Wintermute on your system.
 
@@ -43,7 +43,7 @@ current bindings for the APIs for more information.
 ## Documentation
 
 Practically all of the documentation that's done for Wintermute is stored
-on-line at (GitHub)[https://github.com/thesii/wintermute/wiki]. Feel free 
+on-line at [GitHub](https://github.com/thesii/wintermute/wiki). Feel free 
 to not only search the Wiki, but also enter our IRC channel (`#sii` or `#sii-dev`
 , both on FreeNode) to ask questions about Wintermute and how you can assist. Check out
 the [Contribs page](https://github.thesii/wintermute/wiki/Contributing).
