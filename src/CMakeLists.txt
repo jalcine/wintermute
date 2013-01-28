@@ -31,20 +31,25 @@ include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 wntr_automoc("${WINTERMUTE_SOURCES}")
 wntr_make_docs(PATH "${PROJECT_SOURCE_DIR}")
 
-## Targets
+## TARGET
+## ======
+## = Define and describe the Wintermute executable.
 add_executable(wintermute ${WINTERMUTE_SOURCES})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 set_target_properties(wintermute PROPERTIES
     DEFINE_SYMBOL "WINTER_EXPORT"
-    VERSION ${WINTERMUTE_VERSION}
+    VERSION "${WINTERMUTE_VERSION}"
     COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
     COMPILE_FLAGS "${WINTERMUTE_COMPILE_FLAGS}")
 
-## Installs
+## INSTALLATIONS
+## =============
+## = Installs the artificats generated.
 install(TARGETS wintermute
+        EXPORT WintermuteDepends
         RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
         COMPONENT bin)
-
+        
 wntr_install_headers(HEADERS_PATH "${PROJECT_SOURCE_DIR}"
                      DESTINATION  "${WINTER_INCLUDE_INSTALL_DIR}")
 

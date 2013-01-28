@@ -1,10 +1,21 @@
 cmake_minimum_required(VERSION 2.8)
 
+# Ensure we get some paths right.
+include(GNUInstallDirs)
+
+# Configure the variable definition and discovery file for Wintermute.
+configure_file("${CMAKE_SOURCE_DIR}/cmake/Modules/WintermuteDefaults.cmake.in"
+               "${CMAKE_BINARY_DIR}/cmake/Modules/WintermuteDefaults.cmake" @ONLY)
+
+configure_file("${CMAKE_SOURCE_DIR}/cmake/Modules/FindWintermute.cmake.in"
+               "${CMAKE_BINARY_DIR}/cmake/Modules/FindWintermute.cmake" @ONLY)
+
+# Find all of the generated and static modules.
+file(GLOB WINTER_CMAKE_MODULES "${CMAKE_SOURCE_DIR}/cmake/Modules/*.cmake"
+                               "${CMAKE_BINARY_DIR}/cmake/Modules/*.cmake")
+
+# Install the modules discovered.
 include(WintermuteDefaults)
-
-file(GLOB WINTER_CMAKE_MODULES "*.cmake")
-
 install(FILES ${WINTER_CMAKE_MODULES}
-              "${CMAKE_BINARY_DIR}/InstallFiles/FindWintermute.cmake"
-        DESTINATION "${CMAKE_RECENT_MODULE_DIR}"
-        COMPONENT dev)
+  DESTINATION "${WINTER_CMAKE_MODULES_DIR}"
+  COMPONENT dev)
