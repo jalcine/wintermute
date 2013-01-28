@@ -1,0 +1,10 @@
+# Testing Wintermute
+
+As a new shift, (test driven development)[http://en.wikipedia.org/wiki/Test-driven_development] is one of the
+biggest practices we try to follow here at the Synthetic Intellect Institute, and as such, in the Wintermute
+project. We recommend that before you attempt to define a feature or expectation to write out a test for it
+and then build code that ensures the test and the rest of the test suite passes.
+
+## Testing Framework
+Being that Wintermute uses Qt throughout its code, we use Qt's testing tools in our suite.
+All of the tests can be invoked by running `make test` from the top-level directory.

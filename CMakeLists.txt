@@ -33,4 +33,5 @@ include(WintermuteMacros)
 ## include paths.
 add_subdirectory(cmake)
 add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(data)
