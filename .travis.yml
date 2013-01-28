@@ -4,7 +4,7 @@ compiler:
   - clang
 before_script:
   - mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug
-script: make test
+script: ./test/test.sh
 branches:
   only:
    - master

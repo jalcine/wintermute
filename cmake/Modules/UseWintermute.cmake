@@ -1,7 +1,5 @@
 # Internal file for use of Wintermute. This file is included if you do
-# find_package(Wintermute). This file automatically includes Qt's CMake
-# file (UseQt4.cmake) so you need only include this file as a convenience
-# wrapper.
+# find_package(Wintermute). 
 #
 
 #=============================================================================
@@ -16,11 +14,14 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+## Don't load me twice.
+if (DEFINED WINTER_CURRENT_CMAKE_DIR)
+    return()
+endif()
+
+## Include the awesome macros.
 include(WintermuteDefaults)
-if (NOT DEFINED QT4_FOUND)
-    include(FindQt4)
-    include("${QT_USE_FILE}")
-endif(NOT DEFINED QT4_FOUND)
+include(WintermuteMacros)
 
 ##
 ## Prerequisites
@@ -30,17 +31,21 @@ endif(NOT DEFINED QT4_FOUND)
 ##  WINTER_CURRENT_CMAKE_DIR - Defines the location at which Wintermute-specific
 ##                             CMake data would be stored.
 ##
-set(WINTER_CURRENT_CMAKE_DIR "" CACHE PATH "The preferred path for Wintermute's CMake data.")
+set(WINTER_CURRENT_CMAKE_DIR "${WINTER_CMAKE_DIR}" CACHE PATH "The preferred path for Wintermute's CMake data.")
 
 if (PROJECT_LABEL STREQUAL "Wintermute")
+    message(STATUS "Building Wintermute's core from sources...")
     set(WINTER_CURRENT_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake")
+    set(WINTER_CURRENT_CMAKE_DATA_DIR "${CMAKE_SOURCE_DIR}/cmake")
 else(PROJECT_LABEL STREQUAL "Wintermute")
+    message(STATUS "Building component for Wintermute...")
     set(WINTER_CURRENT_CMAKE_DIR "${WINTER_CMAKE_DIR}")
-    list(APPEND CMAKE_MODULE_PATH "${WINTER_CMAKE_DIR}")
+    set(WINTER_CURRENT_CMAKE_DATA_DIR "${WINTER_CMAKE_DATA_DIR}")
 endif(PROJECT_LABEL STREQUAL "Wintermute")
 
+list(APPEND CMAKE_MODULE_PATH "${WINTER_CURRENT_CMAKE_DIR}")
 ##
-## O. Set up an installation target for this project.
+## 1. Set up an uninstallation target for this project.
 ## -----------------------------------------------------------------------------
 ## Now, the precarious thing about this is that we have to make sure
 ## that the template for un-installing is available.
@@ -49,19 +54,18 @@ endif(PROJECT_LABEL STREQUAL "Wintermute")
 ##       folder even if there's a top-level project uninstall target defined.
 ##
 if (NOT TARGET uninstall)
-    set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_CURRENT_CMAKE_DIR}/cmake_uninstall.cmake.in")
+    set(CMAKE_UNINSTALL_TEMPLATE "${WINTER_CURRENT_CMAKE_DATA_DIR}/cmake_uninstall.cmake.in")
 
     configure_file("${CMAKE_UNINSTALL_TEMPLATE}"
                    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
                    @ONLY)
 
-    add_custom_target(uninstall
-                      "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
+    add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
 endif(NOT TARGET uninstall)
 
 
 ##
-## 1. Plug-in specific work.
+## 2. Plug-in specific work.
 ## -----------------------------------------------------------------------------
 ## Inform the build system about things that Wintermute's plug-in building might
 ## need in order to provide full functionality.

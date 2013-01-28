@@ -66,7 +66,7 @@ void IPC::start()
 {
     instance()->d_func()->connection = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
     bool serviceRegistered = false;
-    const QString plgn = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
+    const QString plugin = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
     QString serviceName = WINTER_DBUS_SERVICE_NAME;
     QString objectName;
 
@@ -85,7 +85,7 @@ void IPC::start()
         instance()->d_func()->adaptor = coreAdaptor;
     }
     else if (module() == WINTER_COMMAND_LINE_IPC_PLUGIN) {
-        objectName = "Plugin." + plgn;
+        objectName = "Plugin." + plugin;
         QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (loadStandardPlugin()));
         QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (unloadStandardPlugin()));
     }
