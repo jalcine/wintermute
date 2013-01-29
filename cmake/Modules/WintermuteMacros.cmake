@@ -16,11 +16,9 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-# @todo Add documentation about macros used in Wintermute.
-
 find_package(PkgConfig)
-include(WintermuteDefaults)
 include(UseWintermute)
+include(Qt4Macros)
 
 ## Set up documentation for a list of files in a directory.
 ## Arguments:

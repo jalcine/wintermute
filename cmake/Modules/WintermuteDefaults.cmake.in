@@ -1,4 +1,3 @@
-cmake_policy(SET CMP0017 NEW)
 # Provides some vital variables that are used by Wintermute.
 #
 #   WINTER_BUILD_TYPE
@@ -6,7 +5,7 @@ cmake_policy(SET CMP0017 NEW)
 #
 
 #=============================================================================
-# Copyright (c) 2012 Jacky Alcine <jacky.alcine@thesii.org>
+# Copyright (c) 2012 - 2013 Jacky Alcine <jacky.alcine@thesii.org>
 #           (c) 2012 Adrian Borucki <adrian@thesii.org>
 #
 # This module is free software; you can redistribute it and/or
@@ -43,13 +42,14 @@ set(WINTER_PLUGIN_INSTALL_DIR          "${WINTER_LIB_INSTALL_DIR}/wintermute"   
 set(WINTER_PLUGIN_INCLUDE_INSTALL_DIR  "${WINTER_INCLUDE_INSTALL_DIR}/plugins"          CACHE PATH "Path to plugin header installation path.")
 set(WINTER_PLUGIN_DATA_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/plugins"             CACHE PATH "Path to plugin data installation path.")
 set(WINTER_PLUGIN_SPEC_INSTALL_DIR     "${WINTER_DATA_INSTALL_DIR}/specs"               CACHE PATH "Path to plugin specification installation path.")
+set(WINTER_CMAKE_MODULES_DIR           "@CMAKE_INSTALL_FULL_DATAROOTDIR@/cmake-@CMAKE_MAJOR_VERSION@.@CMAKE_MINOR_VERSION@/Modules" CACHE PATH "Path to dump Wintermute's CMake modules in a discoverable location.")
+set(WINTERMUTE_INCLUDE_DIR             "${WINTER_INCLUDE_INSTALL_DIR}")
 
-set(WINTER_QT_VERSION                  "4.8"                                           CACHE STRING "The minimum version of Qt to be used to build Wintermute.")
-set(WINTER_IS_PLUGIN                   OFF)
-
+## OPTIONS
+## =======
 set(WINTERMUTE_COMPILE_DEFINITIONS     "WINTERMUTE;"                                   CACHE STRING "Compile definitions for Wintermute.")
+set(WINTER_IS_PLUGIN                   OFF)
 set(WINTERMUTE_COMPILE_FLAGS           "-std=c++0x -Wabi -Wall -Wextra -ggdb -Wctor-dtor-privacy -Wformat -Wunused -O0" CACHE STRING "Compilation files to be used with Wintermute.")
-set(WINTER_CMAKE_MODULES_DIR           "@CMAKE_INSTALL_FULL_DATAROOTDIR@/cmake/Modules" CACHE PATH "Path to dump Wintermute's CMake modules in a discoverable location.")
 
+# Make sure that the developer can find our modules.
 list(APPEND CMAKE_MODULE_PATH ${WINTER_CMAKE_MODULES_DIR})
-

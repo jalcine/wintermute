@@ -20,23 +20,11 @@ set(WINTERMUTE_MAJOR_VERSION 0)
 set(WINTERMUTE_MINOR_VERSION 1)
 set(WINTERMUTE_PATCH_VERSION 0)
 set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}-${WINTERMUTE_PATCH_VERSION}")
-add_subdirectory(cmake)
-
-## PACKAGES
-## ========
-# Wintermute provides the QtGui library only to provide support for graphical
-# interfaces later into the future. This also allows for applications to display
-# such GUIs when needed. This might cause a problem in the future if we want to
-# make Wintermute lighter and use less libraries.
-find_package(Qt4 ${WINTER_QT_VERSION} COMPONENTS
-    QtCore
-    QtGui
-    QtDBus
-REQUIRED)
 
 ## SUBDIRECTORY INCLUDES
 ## =====================
 ## As with most projects, the order of loading is important.
+add_subdirectory(cmake)
 add_subdirectory(src)
 #add_subdirectory(test)
 #add_subdirectory(data)

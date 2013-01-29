@@ -26,10 +26,14 @@
 #  License text for the above reference.)
 
 include(FindPackageHandleStandardArgs)
+include(WintermuteDependencies)
 include(WintermuteDefaults)
-
 set(_winty_plugins)
 
+## COMPONENTS
+## =========
+## = Determine sub components to be loaded and discovered.
+## = @TODO Have CMake do a find_package().
 if (Wintermute_FIND_COMPONENTS)
   foreach(component ${Wintermute_FIND_COMPONENTS})
     string( TOLOWER ${component} _COMPONENT )
@@ -37,22 +41,27 @@ if (Wintermute_FIND_COMPONENTS)
   foreach(component ${Wintermute_FIND_COMPONENTS})
 endif (Wintermute_FIND_COMPONENTS)
 
+## FIXED VARIABLES
+## ===============
+## = Values that are set at build-time for Wintermute. This hard-coded values
+## = ensure stability of the application and its components.
 set(WINTERMUTE_VERSION              "@WINTERMUTE_VERSION@")
-set(WINTERMUTE_INCLUDE_DIR          "@WINTER_INCLUDE_INSTALL_DIR@")
-set(WINTERMUTE_INCLUDE_DIRS         "@WINTERMUTE_INCLUDE_DIRS@")
-set(WINTERMUTE_LIBRARIES            "@WINTERMUTE_LIBRARIES@")
-set(WINTERMUTE_INCLUDE_DIRS         "@WINTERMUTE_INCLUDE_DIRS@"
-                                    "@WINTERMUTE_INCLUDE_DIR@")
-set(WINTERMUTE_LIBRARY_DIRS         "@WINTER_LIB_INSTALL_DIR@")
-set(WINTERMUTE_COMPILE_FLAGS        "@WINTERMUTE_COMPILE_FLAGS@")
-set(WINTERMUTE_COMPILE_DEFINITIONS  "@WINTERMUTE_COMPILE_DEFINITIONS@")
-set(WINTER_DEPRECATED_WARNINGS      "@WINTER_DEPRECATED_WARNINGS@")
-set(WINTER_CMAKE_DIR                "@WINTER_CMAKE_DIR@")
+set(WINTERMUTE_EXECUTABLE           "${WINTERMUTE_BIN_INSTALL_DIR}/wintermute")
+set(WINTERMUTE_INCLUDE_DIR          "${WINTER_INCLUDE_INSTALL_DIR}")
+set(WINTERMUTE_INCLUDE_DIRS         "${WINTERMUTE_INCLUDE_DIRS}")
+set(WINTERMUTE_LIBRARIES            "${WINTERMUTE_LIBRARIES}")
+set(WINTERMUTE_LIBRARY_DIRS         "${WINTER_LIB_INSTALL_DIR}")
 
+## EXECUTABLE DISCOVERY
+## ====================
 find_program(WINTERMUTE_EXECUTABLE "wintermute" DOC "The path to the Wintermute executable.")
 
 find_package_handle_standard_args(Wintermute
-    REQUIRED_VARS WINTERMUTE_EXECUTABLE
-    VERSION_VAR   WINTERMUTE_VERSION)
+  REQUIRED_VARS WINTERMUTE_EXECUTABLE WINTERMUTE_INCLUDE_DIR WINTERMUTE_INCLUDE_DIRS WINTERMUTE_LIBRARIES WINTERMUTE_LIBRARY_DIRS QT4_FOUND
+    VERSION_VAR   WINTERMUTE_VERSION
+    FAIL_MESSAGE  "Wintermute's development files could not be found.")
 
+## MODULE LOADING
+## ==============
+## = Define the modules we'd want users to have automagically loaded.
 include(UseWintermute)
