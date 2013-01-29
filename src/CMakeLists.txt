@@ -1,38 +1,37 @@
 cmake_minimum_required(VERSION 2.8)
 project(WintermuteApplication)
 
-include(WintermuteMacros)
-include(UseWintermute)
+## MODULE INCLUDES
+## ===============
+include(FindWintermute)
 
-## Configures
+## SOURCE CODE MANIPULATION
+## ========================
+## Generate the global.hpp file for Wintermute.
 configure_file("${PROJECT_SOURCE_DIR}/global.hpp.in"
                "${PROJECT_SOURCE_DIR}/global.hpp" @ONLY)
 
+## Grab all of the files to be compiled.
 file(GLOB WINTERMUTE_SOURCES "*.cpp")
 
-set(WINTERMUTE_INCLUDE_DIR "${WINTER_INCLUDE_INSTALL_DIR}")
-set(WINTERMUTE_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR}
-    ${QT_INCLUDE_DIR}
-    ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTDBUS_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR}
-    ${WINTER_PLUGIN_INCLUDE_INSTALL_DIR})
-set(WINTERMUTE_LIBRARIES ${QT_QTCORE_LIBRARY}
-    ${QT_QTDBUS_LIBRARY}
-    ${QT_QTGUI_LIBRARY})
-set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-    "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
+## BUILD VARIABLES
+## ===============
+set(WINTERMUTE_BUILD_INCLUDE_DIRS "${WINTERMUTE_INCLUDE_DIRS}"
+    ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR})
 
+## Make sure the build environment can't find silly files.
 list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTER_PLUGIN_INCLUDE_INSTALL_DIR})
 
+## Include the build directories.
 include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 
+## Wrap up the sources and generate documentation.
 wntr_automoc("${WINTERMUTE_SOURCES}")
 wntr_make_docs(PATH "${PROJECT_SOURCE_DIR}")
 
-## TARGET
-## ======
+## TARGETS
+## =======
 ## = Define and describe the Wintermute executable.
 add_executable(wintermute ${WINTERMUTE_SOURCES})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
@@ -46,7 +45,6 @@ set_target_properties(wintermute PROPERTIES
 ## =============
 ## = Installs the artificats generated.
 install(TARGETS wintermute
-        EXPORT WintermuteDepends
         RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
         COMPONENT bin)
         
