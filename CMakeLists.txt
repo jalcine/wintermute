@@ -10,6 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules"
 ## Options for Wintermute's build.
 option(WINTER_DEPRECATED_WARNINGS "Should Wintermute report warnings about deprecated methods?" ON)
 option(WINTER_USE_QT_SESSIONS     "Will Wintermute utilize Qt's session storage?" OFF)
+option(WINTER_HEADLESS            "Build Wintermute without QtGui linked." OFF)
 
 ## CMAKE PRE-LOAD
 ## ==============
