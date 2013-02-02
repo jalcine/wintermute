@@ -37,8 +37,10 @@
 // Determines if we'd play with the GUI.
 #define WINTER_HEADLESS @WINTER_HEADLESS@
 #ifndef WINTER_HEADLESS
+#include <QCoreApplication>
 #define WINTER_APPLICATION QCoreApplication
 #else
+#include <QApplication>
 #define WINTER_APPLICATION QApplication
 #endif
 
