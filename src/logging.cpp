@@ -29,7 +29,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
-#include <QApplication>
 
 using namespace std;
 using std::string;
@@ -50,7 +49,7 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
     string str;
 #if WINTER_DEBUG_TIMESTAMPS
     const QTime tm = QTime::currentTime();
-    str = "[ T+" + tm.toString (Qt::ISODate).toStdString() + ":" + QString::number (tm.msec()).toStdString()  + " ] <p:" + QString::number (QApplication::applicationPid()).toStdString() + "> ";
+    str = "[ T+" + tm.toString (Qt::ISODate).toStdString() + ":" + QString::number (tm.msec()).toStdString()  + " ] <p:" + QString::number (WINTER_APPLICATION::applicationPid()).toStdString() + "> ";
 #endif
 
     switch (p_messageType) {

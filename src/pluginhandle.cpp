@@ -25,7 +25,6 @@
  */
 
 #include <QDebug>
-#include <QApplication>
 
 #include "ipc.hpp"
 #include "factory.hpp"
@@ -98,7 +97,7 @@ void PluginHandle::start()
 
         d->process->setProcessChannelMode (QProcess::SeparateChannels);
 
-        if (d->process->startDetached (QApplication::applicationFilePath(), args)) {
+        if (d->process->startDetached (WINTER_APPLICATION::applicationFilePath(), args)) {
             qDebug() << "(core) [PluginHandle] Forked process for plug-in" << d->uuid;
         }
 
