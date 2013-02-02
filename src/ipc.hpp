@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <jacky.alcine@thesii.org>
  * @date 04/22/12 5:42:03 AM
  */
 
@@ -36,6 +36,7 @@
 
 class QDBusAbstractAdaptor;
 class QDBusConnection;
+class QDBusMessage;
 
 WINTER_FORWARD_DECLARE_CLASS(Core)
 WINTER_FORWARD_DECLARE_CLASS(AbstractAdaptor)
@@ -120,26 +121,34 @@ public:
     static const QString module();
 
     /**
-     * @brief Obtains the currently running bus.
-     * @fn connection
-     */
-    static QDBusConnection* bus();
-
-    /**
      * @brief Obtains the adaptor being used (most likely the SystemAdaptor).
      * @fn adaptor
      */
     static AbstractAdaptor* adaptor();
 
-    static void setAdaptor(AbstractAdaptor* p_adaptor);
+    /**
+     * @brief Attaches an adaptor to be used by this module.
+     * @fn setAdaptor
+     * @param p_adaptor The adaptor to be attached.
+     */
+    static void setLocalAdaptor(AbstractAdaptor* p_adaptor);
 
     /**
      * @brief Registers an Adaptor onto the current D-Bus bus.
      * @fn registerObject
-     * @param QString The name of the Adaptor.
-     * @param Adaptor* The Adaptor to be added.
+     * @param p_path The name of the Adaptor.
+     * @param p_adaptor The Adaptor to be added.
      */
     static bool registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor);
+
+    /**
+     * @brief Calls a object's method on a different module.
+     * @fn call
+     * @param p_modulePath The module to be called.
+     * @param p_moduleClass The object within the module to be called.
+     * @param p_method The method to be called on the object.
+     */
+    static QDBusMessage call(const QString& p_modulePath, const QString& p_moduleClass, const QString& p_method);
 
 private:
     static void handleExit();

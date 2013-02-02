@@ -38,6 +38,8 @@ struct IPCPrivate {
     IPCPrivate (IPC* p_qPtr);
     ~IPCPrivate();
 
+    QDBusConnection* bus();
+
     IPC* q_ptr;
     QDBusConnection* connection;
     AbstractAdaptor* adaptor;
