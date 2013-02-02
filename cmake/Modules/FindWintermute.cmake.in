@@ -58,9 +58,8 @@ find_program(WINTERMUTE_EXECUTABLE "wintermute" DOC "The path to the Wintermute 
 
 find_package_handle_standard_args(Wintermute
   REQUIRED_VARS WINTERMUTE_EXECUTABLE WINTERMUTE_INCLUDE_DIR WINTERMUTE_INCLUDE_DIRS WINTERMUTE_LIBRARIES WINTERMUTE_LIBRARY_DIRS QT4_FOUND
-    VERSION_VAR   WINTERMUTE_VERSION
-    FAIL_MESSAGE  "Wintermute's development files could not be found.")
-
+  VERSION_VAR   WINTERMUTE_VERSION
+  FAIL_MESSAGE  "Wintermute's development files could not be found.")
 ## MODULE LOADING
 ## ==============
 ## = Define the modules we'd want users to have automagically loaded.
