@@ -34,6 +34,14 @@
 # undef QT_NO_SESSIONMANAGER
 #endif
 
+// Determines if we'd play with the GUI.
+#define WINTER_HEADLESS @WINTER_HEADLESS@
+#ifndef WINTER_HEADLESS
+#define WINTER_APPLICATION QCoreApplication
+#else
+#define WINTER_APPLICATION QApplication
+#endif
+
 // Grab some standard headers from Qt; we'll need them.
 #include <QtGlobal>
 #include <QDebug>
@@ -74,7 +82,6 @@
 
 // *** D-Bus related macros ***
 #define WINTER_DBUS_SERVICE_NAME    "org.thesii.Wintermute"
-
 #define WINTER_DBUS_FACTORY         Factory
 #define WINTER_DBUS_FACTORY_NAME    "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_FACTORY##"
 #define WINTER_DBUS_FACTORY_OBJNAME "/##WINTER_DBUS_FACTORY##"
