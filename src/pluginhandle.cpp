@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,12 +20,11 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 04/22/12 5:43:06 AM
  */
 
 #include <QDebug>
-#include <QApplication>
 
 #include "ipc.hpp"
 #include "factory.hpp"
@@ -98,7 +97,7 @@ void PluginHandle::start()
 
         d->process->setProcessChannelMode (QProcess::SeparateChannels);
 
-        if (d->process->startDetached (QApplication::applicationFilePath(), args)) {
+        if (d->process->startDetached (WINTER_APPLICATION::applicationFilePath(), args)) {
             qDebug() << "(core) [PluginHandle] Forked process for plug-in" << d->uuid;
         }
 

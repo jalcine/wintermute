@@ -24,7 +24,6 @@
 
 #include <QFile>
 #include <QDebug>
-#include <QApplication>
 
 #include "core.hpp"
 #include "factory.hpp"
@@ -335,7 +334,7 @@ void AbstractPlugin::resetAttributes()
 bool AbstractPlugin::loadLibrary() const
 {
     Q_D (const AbstractPlugin);
-    QApplication::addLibraryPath (WINTER_PLUGIN_PATH);
+    WINTER_APPLICATION::addLibraryPath (WINTER_PLUGIN_PATH);
     const QString plgnLibrary = d->settings->value ("Version/Library").toString();
     const QString plgPth = QString (WINTER_PLUGIN_PATH) + "/lib" + plgnLibrary + ".so";
     d->pluginLoader = new QPluginLoader (plgPth, Factory::instance());

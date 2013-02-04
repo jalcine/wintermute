@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jacky.alcine@thesii.org>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 04/22/12 5:41:48 AM
  */
 
@@ -42,8 +42,14 @@ WINTER_SINGLETON_DEFINE (IPC)
 
 IPCPrivate::IPCPrivate (IPC* p_qPtr) : q_ptr (p_qPtr), connection (0), adaptor (0)
 {
-
+  connection = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, "Wintermute"));
 }
+
+QDBusConnection* IPCPrivate::bus()
+{
+    return connection;
+}
+
 
 IPCPrivate::~IPCPrivate()
 {
@@ -54,7 +60,6 @@ IPCPrivate::~IPCPrivate()
 
 IPC::IPC() : QObject (qApp->instance()), d_ptr (new IPCPrivate (this))
 {
-
 }
 
 const QString IPC::module()
@@ -64,7 +69,6 @@ const QString IPC::module()
 
 void IPC::start()
 {
-    // ** Grab a new QDBusConnection for this application.
     instance()->d_func()->connection = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, WINTER_DBUS_CONNECTION));
     bool serviceRegistered = false;
     const QString plugin = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
@@ -95,10 +99,9 @@ void IPC::start()
     }
 
 
-    if (objectName != WINTER_DBUS_MASTER) serviceName += "." + objectName;
+    serviceRegistered = instance()->d_func()->bus()->registerService (serviceName);
 
     /// *** Attempt to register this application into the current D-Bus session.
-    serviceRegistered = bus()->registerService (serviceName);
 
     if (!serviceRegistered && objectName == WINTER_DBUS_MASTER) {
         /// *** @TODO: Attempt to issue a signal to the real core about this failure.
@@ -116,6 +119,7 @@ void IPC::start()
 bool IPC::registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor)
 {
     /// *** Define the options for QtDBus we'd like to use.
+    QDBusConnection* bus = instance()->d_func()->bus ();
     QDBusConnection::RegisterOptions opts = QDBusConnection::ExportAllContents
                                             | QDBusConnection::ExportAllSignals
                                             | QDBusConnection::ExportAllSlots
@@ -124,16 +128,15 @@ bool IPC::registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor
                                             | QDBusConnection::ExportChildObjects
                                             | QDBusConnection::ExportAdaptors;
 
-    if (bus()->objectRegisteredAt (WINTER_DBUS_SERVICE_NAME "."+ p_path)) {
-        /// @TODO: Inform the core instance about this failure.
-        qDebug() << "(core) [D-Bus] Object" << p_path << "already registered on" << bus()->interface ()->service ();
+    if (bus->objectRegisteredAt (p_path)) {
+        qDebug() << "(core) [D-Bus] Object" << p_path << "already registered on" << bus->interface ()->service ();
         return false;
     }
     else {
         qDebug() << "(core) [D-Bus] Registered" << p_path << "on"
-                 << bus()->interface ()->connection().name() << "with"
+                 << bus->interface ()->connection().name() << "with"
                  << p_adaptor->metaObject()->className() << ".";
-        return bus()->registerObject (p_path , p_adaptor, opts);
+        return bus->registerObject (p_path , p_adaptor, opts);
     }
 
     return false;
@@ -149,7 +152,7 @@ QDBusConnection* IPC::bus()
     return instance()->d_func()->connection;
 }
 
-AbstractAdaptor* IPC::adaptor ()
+AbstractAdaptor* IPC::localAdaptor ()
 {
     return instance()->d_func()->adaptor;
 }
@@ -161,9 +164,20 @@ void IPC::setLocalAdaptor (AbstractAdaptor* p_adaptor)
     }
 }
 
-QDBusMessage IPC::call(const QString& p_modulePath, const QString& p_moduleClass, const QString& p_method){
-    QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME,p_modulePath,p_moduleClass,p_method);
-    return bus()->call (msg,QDBus::Block);
+QDBusMessage IPC::callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList* p_variables)
+{
+  QDBusMessage msg, reply;
+  msg = QDBusMessage::createMethodCall (p_module, p_path, p_objectPath, p_method);
+
+  if (p_variables != 0){
+      for (int i = 0; i < p_variables->length (); i++){
+          msg << p_variables[i];
+      }
+  }
+
+  reply = instance()->d_func ()->bus ()->call (msg,QDBus::AutoDetect);
+
+  return reply;
 }
 
 void IPC::handleExit()
@@ -172,7 +186,7 @@ void IPC::handleExit()
         /// *** Issue a request to the core module to take the system down.
         qDebug() << "(core) [" << module () << "] Closing root appplication...";
         QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, "/" WINTER_DBUS_MASTER, WINTER_DBUS_SERVICE_NAME "." WINTER_DBUS_MASTER, "quit");
-        QDBusMessage reply = bus ()->call (msg, QDBus::Block);
+        QDBusMessage reply = IPC::callMethod("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit");
 
         if (reply.type () == QDBusMessage::ErrorMessage)
             qDebug() << "(core) [" << module () << "] Can't terminate master module of Wintermute:" << reply.errorName();
