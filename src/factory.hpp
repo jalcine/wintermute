@@ -1,7 +1,7 @@
 /***
  *  This file is part of the project project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *  Copyright (C) 2012 Adrian Borucki <gentoolx@gmail.com>
  *
  *  project is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @author Adrian Borucki <gentoolx@gmail.com>
  * @date 05/02/12 2:02:28 PM
  */

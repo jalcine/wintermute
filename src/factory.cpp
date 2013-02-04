@@ -316,11 +316,11 @@ bool Factory::loadBackendPlugin (const QString& p_uuid)
     const QString plgnTyp = Factory::attribute (p_uuid, "Plugin/Type").toString();
 
     if (plgnTyp == "Backend" && currentPlugin() && currentPlugin()->uuid() != apiUuid) {
-        const QDBusMessage callRunningList = QDBusMessage::createMethodCall (WINTER_DBUS_FACTORY, WINTER_DBUS_FACTORY, WINTER_DBUS_FACTORY, "loadedPlugins");
+        const QDBusMessage callRunningList = QDBusMessage::createMethodCall ("Factory", "Factory", "Factory", "loadedPlugins");
         const QDBusMessage replyRunningList = QDBusConnection::sessionBus ().call (callRunningList, QDBus::BlockWithGui);
 
         if (replyRunningList.arguments().at (0).toStringList().contains (apiUuid)) {
-            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (QString (WINTER_DBUS_PLUGIN) + "." + apiUuid, WINTER_DBUS_PLUGIN, WINTER_DBUS_PLUGIN, "loadBackend");
+            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (apiUuid, WINTER_DBUS_PLUGIN, WINTER_DBUS_PLUGIN, "loadBackend");
             callLoadBackend << p_uuid;
             const QDBusMessage replyLoadBackend = QDBusConnection::sessionBus ().call (callLoadBackend, QDBus::BlockWithGui);
 

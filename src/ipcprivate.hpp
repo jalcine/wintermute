@@ -38,6 +38,12 @@ struct IPCPrivate {
     IPCPrivate (IPC* p_qPtr);
     ~IPCPrivate();
 
+    /**
+     * @brief Obtains the currently running bus.
+     * @fn connection
+     */
+    QDBusConnection* bus();
+
     IPC* q_ptr;
     QDBusConnection* connection;
     AbstractAdaptor* adaptor;
