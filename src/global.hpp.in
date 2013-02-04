@@ -35,6 +35,7 @@
 #endif
 
 // Determines if we'd play with the GUI.
+// This helps when certain environments prevent the use of Qt's graphics system.
 #define WINTER_HEADLESS @WINTER_HEADLESS@
 #ifndef WINTER_HEADLESS
 #include <QCoreApplication>
@@ -83,21 +84,10 @@
 #endif
 
 // *** D-Bus related macros ***
-#define WINTER_DBUS_SERVICE_NAME    "org.thesii.Wintermute"
-#define WINTER_DBUS_FACTORY         Factory
-#define WINTER_DBUS_FACTORY_NAME    "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_FACTORY##"
-#define WINTER_DBUS_FACTORY_OBJNAME "/##WINTER_DBUS_FACTORY##"
-#define WINTER_DBUS_FACTORY_OBJPATH "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_FACTORY##"
-
-#define WINTER_DBUS_MASTER          Master
-#define WINTER_DBUS_MASTER_NAME     "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_MASTER##"
-#define WINTER_DBUS_MASTER_OBJNAME  "/##WINTER_DBUS_MASTER##"
-#define WINTER_DBUS_MASTER_OBJPATH  "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_MASTER##"
-
-#define WINTER_DBUS_PLUGIN          Plugin
-#define WINTER_DBUS_PLUGIN_NAME     "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_PLUGIN##"
-#define WINTER_DBUS_PLUGIN_OBJNAME  "/##WINTER_DBUS_PLUGIN##"
-#define WINTER_DBUS_PLUGIN_OBJPATH  "##WINTER_DBUS_SERVICE_NAME##.##WINTER_DBUS_PLUGIN##"
+#define WINTER_DBUS_CONNECTION         "org.thesii.Wintermute"
+#define WINTER_DBUS_MODULE_FACTORY     "Factory"
+#define WINTER_DBUS_MODULE_MASTER      "Master"
+#define WINTER_DBUS_MODULE_PLUGIN      "Plugin"
 
 #define WINTER_DBUS_VERBOSE_PINGS false
 #define WINTER_DBUS_UPDATE_TIMEOUT 1000
