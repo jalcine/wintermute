@@ -88,18 +88,17 @@
 #define WINTER_DBUS_MODULE_FACTORY     "Factory"
 #define WINTER_DBUS_MODULE_MASTER      "Master"
 #define WINTER_DBUS_MODULE_PLUGIN      "Plugin"
+#define WINTER_DBUS_VERBOSE_PINGS      false
+#define WINTER_DBUS_UPDATE_TIMEOUT     1000
 
-#define WINTER_DBUS_VERBOSE_PINGS false
-#define WINTER_DBUS_UPDATE_TIMEOUT 1000
-
-// *** Versioning tools ***
+// *** Versioning tools for platform ***
 #define WINTER_VERSION_STR "@WINTERMUTE_VERSION@"
 #define WINTER_VERSION     @WINTERMUTE_VERSION@
 #define WINTER_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
 // *** Plug-in specific data ***
 #define WINTER_PLUGIN_PATH     "@WINTER_PLUGIN_INSTALL_DIR@"
-#define WINTER_PLUGINSPEC_PATH "@WINTER_PLUGIN_SPEC_INSTALL_DIR@"
+#define WINTER_PLUGIN_SPEC_PATH "@WINTER_PLUGIN_SPEC_INSTALL_DIR@"
 
 // *** Build-time specific about UI.
 #define WINTER_DEBUG_TIMESTAMPS false
