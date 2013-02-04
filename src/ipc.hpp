@@ -38,6 +38,7 @@
 
 class QDBusAbstractAdaptor;
 class QDBusConnection;
+class QDBusMessage;
 
 WINTER_FORWARD_DECLARE_CLASS(Core)
 WINTER_FORWARD_DECLARE_CLASS(AbstractAdaptor)
@@ -109,18 +110,23 @@ public:
      */
     static AbstractAdaptor* localAdaptor();
 
+    /**
+     * @brief Attaches an adaptor to be used by this module.
+     * @fn setAdaptor
+     * @param p_adaptor The adaptor to be attached.
+     */
     static void setLocalAdaptor(AbstractAdaptor* p_adaptor);
 
     /**
      * @brief Registers an Adaptor onto the current D-Bus bus.
      * @fn registerObject
-     * @param QString The name of the Adaptor.
-     * @param Adaptor* The Adaptor to be added.
+     * @param p_path The name of the Adaptor.
+     * @param p_adaptor The Adaptor to be added.
      */
     static bool registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor);
 
     /**
-     * @brief Calls a method in a different module .
+     * @brief Calls a method in a different module.
      * @fn callMethod
      * @param p_module
      * @param p_path
