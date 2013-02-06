@@ -169,7 +169,7 @@ void Core::exit (const int p_exitCode, const bool p_closeRootApplication)
 {
     qDebug() << "(core) [" << IPC::module () << "] Exitting Wintermute's main event loop...";
 
-    if (p_closeRootApplication) {
+    if (p_closeRootApplication && IPC::localAdaptor() != 0) {
         IPC::handleExit();
     }
 

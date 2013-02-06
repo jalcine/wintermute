@@ -64,13 +64,11 @@ void Logging::catchQDebugMessage (QtMsgType p_messageType, const char* p_message
 
     case QtCriticalMsg:
         str += "C: ";
-        qApp->beep();
         emit instance()->criticalErrorEncountered (p_messageText);
         break;
 
     case QtFatalMsg:
         str += "F: ";
-        qApp->beep();
         emit instance()->fatalErrorEncountered (p_messageText);
         break;
     }

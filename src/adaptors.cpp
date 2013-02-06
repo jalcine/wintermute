@@ -26,7 +26,6 @@
 
 #include <QTimer>
 #include <QtDebug>
-#include <QApplication>
 #include <QDBusMessage>
 #include <QDBusConnection>
 
@@ -108,7 +107,7 @@ void AbstractAdaptor::doDetect()
 
 int AbstractAdaptor::pid() const
 {
-    return QApplication::applicationPid();
+    return WINTER_APPLICATION::applicationPid();
 }
 
 const QString AbstractAdaptor::module() const
@@ -154,10 +153,10 @@ PluginAdaptor::PluginAdaptor (AbstractPlugin* p_plgn) : AbstractAdaptor (Core::i
 {
     if (p_plgn == 0) {
         emit pluginCantLoad (Core::arguments().value ("plugin").toString ());
-        QApplication::quit ();
+        WINTER_APPLICATION::quit ();
     }
     else {
-        connect (QApplication::instance (), SIGNAL (aboutToQuit()), this, SIGNAL (aboutToQuit()));
+        connect (WINTER_APPLICATION::instance (), SIGNAL (aboutToQuit()), this, SIGNAL (aboutToQuit()));
         QDBusConnection::sessionBus ().connect (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY,
                                                 WINTER_DBUS_MODULE_FACTORY, "pluginCantLoad",
                                                 this, SIGNAL (pluginCantLoad (QString)));
@@ -225,7 +224,7 @@ void CoreAdaptor::haltSystem ()
         QDBusConnection::sessionBus ().send (call);
     }
 
-    QApplication::quit ();
+    WINTER_APPLICATION::quit ();
 }
 
 #include "adaptors.moc"
