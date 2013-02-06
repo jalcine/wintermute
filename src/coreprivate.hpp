@@ -19,7 +19,6 @@
  */
 
 #include <QVariantMap>
-#include <QApplication>
 #include <global.hpp>
 
 class QSocketNotifier;
@@ -32,7 +31,7 @@ struct CorePrivate{
     CorePrivate (Core* p_qPtr);
     ~CorePrivate();
     Core* q_ptr;            ///< The internal object that represents the core of Wintermute.
-    QApplication* app;      ///< Holds the object representing the current Q(Core)Application.
+    WINTER_APPLICATION* app;      ///< Holds the object representing the current Q(Core)Application.
     QVariantMap args;       ///< Holds the map containing the arguments passed to Wintermute in a normalized format.
 
     /**

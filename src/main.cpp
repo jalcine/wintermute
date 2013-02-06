@@ -1,7 +1,7 @@
 /***
  *  This file is part of the project project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  project is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,11 +20,10 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 04/18/12 4:08:58 PM
  */
 
-#include <QApplication>
 #include "wintermute.hpp"
 
 WINTER_USE_NAMESPACE
@@ -33,6 +32,6 @@ int main (int p_argc, char** p_argv)
 {
     qInstallMsgHandler (Logging::catchQDebugMessage);
     Core::boot(p_argc, p_argv);
-    return QApplication::exec();
+    return WINTER_APPLICATION::exec();
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on;

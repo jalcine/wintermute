@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 05/14/12 4:26:11 PM
  */
 #ifndef WINTERMUTE_CORE_HPP
@@ -54,7 +54,7 @@ WINTER_BEGIN_NAMESPACE
 class Core : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE (Core)
+    WINTER_DECLARE_PRIVATE_STRUCT (Core)
     WINTER_SINGLETON (Core)
 
 public:

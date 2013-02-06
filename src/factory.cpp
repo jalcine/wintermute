@@ -21,7 +21,6 @@
  * @author Adrian Borucki <adrian@thesii.org>
  */
 
-#include <QApplication>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDebug>
@@ -45,7 +44,7 @@ Factory::Factory() : QObject (Core::instance()), d_ptr (new FactoryPrivate)
 
 void Factory::startup()
 {
-    const bool isDaemon = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY_DAEMON).toBool();
+  const bool isDaemon = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY_DAEMON).toBool();
 
     if (!isDaemon) {
         qDebug() << "(core) [Factory] Starting up...";
@@ -176,7 +175,7 @@ QStringList Factory::loadedPlugins ()
 
 QStringList Factory::allPlugins ()
 {
-    QDir dir (WINTER_PLUGINSPEC_PATH);
+    QDir dir (WINTER_PLUGIN_SPEC_PATH);
     dir.setFilter (QDir::Files | QDir::Readable | QDir::NoSymLinks);
     dir.setNameFilters (QString ("*.spec").split (" "));
     dir.setSorting (QDir::Name);
@@ -205,7 +204,7 @@ void Factory::loadStandardPlugin()
     if (instance()->d_func()->rootPlugin) {
         PluginAdaptor* adpt = new PluginAdaptor (instance()->d_func()->rootPlugin);
         IPC::registerObject ("/Plugin", adpt);
-        IPC::setAdaptor (adpt);
+        IPC::setLocalAdaptor (adpt);
     }
     else {
         qDebug() << "(core) [Factory] Unable to load standard plug-in; exiting.";
@@ -270,7 +269,7 @@ void Factory::shutdown ()
 
 QSettings* Factory::getPluginSettings (const QString& p_uuid)
 {
-    const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_uuid + ".spec";
+    const QString plgnSpecPath = QString (WINTER_PLUGIN_SPEC_PATH) + "/" + p_uuid + ".spec";
 
     if (!QFile::exists (plgnSpecPath)) {
         QSettings* newSettings = new QSettings;
@@ -317,11 +316,11 @@ bool Factory::loadBackendPlugin (const QString& p_uuid)
     const QString plgnTyp = Factory::attribute (p_uuid, "Plugin/Type").toString();
 
     if (plgnTyp == "Backend" && currentPlugin() && currentPlugin()->uuid() != apiUuid) {
-        const QDBusMessage callRunningList = QDBusMessage::createMethodCall (WINTER_DBUS_FACTORY_NAME, WINTER_DBUS_FACTORY_OBJNAME, WINTER_DBUS_FACTORY_OBJPATH, "loadedPlugins");
+        const QDBusMessage callRunningList = QDBusMessage::createMethodCall ("Factory", "Factory", "Factory", "loadedPlugins");
         const QDBusMessage replyRunningList = QDBusConnection::sessionBus ().call (callRunningList, QDBus::BlockWithGui);
 
         if (replyRunningList.arguments().at (0).toStringList().contains (apiUuid)) {
-            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (QString (WINTER_DBUS_PLUGIN_NAME) + "." + apiUuid, WINTER_DBUS_PLUGIN_OBJNAME, WINTER_DBUS_PLUGIN_OBJPATH, "loadBackend");
+            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (apiUuid, WINTER_DBUS_MODULE_PLUGIN, WINTER_DBUS_MODULE_PLUGIN, "loadBackend");
             callLoadBackend << p_uuid;
             const QDBusMessage replyLoadBackend = QDBusConnection::sessionBus ().call (callLoadBackend, QDBus::BlockWithGui);
 

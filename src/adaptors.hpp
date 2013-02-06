@@ -60,7 +60,7 @@ private:
     Q_SLOT void doDetect();
 
 protected:
-    Q_DECLARE_PRIVATE(AbstractAdaptor)
+    WINTER_DECLARE_PRIVATE_STRUCT(AbstractAdaptor)
 
 public:
     /**
@@ -72,17 +72,23 @@ public:
 
     /**
      * @brief Obtains the module's name.
-     * @fn module The name of the module.
+     * @fn module
      * @note This method is callable over D-Bus.
      */
     Q_INVOKABLE const QString module() const;
 
     /**
      * @brief Obtains the process's ID.
-     * @fn pid The pid of the process.
+     * @fn pid
      * @note This method is callable over D-Bus.
      */
     Q_INVOKABLE int pid() const;
+
+    /**
+     * @brief Obtains the path of this adaptor.
+     * @fn objectPath
+     */
+    virtual QString objectPath() const = 0;
 
 signals:
     /**
@@ -129,6 +135,7 @@ public:
      * @fn PluginFactoryAdaptor
      */
     explicit FactoryAdaptor();
+    virtual QString objectPath() const { return "/" WINTER_DBUS_MODULE_FACTORY; }
 
 signals:
     void pluginLoaded (const QString& p_uuid) const;
@@ -155,6 +162,7 @@ class PluginAdaptor : public AbstractAdaptor
 
 public:
     explicit PluginAdaptor (AbstractPlugin* p_plugin);
+    virtual QString objectPath() const { return "/" WINTER_DBUS_MODULE_PLUGIN; }
 
 signals:
     void pluginLoaded (const QString& p_uuid) const;
@@ -177,6 +185,7 @@ class CoreAdaptor : public AbstractAdaptor
 
 public:
     explicit CoreAdaptor();
+    virtual QString objectPath() const { return "/" WINTER_DBUS_MODULE_MASTER; }
 
 public slots:
     virtual void quit() const;

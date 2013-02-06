@@ -26,7 +26,6 @@
 
 #include <QTimer>
 #include <QtDebug>
-#include <QApplication>
 #include <QDBusMessage>
 #include <QDBusConnection>
 
@@ -53,11 +52,7 @@ void AbstractAdaptorPrivate::detect() const
 
     timer->stop();
     const bool prv = isCore;
-    QDBusMessage ping = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_MASTER_OBJNAME, WINTER_DBUS_MASTER_NAME, "ping");
-    ping << IPC::module ();
-    ping.setAutoStartService (true);
-
-    QDBusMessage pingReply = IPC::bus ()->call (ping, QDBus::BlockWithGui);
+    QDBusMessage pingReply = IPC::callMethod(WINTER_DBUS_CONNECTION,WINTER_DBUS_MODULE_MASTER,WINTER_DBUS_MODULE_MASTER,"ping",QVariantList());
     isCore = pingReply.type () != QDBusMessage::ErrorMessage;
 
     if (isCore != prv) {
@@ -112,7 +107,7 @@ void AbstractAdaptor::doDetect()
 
 int AbstractAdaptor::pid() const
 {
-    return QApplication::applicationPid();
+    return WINTER_APPLICATION::applicationPid();
 }
 
 const QString AbstractAdaptor::module() const
@@ -158,21 +153,21 @@ PluginAdaptor::PluginAdaptor (AbstractPlugin* p_plgn) : AbstractAdaptor (Core::i
 {
     if (p_plgn == 0) {
         emit pluginCantLoad (Core::arguments().value ("plugin").toString ());
-        QApplication::quit ();
+        WINTER_APPLICATION::quit ();
     }
     else {
-        connect (QApplication::instance (), SIGNAL (aboutToQuit()), this, SIGNAL (aboutToQuit()));
-        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_FACTORY_OBJNAME,
-                                                WINTER_DBUS_FACTORY_NAME, "pluginCantLoad",
+        connect (WINTER_APPLICATION::instance (), SIGNAL (aboutToQuit()), this, SIGNAL (aboutToQuit()));
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY,
+                                                WINTER_DBUS_MODULE_FACTORY, "pluginCantLoad",
                                                 this, SIGNAL (pluginCantLoad (QString)));
-        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_FACTORY_OBJNAME,
-                                                WINTER_DBUS_FACTORY_NAME, "pluginLoaded",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY,
+                                                WINTER_DBUS_MODULE_FACTORY, "pluginLoaded",
                                                 this, SIGNAL (pluginLoaded (QString)));
-        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_FACTORY_OBJNAME,
-                                                WINTER_DBUS_FACTORY_NAME, "pluginUnloaded",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY,
+                                                WINTER_DBUS_MODULE_FACTORY, "pluginUnloaded",
                                                 this, SIGNAL (pluginUnloaded (QString)));
-        QDBusConnection::sessionBus ().connect (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_FACTORY_OBJNAME,
-                                                WINTER_DBUS_FACTORY_NAME, "aboutToQuit",
+        QDBusConnection::sessionBus ().connect (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY,
+                                                WINTER_DBUS_MODULE_FACTORY, "aboutToQuit",
                                                 this, SLOT (aboutToQuit()));
 
         setParent (p_plgn);
@@ -210,7 +205,6 @@ const QVariantMap CoreAdaptor::arguments() const
 
 void CoreAdaptor::ping (const QString& p_src)
 {
-    (p_src.length() == 0) + 0;
 #if WINTER_DBUS_VERBOSE_PINGS
     qDebug() << "(core) [D-Bus] Ping from object" << p_src << "received.";
 #endif
@@ -219,19 +213,18 @@ void CoreAdaptor::ping (const QString& p_src)
 void CoreAdaptor::quit () const
 {
     emit aboutToQuit ();
-    QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_FACTORY_OBJNAME, WINTER_DBUS_FACTORY_NAME, "quit");
-    QDBusConnection::sessionBus ().call (msg, QDBus::NoBlock);
+    QDBusMessage msg = IPC::callMethod (WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_FACTORY, WINTER_DBUS_MODULE_FACTORY, "quit", QVariantList());
     haltSystem ();
 }
 
 void CoreAdaptor::haltSystem ()
 {
     if (Core::arguments().value ("ipc").toString () != "master") {
-        QDBusMessage call = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, WINTER_DBUS_MASTER_OBJNAME, WINTER_DBUS_MASTER_NAME, "haltSystem");
+        QDBusMessage call = QDBusMessage::createMethodCall (WINTER_DBUS_CONNECTION, "/" WINTER_DBUS_MODULE_MASTER, WINTER_DBUS_CONNECTION "." WINTER_DBUS_MODULE_MASTER, "haltSystem");
         QDBusConnection::sessionBus ().send (call);
     }
 
-    QApplication::quit ();
+    WINTER_APPLICATION::quit ();
 }
 
 #include "adaptors.moc"

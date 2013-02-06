@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 04/22/12 5:43:18 AM
  */
 
@@ -48,7 +48,7 @@ class PluginHandle : public QObject
     friend class Factory;
 
     Q_OBJECT
-    Q_DECLARE_PRIVATE(PluginHandle)
+    WINTER_DECLARE_PRIVATE_STRUCT(PluginHandle)
     Q_DISABLE_COPY (PluginHandle)
     Q_PROPERTY (bool Active READ isActive)
     Q_PROPERTY (QString Name READ name)

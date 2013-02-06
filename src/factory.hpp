@@ -1,7 +1,7 @@
 /***
  *  This file is part of the project project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *  Copyright (C) 2012 Adrian Borucki <gentoolx@gmail.com>
  *
  *  project is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @author Adrian Borucki <gentoolx@gmail.com>
  * @date 05/02/12 2:02:28 PM
  */
@@ -37,8 +37,6 @@
 #include <pluginhandle.hpp>
 
 WINTER_FORWARD_DECLARE_STRUCT (FactoryPrivate)
-WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
-
 WINTER_BEGIN_NAMESPACE
 
 class Factory;
@@ -58,9 +56,9 @@ class WINTER_EXPORT Factory : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY (Factory)
-    Q_DECLARE_PRIVATE (Factory)
+    WINTER_DECLARE_PRIVATE_STRUCT (Factory)
     WINTER_SINGLETON (Factory)
-    friend class AbstractPluginPrivate;
+    friend struct AbstractPluginPrivate;
     QScopedPointer<FactoryPrivate> d_ptr;
 
 signals:

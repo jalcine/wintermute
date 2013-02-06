@@ -3,7 +3,10 @@ project(WintermuteApplication)
 
 ## MODULE INCLUDES
 ## ===============
-include(FindWintermute)
+include(UseWintermute)
+include(WintermuteDefaults)
+include(WintermuteDependencies)
+include(WintermuteMacros)
 
 ## SOURCE CODE MANIPULATION
 ## ========================
@@ -47,7 +50,7 @@ set_target_properties(wintermute PROPERTIES
 install(TARGETS wintermute
         RUNTIME DESTINATION "${WINTER_BIN_INSTALL_DIR}"
         COMPONENT bin)
-        
+
 wntr_install_headers(HEADERS_PATH "${PROJECT_SOURCE_DIR}"
                      DESTINATION  "${WINTER_INCLUDE_INSTALL_DIR}")
 

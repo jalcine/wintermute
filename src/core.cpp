@@ -31,8 +31,6 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QVariantMap>
-#include <QApplication>
-#include <QVariantMap>
 
 #include "ipc.hpp"
 #include "global.hpp"
@@ -55,7 +53,7 @@ CorePrivate::CorePrivate (Core* p_qPtr) : q_ptr (p_qPtr), app (0), args()
 void CorePrivate::configure (int& p_argc, char** p_argv)
 {
     Q_Q (Core);
-    app = new QApplication (p_argc, p_argv);
+    app = new WINTER_APPLICATION (p_argc, p_argv);
     app->setApplicationName ("Wintermute");
     app->setApplicationVersion (WINTER_VERSION_STR);
     app->setOrganizationDomain ("thesii.org");
@@ -171,12 +169,12 @@ void Core::exit (const int p_exitCode, const bool p_closeRootApplication)
 {
     qDebug() << "(core) [" << IPC::module () << "] Exitting Wintermute's main event loop...";
 
-    if (p_closeRootApplication) {
+    if (p_closeRootApplication && IPC::localAdaptor() != 0) {
         IPC::handleExit();
     }
 
     qDebug() << "(core) [" << IPC::module () << "] Exited Wintermute's main event loop'.";
-    QApplication::exit (p_exitCode);
+    WINTER_APPLICATION::exit (p_exitCode);
 }
 
 void Core::quit()

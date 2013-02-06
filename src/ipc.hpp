@@ -1,7 +1,7 @@
 /***
  *  This file is part of the Wintermute project.
  *
- *  Copyright (C) 2012 Jacky Alciné <jackyalcine@gmail.com>
+ *  Copyright (C) 2012 Jacky Alciné <me@jalcine.me>
  *
  *  Wintermute is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
  */
 
 /**
- * @author Jacky Alciné <jackyalcine@gmail.com>
+ * @author Jacky Alciné <me@jalcine.me>
  * @date 04/22/12 5:42:03 AM
  */
 
@@ -31,11 +31,14 @@
 #define WINTER_COMMAND_LINE_IPC_CORE    "root"
 #define WINTER_COMMAND_LINE_IPC_PLUGIN  "plugin"
 
+#include <QDBusMessage>
+#include <QVariantList>
 #include <QVariantMap>
 #include <global.hpp>
 
 class QDBusAbstractAdaptor;
 class QDBusConnection;
+class QDBusMessage;
 
 WINTER_FORWARD_DECLARE_CLASS(Core)
 WINTER_FORWARD_DECLARE_CLASS(AbstractAdaptor)
@@ -47,39 +50,22 @@ WINTER_BEGIN_NAMESPACE
  * @brief Represents the Inter Process Communication (IPC) management of Wintermute.
  *
  * This class manages the inter process communication of Wintermute. It handles the
- * incoming and out-coming requests of data, and allows Wintermute to fork off into
- * the appropriate processes that represent it. Wintermute uses D-Bus to do the inter
- * communications and also can manage external resource requests. This makes it possible
- * to extend Wintermute's public API to other applications or even languages that can
- * work with D-Bus.
+ * incoming and out-coming requests of method calls, and allows Wintermute to fork off into
+ * the appropriate processes that represent it. Wintermute abstracts the local system's means of
+ * inter process communication (for now, we rely on D-Bus as we've targted Linux-based systems)
+ * and allows for the immediate execution of tasks.
  *
  * @section N01 Modules
  *
  * Wintermute can run as one of the following sub-modules:
  * - <b>Master</b>: Represents the core module, or the master daemon that'll be a means
- * of regulating the sub processes.
+ * of regulating the sub processes. This module is vital to the execution of Wintermute as it
+ * makes sure that everyone is playing fair in their process execution.
  *
  * - <b>Plug-in</b>: Represents the plug-in module. Plug-ins are run in their process,
  * allowing them to take advantage of their own work process, and prevents system failure
  * if the plug-in happens to crash. Having a plug-in run in its own process also allows
  * us to work reliably.
- *
- * @section N02 D-Bus
- *
- * Wintermute's domain lives on the session bus, under the name <b>org.thesii.Wintermute</b>.
- * The Core object is exposed as "/Master" on the home domain, with the interface name "org.thesii.Wintermute.Master".
- * You can find the plug-in factory under "/Factory" on the same domain, but this may move to the domain
- * <b>org.thesii.Wintermute.Plugin</b>. Other components of Wintermute, such as the <b>Data</b>,
- * <b>Network</b> and the <b>Linguistics</b> module can be found at sub-domains of the home domain.
- * Start Wintermute and use the <b>qdbusviewer</b> application to peek at the intermingling.
- *
- * @section N03 Plug-ins
- *
- * Plug-ins each have their own D-Bus domain (since they're run in a sandbox; see @c PluginInstance).
- * The domain would be a subset of <b>org.thesii.Wintermute.Plugin-{PLUGIN_UUID}</b>. This allow remote access
- * of plug-ins from processes and remote loading of plug-ins whenever needed. Plug-ins domains
- * are able to run certain exposed parts of a plug-in by using the <b>invoke()</b> method (see @c PluginBase)
- * and thus allowing a dynamic API based on plug-ins for Wintermute.
  *
  * @see CoreAdaptor, PluginBase, PluginInstance, Factory
  */
@@ -87,14 +73,13 @@ class IPC : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY (IPC)
-    Q_DECLARE_PRIVATE(IPC)
+    WINTER_DECLARE_PRIVATE_STRUCT(IPC)
     WINTER_SINGLETON (IPC)
     friend class Core;
 
 signals:
     /**
-     * @brief Does the work of adding user data-types (user PODs) as
-     *        recognizable, marshallable types for QDBusArgument.
+     * @brief Does the work of adding user data-types (user PODs) as recognizable, marshallable types for QDBusArgument.
      * @fn registerDataTypes
      */
     void registerDataTypes();
@@ -120,26 +105,36 @@ public:
     static const QString module();
 
     /**
-     * @brief Obtains the currently running bus.
-     * @fn connection
-     */
-    static QDBusConnection* bus();
-
-    /**
      * @brief Obtains the adaptor being used (most likely the SystemAdaptor).
      * @fn adaptor
      */
-    static AbstractAdaptor* adaptor();
+    static AbstractAdaptor* localAdaptor();
 
-    static void setAdaptor(AbstractAdaptor* p_adaptor);
+    /**
+     * @brief Attaches an adaptor to be used by this module.
+     * @fn setAdaptor
+     * @param p_adaptor The adaptor to be attached.
+     */
+    static void setLocalAdaptor(AbstractAdaptor* p_adaptor);
 
     /**
      * @brief Registers an Adaptor onto the current D-Bus bus.
      * @fn registerObject
-     * @param QString The name of the Adaptor.
-     * @param Adaptor* The Adaptor to be added.
+     * @param p_path The name of the Adaptor.
+     * @param p_adaptor The Adaptor to be added.
      */
     static bool registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor);
+
+    /**
+     * @brief Calls a method in a different module.
+     * @fn callMethod
+     * @param p_module
+     * @param p_path
+     * @param p_objectPath
+     * @param p_method
+     * @param p_variables
+     */
+    static QDBusMessage callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList& p_variables);
 
 private:
     static void handleExit();
