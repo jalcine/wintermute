@@ -35,7 +35,7 @@
 class QApplication;
 class QSocketNotifier;
 
-WINTER_FORWARD_DECLARE_STRUCT (CorePrivate)
+WINTER_FORWARD_DECLARE_CLASS (CorePrivate)
 
 WINTER_BEGIN_NAMESPACE
 
