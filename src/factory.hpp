@@ -37,8 +37,6 @@
 #include <pluginhandle.hpp>
 
 WINTER_FORWARD_DECLARE_STRUCT (FactoryPrivate)
-WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
-
 WINTER_BEGIN_NAMESPACE
 
 class Factory;
@@ -58,9 +56,9 @@ class WINTER_EXPORT Factory : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY (Factory)
-    Q_DECLARE_PRIVATE (Factory)
+    WINTER_DECLARE_PRIVATE_STRUCT (Factory)
     WINTER_SINGLETON (Factory)
-    friend class AbstractPluginPrivate;
+    friend struct AbstractPluginPrivate;
     QScopedPointer<FactoryPrivate> d_ptr;
 
 signals:

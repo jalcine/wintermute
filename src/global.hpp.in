@@ -124,7 +124,7 @@
 #define WINTER_DEBUG_CRITICAL 0x004
 
 // *** Namespace and forward declaration utilities. ***
-#define WINTER_NAMESPACE Wntr
+#define WINTER_NAMESPACE Wintermute
 #define WINTER_PREPEND_NAMESPACE(name) ::WINTER_NAMESPACE::name
 #define WINTER_USE_NAMESPACE using namespace ::WINTER_NAMESPACE;
 #define WINTER_BEGIN_NAMESPACE namespace WINTER_NAMESPACE {
@@ -150,15 +150,25 @@ QDataStream &operator<<(QDataStream &out);\
 QDataStream &operator>>(QDataStream &in);\
 
 // *** Opaque pointer add-ons ***
-#define WINTER_DECLARE_PRIVATE_TEMPLATE(Class,T) \
-inline Class##Private<T>* d_func() { return reinterpret_cast<Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
-inline const Class##Private<T>* d_func() const { return reinterpret_cast<const Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
-friend class Class##Private<T>;
+#define WINTER_DECLARE_PRIVATE_STRUCT(Struct) \
+inline Struct##Private* d_func() { return reinterpret_cast<Struct##Private*>(qGetPtrHelper(d_ptr)); } \
+inline const Struct##Private* d_func() const { return reinterpret_cast<const Struct##Private*>(qGetPtrHelper(d_ptr)); } \
+friend struct Struct##Private;
 
-#define WINTER_DECLARE_PUBLIC(Class,T) \
-inline Class<T>* q_func() { return static_cast<Class<T> *>(q_ptr); } \
-inline const Class<T>* q_func() const { return static_cast<const Class<T> *>(q_ptr); } \
-friend class Class<T>;
+#define WINTER_DECLARE_PUBLIC_STRUCT(Struct) \
+inline Struct* q_func() { return static_cast<Struct *>(q_ptr); } \
+inline const Struct* q_func() const { return static_cast<const Struct *>(q_ptr); } \
+friend class Struct;
+
+#define WINTER_DECLARE_PRIVATE_CLASS(Class) \
+inline Class##Private* d_func() { return reinterpret_cast<Class##Private*>(qGetPtrHelper(d_ptr)); } \
+inline const Class##Private* d_func() const { return reinterpret_cast<const Class##Private*>(qGetPtrHelper(d_ptr)); } \
+friend class Class##Private;
+
+#define WINTER_DECLARE_PUBLIC_CLASS(Class) \
+inline Class* q_func() { return static_cast<Class *>(q_ptr); } \
+inline const Class* q_func() const { return static_cast<const Class *>(q_ptr); } \
+friend class Class;
 
 #define WINTER_D_Q_TEMPLATE(Class,T) Class##Private<T> * const d = d_func()
 #define WINTER_Q_Q_TEMPLATE(Class,T) Class<T> * const q = q_func()

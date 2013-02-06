@@ -48,7 +48,7 @@ class PluginHandle : public QObject
     friend class Factory;
 
     Q_OBJECT
-    Q_DECLARE_PRIVATE(PluginHandle)
+    WINTER_DECLARE_PRIVATE_STRUCT(PluginHandle)
     Q_DISABLE_COPY (PluginHandle)
     Q_PROPERTY (bool Active READ isActive)
     Q_PROPERTY (QString Name READ name)

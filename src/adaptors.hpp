@@ -60,7 +60,7 @@ private:
     Q_SLOT void doDetect();
 
 protected:
-    Q_DECLARE_PRIVATE(AbstractAdaptor)
+    WINTER_DECLARE_PRIVATE_STRUCT(AbstractAdaptor)
 
 public:
     /**

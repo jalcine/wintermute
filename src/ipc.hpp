@@ -73,7 +73,7 @@ class IPC : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY (IPC)
-    Q_DECLARE_PRIVATE(IPC)
+    WINTER_DECLARE_PRIVATE_STRUCT(IPC)
     WINTER_SINGLETON (IPC)
     friend class Core;
 
@@ -134,7 +134,7 @@ public:
      * @param p_method
      * @param p_variables
      */
-    static QDBusMessage callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList* p_variables = 0);
+    static QDBusMessage callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList& p_variables);
 
 private:
     static void handleExit();

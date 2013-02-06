@@ -37,7 +37,7 @@
 
 WINTER_FORWARD_DECLARE_CLASS (Factory)
 WINTER_FORWARD_DECLARE_CLASS (AbstractPlugin)
-WINTER_FORWARD_DECLARE_CLASS (AbstractPluginPrivate)
+WINTER_FORWARD_DECLARE_STRUCT (AbstractPluginPrivate)
 
 WINTER_BEGIN_NAMESPACE
 
@@ -102,7 +102,7 @@ class WINTER_EXPORT AbstractPlugin : public QObject
     AbstractPlugin* obtainInstance() const;
 
 protected:
-    Q_DECLARE_PRIVATE (AbstractPlugin)
+    WINTER_DECLARE_PRIVATE_STRUCT (AbstractPlugin)
     bool loadLibrary() const;
     bool loadRequiredComponents() const;
     void obtainPlugin (QString depName);

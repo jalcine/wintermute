@@ -161,13 +161,13 @@ void IPC::setLocalAdaptor (AbstractAdaptor* p_adaptor)
     }
 }
 
-QDBusMessage IPC::callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList* p_variables)
+QDBusMessage IPC::callMethod(const QString& p_module, const QString& p_path, const QString& p_objectPath, const QString& p_method, const QVariantList& p_variables)
 {
   QDBusMessage msg, reply;
   msg = QDBusMessage::createMethodCall (p_module, p_path, p_objectPath, p_method);
-
-  if (p_variables != 0){
-      for (int i = 0; i < p_variables->length (); i++){
+  msg.setAutoStartService(true);
+  if (!p_variables.isEmpty()){
+      for (int i = 0; i < p_variables.length (); i++){
           msg << p_variables[i];
       }
   }
@@ -182,8 +182,7 @@ void IPC::handleExit()
     if (module () != "master" && Core::arguments ().value ("help") == "ignore") {
         /// *** Issue a request to the core module to take the system down.
         qDebug() << "(core) [" << module () << "] Closing root appplication...";
-        QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_CONNECTION, "/" WINTER_DBUS_MODULE_MASTER, WINTER_DBUS_CONNECTION "." WINTER_DBUS_MODULE_MASTER, "quit");
-        QDBusMessage reply = IPC::callMethod("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit");
+        QDBusMessage reply = IPC::callMethod("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit",QVariantList());
 
         if (reply.type () == QDBusMessage::ErrorMessage)
             qDebug() << "(core) [" << module () << "] Can't terminate master module of Wintermute:" << reply.errorName();

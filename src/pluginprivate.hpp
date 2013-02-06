@@ -33,7 +33,7 @@ WINTER_FORWARD_DECLARE_CLASS(AbstractPlugin);
 WINTER_BEGIN_NAMESPACE
 
 struct AbstractPluginPrivate {
-    Q_DECLARE_PUBLIC (AbstractPlugin)
+    WINTER_DECLARE_PUBLIC_CLASS (AbstractPlugin)
     friend class Factory;
     friend class ShellPlugin;
 

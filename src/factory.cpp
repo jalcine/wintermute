@@ -175,7 +175,7 @@ QStringList Factory::loadedPlugins ()
 
 QStringList Factory::allPlugins ()
 {
-    QDir dir (WINTER_PLUGINSPEC_PATH);
+    QDir dir (WINTER_PLUGIN_SPEC_PATH);
     dir.setFilter (QDir::Files | QDir::Readable | QDir::NoSymLinks);
     dir.setNameFilters (QString ("*.spec").split (" "));
     dir.setSorting (QDir::Name);
@@ -269,7 +269,7 @@ void Factory::shutdown ()
 
 QSettings* Factory::getPluginSettings (const QString& p_uuid)
 {
-    const QString plgnSpecPath = QString (WINTER_PLUGINSPEC_PATH) + "/" + p_uuid + ".spec";
+    const QString plgnSpecPath = QString (WINTER_PLUGIN_SPEC_PATH) + "/" + p_uuid + ".spec";
 
     if (!QFile::exists (plgnSpecPath)) {
         QSettings* newSettings = new QSettings;
@@ -320,7 +320,7 @@ bool Factory::loadBackendPlugin (const QString& p_uuid)
         const QDBusMessage replyRunningList = QDBusConnection::sessionBus ().call (callRunningList, QDBus::BlockWithGui);
 
         if (replyRunningList.arguments().at (0).toStringList().contains (apiUuid)) {
-            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (apiUuid, WINTER_DBUS_PLUGIN, WINTER_DBUS_PLUGIN, "loadBackend");
+            QDBusMessage callLoadBackend = QDBusMessage::createMethodCall (apiUuid, WINTER_DBUS_MODULE_PLUGIN, WINTER_DBUS_MODULE_PLUGIN, "loadBackend");
             callLoadBackend << p_uuid;
             const QDBusMessage replyLoadBackend = QDBusConnection::sessionBus ().call (callLoadBackend, QDBus::BlockWithGui);
 
