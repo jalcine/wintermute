@@ -27,25 +27,7 @@
 #ifndef WINTERMUTE_GLOBAL_HPP
 #define WINTERMUTE_GLOBAL_HPP
 
-// Determine if we'll use Qt's session utility.
-// Typically turned off.
-#define WINTER_USE_QT_SESSIONS @WINTER_USE_QT_SESSIONS@
-#ifndef WINTER_USE_QT_SESSIONS
-# undef QT_NO_SESSIONMANAGER
-#endif
-
-// Determines if we'd play with the GUI.
-// This helps when certain environments prevent the use of Qt's graphics system.
-#define WINTER_HEADLESS @WINTER_HEADLESS@
-#ifndef WINTER_HEADLESS
-#include <QCoreApplication>
-#define WINTER_APPLICATION QCoreApplication
-#else
-#include <QApplication>
-#define WINTER_APPLICATION QApplication
-#endif
-
-// Grab some standard headers from Qt; we'll need them.
+// ** Grab some standard headers from Qt; we'll need them.
 #include <QtGlobal>
 #include <QDebug>
 #include <QDataStream>
@@ -55,8 +37,25 @@
 // ** Build-time variables from CMake. **
 #cmakedefine01 DEBUG
 #cmakedefine01 WINTER_DEPRECATED_WARNINGS
+#cmakedefine01 WINTER_HEADLESS
+#cmakedefine01 WINTER_USE_QT_SESSIONS
 
-// ** Symbol exporting **
+// ** Toggle the use of Qt's session recovery.
+#ifndef WINTER_USE_QT_SESSIONS
+# undef QT_NO_SESSIONMANAGER
+#endif
+
+
+// ** Determines if we'd play with the GUI.
+// ** This helps when certain environments prevent the use of Qt's graphics system.
+#ifdef WINTER_HEADLESS
+# include <QCoreApplication>
+# define WINTER_APPLICATION QCoreApplication
+#else
+# include <QApplication>
+# define WINTER_APPLICATION QApplication
+#endif
+
 /**
  * @def WINTER_EXPORT
  * @ingroup WintermuteMacros
@@ -108,13 +107,14 @@
 // state of an execution.
 
 // == Standard codes ==
-#define WINTER_EXITCODE_NORMAL                0x0000
-#define WINTER_EXITCODE_REBOOT                0x0001
-#define WINTER_EXITCODE_
-#define WINTER_EXITCODE_FATAL                 0xffff
+#define WINTER_EXITCODE_NORMAL    0x000
+#define WINTER_EXITCODE_REBOOT    0x001
+#define WINTER_EXITCODE_SIGNAL    0x002
+#define WINTER_EXITCODE_FATAL     0xfff
 
 // Codes with 01X are for D-Bus.
-#define WINTER_EXITCODE_DBUS                  0x0010
+#define WINTER_EXITCODE_DBUS_GENERIC              0x010
+#define WINTER_EXITCODE_DBUS_FAILED_TO_CONNECT    0x011
 
 // *** Debug output levels ***
 #define WINTER_DEBUG_NONE     0x000
