@@ -62,6 +62,7 @@ IPC::IPC() : QObject (qApp->instance()), d_ptr (new IPCPrivate (this))
 {
 }
 
+
 const QString IPC::module()
 {
     return Core::arguments().value (WINTER_COMMAND_LINE_IPC).toString().toLower();
@@ -72,7 +73,7 @@ void IPC::start()
     instance()->d_func()->connection = new QDBusConnection (QDBusConnection::sessionBus().connectToBus (QDBusConnection::SessionBus, WINTER_DBUS_CONNECTION));
     bool serviceRegistered = false;
     const QString plugin = Core::arguments().value (WINTER_COMMAND_LINE_FACTORY).toString();
-    QString serviceName = WINTER_DBUS_SERVICE_NAME;
+    QString serviceName = WINTER_DBUS_CONNECTION;
     QString objectName;
 
     qDebug() << "(core) [IPC::start()]" << "Wintermute's operating in" << module() << "mode.";
@@ -80,20 +81,20 @@ void IPC::start()
     // *** Determine what module Wintermute will be running as.
     if (module() == WINTER_COMMAND_LINE_IPC_CORE) {
         // *** We want to run as the central process, set up shop.
-        objectName = WINTER_DBUS_MASTER;
+        objectName = WINTER_DBUS_MODULE_MASTER;
         QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (startup()));
         QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (shutdown()));
 
         CoreAdaptor* coreAdaptor = new CoreAdaptor;
         FactoryAdaptor* pluginFactoryAdaptor = new FactoryAdaptor;
 
-        registerObject (WINTER_DBUS_MASTER, coreAdaptor);
-        registerObject (WINTER_DBUS_FACTORY, pluginFactoryAdaptor);
+        registerObject (WINTER_DBUS_MODULE_MASTER, coreAdaptor);
+        registerObject (WINTER_DBUS_MODULE_FACTORY, pluginFactoryAdaptor);
         instance()->d_func()->adaptor = coreAdaptor;
     }
     else if (module() == WINTER_COMMAND_LINE_IPC_PLUGIN) {
         /// *** We're running as a plug-in, batten down the hatches.
-        objectName = WINTER_DBUS_PLUGIN "." + plugin;
+        objectName = WINTER_DBUS_MODULE_PLUGIN "." + plugin;
         QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (loadStandardPlugin()));
         QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (unloadStandardPlugin()));
     }
@@ -103,7 +104,7 @@ void IPC::start()
 
     /// *** Attempt to register this application into the current D-Bus session.
 
-    if (!serviceRegistered && objectName == WINTER_DBUS_MASTER) {
+    if (!serviceRegistered && objectName == WINTER_DBUS_MODULE_MASTER) {
         /// *** @TODO: Attempt to issue a signal to the real core about this failure.
         qDebug() << "(core) Fatal: Cannot run more than one Wintermute service (" << serviceName << ")"
                  << "under the same user on the same computer";
@@ -144,12 +145,8 @@ bool IPC::registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor
 
 void IPC::stop ()
 {
-    bus()->disconnectFromBus (bus()->name());
-}
-
-QDBusConnection* IPC::bus()
-{
-    return instance()->d_func()->connection;
+  QDBusConnection* bus = instance()->d_func()->bus();
+  bus->disconnectFromBus (bus->name());
 }
 
 AbstractAdaptor* IPC::localAdaptor ()
@@ -185,7 +182,7 @@ void IPC::handleExit()
     if (module () != "master" && Core::arguments ().value ("help") == "ignore") {
         /// *** Issue a request to the core module to take the system down.
         qDebug() << "(core) [" << module () << "] Closing root appplication...";
-        QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_SERVICE_NAME, "/" WINTER_DBUS_MASTER, WINTER_DBUS_SERVICE_NAME "." WINTER_DBUS_MASTER, "quit");
+        QDBusMessage msg = QDBusMessage::createMethodCall (WINTER_DBUS_CONNECTION, "/" WINTER_DBUS_MODULE_MASTER, WINTER_DBUS_CONNECTION "." WINTER_DBUS_MODULE_MASTER, "quit");
         QDBusMessage reply = IPC::callMethod("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit");
 
         if (reply.type () == QDBusMessage::ErrorMessage)
