@@ -81,21 +81,11 @@ void IPC::start()
 
     // *** Determine what module Wintermute will be running as.
     if (isStartingCoreModule) {
-        // *** We want to run as the central process, set up shop.
-        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (startup()));
-        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (shutdown()));
-
-        CoreAdaptor* coreAdaptor = new CoreAdaptor;
-        FactoryAdaptor* pluginFactoryAdaptor = new FactoryAdaptor;
-
-        registerObject (coreAdaptor->objectPath(), coreAdaptor);
-        registerObject (pluginFactoryAdaptor->objectPath(), pluginFactoryAdaptor);
-        setLocalAdaptor(coreAdaptor);
+      Core::prepareAdaptor();
+      Factory::prepareAdaptor();
     }
     else if (module() == WINTER_COMMAND_LINE_IPC_PLUGIN) {
-        /// *** We're running as a plug-in, batten down the hatches.
-        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (loadStandardPlugin()));
-        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (unloadStandardPlugin()));
+       Factory::preparePluginAdaptor();
     } else {
       qDebug() << "Unknown module" << module();
       Core::exit(WINTER_EXITCODE_DBUS_GENERIC | WINTER_EXITCODE_FATAL);
@@ -137,7 +127,7 @@ bool IPC::registerObject (const QString& p_path, QDBusAbstractAdaptor* p_adaptor
     else {
         qDebug() << "(core) [D-Bus] Registered" << p_path << "on"
                  << bus->interface ()->connection().name() << "with"
-                 << p_adaptor->metaObject()->className() << ".";
+                 << p_adaptor->metaObject()->className();
         return bus->registerObject (p_path , p_adaptor, opts);
     }
 
@@ -157,7 +147,7 @@ AbstractAdaptor* IPC::localAdaptor ()
 
 void IPC::setLocalAdaptor (AbstractAdaptor* p_adaptor)
 {
-    if (instance()->d_func()->adaptor == 0) {
+    if (p_adaptor != 0) {
         instance()->d_func()->adaptor = p_adaptor;
     }
 }
@@ -183,7 +173,7 @@ void IPC::handleExit()
     if (module () != "master" && Core::arguments ().value ("help") == "ignore") {
         /// *** Issue a request to the core module to take the system down.
         qDebug() << "(core) [" << module () << "] Closing root appplication...";
-        QDBusMessage reply = IPC::callMethod("org.thesii.Wintermute", "/Master", "org.thesii.Wintermute.Master", "quit",QVariantList());
+        QDBusMessage reply = IPC::callMethod(WINTER_DBUS_CONNECTION, WINTER_DBUS_MODULE_MASTER, WINTER_DBUS_CONNECTION "." WINTER_DBUS_MODULE_MASTER, "quit" ,QVariantList());
 
         if (reply.type () == QDBusMessage::ErrorMessage)
             qDebug() << "(core) [" << module () << "] Can't terminate master module of Wintermute:" << reply.errorName();

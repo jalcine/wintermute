@@ -87,6 +87,12 @@ public:
     static void boot (int& p_argv, char** p_argc);
 
     /**
+     * @brief Prepares the core of this instance of Wintermute for external communications.
+     *
+     */
+    static void prepareAdaptor();
+
+    /**
      * @brief Ends the program; with an optional exit code.
      * @param p_exitCode The exit code to report to the system.
      * @param p_closeRootApplication Whether or not ALL Wintermute instances should be closed.

@@ -76,6 +76,7 @@ class IPC : public QObject
     WINTER_DECLARE_PRIVATE_STRUCT(IPC)
     WINTER_SINGLETON (IPC)
     friend class Core;
+    friend class AbstractInterface;
 
 signals:
     /**

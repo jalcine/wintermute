@@ -122,6 +122,13 @@ public:
     static void unloadPlugin (const QString& p_uuid);
 
     /**
+     * @brief Determines if a plug-in exists in the system.
+     * @fn existsPlugin
+     * @param 
+     */
+    static bool existsPlugin(const QString& p_uuid);
+
+    /**
      * @brief Returns a list of all currently plug-ins with meta-data information.
      * @fn loadedPlugins
      * @returns A QList of plug-ins that are currently loaded into the system.
@@ -168,6 +175,17 @@ public:
      * @param p_uuid The UUID of the plug-in.
      **/
     static AbstractPlugin* obtainPlugin (const QString& p_uuid);
+
+    /**
+     * @brief Sets up the Factory for external communications.
+     */
+    static void prepareAdaptor();
+
+    /**
+     * @brief Sets up the Factory to start a plugin for external 
+     * communications.
+     */
+    static void preparePluginAdaptor();
 
 protected:
     /**

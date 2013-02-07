@@ -32,6 +32,7 @@
 #include <QDateTime>
 #include <QVariantMap>
 
+#include "adaptors.hpp"
 #include "ipc.hpp"
 #include "global.hpp"
 #include "coreprivate.hpp"
@@ -161,8 +162,8 @@ void Core::start()
         qDebug() << "(core) Last startup was at" << lstDate.toLocalTime().toString();
     }
 
-    emit instance()->started();
     qDebug() << "(core) [Core] Started.";
+    emit instance()->started();
 }
 
 void Core::exit (const int p_exitCode, const bool p_closeRootApplication)
@@ -188,6 +189,13 @@ void Core::stop ()
     IPC::stop ();
     emit instance()->stopped ();
     qDebug() << "(core) [" << IPC::module() << "] Core of Wintermute stopped.";
+}
+
+void Core::prepareAdaptor()
+{
+  CoreAdaptor* adaptor = new CoreAdaptor;
+  IPC::registerObject(adaptor->objectPath(),adaptor);
+  IPC::setLocalAdaptor(adaptor);
 }
 
 #include "core.moc"
