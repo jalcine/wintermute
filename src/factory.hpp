@@ -176,6 +176,17 @@ public:
      **/
     static AbstractPlugin* obtainPlugin (const QString& p_uuid);
 
+    /**
+     * @brief Sets up the Factory for external communications.
+     */
+    static void prepareAdaptor();
+
+    /**
+     * @brief Sets up the Factory to start a plugin for external 
+     * communications.
+     */
+    static void preparePluginAdaptor();
+
 protected:
     /**
      * @brief Obtains the specification options (not the configuration used by the plug-in).

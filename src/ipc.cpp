@@ -81,21 +81,11 @@ void IPC::start()
 
     // *** Determine what module Wintermute will be running as.
     if (isStartingCoreModule) {
-        // *** We want to run as the central process, set up shop.
-        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (startup()));
-        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (shutdown()));
-
-        CoreAdaptor* coreAdaptor = new CoreAdaptor;
-        FactoryAdaptor* pluginFactoryAdaptor = new FactoryAdaptor;
-
-        registerObject (coreAdaptor->objectPath(), coreAdaptor);
-        registerObject (pluginFactoryAdaptor->objectPath(), pluginFactoryAdaptor);
-        setLocalAdaptor(coreAdaptor);
+      Core::prepareAdaptor();
+      Factory::prepareAdaptor();
     }
     else if (module() == WINTER_COMMAND_LINE_IPC_PLUGIN) {
-        /// *** We're running as a plug-in, batten down the hatches.
-        QObject::connect (Core::instance(), SIGNAL (started()), Factory::instance(), SLOT (loadStandardPlugin()));
-        QObject::connect (Core::instance(), SIGNAL (stopped()), Factory::instance(), SLOT (unloadStandardPlugin()));
+       Factory::preparePluginAdaptor();
     } else {
       qDebug() << "Unknown module" << module();
       Core::exit(WINTER_EXITCODE_DBUS_GENERIC | WINTER_EXITCODE_FATAL);
