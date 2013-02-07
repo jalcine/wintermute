@@ -155,8 +155,13 @@ AbstractPlugin* Factory::loadPlugin (const QString& p_uuid)
     }
     else {
         qDebug() << "(core) [Factory] Inserting plug-in" << p_uuid << "into the pool.";
-        PluginHandle* inst = new PluginHandle (p_uuid, Factory::getPluginSettings (p_uuid));
-        instance()->d_func()->pool.insert (p_uuid, inst);
+        if (Factory::existsPlugin(p_uuid)){
+          PluginHandle* inst = new PluginHandle (p_uuid, Factory::getPluginSettings (p_uuid));
+          instance()->d_func()->pool.insert (p_uuid, inst);
+        } else {
+          qDebug() << "(core) [Factory] The plugin" << p_uuid << "does NOT exist.";
+          return 0;
+        }  
     }
 
     return 0;
@@ -181,6 +186,12 @@ QStringList Factory::allPlugins ()
     dir.setSorting (QDir::Name);
     return dir.entryList().replaceInStrings (".spec", "");
 }
+
+bool Factory::existsPlugin(const QString& p_uuid)
+{
+  QStringList plugins = Factory::allPlugins();
+  return plugins.contains(p_uuid);
+}  
 
 void Factory::unloadPlugin (const QString& p_uuid)
 {
