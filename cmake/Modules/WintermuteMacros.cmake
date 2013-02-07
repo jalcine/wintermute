@@ -16,7 +16,6 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-find_package(PkgConfig)
 include(UseWintermute)
 include(Qt4Macros)
 
@@ -70,6 +69,7 @@ endmacro(wntr_make_docs)
 ## - _var     = The variable to search for in '_package'.
 ## - _output_variable = The resulting variable to hold the value of PkgConfig.
 macro(pkgconfig_getvar _package _var _output_variable)
+  find_package(PkgConfig REQUIRED)
   set(${_output_variable})
 
   # If pkg-config has been found, jump for joy!

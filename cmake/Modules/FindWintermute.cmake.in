@@ -46,7 +46,7 @@ endif (Wintermute_FIND_COMPONENTS)
 ## = Values that are set at build-time for Wintermute. This hard-coded values
 ## = ensure stability of the application and its components.
 set(WINTERMUTE_VERSION              "@WINTERMUTE_VERSION@")
-set(WINTERMUTE_EXECUTABLE           "${WINTERMUTE_BIN_INSTALL_DIR}/wintermute")
+set(WINTERMUTE_EXECUTABLE           "${WINTER_BIN_INSTALL_DIR}/wintermute")
 set(WINTERMUTE_INCLUDE_DIR          "${WINTER_INCLUDE_INSTALL_DIR}")
 set(WINTERMUTE_INCLUDE_DIRS         "${WINTERMUTE_INCLUDE_DIRS}")
 set(WINTERMUTE_LIBRARIES            "${WINTERMUTE_LIBRARIES}")
