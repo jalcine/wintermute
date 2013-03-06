@@ -35,7 +35,7 @@ if (NOT DEFINED QT_FOUND OR NOT "${WINTERMUTE_QT_VERSION}" EQUAL
 endif()
 ## }}}
 
-find_package(QCommandLine REQUIRED)
+find_package(QCommandLine 0.4.0 MODULE REQUIRED)
 
 ## {{{ Finish up dependency inclusion.
 include("${QT_USE_FILE}")

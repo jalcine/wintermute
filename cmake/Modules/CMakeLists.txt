@@ -17,12 +17,11 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(CMakeProvideUninstallTarget)
 include(WintermuteVariables)
 
 ## Obtain all of the modules to be installed.
 file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
 
 ## Install the file to a discoverable path by CMake.
-install(FILES "${WINTERMUTE_CMAKE_MODULES}"
-        DESTINATION "{CMAKE_SYSTEM_PREFIX_PATH}")
+install(FILES ${WINTERMUTE_CMAKE_MODULES}
+  DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")

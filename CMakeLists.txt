@@ -21,7 +21,9 @@ cmake_minimum_required(VERSION 2.8)
 project(Wintermute)
 
 ## Include our modules in the discovery of modules.
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+include(CMakeUseLocalModules)
+include(CMakeProvideUninstallTarget)
 
 ## Define some project-specific variables.
 set(VERSION_MAJOR "0")
@@ -30,7 +32,6 @@ set(VERSION_PATCH "1")
 
 ## Include sub-directories.
 add_subdirectory(cmake)
-add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(doc)

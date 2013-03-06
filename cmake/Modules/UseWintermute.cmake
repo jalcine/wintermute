@@ -1,4 +1,4 @@
-## TODO: Add proper CMake module definition here.
+# TODO: Add proper CMake module header definitions.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
@@ -18,16 +18,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-# Include some modules necessary for paths.
-# NOTE: These paths are going to be fixed to GNU-compliant systems for now.
-include(GNUInstallDirs)
-
-set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}.${WINTERMUTE_PATCH_VERSION}")
-set(WINTERMUTE_INCLUDE_DIR "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
-set(WINTERMUTE_LIBRARY_DIR "${CMAKE_INSTALL_FULL_LIBDIR}")
-set(WINTERMUTE_CMAKE_MODULES_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
-set(WINTERMUTE_COMPILE_DEFINITIONS "WINTERMUTE_NDEBUG")
-set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
-set(WINTERMUTE_COMPILE_FLAGS "-O0 -Wall -stdc=c++0x -stdlib=libc++ -g")
-set(WINTERMUTE_LIBRARIES "${QT_LIBRARIES}" "${QCOMMANDLINE_LIBRARIES}")
-set(WINTERMUTE_INCLUDE_DIRS ${QT_INCLUDE_DIR} ${QCOMMANDLINE_INCLUDE_DIR})
+# Include necessary modules.
+include(WintermuteVariables)
+include(WintermuteDependencies)

@@ -20,14 +20,13 @@
 
 # Only execute the following block if the 'uninstall' target doesn't exist.
 if (NOT TARGET uninstall)
-
   # Check if the template exists.
   find_file(CMAKE_UNINSTALL_TEMPLATE_FILE cmake_uninstall.cmake.in
-            PATHS ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}"
+            PATHS ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}
             DOC "Path to the CMake uninstallation template.")
 
   # Proceed only if the file exists.         
-  if (EXISTS CMAKE_UNINSTALL_TEMPLATE_FILE)
+  if (EXISTS "${CMAKE_UNINSTALL_TEMPLATE_FILE}")
     # Configure the file accordingly.
     configure_file(${CMAKE_UNINSTALL_TEMPLATE_FILE} 
                   "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
@@ -35,6 +34,6 @@ if (NOT TARGET uninstall)
     # Define the 'uninstall' target.
     add_custom_target(uninstall
       "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
-  endif(EXISTS CMAKE_UNINSTALL_TEMPLATE_FILE)
+  endif(EXISTS "${CMAKE_UNINSTALL_TEMPLATE_FILE}")
 
 endif(NOT TARGET uninstall)
