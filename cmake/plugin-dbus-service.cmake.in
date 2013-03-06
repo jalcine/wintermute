@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.thesii.Wintermute.Plugin.@WDP_NAME_DBUS@
-Exec=@WINTERMUTE_EXECUTABLE@ --daemon true --ipc plugin --plugin @WDP_UUID@

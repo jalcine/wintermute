@@ -17,11 +17,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ */
 
-#include <Wintermute/Application>
+#ifndef WINTERMUTE_GLOBALS_HPP
+#define WINTERMUTE_GLOBALS_HPP
 
-int
-main( int argc, char** argv ){
-  return Wintermute::Application::run(argc,argv);
-}
+/// {{{ Headers
+/// Bring in Qt's globals, we like them.
+#include <QtCore/QtGlobal>
+
+/// }}} Headers
+
+/// {{{ Constants
+
+#define WINTERMUTE_VERSION                @WINTERMUTE_MAJOR_VERSION.@WINTERMUTE_MINOR_VERSION
+#define WINTERMUTE_VERSION_EXACT          "@WINTERMUTE_MAJOR_VERSION.@WINTERMUTE_MINOR_VERSION-@WINTERMUTE_PATCH_VERSION"
+
+/// }}} Constants
+
+#endif /* WINTERMUTE_GLOBALS_HPP */

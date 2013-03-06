@@ -1,3 +1,4 @@
+# TODO: Add default CMake banner here.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
@@ -17,8 +18,22 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+# Only execute the following block if the 'uninstall' target doesn't exist.
+if (NOT TARGET uninstall)
+  # Check if the template exists.
+  find_file(CMAKE_UNINSTALL_TEMPLATE_FILE cmake_uninstall.cmake.in
+            PATHS ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}
+            DOC "Path to the CMake uninstallation template.")
 
-## Include the modules
-add_subdirectory(Modules)
+  # Proceed only if the file exists.         
+  if (EXISTS "${CMAKE_UNINSTALL_TEMPLATE_FILE}")
+    # Configure the file accordingly.
+    configure_file(${CMAKE_UNINSTALL_TEMPLATE_FILE} 
+                  "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
 
+    # Define the 'uninstall' target.
+    add_custom_target(uninstall
+      "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
+  endif(EXISTS "${CMAKE_UNINSTALL_TEMPLATE_FILE}")
+
+endif(NOT TARGET uninstall)

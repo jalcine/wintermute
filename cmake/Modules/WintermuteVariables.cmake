@@ -18,32 +18,23 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(FeatureSummary)
+# Include some modules necessary for paths.
+# NOTE: These paths are going to be fixed to GNU-compliant systems for now.
+include(GNUInstallDirs)
 
-## Pass options to manipulate Wintermute's dependency.
-option(PROVIDE_GUI_SUPPORT      "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
+# Define some Wintermute-specific variables.
+set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}.${WINTERMUTE_PATCH_VERSION}")
+set(WINTERMUTE_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+set(WINTERMUTE_LIBRARY_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
+set(WINTERMUTE_CMAKE_MODULES_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
+set(WINTERMUTE_COMPILE_DEFINITIONS "WINTERMUTE_NDEBUG")
+set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
+set(WINTERMUTE_COMPILE_FLAGS "-O0 -Wall -g -std=c++11")
+set(WINTERMUTE_LIBRARIES ${QT_LIBRARIES} 
+  ${QCOMMANDLINE_LIBRARIES})
+set(WINTERMUTE_INCLUDE_DIRS ${QT_INCLUDE_DIR}
+  ${QCOMMANDLINE_INCLUDE_DIR})
 
-## Define variables necessary for Qt discovery.
-set(WINTERMUTE_QT_VERSION "4.8.4")
-
-## {{{ Look for Qt, if not found already.
-if (NOT DEFINED QT_FOUND OR NOT "${WINTERMUTE_QT_VERSION}" EQUAL 
-    "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
-  find_package(Qt4 ${WINTERMUTE_QT_VERSION} COMPONENTS
-               QtCore
-  REQUIRED)
-endif()
-## }}}
-
-find_package(QCommandLine 0.4.0 MODULE REQUIRED)
-
-## {{{ Finish up dependency inclusion.
-include("${QT_USE_FILE}")
-## }}}
-
-## {{{ Determine which features and dependencies are flipped on/off.
-add_feature_info("Gui Support" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
-## }}}
-
-## Provide feature report.
-feature_summary(WHAT ALL)
+# Change some CMake settings.
+set(CMAKE_USE_RELATIVE_PATHS true)
+set(CMAKE_VERBOSE_MAKEFILE false)

@@ -19,9 +19,5 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include <Wintermute/Application>
+#include "application.hpp"
 
-int
-main( int argc, char** argv ){
-  return Wintermute::Application::run(argc,argv);
-}
