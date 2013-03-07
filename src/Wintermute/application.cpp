@@ -1,16 +1,30 @@
 #include "application.hpp"
+#include "arguments.hpp"
 #include "Wintermute/globals.hpp"
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
 
+using Wintermute::Arguments;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
 
+// TODO: Handle command-line arguments.
 class ApplicationPrivate {
   public:
     QSharedPointer<QCoreApplication> app;
 
     ApplicationPrivate(int &argc, char **argv) {
       app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
+    }
+
+    void
+    initialize(){
+      Arguments* arguments = Arguments::self = new Arguments;
+    }
+
+    int
+    exec(){
+      return app->exec();
     }
 };
 
@@ -29,16 +43,17 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
   d->app->setOrganizationDomain("thesii.org");
 }
 
-Application*
-Application::instance() {
-  return Application::self;
-}
-
 int
 Application::run(int &argc, char **argv){
   if (Application::instance() == 0){
+    // Define the application.
     Application::self = new Application(argc,argv);
-    return Application::instance()->d_ptr->app->exec();
+
+    // Invoke the initialization code.
+    self->d_ptr->initialize();
+
+    // Begin the event loop.
+    return self->d_ptr->exec();
   }
   return -1;
 }
