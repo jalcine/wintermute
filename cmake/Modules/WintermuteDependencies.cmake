@@ -27,22 +27,21 @@ option(PROVIDE_GUI_SUPPORT      "Compile Wintermute with QtGui libraries linked 
 set(WINTERMUTE_QT_VERSION "4.8.4")
 
 ## {{{ Look for Qt, if not found already.
-if (NOT DEFINED QT_FOUND OR NOT "${WINTERMUTE_QT_VERSION}" EQUAL 
-    "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+
+if (NOT DEFINED QT_FOUND OR NOT "${WINTERMUTE_QT_VERSION}" EQUAL "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
   find_package(Qt4 ${WINTERMUTE_QT_VERSION} COMPONENTS
-               QtCore
-  REQUIRED)
+    QtCore
+    REQUIRED)
 endif()
+
 ## }}}
 
 find_package(QCommandLine 0.4.0 MODULE REQUIRED)
 
-## {{{ Finish up dependency inclusion.
-include("${QT_USE_FILE}")
-## }}}
-
 ## {{{ Determine which features and dependencies are flipped on/off.
+
 add_feature_info("Gui Support" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
+
 ## }}}
 
 ## Provide feature report.

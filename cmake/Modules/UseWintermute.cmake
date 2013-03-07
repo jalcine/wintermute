@@ -19,5 +19,6 @@
 ###############################################################################
 
 # Include necessary modules.
-include(WintermuteVariables)
 include(WintermuteDependencies)
+include(WintermuteVariables)
+include(WintermuteMacros)
