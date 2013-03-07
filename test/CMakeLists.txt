@@ -16,3 +16,9 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
+
+if (PROVIDE_TESTS)
+  # Include the directories necessary.
+  add_subdirectory(Wintermute)
+  add_subdirectory(unit)
+endif(PROVIDE_TESTS)
