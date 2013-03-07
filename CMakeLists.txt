@@ -24,6 +24,8 @@ project(Wintermute)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(CMakeUseLocalModules)
 include(CMakeProvideUninstallTarget)
+include(WintermuteMacros)
+include(WintermuteTesting)
 
 ## Define some project-specific variables.
 set(VERSION_MAJOR "0")
