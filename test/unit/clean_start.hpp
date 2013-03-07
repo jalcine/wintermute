@@ -3,11 +3,11 @@
 
 #include <QtCore/QObject>
 
-class TestQString : public QObject {
-  Q_OBJECT
+class TestCleanStart : public QObject {
+  Q_OBJECT;
 
-  private slots:
-  void toUpper();
+  private Q_SLOTS:
+    void startApp();
 };
 
 #endif /* UNIT_TEST_CLEAN_START_HPP */

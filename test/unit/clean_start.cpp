@@ -1,12 +1,10 @@
 #include "clean_start.hpp"
 #include <QtTest>
 
-void TestQString::toUpper()
-{
-    QString str = "Hello";
-    QVERIFY(str.toUpper() == "HELLO");
+void
+TestCleanStart::startApp(){
 }
 
-QTEST_MAIN(TestQString)
+QTEST_MAIN(TestCleanStart)
 
 #include "clean_start.moc"
