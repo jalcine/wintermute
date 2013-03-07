@@ -17,7 +17,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-# Include necessary components.
 include(UseWintermute)
 
 set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
@@ -39,11 +38,11 @@ add_executable(wintermute ${WINTERMUTE_SOURCES})
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
-  COMPILE_DEFINITIONS ${WINTERMUTE_COMPILE_DEFINITIONS}
-  COMPILE_DEFINITIONS_DEBUG ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}
-  COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
   FOLDER "Wintermute/Core"
   PROJECT_LABEL "Wintermute")
+
+# Add the necessary properties to the 'wintermute' executable.
+wintermute_add_properties(wintermute)
 
 include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
