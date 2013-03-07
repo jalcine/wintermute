@@ -17,35 +17,8 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(UseWintermute)
-
-set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
-
-# Grab the sources!
-set(WINTERMUTE_SOURCES
-  main.cpp
-  Wintermute/application.cpp
-  )
-set(WINTERMUTE_HEADERS global.hpp)
-
-# Wrap up the sources.
-qt4_automoc(${WINTERMUTE_SOURCES})
-
-# Define the executable.
-add_executable(wintermute ${WINTERMUTE_SOURCES})
-
-# Define properties for Wintermute's executable.
-set_target_properties(wintermute PROPERTIES
-  FOLDER "Wintermute/Core"
-  PROJECT_LABEL "Wintermute")
-
-# Add the necessary properties to the 'wintermute' executable.
-wintermute_add_properties(wintermute)
-
-include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
-target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
-
-# Generate the global definition file.
-configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
+if (PROVIDE_TESTS)
+  # Include the directories necessary.
+  add_subdirectory(Wintermute)
+  add_subdirectory(unit)
+endif(PROVIDE_TESTS)

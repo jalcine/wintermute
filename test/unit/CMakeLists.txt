@@ -17,35 +17,17 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(UseWintermute)
+include(WintermuteVariables)
 
-set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
+include_directories(${WINTERMUTE_INCLUDE_DIRS}
+  ${QT_QTTEST_INCLUDE_DIR}
+  "${QT_QTTEST_INCLUDE_DIR}/.."
+  ${CMAKE_CURRENT_BINARY_DIR})
 
-# Grab the sources!
-set(WINTERMUTE_SOURCES
-  main.cpp
-  Wintermute/application.cpp
-  )
-set(WINTERMUTE_HEADERS global.hpp)
+set (WINTERMUTE_TEST_UNITS
+      clean_start)
 
-# Wrap up the sources.
-qt4_automoc(${WINTERMUTE_SOURCES})
+foreach(WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS})
+  wintermute_add_unit_test(${WINTERMUTE_TEST_UNIT} "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp")
+endforeach(WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS})
 
-# Define the executable.
-add_executable(wintermute ${WINTERMUTE_SOURCES})
-
-# Define properties for Wintermute's executable.
-set_target_properties(wintermute PROPERTIES
-  FOLDER "Wintermute/Core"
-  PROJECT_LABEL "Wintermute")
-
-# Add the necessary properties to the 'wintermute' executable.
-wintermute_add_properties(wintermute)
-
-include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
-target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
-
-# Generate the global definition file.
-configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
