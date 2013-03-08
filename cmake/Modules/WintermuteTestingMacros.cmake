@@ -1,3 +1,4 @@
+## TODO: Add proper CMake module definition here.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
@@ -17,8 +18,20 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+include(WintermuteMacros)
 
-## Include the modules
-add_subdirectory(Modules)
+## TODO: Define this macro and the process flow.
+macro(wintermute_add_unit_test unittestname unittestsrc)
+  SET(unittest_${unittestname}_SRCS ${unittestsrc} ${WINTERMUTE_TEST_CORE_SOURCES})
+  qt4_automoc(${unittest_${unittestname}_SRCS})
+
+  add_executable(unittest_${unittestname} ${unittest_${unittestname}_SRCS})
+  wintermute_add_properties(unittest_${unittestname})
+  target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
+
+  add_test(unittest_${unittestname} unittest_${unittestname} 
+    ${WINTERMUTE_TEST_ARGUMENTS})
+  add_dependencies(unittest unittest_${unittestname})
+endmacro(wintermute_add_unit_test unittestname unittestsrc)
+
 

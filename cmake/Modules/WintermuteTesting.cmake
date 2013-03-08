@@ -17,8 +17,28 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+include(CTest)
+include(WintermuteTestingMacros)
 
-## Include the modules
-add_subdirectory(Modules)
+## Release the KRAKEN!
+enable_testing()
+
+## Define the top-level targets for testing.
+add_custom_target(test )
+add_custom_target(unittest )
+
+## Define some dependencies.
+add_dependencies(test unittest)
+
+## Define the core sources and libraries for testing)
+set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+  ${QT_QTTEST_INCLUDE_DIR})
+set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
+  ${WINTERMUTE_LIBRARIES})
+set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
+
+## Automatically include the testing directories.
+include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
+
+## Link CTest data to a place it'll look for it.
 

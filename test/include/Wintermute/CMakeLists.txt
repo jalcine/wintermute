@@ -17,8 +17,10 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+## Obtain the location of the built Wintermute executable.
+get_target_property(WINTERMUTE_TEST_EXECUTABLE wintermute LOCATION)
 
-## Include the modules
-add_subdirectory(Modules)
-
+## Generating the unique testing header.
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/testing.hpp.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Testing" @ONLY)

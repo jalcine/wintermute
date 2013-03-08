@@ -1,20 +1,27 @@
-cmake_minimum_required(VERSION 2.8)
+###############################################################################
+### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+###
+### This file is part of Wintermute, the extensible AI platform.
+###
+### Wintermute is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 3 of the License, or
+### (at your option) any later version.
+###
+### Wintermute is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+###############################################################################
 
-## Pre-fetch some values.
-include(GNUInstallDirs)
+include(WintermuteVariables)
 
-## Configure the variable definition and discovery file for Wintermute.
-configure_file("${CMAKE_SOURCE_DIR}/cmake/Modules/WintermuteDefaults.cmake.in"
-               "${CMAKE_BINARY_DIR}/cmake/Modules/WintermuteDefaults.cmake" @ONLY)
-configure_file("${CMAKE_SOURCE_DIR}/cmake/Modules/FindWintermute.cmake.in"
-               "${CMAKE_BINARY_DIR}/cmake/Modules/FindWintermute.cmake" @ONLY)
+## Obtain all of the modules to be installed.
+file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
 
-## Find all of the generated and static modules.
-file(GLOB WINTER_CMAKE_MODULES "${CMAKE_SOURCE_DIR}/cmake/Modules/*.cmake"
-                               "${CMAKE_BINARY_DIR}/cmake/Modules/*.cmake")
-
-## Install the modules discovered.
-include(UseWintermute)
-install(FILES ${WINTER_CMAKE_MODULES}
-  DESTINATION "${WINTER_CMAKE_MODULES_DIR}"
-  COMPONENT dev)
+## Install the file to a discoverable path by CMake.
+install(FILES ${WINTERMUTE_CMAKE_MODULES}
+  DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")

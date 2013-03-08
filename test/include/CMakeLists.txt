@@ -17,8 +17,4 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
-
-## Include the modules
-add_subdirectory(Modules)
-
+add_subdirectory(Wintermute)

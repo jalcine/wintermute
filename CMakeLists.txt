@@ -1,31 +1,41 @@
-project(Wintermute)
+###############################################################################
+### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+###
+### This file is part of Wintermute, the extensible AI platform.
+###
+### Wintermute is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 3 of the License, or
+### (at your option) any later version.
+###
+### Wintermute is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+###############################################################################
+
 cmake_minimum_required(VERSION 2.8)
+project(Wintermute)
 
-## MODULE DISCOVERY
-## =======
-## = Load up the path that at which our modules would be loaded from.
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules"
-                              "${CMAKE_BINARY_DIR}/cmake/Modules")
+## Include our modules in the discovery of modules.
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+include(CMakeUseLocalModules)
+include(CMakeProvideUninstallTarget)
 
-## Options for Wintermute's build.
-option(WINTER_DEPRECATED_WARNINGS "Should Wintermute report warnings about deprecated methods?" ON)
-option(WINTER_USE_QT_SESSIONS     "Will Wintermute utilize Qt's session storage?" OFF)
-option(WINTER_HEADLESS            "Build Wintermute without QtGui linked." OFF)
+## Define some project-specific variables.
+set(WINTERMUTE_VERSION_MAJOR "0")
+set(WINTERMUTE_VERSION_MINOR "1")
+set(WINTERMUTE_VERSION_PATCH "1")
 
-## CMAKE PRE-LOAD
-## ==============
-## = Ensure that our CMake environment is configured correctly.
-# Set versioning information.
-set(PROJECT_LABEL "Wintermute")
-set(WINTERMUTE_MAJOR_VERSION 0)
-set(WINTERMUTE_MINOR_VERSION 1)
-set(WINTERMUTE_PATCH_VERSION 0)
-set(WINTERMUTE_VERSION "${WINTERMUTE_MAJOR_VERSION}.${WINTERMUTE_MINOR_VERSION}-${WINTERMUTE_PATCH_VERSION}")
+## Import Wintermute's CMake infrastructure.
+include(UseWintermute)
+include(WintermuteTesting)
 
-## SUBDIRECTORY INCLUDES
-## =====================
-## As with most projects, the order of loading is important.
+## Include sub-directories.
 add_subdirectory(cmake)
 add_subdirectory(src)
-#add_subdirectory(test)
-#add_subdirectory(data)
+add_subdirectory(test)
+add_subdirectory(doc)
