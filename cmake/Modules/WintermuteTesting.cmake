@@ -25,6 +25,10 @@ enable_testing()
 
 ## Define the top-level target for testing.
 add_custom_target(test )
+add_custom_target(unittest )
+
+# Define some dependencies.
+add_dependencies(test unittest)
 
 # Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
