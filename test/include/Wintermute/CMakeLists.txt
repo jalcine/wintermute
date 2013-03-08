@@ -17,6 +17,8 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+## Obtain the location of the built Wintermute executable.
 get_target_property(WINTERMUTE_TEST_EXECUTABLE wintermute LOCATION)
-message(${WINTERMUTE_TEST_EXECUTABLE})
+
+## Generating the unique testing header.
 configure_file("testing.hpp.in" "Testing" @ONLY)
