@@ -17,15 +17,13 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(WintermuteVariables)
-
 include_directories(${WINTERMUTE_INCLUDE_DIRS}
   ${QT_QTTEST_INCLUDE_DIR}
-  "${QT_QTTEST_INCLUDE_DIR}/.."
   ${CMAKE_CURRENT_BINARY_DIR})
 
 set (WINTERMUTE_TEST_UNITS
-      clean_start)
+      clean_start
+      command_line)
 
 foreach(WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS})
   wintermute_add_unit_test(${WINTERMUTE_TEST_UNIT} "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp")
