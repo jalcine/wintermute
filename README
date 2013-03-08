@@ -3,12 +3,48 @@
 Wintermute is an extensible application that aims to become the foundation of 
 an **artificial intelligence framework**. The application is written in C++ at 
 its core. More information about the project can be found on [its Wiki 
-page](http://thesii.org/wiki/index.php/Wintermute)
+page](http://thesii.org/wiki/index.php/Wintermute).
 
 ## Installing
 
+Wintermute requires **[Qt](http://qt-project.org)** in order to be built.
+It also requires the use of **[qcommandline, with patches](https://github.com/jalcine/qcommandline)**
+and **[CMake](http://cmake.org)** for building.
+
+Once you've satisified those dependencies, building is a breeze. Seriously.
+
+```bash
+$ git clone git://github.com/jalcine/wintermute wintermute
+$ cd wintermute; mkdir build; cd build
+$ cmake .. -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_BUILD_TYPE=Debug
+$ make
+$ make unittest test Experimental
+$ make install
+```
+
+The instructions above install Wintermute to a local binary directory (my personal setup)
+and can be executed like so:
+
+```bash
+$ ~/.local/bin/wintermute
+$ wintermute # If ~/.local/bin is in your $PATH
+```
+
+So far, Wintermute has only been built and tested on **[Kubuntu](http://www.kubuntu.com)** running 
+a developer preview of Raring Ringtail. I'm very curious to the build requirements and information for building on
+different architectures and machines.
+
 ## Contributing
+
+ - Fork, make a topic branch and propose your changes!
+ - Build and test Wintermute on a foreign, untested system!
+ - Spread the word and do your part to make Wintermute an awesome app!
 
 ## Support
 
+I do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
+me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers.
+
 ## Licensing
+
+Wintermute is licensed under the GPLv2 license. See `LICENSE` for more details.
