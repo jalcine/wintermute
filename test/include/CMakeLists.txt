@@ -17,8 +17,4 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-if (PROVIDE_TESTS)
-  # Add in subdirectories for testing.
-  add_subdirectory(include)
-  add_subdirectory(unit)
-endif(PROVIDE_TESTS)
+add_subdirectory(Wintermute)

@@ -17,8 +17,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-if (PROVIDE_TESTS)
-  # Add in subdirectories for testing.
-  add_subdirectory(include)
-  add_subdirectory(unit)
-endif(PROVIDE_TESTS)
+get_target_property(WINTERMUTE_TEST_EXECUTABLE wintermute LOCATION)
+message(${WINTERMUTE_TEST_EXECUTABLE})
+configure_file("testing.hpp.in" "Testing" @ONLY)
