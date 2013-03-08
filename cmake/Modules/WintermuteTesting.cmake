@@ -18,22 +18,26 @@
 ###############################################################################
 
 include(CTest)
-include(WintermuteVariables)
 include(WintermuteTestingMacros)
 
+## Release the KRAKEN!
 enable_testing()
 
-## Define the top-level target for testing.
+## Define the top-level targets for testing.
 add_custom_target(test )
 add_custom_target(unittest )
 
-# Define some dependencies.
+## Define some dependencies.
 add_dependencies(test unittest)
 
-# Define the core sources and libraries for testing)
+## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${QT_QTTEST_INCLUDE_DIR})
 set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
   ${WINTERMUTE_LIBRARIES})
 
+## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
+
+## Link CTest data to a place it'll look for it.
+

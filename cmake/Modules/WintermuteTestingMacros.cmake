@@ -20,6 +20,7 @@
 
 include(WintermuteMacros)
 
+## TODO: Define this macro and the process flow.
 macro(wintermute_add_unit_test unittestname unittestsrc)
   SET(unittest_${unittestname}_SRCS ${unittestsrc} ${WINTERMUTE_TEST_CORE_SOURCES})
   qt4_automoc(${unittest_${unittestname}_SRCS})
@@ -28,7 +29,6 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 
-  message("${WINTERMUTE_TEST_LIBRARIES}")
   add_test(unittest_${unittestname} unittest_${unittestname})
   add_dependencies(unittest unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)
