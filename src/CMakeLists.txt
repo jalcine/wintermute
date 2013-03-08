@@ -27,6 +27,7 @@ list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 set(WINTERMUTE_SOURCES
   main.cpp
   Wintermute/application.cpp
+  Wintermute/arguments.cpp
   )
 set(WINTERMUTE_HEADERS global.hpp)
 

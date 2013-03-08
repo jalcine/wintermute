@@ -48,7 +48,7 @@ namespace Wintermute {
        *
        * @return A shared pointer to the working instance of Wintermute::Application.
        */
-      static Application* instance();
+      static inline Application* instance() { return self; }
 
       /**
        * @fn run
