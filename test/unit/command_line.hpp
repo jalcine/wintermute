@@ -3,10 +3,16 @@
 
 #include <QObject>
 
+class QProcess;
+
 class TestCommandLine : public QObject {
   Q_OBJECT;
 
+  private:
+    QProcess* process;
+
   private slots:
+    void cleanup();
     void showHelp();
     void showVersion();
     void showInvalidArgument();

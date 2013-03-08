@@ -1,15 +1,66 @@
 #include "command_line.hpp"
 #include <Wintermute/Testing>
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
+
+using Wintermute::Testing::spawnProcess;
 
 void
-TestCommandLine::showHelp() {}
+TestCommandLine::cleanup(){
+  if (process->state() != QProcess::NotRunning){
+    process->waitForFinished();
+  }
+
+  process->deleteLater();
+}
 
 void
-TestCommandLine::showVersion() {}
+TestCommandLine::showHelp() {
+  process = spawnProcess(QStringList() << "--help");
+
+  // Check if the apps runs.
+  QVERIFY(process->waitForStarted());
+
+  // Capture output from stderr, as promised.
+  QByteArray output = process->readAllStandardError();
+  QCOMPARE(output.isEmpty(), false);
+  QCOMPARE(output.isNull(), false);
+
+  // Check if the apps exits.
+  QVERIFY(process->waitForFinished());
+}
 
 void
-TestCommandLine::showInvalidArgument() {}
+TestCommandLine::showVersion() {
+  process = Wintermute::Testing::spawnProcess(QStringList() << "--version");
+
+  // Check if the apps runs.
+  QVERIFY(process->waitForStarted());
+
+  // Capture output from stderr, as promised.
+  QByteArray output = process->readAllStandardError();
+  QCOMPARE(output.isEmpty(), false);
+  QCOMPARE(output.isNull(), false);
+
+  // Check if the apps exits.
+  QVERIFY(process->waitForFinished());
+
+}
+
+void
+TestCommandLine::showInvalidArgument() {
+  process = spawnProcess(QStringList() << "--january");
+
+  // Check if the apps runs.
+  QVERIFY(process->waitForStarted());
+
+  // Capture output from stderr, as promised.
+  QByteArray output = process->readAllStandardError();
+  QCOMPARE(output.isEmpty(), false);
+  QCOMPARE(output.isNull(), false);
+
+  // Check if the apps exits.
+  QVERIFY(process->waitForFinished());
+}
 
 QTEST_MAIN(TestCommandLine)
 
