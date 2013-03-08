@@ -24,13 +24,15 @@ project(Wintermute)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(CMakeUseLocalModules)
 include(CMakeProvideUninstallTarget)
-include(WintermuteMacros)
-include(WintermuteTesting)
 
 ## Define some project-specific variables.
 set(WINTERMUTE_VERSION_MAJOR "0")
 set(WINTERMUTE_VERSION_MINOR "1")
 set(WINTERMUTE_VERSION_PATCH "1")
+
+## Import Wintermute's CMake infrastructure.
+include(UseWintermute)
+include(WintermuteTesting)
 
 ## Include sub-directories.
 add_subdirectory(cmake)

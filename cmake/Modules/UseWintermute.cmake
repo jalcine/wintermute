@@ -18,7 +18,7 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-# Include necessary modules.
+## Include necessary modules.
 include(WintermuteDependencies)
 include(WintermuteVariables)
 include(WintermuteMacros)
