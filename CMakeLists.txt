@@ -28,9 +28,9 @@ include(WintermuteMacros)
 include(WintermuteTesting)
 
 ## Define some project-specific variables.
-set(VERSION_MAJOR "0")
-set(VERSION_MINOR "1")
-set(VERSION_PATCH "1")
+set(WINTERMUTE_VERSION_MAJOR "0")
+set(WINTERMUTE_VERSION_MINOR "1")
+set(WINTERMUTE_VERSION_PATCH "1")
 
 ## Include sub-directories.
 add_subdirectory(cmake)
