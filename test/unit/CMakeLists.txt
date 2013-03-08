@@ -23,6 +23,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 ## Produce the list of buildable tests.
 set (WINTERMUTE_TEST_UNITS
   clean_start
+  command_line
   )
 
 ## Add each unit test to the test suite.

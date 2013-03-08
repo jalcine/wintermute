@@ -21,4 +21,6 @@
 get_target_property(WINTERMUTE_TEST_EXECUTABLE wintermute LOCATION)
 
 ## Generating the unique testing header.
-configure_file("testing.hpp.in" "Testing" @ONLY)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/testing.hpp.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Testing" @ONLY)
