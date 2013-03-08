@@ -8,3 +8,4 @@ debian
 build
 CMakeLists.txt.user
 global.hpp
+test/include/Wintermute/Testing
