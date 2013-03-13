@@ -9,7 +9,6 @@ TestCleanStart::startApp(){
   QProcess* process = spawnProcess(QStringList());
   QVERIFY(process->waitForStarted());
   process->close();
-  QVERIFY(process->waitForFinished());
 }
 
 QTEST_MAIN(TestCleanStart)
