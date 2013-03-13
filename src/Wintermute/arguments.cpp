@@ -15,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public Licetalk aontalk aose
- * along with Wintermute.  If not, see <http://www.gnu.org/licetalk aonses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
 #include "arguments.hpp"
@@ -33,7 +33,7 @@ class ArgumentsPrivate {
     QVariantMap arguments;
 
     ArgumentsPrivate(QObject* parent) : args(new QCommandLine(parent)) {
-      // Define default arguments.
+      // Define generic arguments.
       args->enableVersion(true);
       args->enableHelp(true);
     }
@@ -49,6 +49,8 @@ Arguments* Arguments::self = 0;
 Arguments::Arguments() : QObject(Application::instance()), d_ptr(new ArgumentsPrivate(this)) {
   Q_D(Arguments);
 
+  // Wipe the object, just to be safe.
+  // TODO: Determine if this is even necessary.
   d->arguments.clear();
 
   // Make this the object of concern.
@@ -64,9 +66,8 @@ Arguments::Arguments() : QObject(Application::instance()), d_ptr(new ArgumentsPr
   connect(d->args,SIGNAL(parseError(const QString&)),
       this,SLOT(parseError(const QString&)));
 
-  // Read command line arguments and then work upon them.
+  // Read command line arguments.
   d->args->parse();
-  d->interpret();
 }
 
 QVariant
