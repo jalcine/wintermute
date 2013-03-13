@@ -29,6 +29,7 @@ namespace Wintermute {
   class ApplicationPrivate;
   class Application : public QObject {
     Q_OBJECT
+
     Q_DECLARE_PRIVATE(Application);  
 
     QScopedPointer<ApplicationPrivate> d_ptr;
@@ -59,6 +60,9 @@ namespace Wintermute {
        * be run a second time.
        */
       static int run( int& argc, char **argv );
+
+      Q_SLOT void start();
+      Q_SLOT void stop();
   };
 
 }
