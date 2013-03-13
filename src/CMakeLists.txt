@@ -26,8 +26,22 @@ set(WINTERMUTE_SOURCES
   main.cpp
   Wintermute/application.cpp
   Wintermute/arguments.cpp
+  Wintermute/logging.cpp
   )
-set(WINTERMUTE_HEADERS global.hpp)
+
+set(WINTERMUTE_HEADERS 
+  ### Pretty headers
+  Wintermute/Application
+  Wintermute/Arguments
+  Wintermute/Globals
+  Wintermute/Logging
+
+  ### Native headers
+  Wintermute/application.hpp
+  Wintermute/arguments.hpp
+  Wintermute/logging.hpp
+  "${CMAKE_CURRENT_BINARY_DIR}/Wintermute/globals.hpp"
+  )
 
 # Wrap up the sources.
 qt4_automoc(${WINTERMUTE_SOURCES})
@@ -48,3 +62,10 @@ target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.
 configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
+
+# Install the binary.
+install(TARGETS wintermute
+  RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})        
+
+install(FILES ${WINTERMUTE_HEADERS}
+  DESTINATION ${WINTERMUTE_CORE_INCLUDE_DIR})
