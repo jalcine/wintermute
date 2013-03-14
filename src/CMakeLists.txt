@@ -27,6 +27,7 @@ set(WINTERMUTE_SOURCES
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
   Wintermute/plugin.cpp
+  Wintermute/version.cpp
   main.cpp
   )
 
@@ -37,13 +38,15 @@ set(WINTERMUTE_HEADERS
   Wintermute/Globals
   Wintermute/Logging
   Wintermute/Plugin
+  Wintermute/Version
 
   ### Native headers
   Wintermute/application.hpp
   Wintermute/arguments.hpp
   Wintermute/logging.hpp
-  "${CMAKE_CURRENT_BINARY_DIR}/Wintermute/globals.hpp"
   Wintermute/plugin.hpp
+  Wintermute/version.hpp
+  "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
 # Wrap up the sources.
