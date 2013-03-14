@@ -1,3 +1,7 @@
+# - Find Wintermute.
+# This module is used to discover the necessary libraries, headers and 
+# CMake modules files for Wintermute. By using find_package(Wintermute), 
+# everything necessary for Wintermute plug-in building is included.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
@@ -17,16 +21,14 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+set(WINTERMUTE_VERSION_MAJOR          @WINTERMUTE_VERSION_MAJOR@)
+set(WINTERMUTE_VERSION_MINOR          @WINTERMUTE_VERSION_MINOR@)
+set(WINTERMUTE_VERSION_PATCH          @WINTREMUTE_VERSION_PATCH@)
+set(WINTERMUTE_VERSION_STAGE          @WINTERMUTE_VERSION_STAGE@)
+set(WINTERMUTE_VERSION_STAGE_REVISION @WINTERMUTE_VERSION_STAGE_REVISION@)
+
+## Include top-level modules, we split everything up.
 include(WintermuteVariables)
-
-## Configure 'FindWintermute.cmake.in'.
-configure_file(FindWintermute.cmake.in FindWintermute.cmake @ONLY)
-
-## Obtain all of the modules to be installed.
-file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
-list(APPEND ${WINTERMUTE_CMAKE_MODULES} 
-  "${CMAKE_CURRENT_BINARY_DIR}/FindWintermute.cmake")
-
-## Install the file to a discoverable path by CMake.
-install(FILES ${WINTERMUTE_CMAKE_MODULES}
-  DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")
+include(WintermuteDependencies)
+include(WintermuteMacros)
+include(WintermuteVersioning)
