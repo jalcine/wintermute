@@ -23,10 +23,11 @@ list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
 set(WINTERMUTE_SOURCES
-  main.cpp
   Wintermute/application.cpp
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
+  Wintermute/plugin.cpp
+  main.cpp
   )
 
 set(WINTERMUTE_HEADERS 
@@ -35,12 +36,14 @@ set(WINTERMUTE_HEADERS
   Wintermute/Arguments
   Wintermute/Globals
   Wintermute/Logging
+  Wintermute/Plugin
 
   ### Native headers
   Wintermute/application.hpp
   Wintermute/arguments.hpp
   Wintermute/logging.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/Wintermute/globals.hpp"
+  Wintermute/plugin.hpp
   )
 
 # Wrap up the sources.
@@ -61,7 +64,7 @@ include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.
-configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
+configure_file(globals.hpp.in globals.hpp @ONLY)
 
 # Install the binary.
 install(TARGETS wintermute
