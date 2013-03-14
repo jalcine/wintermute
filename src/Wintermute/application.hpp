@@ -22,11 +22,12 @@
 #ifndef WINTERMUTE_APPLICATION_HPP
 #define WINTERMUTE_APPLICATION_HPP
 
-#include <QObject>
-#include <QSharedPointer>
+#include <Wintermute/Globals>
 
 namespace Wintermute {
+  class Version;
   class ApplicationPrivate;
+
   class Application : public QObject {
     Q_OBJECT
 
@@ -60,6 +61,14 @@ namespace Wintermute {
        * be run a second time.
        */
       static int run( int& argc, char **argv );
+
+      /**
+       * @fn version
+       * @brief Obtains the current version of Wintermute.
+       *
+       * TODO: Expand documentation.
+       */
+      Version version() const;
 
       Q_SLOT void start();
       Q_SLOT void stop();

@@ -22,12 +22,16 @@
 #include "application.hpp"
 #include "arguments.hpp"
 #include "logging.hpp"
-#include "Wintermute/globals.hpp"
+#include "factory.hpp"
+#include "version.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QSharedPointer>
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
+using Wintermute::Version;
+using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
 
@@ -42,8 +46,9 @@ class ApplicationPrivate {
     void
     initialize(){
       // Allocate necessary variables for logging and arguments.
-      Logging* logging     = Logging::self   = new Logging;
-      Arguments* arguments = Arguments::self = new Arguments;
+      Logging::self   = new Logging;
+      Arguments::self = new Arguments;
+      Factory::self   = new Factory;
     }
 
     int
@@ -62,7 +67,7 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
 
   // Define the application in Qt.
   d->app->setApplicationName("Wintermute");
-  d->app->setApplicationVersion(WINTERMUTE_VERSION_EXACT);
+  d->app->setApplicationVersion(this->version().toString());
   d->app->setOrganizationName("Synthetic Intellect Institute");
   d->app->setOrganizationDomain("thesii.org");
 }
@@ -72,19 +77,19 @@ Application::run(int &argc, char **argv){
   if (Application::instance() == 0){
     // Define the application.
     Application::self = new Application(argc,argv);
+    Wintermute::Logger* log = Logging::obtainLogger(Application::self);
 
     // Invoke the initialization code.
     self->d_ptr->initialize();
-    Logging::obtainLogger(Application::self)->debug("Completed initialization phase.");
+    log->debug("Completed initialization phase.");
 
     // Start thyself.
     self->start(); 
-    Logging::obtainLogger(Application::self)->debug("Started.");
 
     // Begin the event loop.
-    Logging::obtainLogger(Application::self)->debug("Beginning event loop.");
+    log->debug("Beginning event loop.");
     int returnCode = self->d_ptr->exec();
-    Logging::obtainLogger(Application::self)->info("Event loop ended. Ended with exit code " + QString::number(returnCode));
+    log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
 
     return returnCode;
   }
@@ -94,12 +99,35 @@ Application::run(int &argc, char **argv){
 
 void
 Application::start(){
+  Q_D(Application);
   Logger* log = Logging::obtainLogger(this);
-}
+  log->info("Starting.");
 
+  // Privately start the Factory.
+  Factory::instance()->start();
+
+
+  log->info("Started.");
+}
 
 void
 Application::stop(){
+  Q_D(Application);
+
+  // Privately clean up the Factory.
+  Factory::instance()->stop();
+}
+
+Version
+Application::version() const {
+  Version ver;
+  ver.major = WINTERMUTE_VERSION_MAJOR;
+  ver.minor = WINTERMUTE_VERSION_MINOR;
+  ver.patch = WINTERMUTE_VERSION_PATCH;
+  ver.state = (Wintermute::Version::DevelopmentStage) WINTERMUTE_VERSION_STAGE;
+  ver.stage = WINTERMUTE_VERSION_STAGE_REVISION;
+
+  return ver;
 }
 
 Application::~Application(){
