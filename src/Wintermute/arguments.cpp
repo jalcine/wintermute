@@ -21,6 +21,7 @@
 
 #include "arguments.hpp"
 #include "application.hpp"
+#include "logging.hpp"
 #include <QtCore/QVariantMap>
 #include <QCommandLine>
 
@@ -110,7 +111,10 @@ Arguments::optionFound(const QString&  optionName,
 
 void
 Arguments::parseError(const QString& error){
+  Wintermute::Logger* log = Wintermute::Logging::obtainLogger(this);
   Q_D(Arguments);
+
+  log->error(QString("Malformed command-line arguments. (%1)").arg(error));
 
   d->args->showVersion();
   d->args->showHelp();

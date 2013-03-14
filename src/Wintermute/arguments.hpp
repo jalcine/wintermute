@@ -22,9 +22,8 @@
 #ifndef WINTERMUTE_ARGUMENTS_HPP
 #define WINTERMUTE_ARGUMENTS_HPP
 
-#include <QObject>
-#include <QVariant>
-#include <QSharedPointer>
+#include <Wintermute/Globals>
+#include <QtCore/QVariantMap>
 
 namespace Wintermute {
   class ArgumentsPrivate;
