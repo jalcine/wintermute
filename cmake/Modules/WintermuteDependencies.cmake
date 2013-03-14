@@ -38,6 +38,7 @@ endif()
 
 find_package(QCommandLine 0.4.0 MODULE REQUIRED)
 find_package(log4qt REQUIRED)
+find_package(Git REQUIRED)
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
