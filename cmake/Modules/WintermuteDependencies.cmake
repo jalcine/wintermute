@@ -24,7 +24,7 @@ include(FeatureSummary)
 option(PROVIDE_GUI_SUPPORT      "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
 
 ## Define variables necessary for Qt discovery.
-set(WINTERMUTE_QT_VERSION "4.8.4")
+set(WINTERMUTE_QT_VERSION "4.7")
 
 ## {{{ Look for Qt, if not found already.
 
