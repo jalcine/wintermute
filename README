@@ -30,9 +30,11 @@ $ ~/.local/bin/wintermute
 $ wintermute # If ~/.local/bin is in your $PATH
 ```
 
+## Tested Operating Systems
 So far, Wintermute has only been built and tested on **[Kubuntu](http://www.kubuntu.com)** running 
-a developer preview of Raring Ringtail. I'm very curious to the build requirements and information for building on
-different architectures and machines.
+a developer preview of Raring Ringtail. It's recommended that after building, you run the test sute (`make test`) and have
+your test results be uploaded to CDash. Wintermute is also tested on [Travis.CI](https://travis-ci.org/thesii/wintermute) for
+those who prefer that utility.
 
 ## Contributing
 
@@ -42,7 +44,7 @@ different architectures and machines.
 
 ## Support
 
-I do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
+I (the project maintainer, Jacky Alcine) do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
 me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers.
 
 ## Licensing
