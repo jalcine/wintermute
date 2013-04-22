@@ -11,7 +11,7 @@ page](http://thesii.org/wiki/index.php/Wintermute).
 Wintermute requires a few dependencies at this version. Right now, the only targeted platform is `Linux` due to its heavy dependency on D-Bus but work provided by contributors of other platforms.
 
   * CMake 2.8
-  * Qt 4.7 or greater - http://qt-project
+  * Qt 4.7 or greater - http://qt-project.org
   * QCommandLine - https://github.com/jalcine/qcommandline
   * QLogger - https://gitorious.org/log4qt/log4qt
 
