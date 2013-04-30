@@ -24,7 +24,7 @@ include(FeatureSummary)
 option(PROVIDE_GUI_SUPPORT      "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
 
 ## Define variables necessary for Qt discovery.
-set(WINTERMUTE_QT_VERSION "4.8.4")
+set(WINTERMUTE_QT_VERSION "4.7")
 
 ## {{{ Look for Qt, if not found already.
 
@@ -36,7 +36,7 @@ endif()
 
 ## }}}
 
-find_package(QCommandLine 0.4.0 MODULE REQUIRED)
+find_package(QCommandLine 0.4.0 REQUIRED)
 find_package(log4qt REQUIRED)
 find_package(Git REQUIRED)
 

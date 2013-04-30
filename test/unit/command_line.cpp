@@ -1,6 +1,7 @@
 #include "command_line.hpp"
 #include <Wintermute/Testing>
 #include <QtTest/QTest>
+#include <iostream>
 
 using Wintermute::Testing::spawnProcess;
 
@@ -22,6 +23,7 @@ TestCommandLine::showHelp() {
 
   // Capture output from stderr, as promised.
   QByteArray output = process->readAllStandardError();
+  std::cerr << qPrintable(output);
   QCOMPARE(output.isEmpty(), false);
   QCOMPARE(output.isNull(), false);
 
