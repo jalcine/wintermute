@@ -44,8 +44,7 @@ namespace Wintermute {
     public:
     virtual ~Logging();
 
-    static inline Logging* instance() { return self; }
-
+    static Logging* instance();
     static Logger* obtainLogger(const QString& loggerName);
     static Logger* obtainLogger(const QObject* object);
     static Logger* obtainRootLogger();

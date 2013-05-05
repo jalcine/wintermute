@@ -20,39 +20,33 @@
  **/
 
 #include "logging.hpp"
+#include "loggingprivate.hpp"
 #include "application.hpp"
-#include <logger.h>
-#include <logmanager.h>
-#include <colorconsoleappender.h>
-#include <ttcclayout.h>
 
 using Wintermute::Application;
 using Wintermute::Logging;
 using Wintermute::LoggingPrivate;
 using Wintermute::Logger;
 
-class LoggingPrivate {
-  public:
-    Log4Qt::Layout* primaryLayout;
-    Log4Qt::ColorConsoleAppender* stdOutAppender;
-    Log4Qt::ColorConsoleAppender* stdErrAppender;
+LoggingPrivate::LoggingPrivate() : primaryLayout(0), stdOutAppender(0), stdErrAppender(0) {
+  Log4Qt::LogManager::startup();
+  primaryLayout  = new Log4Qt::TTCCLayout();
+  stdOutAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET);
+  stdErrAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET);
 
-    LoggingPrivate() : primaryLayout(0), stdOutAppender(0), stdErrAppender(0) {
-      Log4Qt::LogManager::startup();
-      primaryLayout  = new Log4Qt::TTCCLayout();
-      stdOutAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET);
-      stdErrAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET);
+  primaryLayout->setName("Root");
+  stdOutAppender->setName("stdout");
 
-      primaryLayout->setName("Root");
-      stdOutAppender->setName("stdout");
+  primaryLayout->activateOptions();
+  stdOutAppender->activateOptions();
+  stdErrAppender->activateOptions();
 
-      primaryLayout->activateOptions();
-      stdOutAppender->activateOptions();
-      stdErrAppender->activateOptions();
+  Log4Qt::Logger::rootLogger()->addAppender(stdOutAppender);
 
-      Log4Qt::Logger::rootLogger()->addAppender(stdOutAppender);
-    }
-};
+}
+
+LoggingPrivate::~LoggingPrivate(){
+}
 
 Logging* Logging::self = 0;
 
@@ -72,6 +66,13 @@ Logging::obtainLogger(const QObject* object){
   return Logging::obtainLogger(object->metaObject()->className());
 }
 
+Logging*
+Logging::instance() {
+  if (!self)
+    self = new Logging;
+
+  return self;
+}
 
 Logging::~Logging(){
   Log4Qt::LogManager::shutdown();
