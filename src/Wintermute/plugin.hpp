@@ -44,14 +44,12 @@ namespace Wintermute {
     // }}} QObject-ified.
 
     // {{{ Private data.
-    Q_DECLARE_PRIVATE(Plugin);
     QScopedPointer<PluginPrivate> d_ptr;
     // }}} Private data.
 
     protected:
+    Q_DECLARE_PRIVATE(Plugin);
     explicit Plugin(const QString& uuid);
-    bool loadBinary();
-    bool unloadBinary();
     QSettings* configuration() const;
 
     public:
@@ -66,6 +64,7 @@ namespace Wintermute {
     };
 
     virtual ~Plugin();
+    bool isLoaded() const;
     QUuid id() const;
     QString name() const;
     Version version() const;
@@ -74,6 +73,9 @@ namespace Wintermute {
 
     Q_SIGNAL void loaded();
     Q_SIGNAL void unloaded();
+
+    friend class Factory;
+    friend class FactoryPrivate;
   };
 
   typedef QList<Plugin*> PluginList;
