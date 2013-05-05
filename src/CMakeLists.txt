@@ -27,6 +27,8 @@ set(WINTERMUTE_SOURCES
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
   Wintermute/plugin.cpp
+  Wintermute/factory.cpp
+  Wintermute/temporaryplugin.cpp
   Wintermute/version.cpp
   main.cpp
   )
