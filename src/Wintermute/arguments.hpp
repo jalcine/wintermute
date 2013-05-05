@@ -51,7 +51,7 @@ namespace Wintermute {
        * TODO: Complete documentation.
        */
 
-      static inline Arguments* instance() { return self; }
+      static Arguments* instance();
 
       /** TODO: Complete documentation. */
       QVariant argument(const QString& argumentName) const;
