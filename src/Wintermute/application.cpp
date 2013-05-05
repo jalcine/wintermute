@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #include "application.hpp"
 #include "arguments.hpp"
@@ -35,27 +35,33 @@ using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
 
-class ApplicationPrivate {
-  public:
-    QSharedPointer<QCoreApplication> app;
+namespace Wintermute {
+  class ApplicationPrivate {
+    public:
+      QSharedPointer<QCoreApplication> app;
 
-    ApplicationPrivate(int &argc, char **argv) {
-      app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-    }
+      ApplicationPrivate(int &argc, char **argv) {
+        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
+      }
 
-    void
-    initialize(){
-      // Allocate necessary variables for logging and arguments.
-      Logging::self   = new Logging;
-      Arguments::self = new Arguments;
-      Factory::self   = new Factory;
-    }
+      void
+        initialize(){
+          // Allocate necessary variables for logging and arguments.
+          Logging::instance();
+          Arguments::instance();
+          Factory::instance();
 
-    int
-    exec(){
-      return app->exec();
-    }
-};
+          // Add library paths for plug-ins.
+          app->addLibraryPath(WINTERMUTE_LIBRARY_DIR);
+        }
+
+      int
+        exec(){
+          return app->exec();
+        }
+  };
+
+}
 
 Application* Application::self = 0;
 
@@ -99,7 +105,7 @@ Application::run(int &argc, char **argv){
 
 void
 Application::start(){
-  Q_D(Application);
+  //Q_D(Application);
   Logger* log = Logging::obtainLogger(this);
   log->info("Starting.");
 
@@ -112,7 +118,7 @@ Application::start(){
 
 void
 Application::stop(){
-  Q_D(Application);
+  //Q_D(Application);
 
   // Privately clean up the Factory.
   Factory::instance()->stop();
