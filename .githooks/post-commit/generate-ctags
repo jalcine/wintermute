@@ -33,8 +33,8 @@ case "${1}" in
         echo "Check bash shell scripts for syntax errors."
         ;;
     * )
-        echo "Generating tags for repository..."
+        echo "[ctags] Generating tags for repository..."
         PWD=$TOPLEVELGITDIR ctags -R -f $TOPLEVELGITDIR/.git/tags $TOPLEVELGITDIR/* 
-        echo "Tags generated."
+        echo "[ctags] Tags generated."
         ;;                
 esac
