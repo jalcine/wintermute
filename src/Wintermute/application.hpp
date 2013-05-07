@@ -35,6 +35,15 @@ namespace Wintermute {
 
     QScopedPointer<ApplicationPrivate> d_ptr;
     static Application* self;
+
+    /**
+     * @fn Application
+     * @brief Private initialization of application.
+     * @constructor
+     *
+     * @param argc Argument count (native-value)
+     * @param argv Arguemnt array (native-value)
+     */
     Application(int &argc, char **argv);
 
     public:
@@ -70,7 +79,20 @@ namespace Wintermute {
        */
       Version version() const;
 
+      /**
+       * @fn start
+       * @brief
+       *
+       * TODO: Expand documentation.
+       */
       Q_SLOT void start();
+
+      /**
+       * @fn stop
+       * @brief
+       *
+       * TODO: Expand documentation.
+       */
       Q_SLOT void stop();
   };
 
