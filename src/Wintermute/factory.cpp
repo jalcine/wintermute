@@ -37,6 +37,7 @@ Factory* Factory::self = 0;
 FactoryPrivate::FactoryPrivate()  {
 }
 
+// TODO: Obtain the list of available plug-ins for the system.
 PluginList
 FactoryPrivate::availablePlugins() const {
   return PluginList();
@@ -83,7 +84,7 @@ FactoryPrivate::obtainBinary(const QUuid& id) const {
 }
 
 Factory::Factory() : QObject(Application::instance()), d_ptr(new FactoryPrivate) {
-
+  wdebug(this,"Factory created.");
 }
 
 Factory*
@@ -109,7 +110,7 @@ Factory::activePlugins() const {
 // TODO: Ensure plug-in loading process.
 bool
 Factory::loadPlugin(const QUuid& id){
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
 
   Q_D(Factory);
   QPluginLoader* loader = d->obtainBinary(id);
@@ -151,7 +152,7 @@ Factory::unloadPlugin(const QUuid& id){
 // TODO: Auto load plugins on start.
 bool
 Factory::autoloadPlugins(){
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
   QSettings settings;
   QVariantList autoloadList = settings.value("Plugins/Autoload").toList();
 
