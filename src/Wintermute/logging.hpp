@@ -51,4 +51,36 @@ namespace Wintermute {
   };
 }
 
+// Shortcuts for quick logging support.
+
+/**
+ * @fn wlog
+ * @param qobj An object based on QObject.
+ *
+ * Obtains a logger for the specific QObject.
+ */
+#define wlog(qobj) Wintermute::Logging::obtainLogger(qobj)
+
+/**
+ * @fn wdebug
+ * @param qobj An object based on QObject.
+ * @param text The text to be displayed for debugging.
+ *
+ * Obtains a logger for the specific QObject and then prints out a 
+ * line of text for debubgging view.
+ *
+ * TODO: Make this conditionally visible if WINTERMUTE_DEBUG isn't set.
+ */
+#define wdebug(qobj, text) wlog(qobj)->debug(text)
+
+/**
+ * @fn wwarn
+ * @param qobj An object based on QObject
+ * @param text The text to be displayed as a warning.
+ *
+ * TODO: Make this conditionally visibile if WINTERMUTE_WARNINGS isn't set.
+ */
+#define wwarn(qobj, text) wlog(qobj)->warn(text)
+
+
 #endif /* WINTERMUTE_LOGGING_HPP */
