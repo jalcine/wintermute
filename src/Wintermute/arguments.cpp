@@ -20,22 +20,28 @@
  **/
 
 #include "arguments.hpp"
-#include "argumentsprivate.hpp"
 #include "application.hpp"
 #include "logging.hpp"
 #include <QtCore/QVariantMap>
+#include <QCommandLine>
 
 using Wintermute::Arguments;
 using Wintermute::ArgumentsPrivate;
 
-ArgumentsPrivate::ArgumentsPrivate(QObject* parent) : args(new QCommandLine(parent)) {
-  // Define generic arguments.
-  args->enableVersion(true);
-  args->enableHelp(true);
-}
+namespace Wintermute {
+  class ArgumentsPrivate {
+    public:
+      QCommandLine* args;
+      QVariantMap arguments;
 
-void
-ArgumentsPrivate::interpret(){
+      ArgumentsPrivate(QObject* parent) : args (new QCommandLine(parent)){
+        args->enableVersion(true);
+        args->enableHelp(true);
+      };
+
+      void interpret() {
+      };
+  };
 }
 
 Arguments* Arguments::self = 0;
