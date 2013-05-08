@@ -26,12 +26,16 @@
 #include <QSettings>
 
 namespace Wintermute {
+  class ConfigurationPrivate;
+
   class Configuration : public QObject {
+    Q_OBJECT
+
     public:
-      static QVariant getValue(QString& const path);
-      static QVariant setValue(QString& const path, QVariant& const value);
-      static void forceSync();
-      static void setPrimaryLocation(Configuration::Location location);
+      Configuration(QObject* parent = 0);
+      virtual ~Configuration();
+      QVariant getValue(const QString& path, const QVariant value = QVariant());
+      QVariant setValue(const QString& path, const QVariant& value);
   };
 }
 
