@@ -28,6 +28,7 @@ set(WINTERMUTE_SOURCES
   Wintermute/application.cpp
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
+  Wintermute/configuration.cpp
   Wintermute/plugin.cpp
   Wintermute/plugininterfaceable.cpp
   Wintermute/factory.cpp
@@ -40,6 +41,7 @@ set(WINTERMUTE_HEADERS
   ### Pretty headers
   Wintermute/Application
   Wintermute/Arguments
+  Wintermute/Configuration
   Wintermute/Globals
   Wintermute/Logging
   Wintermute/Plugin
@@ -53,6 +55,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/plugin.hpp
   Wintermute/version.hpp
   Wintermute/factory.hpp
+  Wintermute/configuration.hpp
   Wintermute/plugininterfaceable.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
