@@ -45,7 +45,7 @@ namespace Wintermute {
       }
 
       void
-        initialize(){
+      initialize(){
           // Allocate necessary variables for logging and arguments.
           Logging::instance();
           Arguments::instance();
@@ -53,12 +53,12 @@ namespace Wintermute {
 
           // Add library paths for plug-ins.
           app->addLibraryPath(WINTERMUTE_LIBRARY_DIR);
-        }
+      }
 
       int
-        exec(){
+      exec(){
           return app->exec();
-        }
+      }
   };
 
 }
@@ -80,10 +80,12 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
 
 int
 Application::run(int &argc, char **argv){
+  int returnCode = -1;
+
   if (Application::instance() == 0){
     // Define the application.
     Application::self = new Application(argc,argv);
-    Wintermute::Logger* log = Logging::obtainLogger(Application::self);
+    Logger* log = wlog(Application::self);
 
     // Invoke the initialization code.
     self->d_ptr->initialize();
@@ -94,19 +96,17 @@ Application::run(int &argc, char **argv){
 
     // Begin the event loop.
     log->debug("Beginning event loop.");
-    int returnCode = self->d_ptr->exec();
+    returnCode = self->d_ptr->exec();
     log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
-
-    return returnCode;
   }
 
-  return -1;
+  return returnCode;
 }
 
 void
 Application::start(){
   //Q_D(Application);
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
   log->info("Starting.");
 
   // Privately start the Factory.
