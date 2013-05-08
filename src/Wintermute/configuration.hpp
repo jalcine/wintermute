@@ -22,7 +22,17 @@
 #ifndef WINTERMUTE_CONFIGURATION_HPP
 #define WINTERMUTE_CONFIGURATION_HPP
 
+#include <QObject>
+#include <QSettings>
+
 namespace Wintermute {
+  class Configuration : public QObject {
+    public:
+      static QVariant getValue(QString& const path);
+      static QVariant setValue(QString& const path, QVariant& const value);
+      static void forceSync();
+      static void setPrimaryLocation(Configuration::Location location);
+  };
 }
 
 #endif /* WINTERMUTE_CONFIGURATION_HPP */

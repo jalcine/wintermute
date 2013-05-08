@@ -20,3 +20,7 @@
  **/
 
 #include "configuration.hpp"
+
+using Wintermute::Configuration;
+
+#include "configuration.moc"
