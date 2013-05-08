@@ -32,3 +32,5 @@ include(WintermuteVariables)
 include(WintermuteDependencies)
 include(WintermuteMacros)
 include(WintermuteVersioning)
+
+set(WINTERMUTE_FOUND ON)

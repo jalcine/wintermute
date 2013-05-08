@@ -22,11 +22,12 @@
 #ifndef WINTERMUTE_APPLICATION_HPP
 #define WINTERMUTE_APPLICATION_HPP
 
-#include <QObject>
-#include <QSharedPointer>
+#include <Wintermute/Globals>
 
 namespace Wintermute {
+  class Version;
   class ApplicationPrivate;
+
   class Application : public QObject {
     Q_OBJECT
 
@@ -34,6 +35,15 @@ namespace Wintermute {
 
     QScopedPointer<ApplicationPrivate> d_ptr;
     static Application* self;
+
+    /**
+     * @fn Application
+     * @brief Private initialization of application.
+     * @constructor
+     *
+     * @param argc Argument count (native-value)
+     * @param argv Arguemnt array (native-value)
+     */
     Application(int &argc, char **argv);
 
     public:
@@ -61,7 +71,28 @@ namespace Wintermute {
        */
       static int run( int& argc, char **argv );
 
+      /**
+       * @fn version
+       * @brief Obtains the current version of Wintermute.
+       *
+       * TODO: Expand documentation.
+       */
+      Version version() const;
+
+      /**
+       * @fn start
+       * @brief
+       *
+       * TODO: Expand documentation.
+       */
       Q_SLOT void start();
+
+      /**
+       * @fn stop
+       * @brief
+       *
+       * TODO: Expand documentation.
+       */
       Q_SLOT void stop();
   };
 
