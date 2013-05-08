@@ -55,6 +55,11 @@ namespace Wintermute {
     FactoryPrivate* d_ptr;
     static Factory* self;
 
+    /**
+     * @fn Factory
+     * @constructor
+     *
+     */
     explicit Factory();
 
     private:
@@ -63,7 +68,16 @@ namespace Wintermute {
     Q_SLOT void pluginStateChange(const QUuid& id, const Plugin::State& state);
 
     public:
+    /**
+     * @fn ~Factory
+     * @destructor
+     */
     virtual ~Factory();
+
+    /**
+     * @fn instance
+     * @static
+     */
     static Factory* instance();
     PluginList availablePlugins() const;
     PluginList activePlugins() const;

@@ -21,7 +21,6 @@
 
 #include "factory.hpp"
 #include "plugin.hpp"
-#include "factoryprivate.hpp"
 #include "pluginprivate.hpp"
 #include "logging.hpp"
 #include "application.hpp"
@@ -32,56 +31,57 @@ using namespace Wintermute;
 using Wintermute::Factory;
 using Wintermute::FactoryPrivate;
 
+namespace Wintermute {
+  class FactoryPrivate {
+    public:
+      PluginMap active;
+
+      explicit FactoryPrivate() { }
+      
+      ~FactoryPrivate() { }
+      
+      PluginList availablePlugins() const {
+        return PluginList();
+      }
+      
+      PluginList activePlugins() const {
+        return active.values();
+      }
+
+      Plugin* plugin(const QUuid& id) const {
+        if (active.contains(id))
+          return active[id];
+
+        return 0;
+      }
+
+      QSettings* obtainConfiguration(const QUuid& id) const {
+        const QString settingsPath = QString(WINTERMUTE_DEFINITION_DIR "/" + id.toString() + ".spec");
+        if (QFile::exists(settingsPath)){
+          QSettings* settings = new QSettings(settingsPath);
+          return settings;
+        }
+
+        return 0;
+      }
+      
+      QPluginLoader* obtainBinary(const QUuid& id) const {
+        const QSettings* config = this->obtainConfiguration(id);
+
+        if (!config)
+          return 0;
+
+        const QString libraryName = config->value("Plugin/LibraryName").toString();
+        QPluginLoader* loader = new QPluginLoader(libraryName);
+
+        if (loader->fileName().isEmpty())
+          return 0;
+
+        return loader;
+      }
+  };
+}
 Factory* Factory::self = 0;
-
-FactoryPrivate::FactoryPrivate()  {
-}
-
-// TODO: Obtain the list of available plug-ins for the system.
-PluginList
-FactoryPrivate::availablePlugins() const {
-  return PluginList();
-}
-
-PluginList
-FactoryPrivate::activePlugins() const {
-  return active.values();
-}
-
-Plugin*
-FactoryPrivate::plugin(const QUuid& id) const {
-  if (active.contains(id))
-    return active[id];
-
-  return 0;
-}
-
-QSettings*
-FactoryPrivate::obtainConfiguration(const QUuid& id) const {
-  const QString settingsPath = QString(WINTERMUTE_DEFINITION_DIR "/" + id.toString() + ".spec");
-  if (QFile::exists(settingsPath)){
-    QSettings* settings = new QSettings(settingsPath);
-    return settings;
-  }
-
-  return 0;
-}
-
-QPluginLoader*
-FactoryPrivate::obtainBinary(const QUuid& id) const {
-  const QSettings* config = this->obtainConfiguration(id);
-
-  if (!config)
-    return 0;
-
-  const QString libraryName = config->value("Plugin/LibraryName").toString();
-  QPluginLoader* loader = new QPluginLoader(libraryName);
-
-  if (loader->fileName().isEmpty())
-    return 0;
-
-  return loader;
-}
 
 Factory::Factory() : QObject(Application::instance()), d_ptr(new FactoryPrivate) {
   wdebug(this,"Factory created.");
@@ -110,18 +110,16 @@ Factory::activePlugins() const {
 // TODO: Ensure plug-in loading process.
 bool
 Factory::loadPlugin(const QUuid& id){
-  Logger* log = wlog(this);
-
   Q_D(Factory);
+  Logger* log = wlog(this);
   QPluginLoader* loader = d->obtainBinary(id);
-
+  Plugin* obtainedPlugin = 0;
+  TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
+  
   if (!loader){
     log->debug(QString("Couldn't find binary for plugin '%1'.").arg(id.toString()));
     return false;
   }
-
-  TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
-  Plugin* obtainedPlugin = 0;
 
   if (plugin->tryLoad()){
     obtainedPlugin = plugin->d_ptr->getPluginInstance();
@@ -159,12 +157,12 @@ Factory::autoloadPlugins(){
   log->info(QString("Loading %1 plugins..").arg(autoloadList.length()));
 
   Q_FOREACH(QVariant pluginId, autoloadList){
-    this->loadPlugin(pluginId.toString());
+    bool pluginLoaded = this->loadPlugin(pluginId.toString());
+    if (!pluginLoaded)
+      return false;
   }
 
-  this->loadPlugin(QUuid::createUuid());
-
-  return false;
+  return true;
 }
 
 bool
@@ -175,14 +173,14 @@ Factory::unloadAllPlugins(){
 void
 Factory::pluginStateChange(const QUuid& id, const Plugin::State& state)
 {
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
   log->info("Passing signal.");
   emit this->pluginStateChanged(id, state);
 }
 
 void
 Factory::start() {
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
   log->info("Starting..");
   this->autoloadPlugins();
   log->info("Started.");
@@ -190,7 +188,7 @@ Factory::start() {
 
 void
 Factory::stop() {
-  Logger* log = Logging::obtainLogger(this);
+  Logger* log = wlog(this);
   log->info("Stopping..");
   log->info("Stopped.");
 }
