@@ -23,4 +23,20 @@
 
 using Wintermute::Configuration;
 
+Configuration::Configuration(QObject* parent) : QObject(parent) {
+}
+
+QVariant
+Configuration::getValue(const QString& path, const QVariant value){
+  return value;
+}
+
+QVariant
+Configuration::setValue(const QString& path, const QVariant& value){
+  return value;
+}
+
+Configuration::~Configuration(){
+}
+
 #include "configuration.moc"
