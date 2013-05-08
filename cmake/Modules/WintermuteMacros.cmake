@@ -19,3 +19,6 @@ macro(wintermute_add_properties _target)
       "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_RELEASE}")
   endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endmacro(wintermute_add_properties _target)
+
+## Include plug-in specific macros.
+include(WintermutePluginMacros)

@@ -24,7 +24,7 @@ configure_file(FindWintermute.cmake.in FindWintermute.cmake @ONLY)
 
 ## Obtain all of the modules to be installed.
 file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
-list(APPEND ${WINTERMUTE_CMAKE_MODULES} 
+list(APPEND WINTERMUTE_CMAKE_MODULES 
   "${CMAKE_CURRENT_BINARY_DIR}/FindWintermute.cmake")
 
 ## Install the file to a discoverable path by CMake.

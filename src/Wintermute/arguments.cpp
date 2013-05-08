@@ -21,27 +21,28 @@
 
 #include "arguments.hpp"
 #include "application.hpp"
+#include "logging.hpp"
 #include <QtCore/QVariantMap>
 #include <QCommandLine>
 
 using Wintermute::Arguments;
 using Wintermute::ArgumentsPrivate;
 
-class ArgumentsPrivate {
-  public:
-    QCommandLine* args;
-    QVariantMap arguments;
+namespace Wintermute {
+  class ArgumentsPrivate {
+    public:
+      QCommandLine* args;
+      QVariantMap arguments;
 
-    ArgumentsPrivate(QObject* parent) : args(new QCommandLine(parent)) {
-      // Define generic arguments.
-      args->enableVersion(true);
-      args->enableHelp(true);
-    }
+      ArgumentsPrivate(QObject* parent) : args (new QCommandLine(parent)){
+        args->enableVersion(true);
+        args->enableHelp(true);
+      };
 
-    void
-    interpret(){
-    }
-};
+      void interpret() {
+      };
+  };
+}
 
 Arguments* Arguments::self = 0;
 
@@ -70,13 +71,21 @@ Arguments::Arguments() : QObject(Application::instance()), d_ptr(new ArgumentsPr
   d->args->parse();
 }
 
+Arguments*
+Arguments::instance(){
+  if (!self)
+    self = new Arguments;
+
+  return self;
+}
+
 QVariant
 Arguments::argument(const QString& argumentName) const {
   Q_D(const Arguments);
 
   if (d->arguments.contains(argumentName))
     return d->arguments.value(argumentName);
-  
+
   return QVariant();
 }
 
@@ -95,22 +104,23 @@ Arguments::switchFound(const QString& switchName){
 }
 
 void
-Arguments::paramFound(const QString&  parameterName,
-                      const QVariant& parameterValue){
+Arguments::paramFound(const QString&  parameterName, const QVariant& parameterValue){
   Q_D(Arguments);
   d->arguments.insert(parameterName,parameterValue);
 }
 
 void
-Arguments::optionFound(const QString&  optionName,
-                       const QVariant& optionValue){
+Arguments::optionFound(const QString&  optionName, const QVariant& optionValue){
   Q_D(Arguments);
   d->arguments.insert(optionName,optionValue);
 }
 
 void
 Arguments::parseError(const QString& error){
+  Wintermute::Logger* log = Wintermute::Logging::obtainLogger(this);
   Q_D(Arguments);
+
+  log->error(QString("Malformed command-line arguments. (%1)").arg(error));
 
   d->args->showVersion();
   d->args->showHelp();
