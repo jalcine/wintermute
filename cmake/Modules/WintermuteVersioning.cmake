@@ -17,31 +17,9 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
-project(Wintermute)
-
-## Include our modules in the discovery of modules.
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-include(CMakeUseLocalModules)
-include(CMakeProvideUninstallTarget)
-include(WintermuteVersioning)
-
-## Import Wintermute's CMake infrastructure.
-include(UseWintermute)
-include(WintermuteTesting)
-include(GetGitRevisionDescription)
-
-## Define versioning.
-set(WINTERMUTE_VERSION_MAJOR          0)
-set(WINTERMUTE_VERSION_MINOR          0)
-set(WINTERMUTE_VERSION_PATCH          1)
-set(WINTERMUTE_VERSION_STAGE          ${WINTERMUTE_VERSION_STAGE_NIGHTLY})
-get_git_head_revision(WINTERMUTE_VERSION_STAGE_BRANCH WINTERMUTE_VERSION_STAGE_REF)
-string(SUBSTRING ${WINTERMUTE_VERSION_STAGE_REF} 
-  0 8 WINTERMUTE_VERSION_STAGE_REVISION)
-
-## Include sub-directories.
-add_subdirectory(cmake)
-add_subdirectory(src)
-add_subdirectory(test)
-add_subdirectory(doc)
+# Define the pre-release versions recognizable by Wintermute.
+set(WINTERMUTE_VERSION_STAGE_NIGHTLY          0)
+set(WINTERMUTE_VERSION_STAGE_ALPHA            1)
+set(WINTERMUTE_VERSION_STAGE_BETA             2)
+set(WINTERMUTE_VERSION_STAGE_RELEASECANDIDATE 3)
+set(WINTERMUTE_VERSION_STAGE_FINALRELEASE     4)
