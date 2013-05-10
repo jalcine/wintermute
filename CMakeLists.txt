@@ -29,16 +29,13 @@ include(WintermuteVersioning)
 ## Import Wintermute's CMake infrastructure.
 include(UseWintermute)
 include(WintermuteTesting)
-include(GetGitRevisionDescription)
 
-## Define versioning.
-set(WINTERMUTE_VERSION_MAJOR          0)
-set(WINTERMUTE_VERSION_MINOR          0)
-set(WINTERMUTE_VERSION_PATCH          1)
-set(WINTERMUTE_VERSION_STAGE          ${WINTERMUTE_VERSION_STAGE_NIGHTLY})
-get_git_head_revision(WINTERMUTE_VERSION_STAGE_BRANCH WINTERMUTE_VERSION_STAGE_REF)
-string(SUBSTRING ${WINTERMUTE_VERSION_STAGE_REF} 
-  0 8 WINTERMUTE_VERSION_STAGE_REVISION)
+## Define Wintermute's current version.
+set(WINTERMUTE_VERSION_MAJOR  0)
+set(WINTERMUTE_VERSION_MINOR  0)
+set(WINTERMUTE_VERSION_PATCH  1)
+set(WINTERMUTE_VERSION_STAGE  ${WINTERMUTE_VERSION_STAGE_NIGHTLY})
+grab_git_ref(BRANCH ${WINTERMUTE_VERSION_STAGE_BRANCH} REF "WINTERMUTE_VERSION_STAGE_REVISION")
 
 ## Include sub-directories.
 add_subdirectory(cmake)
