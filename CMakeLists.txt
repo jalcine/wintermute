@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(CMakeUseLocalModules)
 include(CMakeProvideUninstallTarget)
 include(WintermuteVersioning)
+include(GitMethods)
 
 ## Import Wintermute's CMake infrastructure.
 include(UseWintermute)
@@ -35,7 +36,11 @@ set(WINTERMUTE_VERSION_MAJOR  0)
 set(WINTERMUTE_VERSION_MINOR  0)
 set(WINTERMUTE_VERSION_PATCH  1)
 set(WINTERMUTE_VERSION_STAGE  ${WINTERMUTE_VERSION_STAGE_NIGHTLY})
-grab_git_ref(BRANCH ${WINTERMUTE_VERSION_STAGE_BRANCH} REF "WINTERMUTE_VERSION_STAGE_REVISION")
+
+## Obtain versioning information.
+git_current_branch(BRANCH WINTERMUTE_VERSION_BRANCH)
+git_current_ref(REF WINTERMUTE_VERSION_STAGE_REVISION)
+message(STATUS "Current revision and branch: ${WINTERMUTE_VERSION_BRANCH} (${WINTERMUTE_VERSION_STAGE_REVISION})")
 
 ## Include sub-directories.
 add_subdirectory(cmake)
