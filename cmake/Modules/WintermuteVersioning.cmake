@@ -23,20 +23,3 @@ set(WINTERMUTE_VERSION_STAGE_ALPHA            1)
 set(WINTERMUTE_VERSION_STAGE_BETA             2)
 set(WINTERMUTE_VERSION_STAGE_RELEASECANDIDATE 3)
 set(WINTERMUTE_VERSION_STAGE_FINALRELEASE     4)
-
-## Load CMake modules necessary.
-include(GetGitRevisionDescription)
-
-##
-## @fn grab_git_ref
-## @param BRANCH   The branch to defining the reference.
-## @param REF      The reference to be determined.
-##
-function(grab_git_ref)
-  cmake_parse_arguments(ggr "" "BRANCH REF" "" ${ARGN})
-
-  get_git_head_revision("${ggr_BRANCH}" "${ggr_REF}")
-  
-  message("br:${ggr_BRANCH}\nref:${ggr_REF}\n${ARGN}")
-  string(SUBSTRING "${${ggr_REF}}" 0 8 "${ggr_REF}")
-endfunction(grab_git_ref)
