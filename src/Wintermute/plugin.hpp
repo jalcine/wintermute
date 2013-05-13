@@ -74,6 +74,9 @@ namespace Wintermute {
     Q_SIGNAL void loaded();
     Q_SIGNAL void unloaded();
 
+    Q_SLOT bool unload();
+    Q_SLOT bool load();
+
     friend class Factory;
     friend class FactoryPrivate;
   };
