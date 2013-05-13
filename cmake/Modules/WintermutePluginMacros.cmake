@@ -18,27 +18,31 @@
 ###############################################################################
 
 include(CMakeParseArguments)
-install(WintermuteVariables)
+include(WintermuteVariables)
 
 function(wintermute_plugin_declare)
-  set(_mutliArgs SOURCES)
-  set(_oneArgs   NAME TARGET)
-
+  set(_oneArgs   TARGET)
+  set(_multiArgs SOURCES)
   cmake_parse_arguments(wdp "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
-  string(TOUPPER "${wdp_TARGET}" ${wdp_TARGET})
+  # Define the plugin's CMake prefix.
+  string(TOUPPER "${wdp_TARGET}" wdp_TARGET)
   set(_local "WINTERMUTE_PLUGIN_${wdp_TARGET}")
 
-  set("${wdp_NAME}_TARGET" ${wdp_TARGET})
+  # Define the plugin's CMake properties.
+  set("${_local}_SOURCES" "${wdp_SOURCES}"           CACHE STRING "Sources.")
+  set("${_local}_TARGET"  "wintermute-${wdp_TARGET}" CACHE STRING "Target.")
+  string(TOLOWER "${${_local}_TARGET}" "${_local}_TARGET")
 
-  add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
+  # Define the library.
+  add_library("${${_local}_TARGET}" SHARED ${wdp_SOURCES})
 endfunction(wintermute_plugin_declare)
 
 function(wintermute_plugin_set_properties)
 endfunction(wintermute_plugin_set_properties)
 
 function(wintermute_plugin_get_property)
-function(wintermute_plugin_get_property)
+endfunction(wintermute_plugin_get_property)
 
 function(wintermute_plugin_install)
   set(_oneArgs  TARGET)
@@ -47,4 +51,4 @@ function(wintermute_plugin_install)
   install(TARGETS      ${wpi_TARGET}
     LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
   )
-function(wintermute_plugin_install)
+endfunction(wintermute_plugin_install)
