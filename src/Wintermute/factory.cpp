@@ -21,7 +21,6 @@
 
 #include "factory.hpp"
 #include "plugin.hpp"
-#include "pluginprivate.hpp"
 #include "logging.hpp"
 #include "application.hpp"
 #include "temporaryplugin.hpp"
@@ -56,7 +55,7 @@ namespace Wintermute {
       }
 
       QSettings* obtainConfiguration(const QUuid& id) const {
-        const QString settingsPath = QString(WINTERMUTE_DEFINITION_DIR "/" + id.toString() + ".spec");
+        const QString settingsPath = QString(WINTERMUTE_PLUGIN_DEFINITION_DIR "/" + id.toString() + ".spec");
         if (QFile::exists(settingsPath)){
           QSettings* settings = new QSettings(settingsPath);
           return settings;
@@ -121,10 +120,10 @@ Factory::loadPlugin(const QUuid& id){
     return false;
   }
 
-  if (plugin->tryLoad()){
-    obtainedPlugin = plugin->d_ptr->getPluginInstance();
+  obtainedPlugin = plugin->tryLoad(loader);
+
+  if (obtainedPlugin){
     log->info(QString("Plug-in instance for %1 obtained.").arg(id.toString()));
-    obtainedPlugin->d_ptr->loader = loader;
     return true;
   } else {
     log->error(QString("Plug-in instance for %1 failed to load.").arg(id.toString()));
@@ -143,8 +142,7 @@ Factory::unloadPlugin(const QUuid& id){
     return true;
   }
 
-  plugin->d_ptr->invokeUnload();
-  return true;
+  return plugin->unload();
 }
 
 // TODO: Auto load plugins on start.
