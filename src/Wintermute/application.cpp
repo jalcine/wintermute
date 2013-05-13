@@ -52,7 +52,7 @@ namespace Wintermute {
           Factory::instance();
 
           // Add library paths for plug-ins.
-          app->addLibraryPath(WINTERMUTE_LIBRARY_DIR);
+          app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
       }
 
       int
