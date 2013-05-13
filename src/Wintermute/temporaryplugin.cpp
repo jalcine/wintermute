@@ -36,10 +36,10 @@ TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
 Plugin*
 TemporaryPlugin::tryLoad(QPluginLoader* loader){
   Q_D(Plugin);
+  Plugin* loadedPlugin = 0;
 
-  Plugin* loadedPlugin = d->loadBinary();
-
-  if (loadedPlugin){
+  if (d->loadBinary()){
+    loadedPlugin = d->getPluginInstance();
     // TODO: Change the internal QPluginLoader;
   }
 
