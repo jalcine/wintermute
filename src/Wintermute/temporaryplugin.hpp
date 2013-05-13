@@ -32,7 +32,7 @@ namespace Wintermute {
     public:
       explicit TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader);
       virtual ~TemporaryPlugin();
-      bool tryLoad();
+      Plugin* tryLoad(QPluginLoader* loader);
   };
 }
 

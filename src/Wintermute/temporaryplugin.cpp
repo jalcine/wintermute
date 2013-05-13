@@ -19,10 +19,11 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "pluginprivate.hpp"
 #include "temporaryplugin.hpp"
+#include "private/plugin.hpp"
 
 using Wintermute::Plugin;
+using Wintermute::PluginPrivate;
 using Wintermute::TemporaryPlugin;
 
 TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
@@ -32,11 +33,17 @@ TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
   d->loader = theLoader;
 }
 
-bool
-TemporaryPlugin::tryLoad(){
+Plugin*
+TemporaryPlugin::tryLoad(QPluginLoader* loader){
   Q_D(Plugin);
 
-  return d->loadBinary();
+  Plugin* loadedPlugin = d->loadBinary();
+
+  if (loadedPlugin){
+    // TODO: Change the internal QPluginLoader;
+  }
+
+  return loadedPlugin;
 }
 
 TemporaryPlugin::~TemporaryPlugin() {
