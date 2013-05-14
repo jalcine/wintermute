@@ -18,6 +18,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+if(_wntr_deps)
+  return()
+else()
+  set(_wntr_deps TRUE)
+endif()
+
 include(FeatureSummary)
 
 ## Pass options to manipulate Wintermute's dependency.
