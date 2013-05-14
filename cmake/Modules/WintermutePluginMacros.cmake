@@ -40,24 +40,73 @@ endif(CMAKE_PROJECT_NAME EQUAL "Wintermute")
 ##
 function(wintermute_plugin_declare)
   set(_oneArgs   TARGET UUID)
-  set(_multiArgs SOURCES)
+  set(_multiArgs )
   cmake_parse_arguments(wdp "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER ${wdp_TARGET} _minLocal)
-
+  string(TOUPPER ${wdp_TARGET}   ${_local}_EXPORT_SYMBOL)
+  
   # Define the plugin's CMake properties.
-  set("${_local}_SOURCES"         ${wdp_SOURCES}             CACHE STRING "Sources.")
-  set("${_local}_TARGET"          "wintermute-${wdp_TARGET}" CACHE STRING "Target.")
-  set("${_local}_UUID"            ${wdp_UUID}                CACHE STRING "Uuid.")
-  set("${_local}_HEADERS_PATH"    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" 
-    CACHE STRING "Headers install.")
+  set("${_local}_SOURCES"         ${wdp_SOURCES}                 CACHE STRING "Sources.")
+  set("${_local}_TARGET"          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
+  set("${_local}_UUID"            ${wdp_UUID}                    CACHE STRING "Uuid.")
+  set("${_local}_LIBRARIES"       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
+  set("${_local}_INCLUDE_DIRS"    ${WINTERMUTE_INCLUDE_DIRS}     CACHE STRING "Directories.")
+  set("${_local}_HEADERS_PATH"    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
   set("${_local}_DEFINITION_FILE" "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
 
-  # Define the library.
-  add_library("${${_local}_TARGET}" SHARED ${wdp_SOURCES})
 endfunction(wintermute_plugin_declare)
+
+##
+## @fn wintermute_plugin_target_declare
+## @brief Handles the build-time requirements for a Wintermute plug-in.
+##
+function(wintermute_plugin_target_declare)
+  set(_oneArgs   TARGET)
+  set(_multiArgs SOURCES)
+  cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
+
+  # Define the plugin's CMake prefix.
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
+  string(TOLOWER ${wptd_TARGET} _minLocal)
+
+  # Define the library.
+  add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
+
+  # Coat the target with Wintermute's build options.
+  wintermute_add_properties(${${_local}_TARGET})
+  
+  # Define the library's version.
+  set_target_properties(${${_local}_TARGET} PROPERTIES
+    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
+    VERSION       "${${_local}_VERSION_MAJOR}.${${_local}_VERSION_MINOR}.${${_local}_VERSION_PATCH}"
+    SOVERSION     "${${_local}_VERSION_MAJOR}.${${_local}_VERSION_MINOR}.${${_local}_VERSION_PATCH}"
+    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRECTORIES}"
+  )
+
+  # Set up linking.
+  target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
+endfunction(wintermute_plugin_target_declare)
+
+function(wintermute_plugin_generate_documentation)
+  message(WARNING "[cmake] Documentation function not yet built.")
+endfunction(wintermute_plugin_generate_documentation)
+
+function(wintermute_plugin_add_include_directories)
+  cmake_parse_arguments(wpad "" "" "DIRECTORIES" ${ARGN})
+
+  list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES} ${WINTERMUTE_INLCUDE_DIRS})
+  list(REMOVE_DUPLICATES ${_local}_INCLUDE_DIRECTORIES)
+endfunction(wintermute_plugin_add_include_directories)
+
+function(wintermute_plugin_add_libraries)
+  cmake_parse_arguments(wpal "" "" "LIBRARIES" ${ARGN})
+
+  list(APPEND ${_local}_LIBRARIES ${wpal_LIBRARIES} ${WINTERMUTE_LIBRARIES})
+  list(REMOVE_DUPLICATES ${_local}_LIBRARIES)
+endfunction(wintermute_plugin_add_libraries)
 
 ##
 ## @fn wintermute_plugin_configure
@@ -72,7 +121,7 @@ endfunction(wintermute_plugin_declare)
 ## ------------------------------------------------------------------
 ##
 function(wintermute_plugin_configure)
-  set(_validProperties NAME_AUTHOR
+  set(_validProperties AUTHOR_NAME
                        NAME_RPC
                        EMAIL
                        URI
