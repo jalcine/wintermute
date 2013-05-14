@@ -20,6 +20,15 @@
 include(CMakeParseArguments)
 include(WintermuteVariables)
 
+## Determine the location of the necessary configuration file for Wintermute's 
+## plugin.
+
+if (CMAKE_PROJECT_NAME EQUAL "Wintermute")
+  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE "${CMAKE_SOURCE_DIR}/cmake/Templates/PluginDefinition.spec.in")
+else(CMAKE_PROJECT_NAME EQUAL "Wintermute")
+  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
+endif(CMAKE_PROJECT_NAME EQUAL "Wintermute")
+
 ##
 ## @fn wintermute_plugin_declare
 ## @brief Defines a plug-in for building and use in Wintermute.
@@ -36,11 +45,15 @@ function(wintermute_plugin_declare)
 
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
+  string(TOLOWER ${wdp_TARGET} _minLocal)
 
   # Define the plugin's CMake properties.
-  set("${_local}_SOURCES" "${wdp_SOURCES}"           CACHE STRING "Sources.")
-  set("${_local}_TARGET"  "wintermute-${wdp_TARGET}" CACHE STRING "Target.")
-  set("${_local}_DEFINITION_FILE" "${CMAKE_BUILD_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
+  set("${_local}_SOURCES"         ${wdp_SOURCES}             CACHE STRING "Sources.")
+  set("${_local}_TARGET"          "wintermute-${wdp_TARGET}" CACHE STRING "Target.")
+  set("${_local}_UUID"            ${wdp_UUID}                CACHE STRING "Uuid.")
+  set("${_local}_HEADERS_PATH"    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" 
+    CACHE STRING "Headers install.")
+  set("${_local}_DEFINITION_FILE" "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
 
   # Define the library.
   add_library("${${_local}_TARGET}" SHARED ${wdp_SOURCES})
@@ -115,16 +128,26 @@ endfunction(wintermute_plugin_set_version)
 ##
 function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
-
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
+  set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
+  
   # DONE: Install the library itself.
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}" _local)
-  install(TARGETS        ${${_local}_TARGET}
+  install(TARGETS        ${${_local}TARGET}
     LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
   )
 
   # TODO: Install build-time headers.
+  install(FILES ${${_local}HEADERS}
+    DESTINATION ${${_local}HEADER_PATH}
+  )
+
   # TODO: Install documentation.
-  # TODO: Generate plug-in definition file.
-  # TODO: Install plug-in definition file.
-  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${WINTERMUTE_PLUGIN_${wpi_TARGET}_DEFINITION_FILE} @ONLY)
+
+  # DONE: Generate the definition file.
+  set(_uuid_ ${${_local}UUID})
+  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE} @ONLY)
+
+  # DONE: Install the definition file.
+  install(FILES ${${_local}DEFINITION_FILE}
+    DESTINATION ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
 endfunction(wintermute_plugin_install)
