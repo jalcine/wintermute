@@ -17,9 +17,23 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+include(GitMethods)
+
 # Define the pre-release versions recognizable by Wintermute.
 set(WINTERMUTE_VERSION_STAGE_NIGHTLY          0)
 set(WINTERMUTE_VERSION_STAGE_ALPHA            1)
 set(WINTERMUTE_VERSION_STAGE_BETA             2)
 set(WINTERMUTE_VERSION_STAGE_RELEASECANDIDATE 3)
 set(WINTERMUTE_VERSION_STAGE_FINALRELEASE     4)
+
+## Define Wintermute's current version.
+set(WINTERMUTE_VERSION_MAJOR  0)
+set(WINTERMUTE_VERSION_MINOR  0)
+set(WINTERMUTE_VERSION_PATCH  1)
+set(WINTERMUTE_VERSION_STAGE  ${WINTERMUTE_VERSION_STAGE_NIGHTLY})
+
+## Obtain versioning information.
+git_current_branch(WINTERMUTE_VERSION_STAGE_BRANCH)
+git_current_ref(WINTERMUTE_VERSION_STAGE_REF)
+message(STATUS "Current ref and branch: ${WINTERMUTE_VERSION_STAGE_BRANCH} (${WINTERMUTE_VERSION_STAGE_REF})")
+
