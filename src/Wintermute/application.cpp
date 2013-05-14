@@ -112,7 +112,6 @@ Application::start(){
   // Privately start the Factory.
   Factory::instance()->start();
 
-
   log->info("Started.");
 }
 
@@ -131,7 +130,7 @@ Application::version() const {
   ver.minor = WINTERMUTE_VERSION_MINOR;
   ver.patch = WINTERMUTE_VERSION_PATCH;
   ver.state = (Wintermute::Version::DevelopmentStage) WINTERMUTE_VERSION_STAGE;
-  ver.stage = WINTERMUTE_VERSION_STAGE_REVISION;
+  ver.stage = QString("%1:%2").arg(WINTERMUTE_VERSION_STAGE_REF,WINTERMUTE_VERSION_STAGE_BRANCH);
 
   return ver;
 }
