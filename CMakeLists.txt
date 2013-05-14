@@ -23,10 +23,11 @@ project(Wintermute)
 ## Include our modules in the discovery of modules.
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(CMakeUseLocalModules)
-include(WintermuteVersioning)
+include(CMakeProvideUninstallTarget)
 
 ## Import Wintermute's CMake infrastructure.
-include(UseWintermute)
+include(FindWintermute)
+include(WintermuteVersioning)
 include(WintermuteTesting)
 
 ## Include sub-directories.
