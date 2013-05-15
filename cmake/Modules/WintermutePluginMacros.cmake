@@ -195,23 +195,20 @@ function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
   set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
-  
+  set(_uuid_ ${${_local}UUID})
+  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE} @ONLY)
+
+ 
   # DONE: Install the library itself.
   install(TARGETS        ${${_local}TARGET}
     LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
   )
 
+  # TODO: Install exported information.
   # TODO: Install build-time headers.
-  install(FILES ${${_local}HEADERS}
-    DESTINATION ${${_local}HEADER_PATH}
-  )
-
   # TODO: Install documentation.
 
   # DONE: Generate the definition file.
-  set(_uuid_ ${${_local}UUID})
-  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE} @ONLY)
-
   # DONE: Install the definition file.
   install(FILES ${${_local}DEFINITION_FILE}
     DESTINATION ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
