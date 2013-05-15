@@ -150,8 +150,9 @@ bool
 Factory::autoloadPlugins(){
   Logger* log = wlog(this);
   QVariantList autoloadList = Wintermute::Application::setting("Plugins/Autoload", QVariantList()).toList();
+  PluginList all = this->availablePlugins();
 
-  log->info(QString("Loading %1 plugins..").arg(autoloadList.length()));
+  log->info(QString("Loading %1 of %2 plugins...").arg(autoloadList.length()).arg(all.length()));
 
   Q_FOREACH(QVariant pluginId, autoloadList){
     bool pluginLoaded = this->loadPlugin(pluginId.toString());
