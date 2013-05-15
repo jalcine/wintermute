@@ -39,8 +39,9 @@ namespace Wintermute {
   class ApplicationPrivate {
     public:
       QSharedPointer<QCoreApplication> app;
+      QSettings* settings;
 
-      ApplicationPrivate(int &argc, char **argv) {
+      ApplicationPrivate(int &argc, char **argv) : settings(0) {
         app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
       }
 
@@ -76,6 +77,9 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
   d->app->setApplicationVersion(this->version().toString());
   d->app->setOrganizationName("Synthetic Intellect Institute");
   d->app->setOrganizationDomain("thesii.org");
+
+  // Grab our settings.
+  d->settings = new QSettings;
 }
 
 int
@@ -133,6 +137,26 @@ Application::version() const {
   ver.stage = QString("%1:%2").arg(WINTERMUTE_VERSION_STAGE_REF,WINTERMUTE_VERSION_STAGE_BRANCH);
 
   return ver;
+}
+
+QVariant
+Application::setting(const QString& path, const QVariant defaultValue)
+{
+ ApplicationPrivate* d = Application::instance()->d_ptr.data();
+
+ if (d->settings->contains(path))
+   return d->settings->value(path);
+ else
+   return defaultValue;
+
+ return defaultValue;
+}
+
+void
+Application::setSetting(const QString& path, const QVariant value)
+{
+  ApplicationPrivate* d = Application::instance()->d_ptr.data();
+  d->settings->setValue(path,value);
 }
 
 Application::~Application(){
