@@ -149,8 +149,7 @@ Factory::unloadPlugin(const QUuid& id){
 bool
 Factory::autoloadPlugins(){
   Logger* log = wlog(this);
-  QSettings settings;
-  QVariantList autoloadList = settings.value("Plugins/Autoload").toList();
+  QVariantList autoloadList = Wintermute::Application::setting("Plugins/Autoload", QVariantList()).toList();
 
   log->info(QString("Loading %1 plugins..").arg(autoloadList.length()));
 
