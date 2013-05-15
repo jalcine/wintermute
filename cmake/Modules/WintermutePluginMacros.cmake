@@ -90,19 +90,35 @@ function(wintermute_plugin_target_declare)
   target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
 endfunction(wintermute_plugin_target_declare)
 
+## TODO: Document this method.
+## TODO: Implement this method.
 function(wintermute_plugin_generate_documentation)
   message(WARNING "[cmake] Documentation function not yet built.")
 endfunction(wintermute_plugin_generate_documentation)
 
+##
+## @fn wintermute_plugin_add_include_directories
+## @brief Adds include directories to the plug-in.
+## @param TARGET       The plug-in's target name.
+## @param DIRECTORIES  The directories to be added for inclusion in the build.
 function(wintermute_plugin_add_include_directories)
-  cmake_parse_arguments(wpad "" "" "DIRECTORIES" ${ARGN})
+  cmake_parse_arguments(wpad "" "TARGET" "DIRECTORIES" ${ARGN})
 
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpad_TARGET}" _local)
   list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES} ${WINTERMUTE_INLCUDE_DIRS})
   list(REMOVE_DUPLICATES ${_local}_INCLUDE_DIRECTORIES)
 endfunction(wintermute_plugin_add_include_directories)
 
+##
+## @fn wintermute_plugin_add_libraries
+## @brief Adds libraries to the plug-in.
+## @param TARGET     The plug-in's target name.
+## @param LIBRARIES  A list of libraries to be appended to this library's 
+##                   build configuration.
+##
 function(wintermute_plugin_add_libraries)
-  cmake_parse_arguments(wpal "" "" "LIBRARIES" ${ARGN})
+  cmake_parse_arguments(wpal "" "TARGET" "LIBRARIES" ${ARGN})
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpal_TARGET}" _local)
 
   list(APPEND ${_local}_LIBRARIES ${wpal_LIBRARIES} ${WINTERMUTE_LIBRARIES})
   list(REMOVE_DUPLICATES ${_local}_LIBRARIES)
