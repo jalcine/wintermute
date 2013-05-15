@@ -53,7 +53,8 @@ function(wintermute_plugin_declare)
   set("${_local}_TARGET"          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
   set("${_local}_UUID"            ${wdp_UUID}                    CACHE STRING "Uuid.")
   set("${_local}_LIBRARIES"       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
-  set("${_local}_INCLUDE_DIRS"    ${WINTERMUTE_INCLUDE_DIRS}     CACHE STRING "Directories.")
+  set("${_local}_INCLUDE_DIRS"    ${WINTERMUTE_INCLUDE_DIRS}
+                                  ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING "Directories.")
   set("${_local}_HEADERS_PATH"    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
   set("${_local}_DEFINITION_FILE" "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
 
@@ -71,7 +72,8 @@ function(wintermute_plugin_target_declare)
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
   string(TOLOWER ${wptd_TARGET} _minLocal)
-
+  set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
+  
   # Define the library.
   add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
 
@@ -81,13 +83,15 @@ function(wintermute_plugin_target_declare)
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
     EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
-    VERSION       "${${_local}_VERSION_MAJOR}.${${_local}_VERSION_MINOR}.${${_local}_VERSION_PATCH}"
-    SOVERSION     "${${_local}_VERSION_MAJOR}.${${_local}_VERSION_MINOR}.${${_local}_VERSION_PATCH}"
+    VERSION       "${${_local}_VERSION}"
+    SOVERSION     "${${_local}_VERSION}"
     INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRECTORIES}"
   )
 
   # Set up linking.
   target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
+
+  message(STATUS "Plugin '${${_local}_TARGET}' version ${${_local}_VERSION} defined.")
 endfunction(wintermute_plugin_target_declare)
 
 ## TODO: Document this method.
@@ -150,7 +154,7 @@ function(wintermute_plugin_configure)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}_" _local)
   
   foreach(_validProperty ${_validProperties})
-    set("${_local}${_validProperty}" "${wpc_${_validProperty}}")
+    set("${_local}${_validProperty}" "${wpc_${_validProperty}}" CACHE STRING "Configuration property.")
   endforeach(_validProperty ${_validProperties})
 endfunction(wintermute_plugin_configure)
 
@@ -177,11 +181,11 @@ function(wintermute_plugin_set_version)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpsv_TARGET}_" _local)
 
   foreach(_pluginVersionVariable ${_pluginVersions})
-   set("${_local}${_pluginVersionVariable}" "${wpsv_${_pluginVersionVariable}}")
+    set("${_local}${_pluginVersionVariable}" "${wpsv_${_pluginVersionVariable}}" CACHE STRING "Versioning.")
   endforeach(_pluginVersionVariable ${_pluginVersions})
 
   foreach(_systemVersionVariable ${_systemVersions})
-   set("${_local}${_systemVersionVariable}" "${wpsv_${_systemVersionVariable}}")
+    set("${_local}${_systemVersionVariable}" "${wpsv_${_systemVersionVariable}}" CACHE STRING "System versioning.")
   endforeach(_systemVersionVariable ${_systemVersions})
 
 endfunction(wintermute_plugin_set_version)
