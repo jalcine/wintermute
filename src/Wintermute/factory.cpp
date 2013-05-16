@@ -24,6 +24,7 @@
 #include "logging.hpp"
 #include "application.hpp"
 #include "temporaryplugin.hpp"
+#include <QDir>
 #include <QFile>
 
 using namespace Wintermute;
@@ -39,8 +40,27 @@ namespace Wintermute {
       
       ~FactoryPrivate() { }
       
+      /**
+       * @fn availablePlugins
+       *
+       * Obtains a list of the plug-ins that Wintermute can find on this local 
+       * system.
+       *
+       * TODO: Incorporate a means of collecting a remote list of plug-ins?
+       */
       PluginList availablePlugins() const {
-        return PluginList();
+        // Grab a list of plug-ins in the definition folder.
+        QDir pluginDefDir(WINTERMUTE_PLUGIN_DEFINITION_DIR);
+        QStringList files = pluginDefDir.entryList(QStringList() << "*.spec", QDir::Files);
+        PluginList plugins;
+
+        Q_FOREACH(QString pluginFile, files){
+          QString uuid = pluginFile.remove(".spec");
+          wdebug(Wintermute::Application::instance(), QString("Found plugin file '%1'.").arg(uuid));
+          plugins << new TemporaryPlugin(uuid, 0);
+        }
+
+        return plugins;
       }
       
       PluginList activePlugins() const {
@@ -110,16 +130,19 @@ Factory::activePlugins() const {
 bool
 Factory::loadPlugin(const QUuid& id){
   Q_D(Factory);
+  Plugin* obtainedPlugin = 0;
   Logger* log = wlog(this);
   QPluginLoader* loader = d->obtainBinary(id);
-  Plugin* obtainedPlugin = 0;
   TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
   
   if (!loader){
     log->debug(QString("Couldn't find binary for plugin '%1'.").arg(id.toString()));
     return false;
+  } else {
+    log->debug(QString("Found binary for plugin '%1'.").arg(id.toString()));
   }
 
+  log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
   obtainedPlugin = plugin->tryLoad(loader);
 
   if (obtainedPlugin){
@@ -154,10 +177,12 @@ Factory::autoloadPlugins(){
 
   log->info(QString("Loading %1 of %2 plugins...").arg(autoloadList.length()).arg(all.length()));
 
-  Q_FOREACH(QVariant pluginId, autoloadList){
-    bool pluginLoaded = this->loadPlugin(pluginId.toString());
-    if (!pluginLoaded)
-      return false;
+  Q_FOREACH(Plugin* plugin, all){
+    bool pluginLoaded = this->loadPlugin(plugin->id().toString());
+    if (!pluginLoaded){
+      log->info(QString("Autoload of %1 failed; thus cancelling the auto-loading process.").arg(plugin->id().toString()));
+      //return false;
+    }
   }
 
   return true;
