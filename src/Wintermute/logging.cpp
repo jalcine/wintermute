@@ -59,7 +59,6 @@ namespace Wintermute {
 Logging* Logging::self = 0;
 
 Logging::Logging() : QObject(Application::instance()), d_ptr(new LoggingPrivate) {
-  wdebug(this, "Logging system active.");
 }
 
 Logger*
