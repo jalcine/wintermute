@@ -37,9 +37,20 @@ namespace Wintermute {
       ArgumentsPrivate(QObject* parent) : args (new QCommandLine(parent)){
         args->enableVersion(true);
         args->enableHelp(true);
+
+        this->addArguments();
       };
 
-      void interpret() {
+      /**
+       * @fn addArguments
+       *
+       * This private method handles the work of calling the necessary 
+       * methods to grab all of the valid arguments from the command line.
+       *
+       * TODO: Allow dynamic appending to list of default methods.
+       */
+      void addArguments() {
+        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Optional);
       };
   };
 }
@@ -117,7 +128,7 @@ Arguments::optionFound(const QString&  optionName, const QVariant& optionValue){
 
 void
 Arguments::parseError(const QString& error){
-  Wintermute::Logger* log = Wintermute::Logging::obtainLogger(this);
+  Wintermute::Logger* log = wlog(this);
   Q_D(Arguments);
 
   log->error(QString("Malformed command-line arguments. (%1)").arg(error));
