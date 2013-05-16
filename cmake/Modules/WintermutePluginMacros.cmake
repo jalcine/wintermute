@@ -83,8 +83,8 @@ function(wintermute_plugin_target_declare)
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
     EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
-    VERSION       "${${_local}_VERSION}"
-    SOVERSION     "${${_local}_VERSION}"
+    VERSION       ${${_local}_VERSION}
+    SOVERSION     ${${_local}_VERSION}
     INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRECTORIES}"
   )
 
@@ -169,7 +169,7 @@ function(wintermute_plugin_set_version)
                       PLUGIN_VERSION_STAGE
   )
 
-  set(_systemVersions  SYSTEM_VERSION_MAJOR
+  set(_systemVersions SYSTEM_VERSION_MAJOR
                       SYSTEM_VERSION_MINOR
                       SYSTEM_VERSION_PATCH
                       SYSTEM_VERSION_STAGE
@@ -199,8 +199,7 @@ function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
   set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
-  set(_uuid_ ${${_local}UUID})
-  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE} @ONLY)
+  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
 
  
   # DONE: Install the library itself.
