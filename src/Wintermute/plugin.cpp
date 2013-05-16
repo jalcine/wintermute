@@ -71,6 +71,12 @@ Plugin::isLoaded() const {
   return false;
 }
 
+QUuid
+Plugin::id() const {
+  Q_D(const Plugin);
+  return d->id;
+}
+
 bool
 Plugin::load() {
  return false;
