@@ -1,2 +1,25 @@
+##
+## @group Plugin
+## This group contains important information about the core of this Wintermute 
+## plug-in.
+##
 [Plugin]
-UUID=@_uuid_@
+UUID=${${_local}UUID}
+URI=${${_local}URI}
+Library=${${_local}TARGET}
+
+[Author]
+Email=${${_local}EMAIL}
+Name=${${_local}AUTHOR_NAME}
+
+[Plugin/Version]
+Major=${${_local}PLUGIN_VERSION_MAJOR}
+Minor=${${_local}PLUGIN_VERSION_MINOR}
+Patch=${${_Local}PLUGIN_VERSION_PATCH}
+
+[System/Version]
+Major=${${_local}SYSTEM_VERSION_MAJOR}
+Minor=${${_local}SYSTEM_VERSION_MINOR}
+Patch=${${_local}SYSTEM_VERSION_PATCH}
+Comparsion=${${_local}SYSTEM_VERSION_COMPARSION}
+
