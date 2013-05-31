@@ -17,6 +17,8 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+include(WintermuteVersioning)
+
 set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
@@ -60,6 +62,7 @@ add_executable(wintermute ${WINTERMUTE_SOURCES})
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
   FOLDER "Wintermute/Core"
+  VERSION "${WINTERMUTE_VERSION}"
   PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.
