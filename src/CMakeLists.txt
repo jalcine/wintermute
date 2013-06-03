@@ -65,8 +65,8 @@ add_executable(wintermute ${WINTERMUTE_SOURCES})
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
-  FOLDER "Wintermute/Core"
-  VERSION "${WINTERMUTE_VERSION}"
+  FOLDER        "Wintermute/Core"
+  VERSION       "${WINTERMUTE_VERSION}"
   PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.
