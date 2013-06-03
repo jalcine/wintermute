@@ -22,10 +22,13 @@
 #ifndef WINTERMUTE_CORE_PLUGIN_INTERFACEABLE_HPP
 #define WINTERMUTE_CORE_PLUGIN_INTERFACEABLE_HPP
 
-#include <Wintermute/Globals>
 #include <QtCore/QObject>
+#include <Wintermute/Globals>
+#include <Wintermute/Plugin>
 
 namespace Wintermute {
+  class PluginInterfaceablePrivate;
+  class PluginPrivate;
 
   /**
    * @class Wintermute::PluginInterface
@@ -43,12 +46,27 @@ namespace Wintermute {
    *
    * @todo Update with some sensable docs.
    */
-  class PluginInterface : public QObject {
-    /// {{{ QObject-ified.
+  class PluginInterfaceable : public QObject {
+    // {{{ QObject-ified.
     Q_OBJECT;
+    // }}} QObject-ified.
+    
+    QScopedPointer<PluginInterfaceable> d_ptr;
+
+    protected:
+    Q_DECLARE_PRIVATE(PluginInterfaceable);
+    void connectPlugin(Plugin* const plugin);
 
     public:
-    explicit PluginInterface();
+    explicit PluginInterfaceable();
+    virtual ~PluginInterfaceable();
+
+    Q_SIGNAL void started();
+    Q_SIGNAL void stopped();
+    virtual Q_SLOT Plugin::State start() = 0;
+    virtual Q_SLOT Plugin::State stop()  = 0;
+
+    friend class PluginPrivate;
   };
 }
 

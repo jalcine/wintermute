@@ -20,5 +20,19 @@
 **/
 
 #include "plugininterfaceable.hpp"
+#include "private/plugin.hpp"
+#include "private/plugininterfaceable.hpp"
+#include "factory.hpp"
+#include "plugin.hpp"
+
+using Wintermute::PluginInterfaceablePrivate;
+using Wintermute::PluginInterfaceable;
+using Wintermute::Factory;
+
+PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr(this) {
+}
+
+PluginInterfaceable::~PluginInterfaceable() {
+}
 
 #include "plugininterfaceable.moc"
