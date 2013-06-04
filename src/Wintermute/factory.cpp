@@ -130,7 +130,7 @@ Factory::activePlugins() const {
 bool
 Factory::loadPlugin(const QUuid& id){
   Q_D(Factory);
-  Plugin* obtainedPlugin = 0;
+  PluginInterfacable* obtainedPluginInterface = 0;
   Logger* log = wlog(this);
   QPluginLoader* loader = d->obtainBinary(id);
   TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
@@ -143,7 +143,7 @@ Factory::loadPlugin(const QUuid& id){
   }
 
   log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
-  obtainedPlugin = plugin->tryLoad(loader);
+  obtainedPluginInterface = plugin->tryLoad(loader);
 
   if (obtainedPlugin){
     log->info(QString("Plug-in instance for %1 obtained.").arg(id.toString()));
