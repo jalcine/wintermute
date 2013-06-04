@@ -66,11 +66,6 @@ Plugin::state() const {
   return Undefined;
 }
 
-bool
-Plugin::isLoaded() const {
-  return false;
-}
-
 QUuid
 Plugin::id() const {
   Q_D(const Plugin);
