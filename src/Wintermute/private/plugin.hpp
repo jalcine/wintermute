@@ -43,11 +43,11 @@ namespace Wintermute {
         return false;
       }
 
-      Plugin* tryLoad(QPluginLoader* plugin){
+      PluginInterfaceable* tryLoad(QPluginLoader* pluginLoader){
         return 0;
       }
 
-      Plugin* getPluginInstance(){
+      PluginInterfaceable* getPluginInterface(){
         return 0;
       }
   };

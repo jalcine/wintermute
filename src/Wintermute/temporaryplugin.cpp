@@ -26,6 +26,7 @@
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
 using Wintermute::TemporaryPlugin;
+using Wintermute::PluginInterfaceable;
 
 TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
   Plugin(id) {
@@ -37,7 +38,7 @@ TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
 PluginInterfaceable*
 TemporaryPlugin::tryLoad(QPluginLoader* loader){
   Q_D(Plugin);
-  Plugin* loadedPlugin = 0;
+  PluginInterfaceable* loadedPlugin = 0;
 
   if (d->loadBinary()){
     loadedPlugin = d->getPluginInterface();
