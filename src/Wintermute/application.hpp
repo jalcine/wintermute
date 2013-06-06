@@ -22,6 +22,7 @@
 #ifndef WINTERMUTE_APPLICATION_HPP
 #define WINTERMUTE_APPLICATION_HPP
 
+#include <QtCore/QVariant>
 #include <Wintermute/Globals>
 
 namespace Wintermute {
@@ -70,6 +71,12 @@ namespace Wintermute {
        * be run a second time.
        */
       static int run( int& argc, char **argv );
+
+      /** TODO: Document method. **/
+      static QVariant setting(const QString& path, const QVariant defaultValue = QVariant());
+
+      /** TODO: Document method. **/
+      static void setSetting(const QString& path, const QVariant value);
 
       /**
        * @fn version

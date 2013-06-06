@@ -18,6 +18,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+if(_wntr_deps)
+  return()
+else()
+  set(_wntr_deps TRUE)
+endif()
+
 include(FeatureSummary)
 
 ## Pass options to manipulate Wintermute's dependency.
@@ -36,13 +42,15 @@ endif()
 
 ## }}}
 
-find_package(QCommandLine 0.4.0 REQUIRED)
+## {{{ Packages
+
 find_package(log4qt REQUIRED)
-find_package(Git REQUIRED)
+
+## }}}
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
-add_feature_info("Gui Support" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
+add_feature_info("GUI" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
 add_feature_info("Command Line" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
 add_feature_info("Logging" log4qt_FOUND "Incorporates logging support.")

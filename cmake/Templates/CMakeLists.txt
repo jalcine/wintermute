@@ -17,8 +17,11 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+include(WintermuteVariables)
 
-## Include the modules
-add_subdirectory(Modules)
-add_subdirectory(Templates)
+## Obtain all of the modules to be installed.
+file(GLOB WINTERMUTE_CMAKE_TEMPLATES "${CMAKE_CURRENT_SOURCE_DIR}/*.in")
+
+## Install the file to a discoverable path by CMake.
+install(FILES ${WINTERMUTE_CMAKE_TEMPLATES}
+  DESTINATION "${WINTERMUTE_CMAKE_TEMPLATES_DIR}")

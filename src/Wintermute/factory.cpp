@@ -21,10 +21,10 @@
 
 #include "factory.hpp"
 #include "plugin.hpp"
-#include "pluginprivate.hpp"
 #include "logging.hpp"
 #include "application.hpp"
 #include "temporaryplugin.hpp"
+#include <QDir>
 #include <QFile>
 
 using namespace Wintermute;
@@ -40,8 +40,27 @@ namespace Wintermute {
       
       ~FactoryPrivate() { }
       
+      /**
+       * @fn availablePlugins
+       *
+       * Obtains a list of the plug-ins that Wintermute can find on this local 
+       * system.
+       *
+       * TODO: Incorporate a means of collecting a remote list of plug-ins?
+       */
       PluginList availablePlugins() const {
-        return PluginList();
+        // Grab a list of plug-ins in the definition folder.
+        QDir pluginDefDir(WINTERMUTE_PLUGIN_DEFINITION_DIR);
+        QStringList files = pluginDefDir.entryList(QStringList() << "*.spec", QDir::Files);
+        PluginList plugins;
+
+        Q_FOREACH(QString pluginFile, files){
+          QString uuid = pluginFile.remove(".spec");
+          wdebug(Wintermute::Application::instance(), QString("Found plugin file '%1'.").arg(uuid));
+          plugins << new TemporaryPlugin(uuid, 0);
+        }
+
+        return plugins;
       }
       
       PluginList activePlugins() const {
@@ -56,7 +75,7 @@ namespace Wintermute {
       }
 
       QSettings* obtainConfiguration(const QUuid& id) const {
-        const QString settingsPath = QString(WINTERMUTE_DEFINITION_DIR "/" + id.toString() + ".spec");
+        const QString settingsPath = QString(WINTERMUTE_PLUGIN_DEFINITION_DIR "/" + id.toString() + ".spec");
         if (QFile::exists(settingsPath)){
           QSettings* settings = new QSettings(settingsPath);
           return settings;
@@ -111,20 +130,23 @@ Factory::activePlugins() const {
 bool
 Factory::loadPlugin(const QUuid& id){
   Q_D(Factory);
+  PluginInterfaceable* obtainedPluginInterface = 0;
   Logger* log = wlog(this);
   QPluginLoader* loader = d->obtainBinary(id);
-  Plugin* obtainedPlugin = 0;
   TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
   
   if (!loader){
     log->debug(QString("Couldn't find binary for plugin '%1'.").arg(id.toString()));
     return false;
+  } else {
+    log->debug(QString("Found binary for plugin '%1'.").arg(id.toString()));
   }
 
-  if (plugin->tryLoad()){
-    obtainedPlugin = plugin->d_ptr->getPluginInstance();
+  log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
+  obtainedPluginInterface = plugin->tryLoad(loader);
+
+  if (obtainedPluginInterface){
     log->info(QString("Plug-in instance for %1 obtained.").arg(id.toString()));
-    obtainedPlugin->d_ptr->loader = loader;
     return true;
   } else {
     log->error(QString("Plug-in instance for %1 failed to load.").arg(id.toString()));
@@ -143,23 +165,24 @@ Factory::unloadPlugin(const QUuid& id){
     return true;
   }
 
-  plugin->d_ptr->invokeUnload();
-  return true;
+  return plugin->unload();
 }
 
 // TODO: Auto load plugins on start.
 bool
 Factory::autoloadPlugins(){
   Logger* log = wlog(this);
-  QSettings settings;
-  QVariantList autoloadList = settings.value("Plugins/Autoload").toList();
+  QVariantList autoloadList = Wintermute::Application::setting("Plugins/Autoload", QVariantList()).toList();
+  PluginList all = this->availablePlugins();
 
-  log->info(QString("Loading %1 plugins..").arg(autoloadList.length()));
+  log->info(QString("Loading %1 of %2 plugins...").arg(autoloadList.length()).arg(all.length()));
 
-  Q_FOREACH(QVariant pluginId, autoloadList){
-    bool pluginLoaded = this->loadPlugin(pluginId.toString());
-    if (!pluginLoaded)
-      return false;
+  Q_FOREACH(Plugin* plugin, all){
+    bool pluginLoaded = this->loadPlugin(plugin->id().toString());
+    if (!pluginLoaded){
+      log->info(QString("Autoload of %1 failed; thus cancelling the auto-loading process.").arg(plugin->id().toString()));
+      //return false;
+    }
   }
 
   return true;

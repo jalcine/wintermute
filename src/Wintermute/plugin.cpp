@@ -20,49 +20,18 @@
 **/
 
 #include "plugin.hpp"
-#include "pluginprivate.hpp"
 #include "version.hpp"
 #include "logging.hpp"
 #include "factory.hpp"
 #include "application.hpp"
+#include "private/plugin.hpp"
+#include <QtCore/QUuid>
 #include <QtCore/QPluginLoader>
 
 using Wintermute::Version;
 using Wintermute::Plugin;
-using Wintermute::PluginPrivate;
 using Wintermute::Logging;
 using Wintermute::Logger;
-
-PluginPrivate::PluginPrivate(const QUuid& uuid) : id(uuid){
-}
-
-bool
-PluginPrivate::loadBinary(){
-  return false;
-}
-
-bool
-PluginPrivate::unloadBinary(){
-  return false;
-}
-
-bool
-PluginPrivate::tryLoad(){
-  return false;
-}
-
-bool
-PluginPrivate::invokeUnload(){
-  return true;
-}
-
-Plugin*
-PluginPrivate::getPluginInstance(){
-  return 0;
-}
-
-PluginPrivate::~PluginPrivate(){
-}
 
 // TODO: Check if loading in its own space, if so, load necessary data.
 Plugin::Plugin(const QString& uuid) : QObject(Factory::instance()), d_ptr(new PluginPrivate(uuid)){
@@ -97,8 +66,19 @@ Plugin::state() const {
   return Undefined;
 }
 
+QUuid
+Plugin::id() const {
+  Q_D(const Plugin);
+  return d->id;
+}
+
 bool
-Plugin::isLoaded() const {
+Plugin::load() {
+ return false;
+}
+
+bool
+Plugin::unload() {
   return false;
 }
 

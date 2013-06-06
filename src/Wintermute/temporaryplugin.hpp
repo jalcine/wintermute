@@ -26,13 +26,14 @@
 #include <QPluginLoader>
 
 namespace Wintermute {
+  class PluginInterfaceable;
   class TemporaryPlugin : public Plugin {
     Q_OBJECT;
 
     public:
       explicit TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader);
       virtual ~TemporaryPlugin();
-      bool tryLoad();
+      PluginInterfaceable* tryLoad(QPluginLoader* loader);
   };
 }
 

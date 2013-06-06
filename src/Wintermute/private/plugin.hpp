@@ -17,38 +17,39 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
-#include "plugininterfaceable.hpp"
-#include "temporaryplugin.hpp"
-#include "private/plugin.hpp"
+#include <QUuid>
+#include <QSettings>
+#include <QPluginLoader>
+#include <Wintermute/PluginInterfaceable>
 
-using Wintermute::Plugin;
-using Wintermute::PluginPrivate;
-using Wintermute::TemporaryPlugin;
-using Wintermute::PluginInterfaceable;
+namespace Wintermute {
+  class PluginPrivate {
+    public:
+      QUuid id;
+      QSettings* settings;
+      QPluginLoader* loader;
 
-TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
-  Plugin(id) {
-  Q_D(Plugin);
+      PluginPrivate(QUuid const id) : id(id), settings(0), loader(0) { }
 
-  d->loader = theLoader;
+      ~PluginPrivate() { }
+
+      bool loadBinary() {
+        return false;
+      }
+
+      bool unloadBinary() { 
+        return false;
+      }
+
+      PluginInterfaceable* tryLoad(QPluginLoader* pluginLoader){
+        return 0;
+      }
+
+      PluginInterfaceable* getPluginInterface(){
+        return 0;
+      }
+  };
 }
 
-PluginInterfaceable*
-TemporaryPlugin::tryLoad(QPluginLoader* loader){
-  Q_D(Plugin);
-  PluginInterfaceable* loadedPlugin = 0;
-
-  if (d->loadBinary()){
-    loadedPlugin = d->getPluginInterface();
-    // TODO: Change the internal QPluginLoader;
-  }
-
-  return loadedPlugin;
-}
-
-TemporaryPlugin::~TemporaryPlugin() {
-}
-
-#include "temporaryplugin.moc"

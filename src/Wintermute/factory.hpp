@@ -24,6 +24,7 @@
 
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
+#include <Wintermute/PluginInterfaceable>
 #include <QtCore/QStringList>
 #include <QtCore/QUuid>
 

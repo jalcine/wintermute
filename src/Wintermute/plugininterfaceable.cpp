@@ -20,35 +20,19 @@
 **/
 
 #include "plugininterfaceable.hpp"
-#include "temporaryplugin.hpp"
 #include "private/plugin.hpp"
+#include "private/plugininterfaceable.hpp"
+#include "factory.hpp"
+#include "plugin.hpp"
 
-using Wintermute::Plugin;
-using Wintermute::PluginPrivate;
-using Wintermute::TemporaryPlugin;
+using Wintermute::PluginInterfaceablePrivate;
 using Wintermute::PluginInterfaceable;
+using Wintermute::Factory;
 
-TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
-  Plugin(id) {
-  Q_D(Plugin);
-
-  d->loader = theLoader;
+PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr(this) {
 }
 
-PluginInterfaceable*
-TemporaryPlugin::tryLoad(QPluginLoader* loader){
-  Q_D(Plugin);
-  PluginInterfaceable* loadedPlugin = 0;
-
-  if (d->loadBinary()){
-    loadedPlugin = d->getPluginInterface();
-    // TODO: Change the internal QPluginLoader;
-  }
-
-  return loadedPlugin;
+PluginInterfaceable::~PluginInterfaceable() {
 }
 
-TemporaryPlugin::~TemporaryPlugin() {
-}
-
-#include "temporaryplugin.moc"
+#include "plugininterfaceable.moc"

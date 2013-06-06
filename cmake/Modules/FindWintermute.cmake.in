@@ -21,16 +21,24 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-set(WINTERMUTE_VERSION_MAJOR          @WINTERMUTE_VERSION_MAJOR@)
-set(WINTERMUTE_VERSION_MINOR          @WINTERMUTE_VERSION_MINOR@)
-set(WINTERMUTE_VERSION_PATCH          @WINTREMUTE_VERSION_PATCH@)
-set(WINTERMUTE_VERSION_STAGE          @WINTERMUTE_VERSION_STAGE@)
-set(WINTERMUTE_VERSION_STAGE_REVISION @WINTERMUTE_VERSION_STAGE_REVISION@)
+## Wintermute versioning information.
+if (NOT PROJECT_NAME EQUAL Wintermute)
+  set(WINTERMUTE_VERSION_MAJOR          @WINTERMUTE_VERSION_MAJOR@)
+  set(WINTERMUTE_VERSION_MINOR          @WINTERMUTE_VERSION_MINOR@)
+  set(WINTERMUTE_VERSION_PATCH          @WINTERMUTE_VERSION_PATCH@)
+  set(WINTERMUTE_VERSION_STAGE          @WINTERMUTE_VERSION_STAGE@)
+  set(WINTERMUTE_VERSION_STAGE_REF      "@WINTERMUTE_VERSION_STAGE_REF@")
+  set(WINTERMUTE_VERSION_STAGE_BRANCH   "@WINTERMUTE_VERSION_STAGE_BRANCH@")
+  set(WINTERMUTE_BUILD_PREFIX           "@CMAKE_INSTALL_PREFIX@")
+else(NOT PROJECT_NAME EQUAL Wintermute)
+  include(WintermuteVersioning)
+endif(NOT PROJECT_NAME EQUAL Wintermute)
 
 ## Include top-level modules, we split everything up.
 include(WintermuteVariables)
 include(WintermuteDependencies)
 include(WintermuteMacros)
-include(WintermuteVersioning)
 
+## Yes, Wintermute's here.
 set(WINTERMUTE_FOUND ON)
+message(STATUS "Wintermute's installation prefix: \"${WINTERMUTE_BUILD_PREFIX}\"")

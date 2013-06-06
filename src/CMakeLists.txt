@@ -17,6 +17,8 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+include(WintermuteVersioning)
+
 set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
@@ -27,6 +29,7 @@ set(WINTERMUTE_SOURCES
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
   Wintermute/plugin.cpp
+  Wintermute/plugininterfaceable.cpp
   Wintermute/factory.cpp
   Wintermute/temporaryplugin.cpp
   Wintermute/version.cpp
@@ -40,6 +43,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/Globals
   Wintermute/Logging
   Wintermute/Plugin
+  Wintermute/PluginInterfaceable
   Wintermute/Version
 
   ### Native headers
@@ -48,6 +52,8 @@ set(WINTERMUTE_HEADERS
   Wintermute/logging.hpp
   Wintermute/plugin.hpp
   Wintermute/version.hpp
+  Wintermute/factory.hpp
+  Wintermute/plugininterfaceable.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
@@ -59,7 +65,8 @@ add_executable(wintermute ${WINTERMUTE_SOURCES})
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
-  FOLDER "Wintermute/Core"
+  FOLDER        "Wintermute/Core"
+  VERSION       "${WINTERMUTE_VERSION}"
   PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.

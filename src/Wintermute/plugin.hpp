@@ -33,6 +33,15 @@ namespace Wintermute {
   class Version;
   class PluginPrivate;
 
+  /**
+   * @class Wintermute::Plugin
+   *
+   * The Plugin object is meant as a way to manage the highest of plug-ins 
+   * that can be mananged in the platform.
+   *
+   * @note The most direct means of handling plugins is recommended to be done 
+   * through the Factory class.
+   */
   class Plugin : public QObject {
     // {{{ QObject-ified.
     Q_OBJECT;
@@ -54,18 +63,36 @@ namespace Wintermute {
 
     public:
 
+    virtual ~Plugin();
+    
+    /**
+     * Flags used to represent the different states that a plug-in can exist 
+     * in.
+     */
     enum State {
-      Undefined = 0,
-      Loading,
-      Loaded,
-      Unloading,
-      Unloaded,
-      Crashed
+      Undefined = 0x0,  // Reserved for a lack of a state (typically null) plugin.
+      Loading   = 0x1,  // The plugin is currently undergoing the act of loading its prerequisties into Wintermute.
+      Loaded    = 0x2,  // The plugin has been successfully loaded into Wintermute.
+      Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
+      Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
+      Crashed   = 0x5   // The plugin has encountered an undefined error.
     };
 
-    virtual ~Plugin();
-    bool isLoaded() const;
+    /**
+     * @fn isLoaded
+     * Determines if the plugin has been loaded.
+     */
+    inline bool isLoaded() const { return state() == Loaded; }
+    
+    /**
+     * @fn id
+     * Obtains the UUID used as a unique identifer for the plugin.
+     */
     QUuid id() const;
+
+    /**
+     * @fn name
+     */
     QString name() const;
     Version version() const;
     Version systemVersion() const;
@@ -73,6 +100,9 @@ namespace Wintermute {
 
     Q_SIGNAL void loaded();
     Q_SIGNAL void unloaded();
+
+    Q_SLOT bool unload();
+    Q_SLOT bool load();
 
     friend class Factory;
     friend class FactoryPrivate;
