@@ -20,9 +20,10 @@ TestCommandLine::showHelp() {
 
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
+  QVERIFY(process->waitForFinished());
 
   // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardError();
+  QByteArray output = process->readAllStandardOutput();
   std::cerr << qPrintable(output);
   QCOMPARE(output.isEmpty(), false);
   QCOMPARE(output.isNull(), false);

@@ -42,7 +42,7 @@ namespace Wintermute {
         stdOutAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET);
         stdErrAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET);
 
-        primaryLayout->setName("Root");
+        primaryLayout->setName("root");
         stdOutAppender->setName("stdout");
 
         primaryLayout->activateOptions();
@@ -83,7 +83,7 @@ Logging::instance() {
 }
 
 Logging::~Logging(){
-  Log4Qt::LogManager::shutdown();
+  //Log4Qt::LogManager::shutdown();
 }
 
 #include "logging.moc"

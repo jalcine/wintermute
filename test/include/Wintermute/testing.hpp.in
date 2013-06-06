@@ -18,8 +18,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QCoreApplication>
-#include <QProcess>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QProcess>
 
 /// Define some global defines for the suite.
 #define WINTERMUTE_EXECUTABLE "@WINTERMUTE_TEST_EXECUTABLE@"
@@ -31,9 +31,9 @@
 // TODO: Implement Wintermute::Testing::RegressionTest.
 namespace Wintermute {
   namespace Testing {
-    QProcess*
-    spawnProcess(const QStringList& arguments){
+    QProcess* spawnProcess(const QStringList& arguments){
       QProcess* process = new QProcess(qApp);
+      process->setProcessChannelMode(QProcess::SeparateChannels);
       process->start(WINTERMUTE_EXECUTABLE,arguments);
       return process;
     }
