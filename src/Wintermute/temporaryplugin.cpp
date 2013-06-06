@@ -19,6 +19,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
+#include "plugininterfaceable.hpp"
 #include "temporaryplugin.hpp"
 #include "private/plugin.hpp"
 
@@ -33,13 +34,13 @@ TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
   d->loader = theLoader;
 }
 
-Plugin*
+PluginInterfaceable*
 TemporaryPlugin::tryLoad(QPluginLoader* loader){
   Q_D(Plugin);
   Plugin* loadedPlugin = 0;
 
   if (d->loadBinary()){
-    loadedPlugin = d->getPluginInstance();
+    loadedPlugin = d->getPluginInterface();
     // TODO: Change the internal QPluginLoader;
   }
 

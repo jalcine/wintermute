@@ -22,6 +22,7 @@
 #include <QUuid>
 #include <QSettings>
 #include <QPluginLoader>
+#include <Wintermute/PluginInterfaceable>
 
 namespace Wintermute {
   class PluginPrivate {
