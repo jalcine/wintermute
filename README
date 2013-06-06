@@ -7,18 +7,23 @@ page](http://thesii.org/wiki/index.php/Wintermute).
 
 ## Installing
 
-Wintermute requires **[Qt](http://qt-project.org)** in order to be built.
-It also requires the use of **[qcommandline, with patches](https://github.com/jalcine/qcommandline)**
-and **[CMake](http://cmake.org)** for building.
+### Requirements
+Wintermute requires a few dependencies at this version. Right now, the only targeted platform is `Linux` due to its heavy dependency on D-Bus but work provided by contributors of other platforms.
 
-Once you've satisified those dependencies, building is a breeze. Seriously.
+  * CMake 2.8
+  * Qt 4.7 or greater - http://qt-project.org
+  * QCommandLine - https://github.com/jalcine/qcommandline
+  * QLogger - https://gitorious.org/log4qt/log4qt
+
+Once you've satisfied those dependencies, building is a breeze. Seriously.
 
 ```bash
 $ git clone git://github.com/jalcine/wintermute wintermute
 $ cd wintermute; mkdir build; cd build
 $ cmake .. -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_BUILD_TYPE=Debug
 $ make
-$ make unittest test Experimental
+$ make unittest
+$ make test Experimental
 $ make install
 ```
 
@@ -30,9 +35,11 @@ $ ~/.local/bin/wintermute
 $ wintermute # If ~/.local/bin is in your $PATH
 ```
 
+## Tested Operating Systems
 So far, Wintermute has only been built and tested on **[Kubuntu](http://www.kubuntu.com)** running 
-a developer preview of Raring Ringtail. I'm very curious to the build requirements and information for building on
-different architectures and machines.
+a developer preview of Raring Ringtail. It's recommended that after building, you run the test sute (`make test`) and have
+your test results be uploaded to CDash. Wintermute is also tested on [Travis.CI](https://travis-ci.org/thesii/wintermute) for
+those who prefer that utility.
 
 ## Contributing
 
@@ -42,7 +49,7 @@ different architectures and machines.
 
 ## Support
 
-I do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
+I (the project maintainer, Jacky Alcine) do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
 me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers.
 
 ## Licensing

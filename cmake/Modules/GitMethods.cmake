@@ -17,16 +17,29 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(WintermuteVariables)
+find_package(Git 1.7 REQUIRED)
+include(CMakeParseArguments)
 
-## Configure 'FindWintermute.cmake.in'.
-configure_file(FindWintermute.cmake.in FindWintermute.cmake @ONLY)
+function(git_invoke)
+  set(_oneArgs ARGS RESULT)
+  cmake_parse_arguments(GIT_INVOKE "" "${_oneArgs}" "" ${ARGN})
+  execute_process(COMMAND ${GIT_EXECUTABLE} "${GIT_INVOKE_ARGS}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE _ref)
+  message(STATUS ${_ref})
+endfunction(git_invoke)
 
-## Obtain all of the modules to be installed.
-file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
-list(APPEND WINTERMUTE_CMAKE_MODULES 
-  "${CMAKE_CURRENT_BINARY_DIR}/FindWintermute.cmake")
+function(git_current_branch _branch)
+  git_invoke(ARGS "rev-parse --abbrev-ref HEAD" RESULT ${_branch})
+endfunction(git_current_branch)
 
-## Install the file to a discoverable path by CMake.
-install(FILES ${WINTERMUTE_CMAKE_MODULES}
-  DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")
+function(git_current_ref _ref)
+  set(a_branch )
+  git_current_branch(a_branch)
+  git_grab_ref(BRANCH "${${_branch}}" REF _ref)
+endfunction(git_current_ref)
+
+function(git_grab_ref)
+  cmake_parse_arguments(ggr "" "BRANCH REF" "" ${ARGN})
+  git_invoke(ARGS "rev-parse ${ggr_BRANCH}" RESULT "${ggr_REF}")
+endfunction(git_grab_ref)  

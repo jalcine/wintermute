@@ -17,16 +17,9 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(WintermuteVariables)
-
-## Configure 'FindWintermute.cmake.in'.
-configure_file(FindWintermute.cmake.in FindWintermute.cmake @ONLY)
-
-## Obtain all of the modules to be installed.
-file(GLOB WINTERMUTE_CMAKE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
-list(APPEND WINTERMUTE_CMAKE_MODULES 
-  "${CMAKE_CURRENT_BINARY_DIR}/FindWintermute.cmake")
-
-## Install the file to a discoverable path by CMake.
-install(FILES ${WINTERMUTE_CMAKE_MODULES}
-  DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")
+# Define the pre-release versions recognizable by Wintermute.
+set(WINTERMUTE_VERSION_STAGE_NIGHTLY          0)
+set(WINTERMUTE_VERSION_STAGE_ALPHA            1)
+set(WINTERMUTE_VERSION_STAGE_BETA             2)
+set(WINTERMUTE_VERSION_STAGE_RELEASECANDIDATE 3)
+set(WINTERMUTE_VERSION_STAGE_FINALRELEASE     4)

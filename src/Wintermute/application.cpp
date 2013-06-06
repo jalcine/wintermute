@@ -17,40 +17,51 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #include "application.hpp"
 #include "arguments.hpp"
 #include "logging.hpp"
-#include "Wintermute/globals.hpp"
+#include "factory.hpp"
+#include "version.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QSharedPointer>
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
+using Wintermute::Version;
+using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
 
-class ApplicationPrivate {
-  public:
-    QSharedPointer<QCoreApplication> app;
+namespace Wintermute {
+  class ApplicationPrivate {
+    public:
+      QSharedPointer<QCoreApplication> app;
 
-    ApplicationPrivate(int &argc, char **argv) {
-      app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-    }
+      ApplicationPrivate(int &argc, char **argv) {
+        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
+      }
 
-    void
-    initialize(){
-      // Allocate necessary variables for logging and arguments.
-      Logging* logging     = Logging::self   = new Logging;
-      Arguments* arguments = Arguments::self = new Arguments;
-    }
+      void
+      initialize(){
+          // Allocate necessary variables for logging and arguments.
+          Logging::instance();
+          Arguments::instance();
+          Factory::instance();
 
-    int
-    exec(){
-      return app->exec();
-    }
-};
+          // Add library paths for plug-ins.
+          app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
+      }
+
+      int
+      exec(){
+          return app->exec();
+      }
+  };
+
+}
 
 Application* Application::self = 0;
 
@@ -62,44 +73,67 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
 
   // Define the application in Qt.
   d->app->setApplicationName("Wintermute");
-  d->app->setApplicationVersion(WINTERMUTE_VERSION_EXACT);
+  d->app->setApplicationVersion(this->version().toString());
   d->app->setOrganizationName("Synthetic Intellect Institute");
   d->app->setOrganizationDomain("thesii.org");
 }
 
 int
 Application::run(int &argc, char **argv){
+  int returnCode = -1;
+
   if (Application::instance() == 0){
     // Define the application.
     Application::self = new Application(argc,argv);
+    Logger* log = wlog(Application::self);
 
     // Invoke the initialization code.
     self->d_ptr->initialize();
-    Logging::obtainLogger(Application::self)->debug("Completed initialization phase.");
+    log->debug("Completed initialization phase.");
 
     // Start thyself.
     self->start(); 
-    Logging::obtainLogger(Application::self)->debug("Started.");
 
     // Begin the event loop.
-    Logging::obtainLogger(Application::self)->debug("Beginning event loop.");
-    int returnCode = self->d_ptr->exec();
-    Logging::obtainLogger(Application::self)->info("Event loop ended. Ended with exit code " + QString::number(returnCode));
-
-    return returnCode;
+    log->debug("Beginning event loop.");
+    returnCode = self->d_ptr->exec();
+    log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
   }
 
-  return -1;
+  return returnCode;
 }
 
 void
 Application::start(){
-  Logger* log = Logging::obtainLogger(this);
-}
+  //Q_D(Application);
+  Logger* log = wlog(this);
+  log->info("Starting.");
 
+  // Privately start the Factory.
+  Factory::instance()->start();
+
+
+  log->info("Started.");
+}
 
 void
 Application::stop(){
+  //Q_D(Application);
+
+  // Privately clean up the Factory.
+  Factory::instance()->stop();
+}
+
+Version
+Application::version() const {
+  Version ver;
+  ver.major = WINTERMUTE_VERSION_MAJOR;
+  ver.minor = WINTERMUTE_VERSION_MINOR;
+  ver.patch = WINTERMUTE_VERSION_PATCH;
+  ver.state = (Wintermute::Version::DevelopmentStage) WINTERMUTE_VERSION_STAGE;
+  ver.stage = WINTERMUTE_VERSION_STAGE_REVISION;
+
+  return ver;
 }
 
 Application::~Application(){
