@@ -68,9 +68,7 @@ namespace Wintermute {
       PluginInterfaceable* getPluginInterface() {
         QObject* obj = this->loader->instance();
         PluginInterfaceable* interface = 0;
-        interface = qobject_cast<PluginInterfaceable*>(obj);
-        winfo(q_ptr, QString("Valid? %1").arg(obj != 0 ? "true" : "false"));
-        winfo(q_ptr, obj->metaObject()->className());
+        interface = dynamic_cast<PluginInterfaceable*>(obj);
         return interface;
       }
   };
