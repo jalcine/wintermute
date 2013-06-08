@@ -57,4 +57,3 @@ set(WINTERMUTE_PLUGIN_DEFINITION_DIR "${WINTERMUTE_DATA_DIR}/plugindefs")
 
 # Change some CMake settings.
 set(CMAKE_USE_RELATIVE_PATHS true)
-set(CMAKE_VERBOSE_MAKEFILE   false)
