@@ -85,7 +85,7 @@ function(wintermute_plugin_target_declare)
     EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
     VERSION       ${${_local}_VERSION}
     SOVERSION     ${${_local}_VERSION}
-    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRECTORIES}"
+    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}"
   )
 
   # Set up linking.
