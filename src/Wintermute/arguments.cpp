@@ -38,7 +38,7 @@ namespace Wintermute {
         args->enableVersion(true);
         args->enableHelp(true);
 
-        this->addArguments();
+        addArguments();
       };
 
       /**
@@ -135,6 +135,24 @@ Arguments::parseError(const QString& error){
 
   d->args->showVersion();
   d->args->showHelp();
+}
+
+void
+Arguments::addOption(const QChar& optionName, const QString& longOptionName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addOption(optionName, longOptionName, description, flag);
+}
+
+void
+Arguments::addSwitch(const QChar& switchName, const QString& longSwitchName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addSwitch(switchName, longSwitchName, description, flag);
+}
+
+void
+Arguments::addParameter(const QString& parameterName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addParam(parameterName, description, flag);
 }
 
 Arguments::~Arguments(){
