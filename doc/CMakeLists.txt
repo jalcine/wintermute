@@ -17,14 +17,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-option(WINTERMUTE_DOCUMENTATION "Enable the act of documentation." OFF)
+option(GENERATE_DOCS "Enable the act of documentation." OFF)
 
-if (WINTERMUTE_DOCUMENTATION)
-  # Search for Doxygen.
-  find_package(Doxygen REQUIRED)
+if (GENERATE_DOCS)
+  include(WintermuteDocumentation)
 
-  if (DOXYGEN_FOUND)
+  get_target_property(_sources wintermute SOURCES)
 
-  endif (DOXYGEN_FOUND)
-
-endif(WINTERMUTE_DOCUMENTATION)
+  wintermute_generate_documentation(SOURCES ${_sources})
+endif(GENERATE_DOCS)
