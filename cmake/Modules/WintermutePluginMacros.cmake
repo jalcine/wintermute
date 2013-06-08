@@ -73,6 +73,9 @@ function(wintermute_plugin_target_declare)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
   string(TOLOWER ${wptd_TARGET} _minLocal)
   set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
+
+  # Ensure that we handle the automagically moc-ing of files.
+  qt4_automoc(${wptd_SOURCES})
   
   # Define the library.
   add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
@@ -82,6 +85,7 @@ function(wintermute_plugin_target_declare)
   
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
+    FOLDER        "Wintermute/${${_local}_TARGET}"
     EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
     VERSION       ${${_local}_VERSION}
     SOVERSION     ${${_local}_VERSION}
