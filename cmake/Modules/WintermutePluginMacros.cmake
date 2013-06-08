@@ -202,9 +202,10 @@ endfunction(wintermute_plugin_set_version)
 function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
+
+  # DONE: Define the plug-in's definition file.
   set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
   configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
-
  
   # DONE: Install the library itself.
   install(TARGETS        ${${_local}TARGET}
