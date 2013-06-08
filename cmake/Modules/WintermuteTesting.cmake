@@ -27,6 +27,10 @@ enable_testing()
 add_custom_target(test )
 add_custom_target(unittest )
 
+if (PROJECT_LABEL EQUAL "Wintermute")
+  add_dependencies(test wintermute)
+endif(PROJECT_LABEL EQUAL "Wintermute")
+
 ## Define some dependencies.
 add_dependencies(test unittest)
 
