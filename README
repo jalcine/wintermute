@@ -7,6 +7,8 @@ page](http://thesii.org/wiki/index.php/Wintermute).
 
 ## Installing
 
+Installing? Easy. We use [CMake](http://cmake.org); we gotcha.
+
 ### Requirements
 Wintermute requires a few dependencies at this version. Right now, the only targeted platform is `Linux` due to its heavy dependency on D-Bus but work provided by contributors of other platforms.
 
