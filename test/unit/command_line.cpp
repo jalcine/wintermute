@@ -1,7 +1,9 @@
 #include "command_line.hpp"
 #include <Wintermute/Testing>
 #include <QtTest/QTest>
+#include <QtCore/QString>
 #include <iostream>
+#include <QDebug>
 
 using Wintermute::Testing::spawnProcess;
 
@@ -23,13 +25,9 @@ TestCommandLine::showHelp() {
   QVERIFY(process->waitForFinished());
 
   // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardOutput();
-  std::cerr << qPrintable(output);
-  QCOMPARE(output.isEmpty(), false);
-  QCOMPARE(output.isNull(), false);
-
-  // Check if the apps exits.
-  QVERIFY(process->waitForFinished());
+  QByteArray output = process->readAllStandardError();
+  QCOMPARE(!output.isEmpty(), true);
+  QCOMPARE(!output.isNull(),  true);
 }
 
 void
@@ -38,14 +36,12 @@ TestCommandLine::showVersion() {
 
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
+  QVERIFY(process->waitForFinished());
 
   // Capture output from stderr, as promised.
   QByteArray output = process->readAllStandardError();
-  QCOMPARE(output.isEmpty(), false);
-  QCOMPARE(output.isNull(), false);
-
-  // Check if the apps exits.
-  QVERIFY(process->waitForFinished());
+  QCOMPARE(!output.isEmpty(), true);
+  QCOMPARE(!output.isNull(),  true);
 
 }
 
@@ -55,14 +51,13 @@ TestCommandLine::showInvalidArgument() {
 
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
+  QVERIFY(process->waitForFinished());
 
   // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardError();
-  QCOMPARE(output.isEmpty(), false);
-  QCOMPARE(output.isNull(), false);
-
-  // Check if the apps exits.
-  QVERIFY(process->waitForFinished());
+  QByteArray output = process->readAllStandardOutput();
+  QCOMPARE(!output.isEmpty(), true);
+  QCOMPARE(!output.isNull(), true);
+  QVERIFY(output.contains("Malformed"));
 }
 
 QTEST_MAIN(TestCommandLine)
