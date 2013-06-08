@@ -73,6 +73,9 @@ function(wintermute_plugin_target_declare)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
   string(TOLOWER ${wptd_TARGET} _minLocal)
   set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
+
+  # Ensure that we handle the automagically moc-ing of files.
+  qt4_automoc(${wptd_SOURCES})
   
   # Define the library.
   add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
@@ -82,10 +85,11 @@ function(wintermute_plugin_target_declare)
   
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
+    FOLDER        "Wintermute/${${_local}_TARGET}"
     EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
     VERSION       ${${_local}_VERSION}
     SOVERSION     ${${_local}_VERSION}
-    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRECTORIES}"
+    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}"
   )
 
   # Set up linking.
@@ -198,9 +202,10 @@ endfunction(wintermute_plugin_set_version)
 function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
+
+  # DONE: Define the plug-in's definition file.
   set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
   configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
-
  
   # DONE: Install the library itself.
   install(TARGETS        ${${_local}TARGET}

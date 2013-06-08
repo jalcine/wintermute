@@ -38,14 +38,10 @@ TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
 PluginInterfaceable*
 TemporaryPlugin::tryLoad(QPluginLoader* loader){
   Q_D(Plugin);
-  PluginInterfaceable* loadedPlugin = 0;
+  d->loader = loader;
+  d->loader->setParent(this);
 
-  if (d->loadBinary()){
-    loadedPlugin = d->getPluginInterface();
-    // TODO: Change the internal QPluginLoader;
-  }
-
-  return loadedPlugin;
+  return d->tryLoad(loader);
 }
 
 TemporaryPlugin::~TemporaryPlugin() {
