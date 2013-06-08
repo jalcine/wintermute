@@ -45,20 +45,18 @@ namespace Wintermute {
         app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
       }
 
-      void
-      initialize(){
-          // Allocate necessary variables for logging and arguments.
-          Logging::instance();
-          Arguments::instance();
-          Factory::instance();
+      void initialize(){
+        // Allocate necessary variables for logging and arguments.
+        Logging::instance();
+        Arguments::instance();
+        Factory::instance();
 
-          // Add library paths for plug-ins.
-          app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
+        // Add library paths for plug-ins.
+        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
       }
 
-      int
-      exec(){
-          return app->exec();
+      int exec(){
+        return app->exec();
       }
   };
 
@@ -139,20 +137,20 @@ Application::version() const {
   return ver;
 }
 
-QVariant
+  QVariant
 Application::setting(const QString& path, const QVariant defaultValue)
 {
- ApplicationPrivate* d = Application::instance()->d_ptr.data();
+  ApplicationPrivate* d = Application::instance()->d_ptr.data();
 
- if (d->settings->contains(path))
-   return d->settings->value(path);
- else
-   return defaultValue;
+  if (d->settings->contains(path))
+    return d->settings->value(path);
+  else
+    return defaultValue;
 
- return defaultValue;
+  return defaultValue;
 }
 
-void
+  void
 Application::setSetting(const QString& path, const QVariant value)
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
