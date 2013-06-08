@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QFile>
 #include <QCoreApplication>
+#include <QDebug>
 
 using namespace Wintermute;
 using Wintermute::Factory;
@@ -159,14 +160,11 @@ Factory::loadPlugin(const QUuid& id){
   log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
   obtainedPluginInterface = plugin->tryLoad(loader);
 
-  if (obtainedPluginInterface){
-    log->info(QString("Plug-in instance for %1 obtained.").arg(id.toString()));
-    return true;
-  } else {
-    log->error(QString("Plug-in instance for %1 failed to load.").arg(id.toString()));
+  if (obtainedPluginInterface == 0){
+    log->error(QString("Plug-in instance for %1 failed to load due to '%2'.").arg(id.toString()).arg(loader->errorString()));
   }
 
-  return false;
+  return obtainedPluginInterface;
 }
 
 // TODO: Verify the unloading process.
