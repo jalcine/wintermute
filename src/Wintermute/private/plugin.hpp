@@ -22,33 +22,56 @@
 #include <QUuid>
 #include <QSettings>
 #include <QPluginLoader>
+#include <Wintermute/Logging>
 #include <Wintermute/PluginInterfaceable>
 
 namespace Wintermute {
   class PluginPrivate {
     public:
+      Plugin* q_ptr;
       QUuid id;
       QSettings* settings;
       QPluginLoader* loader;
 
-      PluginPrivate(QUuid const id) : id(id), settings(0), loader(0) { }
+      PluginPrivate(Plugin* q, QUuid const id) : q_ptr(q), id(id), settings(0), loader(0) { }
 
       ~PluginPrivate() { }
 
       bool loadBinary() {
-        return false;
+        loader->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+        return loader->load();
       }
 
       bool unloadBinary() { 
-        return false;
+        return loader->unload();
       }
 
       PluginInterfaceable* tryLoad(QPluginLoader* pluginLoader){
-        return 0;
+        this->loader = pluginLoader;
+
+        if (!this->loadBinary()){
+          werr(q_ptr, QString("Can't load binary!").arg(pluginLoader->errorString()));
+          return 0;
+        } else {
+          if (!pluginLoader->isLoaded()){
+            werr(q_ptr, QString("Failed to load plugin binary. Error: %1").arg(pluginLoader->errorString()));
+            return 0;
+          }
+
+          else
+            winfo(q_ptr, QString("Plugin interface loaded for %1").arg(id.toString()));
+        }
+
+        return this->getPluginInterface();
       }
 
-      PluginInterfaceable* getPluginInterface(){
-        return 0;
+      PluginInterfaceable* getPluginInterface() {
+        QObject* obj = this->loader->instance();
+        PluginInterfaceable* interface = 0;
+        interface = qobject_cast<PluginInterfaceable*>(obj);
+        winfo(q_ptr, QString("Valid? %1").arg(obj != 0 ? "true" : "false"));
+        winfo(q_ptr, obj->metaObject()->className());
+        return interface;
       }
   };
 }
