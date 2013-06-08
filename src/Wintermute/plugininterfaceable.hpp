@@ -23,6 +23,7 @@
 #define WINTERMUTE_CORE_PLUGIN_INTERFACEABLE_HPP
 
 #include <QtCore/QObject>
+#include <QtCore/QtPlugin>
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
 
@@ -69,5 +70,10 @@ namespace Wintermute {
     friend class PluginPrivate;
   };
 }
+
+Q_DECLARE_INTERFACE(Wintermute::PluginInterfaceable, "org.thesii.Wintermute.PluginInterface");
+
+#define WINTERMUTE_PLUGIN_DECLARE(LibraryTargetName, LibraryInterfaceName) \
+  Q_EXPORT_PLUGIN2(LibraryTargetName, LibraryInterfaceName);
 
 #endif /* WINTERMUTE_CORE_PLUGIN_INTERFACEABLE_HPP */
