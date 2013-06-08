@@ -88,5 +88,10 @@ namespace Wintermute {
  */
 #define winfo(qobj, text) wlog(qobj)->info(text)
 
+/**
+ * @fn werr
+ * TODO: Documentation.
+ */
+#define werr(qobj, text) wlog(qobj)->error(text)
 
 #endif /* WINTERMUTE_LOGGING_HPP */
