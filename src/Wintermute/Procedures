@@ -27,5 +27,39 @@
  *  user-provided status codes as well as executional status codes that define 
  *  the operational state of the call. All expections are trapped and bubbled 
  *  up safely.
+ *
+ *  == Procedure Instances ==
+ *
+ *  Some might ask why Wintermute has all of these hurdles in providing 
+ *  a remote & local procedure calling system and the philosophy behind it 
+ *  came upon me on a all-night coding spree: EASE. I personally didn't want 
+ *  to have write code over and over; I'd just want a simple class copy and 
+ *  go. Thus `Wintermute::Procedures` came to be; a struggle I'd endure only 
+ *  once.
+ *
+ *  One thing to note, all of the classes used shouldn't be public-facing 
+ *  classes (can't be created using the `new` operator). However, there might 
+ *  be a case where having an instance could be handy so an `instance` method 
+ *  is provided. All of the objects are Qt-orientated so signals and slots 
+ *  easily work with it.
+ *
+ *  In order to expose objects to the entire world of procedures, Wintermute 
+ *  provides a few interfaces that can automatically expose your defined 
+ *  classes into the world. The classes are as follows:
+ *
+ *  + `Wintermute::Procedures::Base` provides a class with the core functionality 
+ *    required to get into remote procedure calling in Wintermute. More about 
+ *    it can be found in `Wintermute/Procedure/Base`.
+ *
+ *  + `Wintermute::Procedures::Discoverable` provides it with the logic to 
+ *    manipulate its front-facing interactivity with the outside world. More 
+ *    about it can be found in `Wintermute/Procedure/Discovery/Base`.
  */
 
+#ifndef WINTERMUTE_CORE_PROCEDURES_HPP
+#define WINTERMUTE_CORE_PROCEDURES_HPP
+
+#include <Wintermute/Procedure/Base>
+#include <Wintermute/Procedure/Discovery/Base>
+
+#endif /* WINTERMUTE_CORE_PROCEDURES_HPP */
