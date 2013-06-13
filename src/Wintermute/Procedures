@@ -1,0 +1,31 @@
+/* vim: set ft=cpp */
+/*
+ * == Abstract ==
+ * `Wintermute::Procedures` encapsulates the logic to handle the following:
+ *
+ *  + Implement a recognized service in the Wintermute processing environment. 
+ *    This allows for other services and parts of operating code to call upon 
+ *    them whenever necessary.
+ *
+ *  + Provide local or remote service discovery of other related running 
+ *    instances of Wintermute. Although this might be done through an 
+ *    extension, having remote instances of Wintermute run can allow for easy 
+ *    remote procedure execution and thus turn a local set of machines into 
+ *    a composed Wintermute computing unit.
+ *
+ *  == Procedure Calls ==
+ *  Procedure calling can be done in two ways; blocking or passive.
+ *
+ *  Blocking calls execute and refuse to return until a result (no 
+ *  result is considered to be a result) until a result is obtained. This is 
+ *  like a single-threaded operation happening at n-speed. This kind of call 
+ *  is recommended if you know that the chance of response time is instant 
+ *  like on a local procedure call.
+ *
+ *  Passive calls execute on a completely separate thread, allowing the main 
+ *  thread to continue operation normally. Passive calls can return 
+ *  user-provided status codes as well as executional status codes that define 
+ *  the operational state of the call. All expections are trapped and bubbled 
+ *  up safely.
+ */
+
