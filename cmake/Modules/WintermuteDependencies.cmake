@@ -45,6 +45,7 @@ endif()
 ## {{{ Packages
 
 find_package(log4qt REQUIRED)
+find_package(QCommandLine REQUIRED)
 
 ## }}}
 
