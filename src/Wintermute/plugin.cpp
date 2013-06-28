@@ -85,4 +85,4 @@ Plugin::unload() {
 Plugin::~Plugin(){
 }
 
-#include "plugin.moc"
+#include "Wintermute/plugin.moc"

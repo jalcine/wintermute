@@ -160,4 +160,4 @@ Application::setSetting(const QString& path, const QVariant value)
 Application::~Application(){
 }
 
-#include "application.moc"
+#include "Wintermute/application.moc"

@@ -19,9 +19,9 @@
 
 include(WintermuteVersioning)
 
-set(WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+set(WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-list(REMOVE_ITEM WINTERMUTE_BUILD_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
+list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
 set(WINTERMUTE_SOURCES
@@ -58,6 +58,7 @@ set(WINTERMUTE_HEADERS
   )
 
 # Wrap up the sources.
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute")
 qt4_automoc(${WINTERMUTE_SOURCES})
 
 # Define the executable.
@@ -72,7 +73,7 @@ set_target_properties(wintermute PROPERTIES
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
 
-include_directories(${WINTERMUTE_BUILD_INCLUDE_DIRS})
+include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.

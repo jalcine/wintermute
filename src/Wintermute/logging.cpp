@@ -86,4 +86,4 @@ Logging::~Logging(){
   //Log4Qt::LogManager::shutdown();
 }
 
-#include "logging.moc"
+#include "Wintermute/logging.moc"

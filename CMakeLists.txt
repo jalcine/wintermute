@@ -28,7 +28,6 @@ include(CMakeProvideUninstallTarget)
 ## Import Wintermute's CMake infrastructure.
 include(FindWintermute)
 include(WintermuteVersioning)
-include(WintermuteTesting)
 
 ## Include sub-directories.
 add_subdirectory(cmake)

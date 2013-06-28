@@ -35,4 +35,4 @@ PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr
 PluginInterfaceable::~PluginInterfaceable() {
 }
 
-#include "plugininterfaceable.moc"
+#include "Wintermute/plugininterfaceable.moc"
