@@ -1,0 +1,6 @@
+/* vim: ft=qt.cpp 
+ * */
+
+#include "Wintermute/Procedure/Hosts/base.hpp"
+#include "Wintermute/Procedure/Hosts/local.hpp"
+#include "Wintermute/Procedure/Hosts/remote.hpp"
