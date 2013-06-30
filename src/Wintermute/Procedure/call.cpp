@@ -5,13 +5,23 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::CallPrivate;
 
 Call::Call(QObject* callee) : QObject(callee),
-  d_ptr(){
+  d_ptr(new CallPrivate(this)) {
   // TODO: Consider attaching signal to parent automatically.
+}
+
+const QVariantList& Call::arguments() const {
+  Q_D(const Call);
+  return d->arguments;
 }
 
 void Call::setArguments(const QVariantList& arguments) {
   Q_D(Call);
   d->arguments = arguments;
+}
+
+const Call::CallingMethod& Call::callingMethod() const {
+  Q_D(const Call);
+  return d->callMethod;
 }
 
 void Call::setCallingMethod(const CallingMethod& callMethod) {
@@ -34,7 +44,6 @@ QObject* Call::invoke(const QString& remoteObjectName, const QString& remoteObje
   if (name.isEmpty())   name = d->remoteObjectName;
   if (method.isEmpty()) method = d->remoteObjectMethod;
 
-  // TODO: Invoke the calling logic here.
   switch (this->callingMethod()){
     case CallingMethod::Background:
       // TODO: Require QBackgroundTask to be implemented.

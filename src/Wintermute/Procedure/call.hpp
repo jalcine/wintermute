@@ -25,7 +25,9 @@ namespace Wintermute {
       Q_DECLARE_PRIVATE(Call);
       Q_ENUMS(CallingMethods);
 
-      QSharedPointer<CallPrivate*> d_ptr;
+      // TODO: Define getter/setters as properties.
+
+      QSharedPointer<CallPrivate> d_ptr;
 
       enum CallingMethod {
         Block      = 0x1,
@@ -46,6 +48,12 @@ namespace Wintermute {
       virtual ~Call();
 
       /**
+       * @fn arguments
+       * @brief Obtains the arguments defined for this call.
+       */
+      const QVariantList& arguments() const;
+
+      /**
        * @fn setArguments
        * @brief Defines the arguments to be passed.
        *
@@ -53,6 +61,12 @@ namespace Wintermute {
        * call.
        */
       void setArguments(const QVariantList& arguments);
+
+      /**
+       * @fn callingMethod
+       * @brief Defines the method at which this call will be invoked.
+       */
+      const CallingMethod& callingMethod() const;
 
       /**
        * @fn setCallingMethod

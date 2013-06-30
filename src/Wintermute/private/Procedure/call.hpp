@@ -7,11 +7,19 @@
 
 namespace Wintermute {
   namespace Procedure {
-    struct CallPrivate {
+    class CallPrivate {
+      Call* q_ptr;
+      public:
+      // Private values.
       QVariantList arguments;
       QString remoteObjectName;
       QString remoteObjectMethod;
       Call::CallingMethod callMethod;
+
+      Q_DECLARE_PUBLIC(Call);
+
+      CallPrivate(Call* q) : q_ptr(q) { }
+      virtual ~CallPrivate() { }
     };
   }
 }
