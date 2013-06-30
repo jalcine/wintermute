@@ -25,6 +25,7 @@ list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
 set(WINTERMUTE_SOURCES
+  main.cpp
   Wintermute/application.cpp
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
@@ -33,7 +34,7 @@ set(WINTERMUTE_SOURCES
   Wintermute/factory.cpp
   Wintermute/temporaryplugin.cpp
   Wintermute/version.cpp
-  main.cpp
+  Wintermute/Procedure/call.cpp
   )
 
 set(WINTERMUTE_HEADERS 
@@ -45,6 +46,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/Plugin
   Wintermute/PluginInterfaceable
   Wintermute/Version
+  Wintermute/Procedure/Call
 
   ### Native headers
   Wintermute/application.hpp
@@ -54,11 +56,14 @@ set(WINTERMUTE_HEADERS
   Wintermute/version.hpp
   Wintermute/factory.hpp
   Wintermute/plugininterfaceable.hpp
+  Wintermute/Procedure/call.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
 # Wrap up the sources.
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute")
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
+                    "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
+  )
 qt4_automoc(${WINTERMUTE_SOURCES})
 
 # Define the executable.
