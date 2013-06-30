@@ -1,0 +1,10 @@
+/**
+ * vim: ft=qt.cpp
+ */
+
+// Objects
+#include <Wintermute/Procedure/Call>
+//#include <Wintermute/Procedure/Object>
+
+// Interfaces
+//#include <Wintermute/Procedure/Callable>
