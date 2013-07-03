@@ -9,3 +9,11 @@ build
 CMakeLists.txt.user
 global.hpp
 test/include/Wintermute/Testing
+CMakeCache.txt
+CMakeFiles/*
+DartConfiguration.tcl
+Makefile
+cmake_install.cmake
+cmake_uninstall.cmake
+FindWintermute.cmake
+src/global.hpp
