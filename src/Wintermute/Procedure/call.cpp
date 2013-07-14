@@ -29,13 +29,10 @@ void Call::setCallingMethod(const CallingMethod& callMethod) {
  d->callMethod = callMethod;
 }
 
-void Call::setRemoteObject(const QString& name, const QString& method){
+void Call::setRemoteObject(const QString& name){
   Q_D(Call);
   if (!name.isEmpty())
     d->remoteObjectName = name;
-
-  if (!method.isEmpty())
-    d->remoteObjectMethod = method;
 }
 
 void Call::setCallName(const QString& callName){
