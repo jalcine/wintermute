@@ -37,8 +37,7 @@ namespace Wintermute {
    * the last one destroyed.
    */
   class Application : public QObject {
-    Q_OBJECT
-
+    Q_OBJECT;
     Q_DECLARE_PRIVATE(Application);  
 
     QScopedPointer<ApplicationPrivate> d_ptr;

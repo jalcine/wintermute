@@ -47,7 +47,7 @@ namespace Wintermute {
 
       void initialize(){
         // Allocate necessary variables for logging and arguments.
-        // TODO: Can we do this in a separate thread?
+        // TODO: Can we do this in a separate thread? (Should we?)
         Logging::instance();
         Arguments::instance();
         Factory::instance();
@@ -159,6 +159,7 @@ Application::setSetting(const QString& path, const QVariant value)
 }
 
 Application::~Application(){
+  this->deleteLater();
 }
 
 #include "Wintermute/application.moc"

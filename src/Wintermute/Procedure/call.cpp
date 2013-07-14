@@ -44,7 +44,7 @@ void Call::setCallName(const QString& callName){
 QObject* Call::invoke(const QString& remoteObjectName, const QString& remoteObjectMethod){
   Q_D(Call);
   QString name = remoteObjectName, method = remoteObjectMethod;
-  if (name.isEmpty())   name = d->remoteObjectName;
+  if (name.isEmpty())   name   = d->remoteObjectName;
   if (method.isEmpty()) method = d->remoteObjectMethod;
 
   switch (this->callingMethod()){
@@ -53,6 +53,7 @@ QObject* Call::invoke(const QString& remoteObjectName, const QString& remoteObje
       break;
 
     case CallingMethod::Discard:
+      // TODO: Required QBackgroundTask to be implemented.
       break;
 
     case CallingMethod::Block:
