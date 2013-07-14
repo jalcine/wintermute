@@ -1,3 +1,4 @@
+# TODO: Add proper CMake module header definitions.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
@@ -17,12 +18,16 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-option(GENERATE_DOCS "Enable the act of documentation." OFF)
+find_package(Doxygen REQUIRED)
 
-if (GENERATE_DOCS)
-  include(WintermuteDocumentation)
+macro(wintermute_generate_documentation)
+  set(_singleArgs TARGETS)
+  set(_multiArgs SOURCES)
 
-  get_target_property(_sources wintermute SOURCES)
+  cmake_parse_arguments(wgd "" "" "${_multiArgs}" ${ARGN})
 
-  wintermute_generate_documentation(SOURCES ${_sources})
-endif(GENERATE_DOCS)
+  # TODO: Configure the Doxygen configuration file.
+  # TODO: Define a target for Doxygen to execute.
+  # TODO: Make the documentation target dependent on a parent target.
+
+endmacro(wintermute_generate_documentation)
