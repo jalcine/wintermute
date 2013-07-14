@@ -38,6 +38,12 @@ void Call::setRemoteObject(const QString& name, const QString& method){
     d->remoteObjectMethod = method;
 }
 
+void Call::setCallName(const QString& callName){
+  Q_D(Call);
+  if (!callName.isEmpty())
+    d->remoteObjectMethod = callName;
+}
+
 QObject* Call::invoke(const QString& remoteObjectName, const QString& remoteObjectMethod){
   Q_D(Call);
   QString name = remoteObjectName, method = remoteObjectMethod;

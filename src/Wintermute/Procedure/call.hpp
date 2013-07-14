@@ -25,14 +25,21 @@ namespace Wintermute {
       Q_DECLARE_PRIVATE(Call);
       Q_ENUMS(CallingMethods);
 
-      // TODO: Define getter/setters as properties.
+      Q_PROPERTY(const QVariantList& Arguments READ arguments WRITE setArguments FINAL);
+      Q_PROPERTY(const QString& RemoteObject WRITE setRemoteObject FINAL);
+      Q_PROPERTY(const QString& CallName WRITE setCallName FINAL);
 
       QSharedPointer<CallPrivate> d_ptr;
 
+      /**
+       * @enum CallingMethod
+       *
+       * Defines the possible states a Call could execute itself upon.
+       */
       enum CallingMethod {
-        Block      = 0x1,
-        Background = 0x2,
-        Discard    = 0x0
+        Block      = 0x1,         /* Ensures that the current thread is blocked. */
+        Background = 0x2,         /* Ensures that it's executed in the background. */
+        Discard    = 0x0          /* Executes and doesn't raise signal. */
       };
 
       public:
@@ -50,6 +57,9 @@ namespace Wintermute {
       /**
        * @fn arguments
        * @brief Obtains the arguments defined for this call.
+       *
+       * Obtains a QVariantList of each of the arguments to be passed to the
+       * Host when this Call is invoked.
        */
       const QVariantList& arguments() const;
 
@@ -65,6 +75,9 @@ namespace Wintermute {
       /**
        * @fn callingMethod
        * @brief Defines the method at which this call will be invoked.
+       *
+       * Obtains the kind of calling method that this call will used when
+       * invoked upon a Host.
        */
       const CallingMethod& callingMethod() const;
 
@@ -88,7 +101,16 @@ namespace Wintermute {
        * At the time of writing, methods are NOT namespaced so this should be 
        * done within the object name itself.
        */
-      void setRemoteObject(const QString& name, const QString& method);
+      void setRemoteObject(const QString& name);
+
+      /**
+       * @fn setCallName
+       * @brief Defines the name of the call to be invoked.
+       * @param name The name of the call.
+       *
+       * Sets the name of the call to be invoked.
+       */
+      void setCallName(const QString& callName);
 
       /**
        * @fn invoke
@@ -110,6 +132,9 @@ namespace Wintermute {
       /**
        * @fn invocationComplete
        * @brief Raised when an background call has elasped.
+       *
+       * This signal is raised when all of the work for this call has been
+       * completed.
        */
       Q_SIGNAL void invocationComplete(const QObject* result);
     };
