@@ -19,8 +19,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#ifndef WINTERMUTE_APPLICATION_HPP
-#define WINTERMUTE_APPLICATION_HPP
+#ifndef WINTERMUTE_CORE_APPLICATION_HPP
+#define WINTERMUTE_CORE_APPLICATION_HPP
 
 #include <QtCore/QVariant>
 #include <Wintermute/Globals>
@@ -121,4 +121,4 @@ namespace Wintermute {
 
 }
 
-#endif /* WINTERMUTE_APPLICATION_HPP */
+#endif /* WINTERMUTE_CORE_APPLICATION_HPP */
