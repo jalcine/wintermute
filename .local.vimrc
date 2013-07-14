@@ -15,3 +15,5 @@ set tabstop=2
 set wildignore+=build/*
 set tags+=.git/tags
 let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src/Wintermute", "$PWD/src" ]
+
+au BufEnter cpp set ft=qt.cpp
