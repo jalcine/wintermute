@@ -13,6 +13,8 @@
  *    remote procedure execution and thus turn a local set of machines into 
  *    a composed Wintermute computing unit.
  *
+ *  + Invoke calls on a discoverable service.
+ *
  *  == Procedure Calls ==
  *  Procedure calling can be done in two ways; blocking or passive.
  *
@@ -29,3 +31,5 @@
  *  up safely.
  */
 
+#include <Wintermute/Procedures/Host>
+#include <Wintermute/Procedures/Call>
