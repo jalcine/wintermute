@@ -57,6 +57,6 @@ set(WINTERMUTE_PLUGIN_LIBRARY_DIR    "${WINTERMUTE_LIBRARY_DIR}/Wintermute")
 set(WINTERMUTE_PLUGIN_DEFINITION_DIR "${WINTERMUTE_DATA_DIR}/plugindefs")
 
 # Change some CMake settings.
-#set(CMAKE_CXX_COMPILER "clang++")
-#set(CMAKE_C_COMPILER   "clang")
-set(CMAKE_USE_RELATIVE_PATHS true)
+set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_C_COMPILER   "clang")
+#set(CMAKE_USE_RELATIVE_PATHS true)

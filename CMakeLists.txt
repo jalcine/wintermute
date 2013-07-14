@@ -1,4 +1,4 @@
-###############################################################################
+##############################################################################
 ### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
