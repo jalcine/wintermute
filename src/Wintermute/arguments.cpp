@@ -158,4 +158,4 @@ Arguments::addParameter(const QString& parameterName, const QString& description
 Arguments::~Arguments(){
 }
 
-#include "arguments.moc"
+#include "Wintermute/arguments.moc"

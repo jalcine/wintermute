@@ -19,8 +19,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#ifndef WINTERMUTE_APPLICATION_HPP
-#define WINTERMUTE_APPLICATION_HPP
+#ifndef WINTERMUTE_CORE_APPLICATION_HPP
+#define WINTERMUTE_CORE_APPLICATION_HPP
 
 #include <QtCore/QVariant>
 #include <Wintermute/Globals>
@@ -29,9 +29,15 @@ namespace Wintermute {
   class Version;
   class ApplicationPrivate;
 
+  /**
+   * @class Application
+   *
+   * The `Application` class in Wintermute serves as an object hierarchy
+   * anchor. It's the first object to be created and fights to the death to be
+   * the last one destroyed.
+   */
   class Application : public QObject {
-    Q_OBJECT
-
+    Q_OBJECT;
     Q_DECLARE_PRIVATE(Application);  
 
     QScopedPointer<ApplicationPrivate> d_ptr;
@@ -72,17 +78,24 @@ namespace Wintermute {
        */
       static int run( int& argc, char **argv );
 
-      /** TODO: Document method. **/
+      /**
+       * @fn setting
+       * @brief Obtains a setting from Wintermute's local configuration.
+       *
+       * @note These options are global to the Wintermute application.
+       */
       static QVariant setting(const QString& path, const QVariant defaultValue = QVariant());
 
-      /** TODO: Document method. **/
+      /** @fn setSetting
+       * @brief Changes a value of the setting for Wintermute
+       *
+       * @note These options are global to the Wintermute application.
+       */
       static void setSetting(const QString& path, const QVariant value);
 
       /**
        * @fn version
        * @brief Obtains the current version of Wintermute.
-       *
-       * TODO: Expand documentation.
        */
       Version version() const;
 
@@ -90,7 +103,8 @@ namespace Wintermute {
        * @fn start
        * @brief
        *
-       * TODO: Expand documentation.
+       * Starts the initial processing required for execution in Wintermute
+       * and begins the event loop.
        */
       Q_SLOT void start();
 
@@ -98,11 +112,12 @@ namespace Wintermute {
        * @fn stop
        * @brief
        *
-       * TODO: Expand documentation.
+       * Stops the started processes in `start()` and begins the clean up for
+       * the event loop.
        */
       Q_SLOT void stop();
   };
 
 }
 
-#endif /* WINTERMUTE_APPLICATION_HPP */
+#endif /* WINTERMUTE_CORE_APPLICATION_HPP */

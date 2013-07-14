@@ -1,0 +1,10 @@
+/* vim: ft=qt.cpp 
+ *
+ * Hosts are the means of exposing methods of a Wintermute processing unit. It 
+ * handles the abstractions of RPC across different platforms (aiming to be 
+ * across Linux/BSD systems).
+ * */
+
+#include "Wintermute/Procedure/Hosts/base.hpp"
+#include "Wintermute/Procedure/Hosts/local.hpp"
+#include "Wintermute/Procedure/Hosts/remote.hpp"

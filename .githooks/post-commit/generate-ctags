@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 20132013, Jacky Alcine <me@jalcine.me>
+# Copyright (c) 2013, Jacky Alcine <me@jalcine.me>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ TOPLEVELGITDIR=`git rev-parse --show-toplevel`
 
 case "${1}" in
     --about )
-        echo "Check bash shell scripts for syntax errors."
+        echo "Generates tags of branch."
         ;;
     * )
         echo "[ctags] Generating tags for repository..."

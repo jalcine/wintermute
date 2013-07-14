@@ -231,4 +231,4 @@ Factory::stop() {
 Factory::~Factory(){
 }
 
-#include "factory.moc"
+#include "Wintermute/factory.moc"

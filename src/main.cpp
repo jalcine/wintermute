@@ -1,5 +1,5 @@
 /**
- *
+ * vim: ft=qt.cpp
  * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -21,7 +21,6 @@
 
 #include <Wintermute/Application>
 
-int
-main( int argc, char** argv ){
+int main( int argc, char** argv ){
   return Wintermute::Application::run(argc,argv);
 }

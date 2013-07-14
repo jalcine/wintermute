@@ -47,4 +47,4 @@ TemporaryPlugin::tryLoad(QPluginLoader* loader){
 TemporaryPlugin::~TemporaryPlugin() {
 }
 
-#include "temporaryplugin.moc"
+#include "Wintermute/temporaryplugin.moc"

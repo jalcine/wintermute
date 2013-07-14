@@ -1,5 +1,5 @@
 /**
- *
+ * vim: ft=qt.cpp
  * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -47,6 +47,7 @@ namespace Wintermute {
 
       void initialize(){
         // Allocate necessary variables for logging and arguments.
+        // TODO: Can we do this in a separate thread? (Should we?)
         Logging::instance();
         Arguments::instance();
         Factory::instance();
@@ -158,6 +159,7 @@ Application::setSetting(const QString& path, const QVariant value)
 }
 
 Application::~Application(){
+  this->deleteLater();
 }
 
-#include "application.moc"
+#include "Wintermute/application.moc"
