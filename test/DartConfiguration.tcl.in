@@ -1,6 +1,18 @@
+# Directories.
 SourceDirectory: @CMAKE_SOURCE_DIR@
 BuildDirectory: @CMAKE_BINARY_DIR@
+
+# Commands
 CoverageCommand: gcov
 MakeCommand: make wintermute unittest
-UpdateType: git
 ConfigureCommand: cd @CMAKE_BINARY_DIR@ && make rebuild_cache
+
+DropSite: my.cdash.org
+DropLocation: /submit.php?project=Wintermute
+
+# Git.
+GITCommand: @GIT_EXECUTABLE@
+GITUpdateOptions: -v
+
+# VCS
+UpdateType: git
