@@ -32,7 +32,7 @@ if (PROJECT_LABEL EQUAL "Wintermute")
 endif(PROJECT_LABEL EQUAL "Wintermute")
 
 ## Define some dependencies.
-add_dependencies(test unittest)
+add_dependencies(unittest test)
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
