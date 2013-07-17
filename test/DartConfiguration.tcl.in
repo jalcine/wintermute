@@ -9,6 +9,7 @@ ConfigureCommand: cd @CMAKE_BINARY_DIR@ && make rebuild_cache
 
 DropSite: my.cdash.org
 DropLocation: /submit.php?project=Wintermute
+DropMethod: http
 
 # Git.
 GITCommand: @GIT_EXECUTABLE@
