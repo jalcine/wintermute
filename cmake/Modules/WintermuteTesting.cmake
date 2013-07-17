@@ -44,5 +44,5 @@ set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
 
-## Link CTest data to a place it'll look for it.
+### Link CTest data to a place it'll look for it.
 
