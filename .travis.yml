@@ -16,7 +16,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules/ -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
+  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
 
 script: make test
 
