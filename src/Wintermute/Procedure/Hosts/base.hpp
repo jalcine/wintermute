@@ -6,6 +6,7 @@
 #define WINTERMUTE_CORE_PROCEDURE_HOSTS_BASE_HPP
 
 #include <QtCore/QString>
+#include <Wintermute/Procedure/Call>
 
 namespace Wintermute {
   namespace Procedure {
@@ -36,8 +37,21 @@ namespace Wintermute {
            * Searches for a host with the specified name.
            */
           static Base* discoverHost(QString& qualifiedName);
+
+        protected:
+          /**
+           * @slot callRecieved
+           *
+           * Handles the act of manipulating incoming calls.
+           */
+          Q_SLOT void callRecieved(Call* const call) = 0;
+
+          /**
+           * @fn dispatchCall
+           * Handles the work of sending a call.
+           */
+          bool dispatchCall(Call* const call);
       };
-      typedef Host Base;
     }
   }
 }
