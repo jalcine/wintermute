@@ -17,3 +17,6 @@ GITUpdateOptions: -v
 
 # VCS
 UpdateType: git
+
+# Coverage
+CoverageCommand: /usr/bin/gcov
