@@ -63,3 +63,5 @@ me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers.
 ## Licensing
 
 Wintermute is licensed under the GPLv2 license. See `LICENSE` for more details.
+
+vim: set ft=markdown tw=78
