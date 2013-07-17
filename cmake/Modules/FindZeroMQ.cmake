@@ -24,7 +24,7 @@
 include(FindPkgConfig)
 
 # Look for any version of ZeroMQ.
-pkg_search_module(ZEROMQ REQUIRED libzmq)
+pkg_search_module(ZEROMQ REQUIRED libzmq3)
 
 # Realistically, pkg-config does all of the work here; no more from CMake is
 # required.
