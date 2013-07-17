@@ -1,1 +1,3 @@
+// vim: set ft=cpp
+
 #include "Wintermute/Procedure/Hosts/base.hpp"
