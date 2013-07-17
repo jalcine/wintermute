@@ -18,6 +18,7 @@
 ###############################################################################
 
 include(CTest)
+include(Dart)
 include(WintermuteTestingMacros)
 
 ## Release the KRAKEN!
