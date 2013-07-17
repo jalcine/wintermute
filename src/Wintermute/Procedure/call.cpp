@@ -48,15 +48,15 @@ QObject* Call::invoke(const QString& remoteObjectName, const QString& remoteObje
   if (method.isEmpty()) method = d->remoteObjectMethod;
 
   switch (this->callingMethod()){
-    case CallingMethod::Background:
+    case Background:
       // TODO: Require QBackgroundTask to be implemented.
       break;
 
-    case CallingMethod::Discard:
+    case Discard:
       // TODO: Required QBackgroundTask to be implemented.
       break;
 
-    case CallingMethod::Block:
+    case Block:
       break;
   }
 

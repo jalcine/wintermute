@@ -18,19 +18,32 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+include(CTest)
+include(Dart)
 include(WintermuteMacros)
 
-## TODO: Define this macro and the process flow.
+set(WINTERMUTE_TEST_LIST_FILE "${CMAKE_BINARY_DIR}/DartTestfile.txt")
+if (EXISTS ${WINTERMUTE_TEST_LIST_FILE})
+  file(REMOVE ${WINTERMUTE_TEST_LIST_FILE})
+endif(EXISTS ${WINTERMUTE_TEST_LIST_FILE})
+
 macro(wintermute_add_unit_test unittestname unittestsrc)
+  # Define sources and moc them up.
   SET(unittest_${unittestname}_SRCS ${unittestsrc} ${WINTERMUTE_TEST_CORE_SOURCES})
   qt4_automoc(${unittest_${unittestname}_SRCS})
 
+  # Set up the test as if it was Wintermute.
   add_executable(unittest_${unittestname} ${unittest_${unittestname}_SRCS})
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 
-  add_test(unittest_${unittestname} unittest_${unittestname} 
-    ${WINTERMUTE_TEST_ARGUMENTS})
+  # Add it to the test file.
+  set(_command "add_test(unittest_${unittestname}  "${CMAKE_BINARY_DIR}/test/unit/unittest_${unittestname}")
+")
+  # Append it to the file.
+  file(APPEND ${WINTERMUTE_TEST_LIST_FILE} ${_command})
+
+  # Configure dependencies.
   add_dependencies(unittest unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)
 

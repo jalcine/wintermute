@@ -17,8 +17,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(CTest)
-include(Dart)
 include(WintermuteTestingMacros)
 
 ## Release the KRAKEN!
