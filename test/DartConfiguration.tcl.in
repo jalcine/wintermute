@@ -13,7 +13,7 @@ DropMethod: http
 
 # Git.
 GITCommand: @GIT_EXECUTABLE@
-GITUpdateOptions: -v
+GITUpdateOptions: -v pull
 
 # VCS
 UpdateType: git
