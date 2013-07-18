@@ -22,7 +22,7 @@ provided by contributors of other platforms.
   * Qt 4.7 or greater - http://qt-project.org
   * QCommandLine - https://github.com/jalcine/qcommandline
   * QLogger - https://gitorious.org/log4qt/log4qt
-  * ZeroMQ - http://zeromq.org
+  * C++ bindings to ZeroMQ - http://www.zeromq.org/bindings:cpp
 
 Once you've satisfied those dependencies, building is a breeze. Seriously.
 
