@@ -32,9 +32,10 @@ host. Wintermute uses the QVariant system to convert QVariant-compatible
 objects into QString and then use said raw value over the specified protocol. 
 In code, you'd typically invoke calls on a hosts in two ways; using the 
 `Wintermute::Procedure::Call` object or by using the interface named.
-`Wintermute::Procedure::Invokable`
+`Wintermute::Procedure::Invokable` provides methods and logic for `QObject`s
+to get the capability required to handle Call events.
 
-## `Wintermute::Procedure::Call`
+### `Wintermute::Procedure::Call`
 The `Call` object gives you the ability to invoke a call manually with all of 
 the options available to you. It's the more tedious route.
 
