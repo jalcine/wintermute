@@ -3,7 +3,7 @@ namespace Wintermute {
     namespace Hosts {
       class BasePrivate {
 
-      }
+      };
     }
   }
 }
