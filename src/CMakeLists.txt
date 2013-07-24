@@ -36,6 +36,9 @@ set(WINTERMUTE_SOURCES
   Wintermute/temporaryplugin.cpp
   Wintermute/version.cpp
   Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/Hosts/base.cpp
+  Wintermute/Procedure/Hosts/local.cpp
+  Wintermute/Procedure/Hosts/remote.cpp
   )
 
 set(WINTERMUTE_HEADERS 
@@ -49,6 +52,10 @@ set(WINTERMUTE_HEADERS
   Wintermute/PluginInterfaceable
   Wintermute/Version
   Wintermute/Procedure/Call
+  Wintermute/Procedure/Host
+  Wintermute/Procedure/Hosts/Base
+  Wintermute/Procedure/Hosts/Local
+  Wintermute/Procedure/Hosts/Remote
 
   ### Native headers
   Wintermute/application.hpp
@@ -60,6 +67,9 @@ set(WINTERMUTE_HEADERS
   Wintermute/configuration.hpp
   Wintermute/plugininterfaceable.hpp
   Wintermute/Procedure/call.hpp
+  Wintermute/Procedure/Hosts/base.hpp
+  Wintermute/Procedure/Hosts/local.hpp
+  Wintermute/Procedure/Hosts/remote.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
