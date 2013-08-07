@@ -19,7 +19,6 @@
 ###############################################################################
 
 include(WintermuteMacros)
-include(TestingTargets)
 
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
@@ -30,8 +29,16 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   add_executable(unittest_${unittestname} ${unittest_${unittestname}_SRCS})
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
-  coverage_add_target(unittest_${unittestname})
 
   # Configure dependencies.
   add_dependencies(unittest unittest_${unittestname})
+
+  # Tweak commands for unit testing.
+  add_custom_command(TARGET unittest POST_BUILD
+    COMMAND "unittest_${unittestname}"
+    COMMENT "Executing unit test '${unittestname}'..."
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
+
+  # Add coverage support
+  generate_lcov(unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)

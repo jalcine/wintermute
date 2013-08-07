@@ -17,27 +17,22 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(WintermuteTestingMacros)
-
 ## Grab us some coverage stuff.
 find_program(GCOV_PATH gcov)
 find_program(LCOV_PATH lcov)
 find_program(GENHTML_PATH genhtml)
+find_package(Ruby)
 
 if (NOT GCOV_PATH)
   message(FATAL_ERROR "We need `gcov` for coverage information.")
 endif(NOT GCOV_PATH)
 
-if ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
-  message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
-endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
-
-## Release the KRAKEN!
-enable_testing()
-
 ## Define the top-level targets for testing.
-add_custom_target(test )
-add_custom_target(unittest )
+add_custom_target(test ALL
+  COMMAND ${RUBY_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/Scripts/tests.rb
+  COMMENT "Executing test suite...")
+add_custom_target(unittest ALL
+  COMMENT "Running unit tests...")
 
 if (PROJECT_LABEL EQUAL "Wintermute")
   add_dependencies(test wintermute)
@@ -45,6 +40,7 @@ endif(PROJECT_LABEL EQUAL "Wintermute")
 
 ## Define some dependencies.
 add_dependencies(unittest test)
+add_dependencies(test wintermute)
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
@@ -55,3 +51,10 @@ set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
+
+## Make some directories
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
+
+## Include macros
+include(TestingTargets)
+include(WintermuteTestingMacros)
