@@ -16,6 +16,7 @@ before_install:
   - sudo apt-get install -qq cmake qt4-dev-tools libqt4-dev libqt4-dbg
   - sudo apt-get install -qq libzmq3-dev libzmq3-dbg
   - sudo apt-get install -qq python-pip python
+  - sudo apt-get install -qq g++-4.6 lcov valgrind
   - test/build_deps.sh
 
 before_script:
