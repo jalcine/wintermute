@@ -22,15 +22,11 @@
 ## functionality of CTest in CMake. 
 ##
 ## Parts of this logic was borrowed by
-## https://github.com/gergap/helloworld/blob/master/src/cmake/lcov.cmake
-
-# Tell gcov to drop files at a specific location.
-set(ENV{GCOV_PATH} ${CMAKE_BINARY_DIR}/coverage)
-
+## https://github.com/gergap/helloworld/blob/master/src/cmake/${LCOV_PATH}.cmake
 add_custom_target(coverage)
 
 macro(generate_lcov _target)
-  set(_lcov_target "lcov_${_target}")
+  set(_lcov_target lcov_${_target})
   set(_work_dir ${CMAKE_BINARY_DIR}/test/unit/CMakeFiles/${_target}.dir)
 
   # Define the target's coverage target.
@@ -39,15 +35,15 @@ macro(generate_lcov _target)
 
   # Make a directory for the target's coverage report.
   add_custom_command(TARGET ${_lcov_target}
-    COMMAND mkdir -p coverage
     COMMENT "Making coverage directory in ${_work_dir}.."
+    COMMAND mkdir -p coverage
     WORKING_DIRECTORY ${_work_dir})
 
   # Reset execution counts to 0.
-#  add_custom_command(TARGET ${_lcov_target}
-    #COMMENT "Prepping coverage collection..."
-    #COMMAND lcov --directory . --zerocounters -t ${_target} --gcov-tool ${GCOV_PATH}
-    #WORKING_DIRECTORY ${_work_dir})
+  add_custom_command(TARGET ${_lcov_target}
+    COMMENT "Prepping coverage collection..."
+    COMMAND ${LCOV_PATH} --directory . --zerocounters -t ${_target} --gcov-tool  ${GCOV_PATH} --test-name "${PROJECT_LABEL} - ${_target}"
+    WORKING_DIRECTORY ${_work_dir})
 
   # Execute target.
   add_custom_command(TARGET ${_lcov_target}
@@ -55,18 +51,21 @@ macro(generate_lcov _target)
     COMMAND "${_target}"
     WORKING_DIRECTORY ${_work_dir})
 
-  # Collect coverage information.
+  # Execute coverage tool.
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Capturing coverage data..."
-    COMMAND gcov-4.6 -d -a -n --object-directory . *.gcda
-    #COMMAND lcov --directory . --capture --output-file ./coverage/lcov.info --gcov-tool ${GCOV_PATH}
+    COMMAND ${GCOV_PATH} -d -a -n --object-directory . *.gcda
+    COMMAND ${LCOV_PATH} --directory . --capture --output-file ./coverage/lcov.info --gcov-tool ${GCOV_PATH} -b ${CMAKE_SOURCE_DIR}
+    COMMAND ${LCOV_PATH} --remove ./coverage/lcov.info /usr/include/*
+    COMMAND ${LCOV_PATH} -l ./coverage/lcov.info
     WORKING_DIRECTORY ${_work_dir})
 
   # Generate HTML
-  #add_custom_command(TARGET ${_lcov_target}
-    #COMMENT "Generating HTML output..."
-    #COMMAND genhtml -o ./coverage ./coverage/lcov.info
-    #WORKING_DIRECTORY ${_work_dir})
+  add_custom_command(TARGET ${_lcov_target}
+    COMMENT "Generating HTML output..."
+    COMMAND genhtml -o ./coverage ./coverage/lcov.info
+    COMMAND x-www-browser ./coverage/index.html &
+    WORKING_DIRECTORY ${_work_dir})
 
   add_dependencies(coverage ${_lcov_target})
 endmacro(generate_lcov _target)
