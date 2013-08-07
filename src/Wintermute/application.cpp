@@ -24,6 +24,8 @@
 #include "logging.hpp"
 #include "factory.hpp"
 #include "version.hpp"
+#include "Procedure/Hosts/base.hpp"
+#include "Procedure/Agents/base.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
@@ -46,14 +48,14 @@ namespace Wintermute {
       }
 
       void initialize(){
+        // Add library paths for plug-ins.
+        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
+
         // Allocate necessary variables for logging and arguments.
-        // TODO: Can we do this in a separate thread? (Should we?)
+        // TODO: Move factory initialization to separate thread.
         Logging::instance();
         Arguments::instance();
         Factory::instance();
-
-        // Add library paths for plug-ins.
-        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
       }
 
       int exec(){
