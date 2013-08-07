@@ -38,13 +38,34 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 
   # Add it to the test file.
-  set(_command "add_test(unittest_${unittestname}  "${CMAKE_BINARY_DIR}/test/unit/unittest_${unittestname}")
-")
-  # Append it to the file.
+  add_test(unittest_${unittestname}  "${CMAKE_BINARY_DIR}/test/unit/unittest_${unittestname}")
+  
+# Append it to the file.
   file(APPEND ${WINTERMUTE_TEST_LIST_FILE} ${_command})
 
   # Configure dependencies.
   add_dependencies(unittest unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)
 
+macro(wintermute_add_coverage _target)
+  ADD_CUSTOM_TARGET(${_target}_unit_coverage
+    # Cleanup lcov
+    COMMAND ${LCOV_PATH} --zerocounters --directory src/CMakeFiles/${_target}.dir
 
+    # Capture test data.
+    COMMAND ${LCOV_PATH} --capture --output-file lcov.capture.log --directory src/CMakeFiles/${_target}.dir
+
+    # Run tests
+    COMMAND make unittest -C ${CMAKE_BINARY_DIR}
+
+    # Capturing lcov counters and generating report
+    COMMAND ${LCOV_PATH} --directory src/CMakeFiles/${_target}.dir --capture --output-file lcov.capture.log
+    COMMAND ${GENHTML_PATH} -o wintermute wintermute.info.cleaned
+    COMMAND ${CMAKE_COMMAND} -E remove wintermute.info wintermute.info.cleaned
+
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
+    )
+
+  add_dependencies(${_target}_unit_coverage unittest)
+endmacro(wintermute_add_coverage _target)

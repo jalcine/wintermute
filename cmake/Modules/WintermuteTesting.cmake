@@ -19,6 +19,19 @@
 
 include(WintermuteTestingMacros)
 
+## Grab us some coverage stuff.
+find_program(GCOV_PATH gcov)
+find_program(LCOV_PATH lcov)
+find_program(GENHTML_PATH genhtml)
+
+if (NOT GCOV_PATH)
+  message(FATAL_ERROR "We need `gcov` for coverage information.")
+endif(NOT GCOV_PATH)
+
+if ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
+  message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
+endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
+
 ## Release the KRAKEN!
 enable_testing()
 
@@ -42,6 +55,3 @@ set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
-
-### Link CTest data to a place it'll look for it.
-

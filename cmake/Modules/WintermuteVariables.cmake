@@ -37,16 +37,15 @@ set(WINTERMUTE_COMPILE_DEFINITIONS           WINTERMUTE)
 set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG     WINTERMUTE_DEBUG)
 set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE   WINTERMUTE_RELEASE)
 
-set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall ${ZEROMQ_CFLAGS} -v")
+set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall ${ZEROMQ_CFLAGS}")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-O4")
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -W -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-set(WINTERMUTE_LINK_FLAGS            "${ZEROMQ_LDFLAGS} -v")
-set(WINTERMUTE_LINK_FLAGS_DEBUG      "-fprofile-arcs -ftest-coverage")
+set(WINTERMUTE_LINK_FLAGS            "${ZEROMQ_LDFLAGS}")
+set(WINTERMUTE_LINK_FLAGS_DEBUG      "-fprofile-arcs -ftest-coverage -lgcov")
 set(WINTERMUTE_LINK_FLAGS_RELEASE    "")
 
 set(WINTERMUTE_LIBRARIES ${QT_QTCORE_LIBRARY}
   Log4Qt
-  gcov
   ${ZEROMQ_LIBRARIES}
   ${QCOMMANDLINE_LIBRARIES})
 set(WINTERMUTE_INCLUDE_DIRS ${QT_INCLUDE_DIR}
@@ -61,4 +60,4 @@ set(WINTERMUTE_PLUGIN_DEFINITION_DIR "${WINTERMUTE_DATA_DIR}/plugindefs")
 # Change some CMake settings.
 set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_C_COMPILER   "clang")
-#set(CMAKE_USE_RELATIVE_PATHS true)
+set(CMAKE_USE_RELATIVE_PATHS true)
