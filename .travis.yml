@@ -25,7 +25,7 @@ script:
   - make Experimental
 
 after_success:
-  - coveralls --exclude tests
+  - coveralls --exclude tests --exclude /usr/include --exclude test
 
 notifications:
   email:
