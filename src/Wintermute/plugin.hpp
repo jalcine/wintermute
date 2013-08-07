@@ -4,7 +4,6 @@
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
- *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -43,18 +42,14 @@ namespace Wintermute {
    * through the Factory class.
    */
   class Plugin : public QObject {
-    // {{{ QObject-ified.
     Q_OBJECT;
     Q_ENUMS(State);
     Q_PROPERTY(QString Name          READ name);
     Q_PROPERTY(Version Version       READ version);
     Q_PROPERTY(Version SystemVersion READ systemVersion);
     Q_PROPERTY(State   State         READ state);
-    // }}} QObject-ified.
 
-    // {{{ Private data.
     QScopedPointer<PluginPrivate> d_ptr;
-    // }}} Private data.
 
     protected:
     Q_DECLARE_PRIVATE(Plugin);
@@ -79,6 +74,15 @@ namespace Wintermute {
     };
 
     /**
+     * Defines the kind of plugin that this is.
+     */
+    enum Type {
+      Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
+      Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
+      Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
+    };
+
+    /**
      * @fn isLoaded
      * Determines if the plugin has been loaded.
      */
@@ -92,17 +96,57 @@ namespace Wintermute {
 
     /**
      * @fn name
+     * Obtains the friendly name of the plugin.
      */
     QString name() const;
+
+    /**
+     * @fn version
+     * Obtains the versioning object for the plugin.
+     */
     Version version() const;
+
+    /**
+     * @fn systemVersion
+     * Obtians the minimum running version of Wintermute required for plugin.
+     */
     Version systemVersion() const;
+
+    /**
+     * @fn state 
+     * Obtains the current state of the plugin.
+     */
     State state() const;
 
+    /**
+     * @fn type
+     * Obtains the type of plugin.
+     */
+    Type type() const;
+
+    /**
+     * @fn loaded
+     * Emitted when the plugin is loaded.
+     */
     Q_SIGNAL void loaded();
+
+    /**
+     * @fn unloaded
+     * Emitted when the plugin is unloaded.
+     */
     Q_SIGNAL void unloaded();
 
-    Q_SLOT bool unload();
+    /**
+     * @fn load
+     * Enacts the work of loading this plugin into the factory.
+     */
     Q_SLOT bool load();
+
+    /**
+     * @fn unload
+     * Enacts the work of unloading this plugin from the factory.
+     */
+    Q_SLOT bool unload();
 
     friend class Factory;
     friend class FactoryPrivate;
