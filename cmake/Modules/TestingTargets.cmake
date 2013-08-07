@@ -32,44 +32,39 @@ add_dependencies(memorycheck test)
 macro(generate_lcov _target)
   set(_lcov_target lcov_${_target})
   set(_work_dir ${CMAKE_BINARY_DIR}/test/unit/CMakeFiles/${_target}.dir)
+  set(_lcov_file ${_work_dir}/coverage/lcov.info)
 
   # Define the target's coverage target.
   add_custom_target(${_lcov_target}
     DEPENDS ${_target})
 
-  # Make a directory for the target's coverage report.
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Making coverage directory in ${_work_dir}.."
-    COMMAND mkdir -p coverage
-    WORKING_DIRECTORY ${_work_dir})
+    COMMAND mkdir -p ${_work_dir}/coverage
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-  # Reset execution counts to 0.
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Prepping coverage collection..."
-    COMMAND ${LCOV_PATH} --directory . --zerocounters -t ${_target} --gcov-tool  ${GCOV_PATH} --test-name "${PROJECT_LABEL} - ${_target}"
-    WORKING_DIRECTORY ${_work_dir})
+    COMMAND ${LCOV_PATH} -q -d ${_work_dir} -z -t "${PROJECT_LABEL} - ${_target}"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-  # Execute target.
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Executing test..."
-    COMMAND "${_target}"
-    WORKING_DIRECTORY ${_work_dir})
+    COMMAND ${_target}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-  # Execute coverage tool.
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Capturing coverage data..."
-    COMMAND ${GCOV_PATH} -d -a -n --object-directory . *.gcda
-    COMMAND ${LCOV_PATH} --directory . --capture --output-file ./coverage/lcov.info --gcov-tool ${GCOV_PATH} -b ${CMAKE_SOURCE_DIR}
-    COMMAND ${LCOV_PATH} --remove ./coverage/lcov.info /usr/include/*
-    COMMAND ${LCOV_PATH} -l ./coverage/lcov.info
-    WORKING_DIRECTORY ${_work_dir})
+    COMMENT "Analyzing coverage collection data (lcov)..."
+    COMMAND ${LCOV_PATH} -q -f -d ${_work_dir} -b ${CMAKE_SOURCE_DIR} -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH}
+    COMMAND ${LCOV_PATH} -e ${_lcov_file} "${CMAKE_SOURCE_DIR}/*" -o ${_lcov_file}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   # Generate HTML
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Generating HTML output..."
-    COMMAND genhtml -o ./coverage ./coverage/lcov.info
+    #COMMAND genhtml -o ${_work_dir}/coverage ${_lcov_file} 
     #COMMAND x-www-browser ./coverage/index.html &
-    WORKING_DIRECTORY ${_work_dir})
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   add_dependencies(coverage ${_lcov_target})
 endmacro(generate_lcov _target)

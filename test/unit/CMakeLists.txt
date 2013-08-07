@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -24,7 +24,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set (WINTERMUTE_TEST_UNITS
   clean_start
   command_line
-  plugin_factory
+  #plugin_factory
   )
 
 ## Add each unit test to the test suite.
