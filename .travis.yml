@@ -27,7 +27,6 @@ after_success:
   - coveralls --exclude tests --exclude /usr/include --exclude test
 
 notifications:
-  email:
-    - me@jalcine.me
+  email: me@jalcine.me
   on_success: change
   on_failure: always
