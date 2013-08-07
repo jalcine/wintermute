@@ -24,8 +24,6 @@
 #include "logging.hpp"
 #include "factory.hpp"
 #include "version.hpp"
-#include "Procedure/Hosts/base.hpp"
-#include "Procedure/Agents/base.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
