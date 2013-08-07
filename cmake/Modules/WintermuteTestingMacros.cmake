@@ -41,4 +41,7 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
 
   # Add coverage support
   generate_lcov(unittest_${unittestname})
+
+  # Add valgrind support
+  generate_valgrind(unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)
