@@ -1,5 +1,0 @@
-/**
- * vim: setlocal ft=qt.cpp
- */
-
-#include "Wintermute/Procedure/Agents/base.hpp"

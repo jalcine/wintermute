@@ -1,6 +1,0 @@
-/**
- * vim: setlocal ft=qt.cpp tw=78
- */
-
-#include "Wintermute/Procedure/Agent/LocalSocket"
-#include "Wintermute/Procedure/Agent/ZeroMQ"
