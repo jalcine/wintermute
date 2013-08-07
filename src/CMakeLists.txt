@@ -29,54 +29,36 @@ set(WINTERMUTE_SOURCES
   Wintermute/application.cpp
   Wintermute/arguments.cpp
   Wintermute/logging.cpp
-  Wintermute/configuration.cpp
   Wintermute/plugin.cpp
   Wintermute/plugininterfaceable.cpp
   Wintermute/factory.cpp
   Wintermute/temporaryplugin.cpp
   Wintermute/version.cpp
-  Wintermute/Procedure/call.cpp
-  Wintermute/Procedure/Hosts/base.cpp
-  Wintermute/Procedure/Hosts/local.cpp
-  Wintermute/Procedure/Hosts/remote.cpp
   )
 
 set(WINTERMUTE_HEADERS 
-  ### Pretty headers
+  ## Pretty headers
   Wintermute/Application
   Wintermute/Arguments
-  Wintermute/Configuration
   Wintermute/Globals
   Wintermute/Logging
   Wintermute/Plugin
   Wintermute/PluginInterfaceable
   Wintermute/Version
-  Wintermute/Procedure/Call
-  Wintermute/Procedure/Host
-  Wintermute/Procedure/Hosts/Base
-  Wintermute/Procedure/Hosts/Local
-  Wintermute/Procedure/Hosts/Remote
 
-  ### Native headers
+  ## Native headers
   Wintermute/application.hpp
   Wintermute/arguments.hpp
   Wintermute/logging.hpp
-  Wintermute/plugin.hpp
   Wintermute/version.hpp
   Wintermute/factory.hpp
-  Wintermute/configuration.hpp
+  Wintermute/plugin.hpp
   Wintermute/plugininterfaceable.hpp
-  Wintermute/Procedure/call.hpp
-  Wintermute/Procedure/Hosts/base.hpp
-  Wintermute/Procedure/Hosts/local.hpp
-  Wintermute/Procedure/Hosts/remote.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
 # Wrap up the sources.
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
-                    "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
-  )
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute")
 qt4_automoc(${WINTERMUTE_SOURCES})
 
 # Define the executable.
@@ -95,7 +77,7 @@ include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.
-configure_file(globals.hpp.in globals.hpp @ONLY)
+configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
 
 # Install the binary.
 install(TARGETS wintermute
