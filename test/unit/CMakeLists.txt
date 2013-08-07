@@ -24,6 +24,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set (WINTERMUTE_TEST_UNITS
   clean_start
   command_line
+  plugin_factory
   )
 
 ## Add each unit test to the test suite.

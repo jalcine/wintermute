@@ -18,13 +18,19 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+if(_wntr_deps)
+  return()
+else()
+  set(_wntr_deps TRUE)
+endif()
+
 include(FeatureSummary)
 
 ## Pass options to manipulate Wintermute's dependency.
 option(PROVIDE_GUI_SUPPORT      "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
 
 ## Define variables necessary for Qt discovery.
-set(WINTERMUTE_QT_VERSION "4.8.4")
+set(WINTERMUTE_QT_VERSION "4.7")
 
 ## {{{ Look for Qt, if not found already.
 
@@ -36,11 +42,21 @@ endif()
 
 ## }}}
 
-find_package(QCommandLine 0.4.0 MODULE REQUIRED)
+## {{{ Packages
+
+find_package(Log4Qt REQUIRED)
+find_package(QCommandLine REQUIRED)
+find_package(ZeroMQ REQUIRED)
+
+## }}}
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
-add_feature_info("Gui Support" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
+add_feature_info("GUI" QT_QTGUI_FOUND "Allows for the rendering of graphical elements.")
+add_feature_info("Command Line" QCOMMANDLINE_FOUND
+  "Allows Wintermute to parse the command line.")
+add_feature_info("Logging" Log4Qt_FOUND "Incorporates logging support.")
+add_feature_info("Message Queue" ZEROMQ_FOUND "Cross platform message queuing service.")
 
 ## }}}
 

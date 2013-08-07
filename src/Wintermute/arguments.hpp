@@ -22,9 +22,9 @@
 #ifndef WINTERMUTE_ARGUMENTS_HPP
 #define WINTERMUTE_ARGUMENTS_HPP
 
-#include <QObject>
-#include <QVariant>
-#include <QSharedPointer>
+#include <Wintermute/Globals>
+#include <QtCore/QVariantMap>
+#include <QCommandLine>
 
 namespace Wintermute {
   class ArgumentsPrivate;
@@ -41,6 +41,11 @@ namespace Wintermute {
     QScopedPointer<ArgumentsPrivate> d_ptr;
     static Arguments* self;
 
+    /**
+     * @ctor
+     * Handles the internal creation of the command-line argument management 
+     * system.
+     */
     explicit Arguments();
 
     public:
@@ -51,19 +56,29 @@ namespace Wintermute {
        *
        * TODO: Complete documentation.
        */
-
-      static inline Arguments* instance() { return self; }
+      static Arguments* instance();
 
       /** TODO: Complete documentation. */
       QVariant argument(const QString& argumentName) const;
+
       /** TODO: Complete documentation. */
       QVariantMap arguments() const;
 
-    private Q_SLOTS:
-      void switchFound(const QString& );
-      void paramFound(const QString&, const QVariant& );
-      void optionFound(const QString&, const QVariant& );
-      void parseError(const QString& );
+      /** TODO: Complete documentation. */
+      void addOption(const QChar& optionName, const QString& longOptionName, const QString& description, QCommandLine::Flags flag);
+
+      /** TODO: Complete documentation. */
+      void addSwitch(const QChar& switchName, const QString& longSwitchName, const QString& description, QCommandLine::Flags flag);
+
+      /** TODO: Complete documentation. */
+      void addParameter(const QString& parameterName, const QString& description, QCommandLine::Flags flag);
+      
+      //void add
+    private:
+      Q_SLOT void switchFound (const QString& switchName);
+      Q_SLOT void paramFound  (const QString& paramName,  const QVariant& paramValue);
+      Q_SLOT void optionFound (const QString& optionName, const QVariant& optionValue);
+      Q_SLOT void parseError  (const QString& argumentName);
   };
 }
 

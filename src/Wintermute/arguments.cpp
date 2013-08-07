@@ -15,33 +15,45 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public Licetalk aontalk aose
- * along with Wintermute.  If not, see <http://www.gnu.org/licetalk aonses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
 #include "arguments.hpp"
 #include "application.hpp"
+#include "logging.hpp"
 #include <QtCore/QVariantMap>
 #include <QCommandLine>
 
 using Wintermute::Arguments;
 using Wintermute::ArgumentsPrivate;
 
-class ArgumentsPrivate {
-  public:
-    QCommandLine* args;
-    QVariantMap arguments;
+namespace Wintermute {
+  class ArgumentsPrivate {
+    public:
+      QCommandLine* args;
+      QVariantMap arguments;
 
-    ArgumentsPrivate(QObject* parent) : args(new QCommandLine(parent)) {
-      // Define default arguments.
-      args->enableVersion(true);
-      args->enableHelp(true);
-    }
+      ArgumentsPrivate(QObject* parent) : args (new QCommandLine(parent)){
+        args->enableVersion(true);
+        args->enableHelp(true);
 
-    void
-    interpret(){
-    }
-};
+        addArguments();
+      };
+
+      /**
+       * @fn addArguments
+       *
+       * This private method handles the work of calling the necessary 
+       * methods to grab all of the valid arguments from the command line.
+       *
+       * TODO: Allow dynamic appending to list of default methods.
+       */
+      void addArguments() {
+        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Optional);
+      };
+  };
+}
 
 Arguments* Arguments::self = 0;
 
@@ -49,6 +61,8 @@ Arguments* Arguments::self = 0;
 Arguments::Arguments() : QObject(Application::instance()), d_ptr(new ArgumentsPrivate(this)) {
   Q_D(Arguments);
 
+  // Wipe the object, just to be safe.
+  // TODO: Determine if this is even necessary.
   d->arguments.clear();
 
   // Make this the object of concern.
@@ -64,9 +78,16 @@ Arguments::Arguments() : QObject(Application::instance()), d_ptr(new ArgumentsPr
   connect(d->args,SIGNAL(parseError(const QString&)),
       this,SLOT(parseError(const QString&)));
 
-  // Read command line arguments and then work upon them.
+  // Read command line arguments.
   d->args->parse();
-  d->interpret();
+}
+
+Arguments*
+Arguments::instance(){
+  if (!self)
+    self = new Arguments;
+
+  return self;
 }
 
 QVariant
@@ -75,7 +96,7 @@ Arguments::argument(const QString& argumentName) const {
 
   if (d->arguments.contains(argumentName))
     return d->arguments.value(argumentName);
-  
+
   return QVariant();
 }
 
@@ -94,28 +115,47 @@ Arguments::switchFound(const QString& switchName){
 }
 
 void
-Arguments::paramFound(const QString&  parameterName,
-                      const QVariant& parameterValue){
+Arguments::paramFound(const QString&  parameterName, const QVariant& parameterValue){
   Q_D(Arguments);
   d->arguments.insert(parameterName,parameterValue);
 }
 
 void
-Arguments::optionFound(const QString&  optionName,
-                       const QVariant& optionValue){
+Arguments::optionFound(const QString&  optionName, const QVariant& optionValue){
   Q_D(Arguments);
   d->arguments.insert(optionName,optionValue);
 }
 
 void
 Arguments::parseError(const QString& error){
+  Wintermute::Logger* log = wlog(this);
   Q_D(Arguments);
+
+  log->error(QString("Malformed command-line arguments. (%1)").arg(error));
 
   d->args->showVersion();
   d->args->showHelp();
 }
 
+void
+Arguments::addOption(const QChar& optionName, const QString& longOptionName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addOption(optionName, longOptionName, description, flag);
+}
+
+void
+Arguments::addSwitch(const QChar& switchName, const QString& longSwitchName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addSwitch(switchName, longSwitchName, description, flag);
+}
+
+void
+Arguments::addParameter(const QString& parameterName, const QString& description, QCommandLine::Flags flag){
+  Q_D(Arguments);
+  d->args->addParam(parameterName, description, flag);
+}
+
 Arguments::~Arguments(){
 }
 
-#include "arguments.moc"
+#include "Wintermute/arguments.moc"

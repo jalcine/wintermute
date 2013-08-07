@@ -12,10 +12,14 @@ macro(wintermute_add_properties _target)
   )
   
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set_property(TARGET ${_target} APPEND PROPERTY COMPILE_FLAGS 
-      ${WINTERMUTE_COMPILE_FLAGS_DEBUG})
+    set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS 
+      "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
+    set(CMAKE_VERBOSE_MAKEFILE ON)
   elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set_property(TARGET ${_target} APPEND PROPERTY COMPILE_FLAGS
-      ${WINTERMUTE_COMPILE_FLAGS_RELEASE})
+    set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS
+      "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_RELEASE}")
   endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endmacro(wintermute_add_properties _target)
+
+## Include plug-in specific macros.
+include(WintermutePluginMacros)

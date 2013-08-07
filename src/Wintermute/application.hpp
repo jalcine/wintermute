@@ -19,20 +19,38 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#ifndef WINTERMUTE_APPLICATION_HPP
-#define WINTERMUTE_APPLICATION_HPP
+#ifndef WINTERMUTE_CORE_APPLICATION_HPP
+#define WINTERMUTE_CORE_APPLICATION_HPP
 
-#include <QObject>
-#include <QSharedPointer>
+#include <QtCore/QVariant>
+#include <Wintermute/Globals>
 
 namespace Wintermute {
+  class Version;
   class ApplicationPrivate;
+
+  /**
+   * @class Application
+   *
+   * The `Application` class in Wintermute serves as an object hierarchy
+   * anchor. It's the first object to be created and fights to the death to be
+   * the last one destroyed.
+   */
   class Application : public QObject {
-    Q_OBJECT
+    Q_OBJECT;
     Q_DECLARE_PRIVATE(Application);  
 
     QScopedPointer<ApplicationPrivate> d_ptr;
     static Application* self;
+
+    /**
+     * @fn Application
+     * @brief Private initialization of application.
+     * @constructor
+     *
+     * @param argc Argument count (native-value)
+     * @param argv Arguemnt array (native-value)
+     */
     Application(int &argc, char **argv);
 
     public:
@@ -59,8 +77,47 @@ namespace Wintermute {
        * be run a second time.
        */
       static int run( int& argc, char **argv );
+
+      /**
+       * @fn setting
+       * @brief Obtains a setting from Wintermute's local configuration.
+       *
+       * @note These options are global to the Wintermute application.
+       */
+      static QVariant setting(const QString& path, const QVariant defaultValue = QVariant());
+
+      /** @fn setSetting
+       * @brief Changes a value of the setting for Wintermute
+       *
+       * @note These options are global to the Wintermute application.
+       */
+      static void setSetting(const QString& path, const QVariant value);
+
+      /**
+       * @fn version
+       * @brief Obtains the current version of Wintermute.
+       */
+      Version version() const;
+
+      /**
+       * @fn start
+       * @brief
+       *
+       * Starts the initial processing required for execution in Wintermute
+       * and begins the event loop.
+       */
+      Q_SLOT void start();
+
+      /**
+       * @fn stop
+       * @brief
+       *
+       * Stops the started processes in `start()` and begins the clean up for
+       * the event loop.
+       */
+      Q_SLOT void stop();
   };
 
 }
 
-#endif /* WINTERMUTE_APPLICATION_HPP */
+#endif /* WINTERMUTE_CORE_APPLICATION_HPP */

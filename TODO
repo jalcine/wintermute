@@ -1,0 +1,14 @@
+# Quicktask v1.2
+
+CURRENT TASKS:
+  - Implement 'FindZeroMQ.cmake'
+    @ Added [Sun 2013-07-14]
+    - Search for `zmq.hpp`
+      @ Added [Tue 2013-07-16]
+    - Search for `libzmq`.
+      @ Added [Tue 2013-07-16]
+  - Move all Log4Qt logic into a vendor heading.
+    @ Added [Tue 2013-07-16]
+COMPLETED TASKS:
+
+# vim:ft=quicktask

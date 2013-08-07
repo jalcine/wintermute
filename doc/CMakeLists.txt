@@ -17,3 +17,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+option(GENERATE_DOCS "Enable the act of documentation." OFF)
+
+if (GENERATE_DOCS)
+  include(WintermuteDocumentation)
+
+  get_target_property(_sources wintermute SOURCES)
+
+  wintermute_generate_documentation(SOURCES ${_sources})
+endif(GENERATE_DOCS)

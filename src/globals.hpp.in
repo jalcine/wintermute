@@ -23,15 +23,27 @@
 #define WINTERMUTE_GLOBALS_HPP
 
 /// {{{ Headers
-/// Bring in Qt's globals, we like them.
+
+// Bring in Qt's globals, we like them.
 #include <QtCore/QtGlobal>
+
+// Good chance we'd need these headers.
+#include <QtCore/QObject>
+#include <QtCore/QScopedPointer>
+#include <QtCore/QSharedPointer>
 
 /// }}} Headers
 
 /// {{{ Constants
 
-#define WINTERMUTE_VERSION                @WINTERMUTE_VERSION_MAJOR@.@WINTERMUTE_VERSION_MINOR@
-#define WINTERMUTE_VERSION_EXACT          "@WINTERMUTE_VERSION_MAJOR@.@WINTERMUTE_VERSION_MINOR@-@WINTERMUTE_VERSION_PATCH@"
+#define WINTERMUTE_VERSION_MAJOR              @WINTERMUTE_VERSION_MAJOR@
+#define WINTERMUTE_VERSION_MINOR              @WINTERMUTE_VERSION_MINOR@
+#define WINTERMUTE_VERSION_PATCH              @WINTERMUTE_VERSION_PATCH@
+#define WINTERMUTE_VERSION_STAGE              @WINTERMUTE_VERSION_STAGE@
+#define WINTERMUTE_VERSION_STAGE_BRANCH       "@WINTERMUTE_VERSION_STAGE_BRANCH@"
+#define WINTERMUTE_VERSION_STAGE_REF          "@WINTERMUTE_VERSION_STAGE_REF@"
+#define WINTERMUTE_PLUGIN_LIBRARY_DIR         "@WINTERMUTE_PLUGIN_LIBRARY_DIR@"
+#define WINTERMUTE_PLUGIN_DEFINITION_DIR      "@WINTERMUTE_PLUGIN_DEFINITION_DIR@"
 
 /// }}} Constants
 

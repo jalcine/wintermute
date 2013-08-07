@@ -19,5 +19,4 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "arguments.hpp"
-
+#include <Wintermute/arguments.hpp>

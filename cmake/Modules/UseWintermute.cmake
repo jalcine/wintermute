@@ -19,6 +19,7 @@
 ###############################################################################
 
 ## Include necessary modules.
+include(CMakeProvideUninstallTarget)
 include(WintermuteDependencies)
 include(WintermuteVariables)
 include(WintermuteMacros)

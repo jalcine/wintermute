@@ -1,0 +1,36 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+
+branches:
+  only:
+    - develop
+    - testing
+
+env:
+  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq cmake qt4-dev-tools libqt4-dev libqt4-dbg
+  - sudo apt-get install -qq libzmq3-dev libzmq3-dbg
+  - sudo apt-get install -qq python-pip python
+  - sudo apt-get install -qq g++-4.6 lcov valgrind
+  - test/build_deps.sh
+
+before_script:
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
+  - make wintermute
+  - make unittest
+  - make coverage
+  - make memorycheck
+
+after_success:
+  - coveralls --exclude tests --exclude /usr/include --exclude test
+
+notifications:
+  email: me@jalcine.me
+  on_success: change
+  on_failure: always
