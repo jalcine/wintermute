@@ -18,7 +18,7 @@
 ###############################################################################
 
 ## Grab us some coverage stuff.
-find_program(GCOV_PATH gcov)
+find_program(GCOV_PATH gcov-4.6)
 find_program(LCOV_PATH lcov)
 find_program(VALGRIND_PATH valgrind)
 find_program(GENHTML_PATH genhtml)
