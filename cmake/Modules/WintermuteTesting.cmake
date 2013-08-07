@@ -20,6 +20,7 @@
 ## Grab us some coverage stuff.
 find_program(GCOV_PATH gcov)
 find_program(LCOV_PATH lcov)
+find_program(VALGRIND_PATH valgrind)
 find_program(GENHTML_PATH genhtml)
 find_package(Ruby)
 
@@ -31,6 +32,7 @@ endif(NOT GCOV_PATH)
 add_custom_target(test ALL
   COMMAND ${RUBY_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/Scripts/tests.rb
   COMMENT "Executing test suite...")
+
 add_custom_target(unittest ALL
   COMMENT "Running unit tests...")
 

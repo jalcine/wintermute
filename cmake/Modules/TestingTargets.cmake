@@ -24,12 +24,14 @@
 ## Parts of this logic was borrowed by
 ## https://github.com/gergap/helloworld/blob/master/src/cmake/lcov.cmake
 
+# Tell gcov to drop files at a specific location.
 set(ENV{GCOV_PATH} ${CMAKE_BINARY_DIR}/coverage)
+
 add_custom_target(coverage)
 
 macro(generate_lcov _target)
   set(_lcov_target "lcov_${_target}")
-  set(_work_dir ${CMAKE_BINARY_DIR})
+  set(_work_dir ${CMAKE_BINARY_DIR}/test/unit/CMakeFiles/${_target}.dir)
 
   # Define the target's coverage target.
   add_custom_target(${_lcov_target}
@@ -42,10 +44,10 @@ macro(generate_lcov _target)
     WORKING_DIRECTORY ${_work_dir})
 
   # Reset execution counts to 0.
-  add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Prepping coverage collection..."
-    COMMAND lcov --directory . --zerocounters -t ${_target}
-    WORKING_DIRECTORY ${_work_dir})
+#  add_custom_command(TARGET ${_lcov_target}
+    #COMMENT "Prepping coverage collection..."
+    #COMMAND lcov --directory . --zerocounters -t ${_target} --gcov-tool ${GCOV_PATH}
+    #WORKING_DIRECTORY ${_work_dir})
 
   # Execute target.
   add_custom_command(TARGET ${_lcov_target}
@@ -56,14 +58,15 @@ macro(generate_lcov _target)
   # Collect coverage information.
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Capturing coverage data..."
-    COMMAND lcov --directory . --capture --output-file ./coverage/lcov.info
+    COMMAND gcov-4.6 -d -a -n --object-directory . *.gcda
+    #COMMAND lcov --directory . --capture --output-file ./coverage/lcov.info --gcov-tool ${GCOV_PATH}
     WORKING_DIRECTORY ${_work_dir})
 
   # Generate HTML
-  add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Generating HTML output..."
-    COMMAND genhtml -o ./coverage ./coverage/lcov.info
-    WORKING_DIRECTORY ${_work_dir})
+  #add_custom_command(TARGET ${_lcov_target}
+    #COMMENT "Generating HTML output..."
+    #COMMAND genhtml -o ./coverage ./coverage/lcov.info
+    #WORKING_DIRECTORY ${_work_dir})
 
   add_dependencies(coverage ${_lcov_target})
 endmacro(generate_lcov _target)
