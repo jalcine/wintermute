@@ -96,17 +96,57 @@ namespace Wintermute {
 
     /**
      * @fn name
+     * Obtains the friendly name of the plugin.
      */
     QString name() const;
+
+    /**
+     * @fn version
+     * Obtains the versioning object for the plugin.
+     */
     Version version() const;
+
+    /**
+     * @fn systemVersion
+     * Obtians the minimum running version of Wintermute required for plugin.
+     */
     Version systemVersion() const;
+
+    /**
+     * @fn state 
+     * Obtains the current state of the plugin.
+     */
     State state() const;
 
+    /**
+     * @fn type
+     * Obtains the type of plugin.
+     */
+    Type type() const;
+
+    /**
+     * @fn loaded
+     * Emitted when the plugin is loaded.
+     */
     Q_SIGNAL void loaded();
+
+    /**
+     * @fn unloaded
+     * Emitted when the plugin is unloaded.
+     */
     Q_SIGNAL void unloaded();
 
-    Q_SLOT bool unload();
+    /**
+     * @fn load
+     * Enacts the work of loading this plugin into the factory.
+     */
     Q_SLOT bool load();
+
+    /**
+     * @fn unload
+     * Enacts the work of unloading this plugin from the factory.
+     */
+    Q_SLOT bool unload();
 
     friend class Factory;
     friend class FactoryPrivate;
