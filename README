@@ -2,7 +2,7 @@
 
 Wintermute is an extensible application that aims to become the foundation of 
 an **artificial intelligence framework**. The application is written in C++ at 
-its core but hopes are made to extend the platform to work with **Ruby **, 
+its core but hopes are made to extend the platform to work with **Ruby**, 
 **Python**, **JavaScript**, **Java**, **Scala**, **Lua**, **Haskell** and
 **Go** (not in that exact order!)
 
