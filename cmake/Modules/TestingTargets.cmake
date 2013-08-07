@@ -64,7 +64,7 @@ macro(generate_lcov _target)
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Generating HTML output..."
     COMMAND genhtml -o ./coverage ./coverage/lcov.info
-    COMMAND x-www-browser ./coverage/index.html &
+    #COMMAND x-www-browser ./coverage/index.html &
     WORKING_DIRECTORY ${_work_dir})
 
   add_dependencies(coverage ${_lcov_target})
