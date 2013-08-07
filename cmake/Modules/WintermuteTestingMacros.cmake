@@ -18,14 +18,7 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(CTest)
-include(Dart)
 include(WintermuteMacros)
-
-set(WINTERMUTE_TEST_LIST_FILE "${CMAKE_BINARY_DIR}/DartTestfile.txt")
-if (EXISTS ${WINTERMUTE_TEST_LIST_FILE})
-  file(REMOVE ${WINTERMUTE_TEST_LIST_FILE})
-endif(EXISTS ${WINTERMUTE_TEST_LIST_FILE})
 
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
@@ -37,35 +30,18 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 
-  # Add it to the test file.
-  add_test(unittest_${unittestname}  "${CMAKE_BINARY_DIR}/test/unit/unittest_${unittestname}")
-  
-# Append it to the file.
-  file(APPEND ${WINTERMUTE_TEST_LIST_FILE} ${_command})
-
   # Configure dependencies.
   add_dependencies(unittest unittest_${unittestname})
+
+  # Tweak commands for unit testing.
+  add_custom_command(TARGET unittest POST_BUILD
+    COMMAND "unittest_${unittestname}"
+    COMMENT "Executing unit test '${unittestname}'..."
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
+
+  # Add coverage support
+  generate_lcov(unittest_${unittestname})
+
+  # Add valgrind support
+  generate_valgrind(unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)
-
-macro(wintermute_add_coverage _target)
-  ADD_CUSTOM_TARGET(${_target}_unit_coverage
-    # Cleanup lcov
-    COMMAND ${LCOV_PATH} --zerocounters --directory src/CMakeFiles/${_target}.dir
-
-    # Capture test data.
-    COMMAND ${LCOV_PATH} --capture --output-file lcov.capture.log --directory src/CMakeFiles/${_target}.dir
-
-    # Run tests
-    COMMAND make unittest -C ${CMAKE_BINARY_DIR}
-
-    # Capturing lcov counters and generating report
-    COMMAND ${LCOV_PATH} --directory src/CMakeFiles/${_target}.dir --capture --output-file lcov.capture.log
-    COMMAND ${GENHTML_PATH} -o wintermute wintermute.info.cleaned
-    COMMAND ${CMAKE_COMMAND} -E remove wintermute.info wintermute.info.cleaned
-
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
-    )
-
-  add_dependencies(${_target}_unit_coverage unittest)
-endmacro(wintermute_add_coverage _target)

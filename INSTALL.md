@@ -12,11 +12,12 @@ provided by contributors of other platforms.
 > Work is being done to refactor out the logic originally used for D-Bus and
 > to use [ZeroMQ](http://zeromq.org) instead for cross-platform support.
 
-  * CMake 2.8
-  * Qt 4.7 or greater - http://qt-project.org
-  * QCommandLine - https://github.com/jalcine/qcommandline
-  * QLogger - https://gitorious.org/log4qt/log4qt
-  * C++ bindings to ZeroMQ - http://www.zeromq.org/bindings:cpp
+* CMake 2.8
+* Qt 4.7 or greater - http://qt-project.org
+* QCommandLine - https://github.com/jalcine/qcommandline
+* QLogger - https://gitorious.org/log4qt/log4qt
+* C++ bindings to ZeroMQ - http://www.zeromq.org/bindings:cpp
+* Ruby - for running tests
 
 Once you've satisfied those dependencies, building is a breeze. Seriously.
 
@@ -27,13 +28,11 @@ $ mkdir build && cd build              # Create and enter build directory.
 $ cmake .. -DCMAKE_BUILD_TYPE=Debug    # Configure Wintermute for debugging.
 $ make                                 # Build Wintermute.
 $ make test                            # (optional) Test Wintermute.
-$ make install                         # Install Wintermute if 
-                                       # CMAKE_INSTALL_PREFIX is user writable. 
+$ make install                         # Install Wintermute if `CMAKE_INSTALL_PREFIX` is user writable. 
 # make install                         # Install Wintermute system-wide.
 ```
 
 Once you've satisfied those dependencies, building is a breeze. Seriously.
-
 The instructions above install Wintermute to a local binary directory (my personal setup)
 and can be executed like so:
 
