@@ -66,6 +66,11 @@ Plugin::state() const {
   return Undefined;
 }
 
+Plugin::Type
+Plugin::type() const {
+  return Module;
+}
+
 QUuid
 Plugin::id() const {
   Q_D(const Plugin);
