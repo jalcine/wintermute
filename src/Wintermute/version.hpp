@@ -15,7 +15,6 @@ namespace Wintermute {
       Beta,
       ReleaseCandidate,
       FinalRelease
-
     };
 
     ushort major;
