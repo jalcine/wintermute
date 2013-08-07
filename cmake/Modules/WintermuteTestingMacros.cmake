@@ -18,14 +18,7 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-include(CTest)
-include(Dart)
 include(WintermuteMacros)
-
-set(WINTERMUTE_TEST_LIST_FILE "${CMAKE_BINARY_DIR}/DartTestfile.txt")
-if (EXISTS ${WINTERMUTE_TEST_LIST_FILE})
-  file(REMOVE ${WINTERMUTE_TEST_LIST_FILE})
-endif(EXISTS ${WINTERMUTE_TEST_LIST_FILE})
 
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
@@ -36,12 +29,6 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   add_executable(unittest_${unittestname} ${unittest_${unittestname}_SRCS})
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
-
-  # Add it to the test file.
-  add_test(unittest_${unittestname}  "${CMAKE_BINARY_DIR}/test/unit/unittest_${unittestname}")
-  
-# Append it to the file.
-  file(APPEND ${WINTERMUTE_TEST_LIST_FILE} ${_command})
 
   # Configure dependencies.
   add_dependencies(unittest unittest_${unittestname})
