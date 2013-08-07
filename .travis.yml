@@ -23,7 +23,8 @@ before_script:
   - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
   - make wintermute
   - make unittest
-  - make Experimental
+  - make coverage
+  - make memoryleak
 
 after_success:
   - coveralls --exclude tests --exclude /usr/include --exclude test
