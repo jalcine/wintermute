@@ -25,6 +25,7 @@ before_script:
   - make wintermute
   - make unittest
   - make coverage
+  - make memorycheck
 
 after_success:
   - coveralls --exclude tests --exclude /usr/include --exclude test
