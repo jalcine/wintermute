@@ -24,6 +24,10 @@
 ## Parts of this logic was borrowed by
 ## https://github.com/gergap/helloworld/blob/master/src/cmake/${LCOV_PATH}.cmake
 add_custom_target(coverage)
+add_custom_target(memorycheck)
+
+add_dependencies(coverage test)
+add_dependencies(memorycheck test)
 
 macro(generate_lcov _target)
   set(_lcov_target lcov_${_target})
@@ -69,3 +73,15 @@ macro(generate_lcov _target)
 
   add_dependencies(coverage ${_lcov_target})
 endmacro(generate_lcov _target)
+
+macro(generate_valgrind _target)
+  set(_valgrind_target "valgrind_${_target}")
+
+  add_custom_target(${_valgrind_target}
+    DEPENDS ${_target})
+
+  add_custom_command(TARGET ${_valgrind_target}
+    COMMENT "Checking memory..."
+    COMMAND ${VALGRIND_PATH} --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes "${_target}"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/unit)
+endmacro(generate_valgrind _target)
