@@ -7,41 +7,8 @@ its core.
 
 ## Installing
 
-Installing? **Easy**. We use [CMake](http://cmake.org); we gotcha.
-
-### Requirements
-Wintermute requires a few dependencies at this version. Right now, the only
-targeted platform is `Linux` due to its heavy dependency on D-Bus but work 
-provided by contributors of other platforms.
-
-> Work is being done to refactor out the logic originally used for D-Bus and
-> to use [ZeroMQ](http://zeromq.org) instead for cross-platform support.
-
-  * CMake 2.8
-  * Qt 4.7 or greater - http://qt-project.org
-  * QCommandLine - https://github.com/jalcine/qcommandline
-  * QLogger - https://gitorious.org/log4qt/log4qt
-  * C++ bindings to ZeroMQ - http://www.zeromq.org/bindings:cpp
-
-Once you've satisfied those dependencies, building is a breeze. Seriously.
-
-```bash
-$ git clone git://github.com/jalcine/wintermute wintermute
-$ cd wintermute; mkdir build; cd build
-$ cmake .. -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_BUILD_TYPE=Debug
-$ make
-$ make unittest
-$ make test Experimental
-$ make install
-```
-
-The instructions above install Wintermute to a local binary directory (my personal setup)
-and can be executed like so:
-
-```bash
-$ ~/.local/bin/wintermute
-$ wintermute # If ~/.local/bin is in your $PATH
-```
+Installing? **Easy**. We use [CMake](http://cmake.org); we gotcha. But read
+INSTALL.md for more information.
 
 ## Tested Operating Systems
 So far, Wintermute has only been built and tested on **[Kubuntu](http://www.kubuntu.com)** running 
@@ -58,7 +25,8 @@ those who prefer that utility.
 ## Support
 
 I (the project maintainer, Jacky Alcine) do my best to answer any and all questions pertaining to Wintermute. You can e-mail me at
-me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers.
+me@jalcine.me or find me on IRC on Freenode, OFTC or the Perl servers with the
+nick `jalcine` or `Jacky`.
 
 ## Licensing
 
