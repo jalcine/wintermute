@@ -1,9 +1,8 @@
 /**
  *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
- *
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,18 +42,14 @@ namespace Wintermute {
    * through the Factory class.
    */
   class Plugin : public QObject {
-    // {{{ QObject-ified.
     Q_OBJECT;
     Q_ENUMS(State);
     Q_PROPERTY(QString Name          READ name);
     Q_PROPERTY(Version Version       READ version);
     Q_PROPERTY(Version SystemVersion READ systemVersion);
     Q_PROPERTY(State   State         READ state);
-    // }}} QObject-ified.
 
-    // {{{ Private data.
     QScopedPointer<PluginPrivate> d_ptr;
-    // }}} Private data.
 
     protected:
     Q_DECLARE_PRIVATE(Plugin);
@@ -76,6 +71,15 @@ namespace Wintermute {
       Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
       Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
       Crashed   = 0x5   // The plugin has encountered an undefined error.
+    };
+
+    /**
+     * Defines the kind of plugin that this is.
+     */
+    enum Type {
+      Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
+      Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
+      Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
     };
 
     /**
