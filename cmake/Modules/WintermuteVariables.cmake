@@ -37,10 +37,10 @@ set(WINTERMUTE_COMPILE_DEFINITIONS           WINTERMUTE)
 set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG     WINTERMUTE_DEBUG)
 set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE   WINTERMUTE_RELEASE)
 
-set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall ${ZEROMQ_CFLAGS}")
+set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall ${ZEROMQ_CFLAGS} -v")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-O4")
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -W -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-set(WINTERMUTE_LINK_FLAGS            "${ZEROMQ_LDFLAGS}")
+set(WINTERMUTE_LINK_FLAGS            "${ZEROMQ_LDFLAGS} -v")
 set(WINTERMUTE_LINK_FLAGS_DEBUG      "-fprofile-arcs -ftest-coverage")
 set(WINTERMUTE_LINK_FLAGS_RELEASE    "")
 
