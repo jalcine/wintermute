@@ -21,7 +21,7 @@
 
 #include "logging.hpp"
 #include "application.hpp"
-#include <TTCCLayout>
+#include <SimpleTimeLayout>
 #include <ColorConsoleAppender>
 #include <LogManager>
 
@@ -32,13 +32,13 @@ using Wintermute::Logger;
 namespace Wintermute {
   class LoggingPrivate {
     public:
-      Log4Qt::TTCCLayout* primaryLayout;
+      Log4Qt::Layout* primaryLayout;
       Log4Qt::ColorConsoleAppender* stdOutAppender;
       Log4Qt::ColorConsoleAppender* stdErrAppender;
 
       LoggingPrivate() : primaryLayout(0), stdOutAppender(0), stdErrAppender(0) {
         Log4Qt::LogManager::startup();
-        primaryLayout  = new Log4Qt::TTCCLayout();
+        primaryLayout  = new Log4Qt::SimpleTimeLayout();
         stdOutAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET);
         stdErrAppender = new Log4Qt::ColorConsoleAppender(primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET);
 

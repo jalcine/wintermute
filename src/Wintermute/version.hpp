@@ -18,11 +18,11 @@ namespace Wintermute {
 
     };
 
-    ushort major           = 0;
-    ushort minor           = 0;
-    ushort patch           = 0;
-    QString stage          = 0;
-    DevelopmentStage state = Nightly;
+    ushort major;
+    ushort minor;
+    ushort patch;
+    QString stage;
+    DevelopmentStage state;
 
     static Version Any;
 
