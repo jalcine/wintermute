@@ -20,9 +20,6 @@
 # Include the test suite.
 include(WintermuteTesting)
 
-# Build Dart configuration.
-configure_file("DartConfiguration.tcl.in" "${CMAKE_BINARY_DIR}/test/DartConfiguration.tcl" @ONLY)
-
 ## Include the extra code.
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
                     "${CMAKE_CURRENT_BINARY_DIR}/include")
@@ -30,5 +27,3 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
 ## Add in subdirectories for testing.
 add_subdirectory(include)
 add_subdirectory(unit)
-
-## Add some coverage.
