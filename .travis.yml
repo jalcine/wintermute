@@ -8,18 +8,17 @@ branches:
     - develop
     - testing
 
+env:
+  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
+
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq cmake qt4-dev-tools libqt4-dev libzmq3-dev libzmq3-dbg libqt4-dbg python-pip python
-  - sudo pip install cpp-coveralls --use-mirrors
   - test/build_deps.sh
 
 before_script:
-  - mkdir build
-  - cd build
-  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
-
-script:
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/
   - make wintermute
   - make unittest
   - make Experimental
