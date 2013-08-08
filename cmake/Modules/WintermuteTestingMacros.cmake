@@ -34,10 +34,10 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   add_dependencies(unittest unittest_${unittestname})
 
   # Tweak commands for unit testing.
-  add_custom_command(TARGET unittest POST_BUILD
+  add_custom_command(TARGET unittest
     COMMAND "unittest_${unittestname}"
     COMMENT "Executing unit test '${unittestname}'..."
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/unit)
 
   # Add coverage support
   generate_lcov(unittest_${unittestname})

@@ -29,11 +29,11 @@ if (NOT GCOV_PATH)
 endif(NOT GCOV_PATH)
 
 ## Define the top-level targets for testing.
-add_custom_target(test ALL
+add_custom_target(test
   COMMAND ${RUBY_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/Scripts/tests.rb
   COMMENT "Executing test suite...")
 
-add_custom_target(unittest ALL
+add_custom_target(unittest
   COMMENT "Running unit tests...")
 
 if (PROJECT_LABEL EQUAL "Wintermute")
@@ -42,7 +42,6 @@ endif(PROJECT_LABEL EQUAL "Wintermute")
 
 ## Define some dependencies.
 add_dependencies(unittest test)
-add_dependencies(test wintermute)
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
@@ -53,9 +52,6 @@ set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
-
-## Make some directories
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
 
 ## Include macros
 include(TestingTargets)
