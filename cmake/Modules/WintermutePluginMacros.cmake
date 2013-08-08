@@ -100,9 +100,9 @@ endfunction(wintermute_plugin_target_declare)
 
 ## TODO: Document this method.
 ## TODO: Implement this method.
-function(wintermute_plugin_generate_documentation)
-  message(WARNING "[cmake] Documentation function not yet built.")
-endfunction(wintermute_plugin_generate_documentation)
+#function(wintermute_plugin_generate_documentation)
+  #message(WARNING "[cmake] Documentation function not yet built.")
+#endfunction(wintermute_plugin_generate_documentation)
 
 ##
 ## @fn wintermute_plugin_add_include_directories
