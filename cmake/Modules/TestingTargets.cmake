@@ -53,10 +53,13 @@ macro(generate_lcov _target)
     COMMAND ${LCOV_PATH} -q -f -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH} --no-checksum -d  .
   )
 
+  set(_regex "build\\/test\\/test/src\\/test")
+
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Cleaning up coverage data..."
+    COMMAND sed -i 's/${_regex}/g' ${_lcov_file}
     COMMAND ${LCOV_PATH} -e ${_lcov_file} \"${CMAKE_SOURCE_DIR}/*\" -o ${_lcov_file}
-    #COMMAND ${LCOV_PATH} -r ${_lcov_file} \"${CMAKE_BINARY_DIR}/*\" -o ${_lcov_file}
+    COMMAND ${LCOV_PATH} -r ${_lcov_file} \"${CMAKE_BINARY_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"*.moc\" -o ${_lcov_file}
   )
 
@@ -64,7 +67,7 @@ macro(generate_lcov _target)
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Generating HTML output..."
     COMMAND genhtml -o ./coverage ${_lcov_file}
-    #COMMAND x-www-browser ./coverage/index.html &
+    COMMAND command_exists x-www-browser && x-www-browser ./coverage/index.html &
     )
 
   add_dependencies(coverage ${_lcov_target})
