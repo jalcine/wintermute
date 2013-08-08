@@ -40,7 +40,7 @@ macro(generate_lcov _target)
     COMMENT "Making coverage directory for ${_target}.."
     COMMAND mkdir -p coverage
     )
-  
+
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Prepping coverage collection..."
     COMMAND ${LCOV_PATH} -d . -z -t \"${PROJECT_LABEL} - ${_target}\"
@@ -51,11 +51,18 @@ macro(generate_lcov _target)
     COMMAND ${_target} ${WINTERMUTE_TEST_ARGUMENTS}
     )
 
+  get_target_property(_sources ${_lcov_target} SOURCES)
+  foreach(_source ${_sources})
+    add_custom_command(TARGET ${_lcov_target}
+      COMMENT "Handling native coverage data (gcov) for source ${_source} ..."
+      COMMAND ${GCOV_PATH} ${_source} -o $<TARGET_FILE_DIR:${_target}>/CMakeFiles/$<TARGET_FILE_NAME:${_target}>.dir/*.o
+    )
+  endforeach(_source ${_sources})
+
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Analyzing coverage collection data (lcov)..."
-    #COMMAND sed -s -u -i 's/${_gcov_regex}/g' `find ${CMAKE_BINARY_DIR} | grep gc`
     COMMAND ${LCOV_PATH} -f -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH} --no-checksum -d  .
-    COMMAND sed -s -u -i 's/${_gcov_regex}/g' ${_lcov_file}
+    COMMAND sed -s -u -i 's/${_gcov_regex}/g' ${_lcov_file} `find . | grep *.gcov`
     COMMAND sed -s -u -i 's/${_regex}/g' ${_lcov_file}
     )
 
