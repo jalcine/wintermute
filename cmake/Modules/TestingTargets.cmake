@@ -31,42 +31,44 @@ add_dependencies(memorycheck test)
 
 macro(generate_lcov _target)
   set(_lcov_target ${_target})
-  set(_lcov_file ./coverage/lcov.info)
+  set(_lcov_file coverage/lcov.info)
+  set(_regex "build\\/test\\/test/test")
+  string(REPLACE "/" "\\/" _fixed_src_dir ${CMAKE_SOURCE_DIR})
+  set(_gcov_regex "..\\/..\\/../${_fixed_src_dir}")
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Making coverage directory in ${_work_dir}.."
+    COMMENT "Making coverage directory for ${_target}.."
     COMMAND mkdir -p coverage
-  )
-
+    )
+  
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Prepping coverage collection..."
-    COMMAND ${LCOV_PATH} -q -d . -z -t \"${PROJECT_LABEL} - ${_target}\"
-  )
+    COMMAND ${LCOV_PATH} -d . -z -t \"${PROJECT_LABEL} - ${_target}\"
+    )
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Executing test..."
     COMMAND ${_target} ${WINTERMUTE_TEST_ARGUMENTS}
-  )
+    )
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Analyzing coverage collection data (lcov)..."
-    COMMAND ${LCOV_PATH} -q -f -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH} --no-checksum -d  .
-  )
-
-  set(_regex "build\\/test\\/test/src\\/test")
+    #COMMAND sed -s -u -i 's/${_gcov_regex}/g' `find ${CMAKE_BINARY_DIR} | grep gc`
+    COMMAND ${LCOV_PATH} -f -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH} --no-checksum -d  .
+    COMMAND sed -s -u -i 's/${_gcov_regex}/g' ${_lcov_file}
+    COMMAND sed -s -u -i 's/${_regex}/g' ${_lcov_file}
+    )
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Cleaning up coverage data..."
-    COMMAND sed -i 's/${_regex}/g' ${_lcov_file}
     COMMAND ${LCOV_PATH} -e ${_lcov_file} \"${CMAKE_SOURCE_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"${CMAKE_BINARY_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"*.moc\" -o ${_lcov_file}
-  )
+    )
 
-  # Generate HTML
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Generating HTML output..."
-    COMMAND genhtml -o ./coverage ${_lcov_file}
+    COMMAND genhtml -o ./coverage ${_lcov_file} --prefix ${CMAKE_SOURCE_DIR}
     COMMAND command_exists x-www-browser && x-www-browser ./coverage/index.html &
     )
 
