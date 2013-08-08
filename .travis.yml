@@ -30,7 +30,7 @@ script:
   - make memorycheck
 
 after_success:
-  - coveralls --exclude tests --exclude /usr/include --exclude test
+  - coveralls --gcov `which gcov-4.6` -r . -e .
 
 notifications:
   email: me@jalcine.me
