@@ -1,0 +1,5 @@
+/**
+ * vim: ft=cpp
+ */
+
+#include "Wintermute/Procedure/call.hpp"
