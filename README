@@ -22,6 +22,14 @@ Please build, test and upload your results for comparsion!
  - Build and test Wintermute on a foreign, untested system!
  - Spread the word and do your part to make Wintermute an awesome app!
 
+I *strongly* recommend using tools like
+[`git-flow`](https://github.com/nvie/gitflow) and
+[`git-hooks`](https://github.com/icefox/git-hooks) to accelerate your
+development process.
+
+Also, if you're adding a new feature, try writing a test
+for it first!
+
 ## Support
 
 I (the project maintainer, Jacky Alcine) do my best to answer any and all 
