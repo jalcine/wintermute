@@ -46,7 +46,6 @@ endif()
 
 find_package(Log4Qt REQUIRED)
 find_package(QCommandLine REQUIRED)
-find_package(ZeroMQ REQUIRED)
 
 ## }}}
 
