@@ -63,7 +63,9 @@ Logging::Logging() : QObject(Application::instance()), d_ptr(new LoggingPrivate)
 
 Logger*
 Logging::obtainLogger(const QString& loggerName){
-  return Log4Qt::Logger::logger(loggerName);
+  Logger* log = Log4Qt::Logger::logger(loggerName);
+  log->setParent(Wintermute::Application::instance());
+  return log;
 }
 
 Logger*
