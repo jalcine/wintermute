@@ -53,7 +53,7 @@ CommandLineUnitTest::showInvalidArgument() {
   QVERIFY(process->waitForFinished());
 
   // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardOutput();
+  QByteArray output = process->readAllStandardError();
   QCOMPARE(!output.isEmpty(), true);
   QCOMPARE(!output.isNull(), true);
 }
