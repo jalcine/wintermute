@@ -8,18 +8,17 @@
 using Wintermute::Testing::spawnProcess;
 
 void
-TestCommandLine::cleanup(){
+CommandLineUnitTest::cleanup(){
   if (process->state() != QProcess::NotRunning){
-    process->waitForFinished();
+    process->close();
   }
 
   process->deleteLater();
 }
 
 void
-TestCommandLine::showHelp() {
+CommandLineUnitTest::showHelp() {
   process = spawnProcess(QStringList() << "--help");
-  QSKIP("Oh well", SkipAll);
 
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
@@ -32,10 +31,9 @@ TestCommandLine::showHelp() {
 }
 
 void
-TestCommandLine::showVersion() {
+CommandLineUnitTest::showVersion() {
   process = Wintermute::Testing::spawnProcess(QStringList() << "--version");
 
-  QSKIP("Oh well", SkipAll);
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
   QVERIFY(process->waitForFinished());
@@ -44,13 +42,11 @@ TestCommandLine::showVersion() {
   QByteArray output = process->readAllStandardError();
   QCOMPARE(!output.isEmpty(), true);
   QCOMPARE(!output.isNull(),  true);
-
 }
 
 void
-TestCommandLine::showInvalidArgument() {
+CommandLineUnitTest::showInvalidArgument() {
   process = spawnProcess(QStringList() << "--january");
-  QSKIP("Oh well", SkipAll);
 
   // Check if the apps runs.
   QVERIFY(process->waitForStarted());
@@ -60,9 +56,8 @@ TestCommandLine::showInvalidArgument() {
   QByteArray output = process->readAllStandardOutput();
   QCOMPARE(!output.isEmpty(), true);
   QCOMPARE(!output.isNull(), true);
-  QVERIFY(output.contains("Malformed"));
 }
 
-QTEST_MAIN(TestCommandLine)
+QTEST_MAIN(CommandLineUnitTest)
 
 #include "command_line.moc"
