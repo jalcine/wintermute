@@ -16,7 +16,11 @@ set wildignore+=build/*
 set tags+=.git/tags
 
 " Update Syntastic.
-let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src/Wintermute", "$PWD/src" ]
+let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute" ]
 
 " By default, assume Qt.
-au BufEnter cpp set ft=qt.cpp
+au FileReadPost *.cpp* set ft=qt.cpp
+au FileReadPost *.hpp* set ft=qt.cpp
+au FileReadPost * set tags+=$PWD/.git/tags
+
+" Load tags whenver we 
