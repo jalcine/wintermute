@@ -5,7 +5,7 @@
 
 class QProcess;
 
-class TestCommandLine : public QObject {
+class CommandLineUnitTest : public QObject {
   Q_OBJECT;
 
   private:
