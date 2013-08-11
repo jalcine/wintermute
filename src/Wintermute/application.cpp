@@ -74,8 +74,8 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
   // Define the application in Qt.
   d->app->setApplicationName("Wintermute");
   d->app->setApplicationVersion(this->version().toString());
-  d->app->setOrganizationName("Synthetic Intellect Institute");
-  d->app->setOrganizationDomain("thesii.org");
+  d->app->setOrganizationName("Jacky Alcine");
+  d->app->setOrganizationDomain("jalcine.me");
 
   // Grab our settings.
   d->settings = new QSettings;
