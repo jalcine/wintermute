@@ -103,14 +103,12 @@ Arguments::argument(const QString& argumentName) const {
 QVariantMap
 Arguments::arguments() const {
   Q_D(const Arguments);
-
   return d->arguments;
 }
 
 void
 Arguments::switchFound(const QString& switchName){
   Q_D(Arguments);
-
   d->arguments.insert(switchName, true);
 }
 
@@ -129,12 +127,8 @@ Arguments::optionFound(const QString&  optionName, const QVariant& optionValue){
 void
 Arguments::parseError(const QString& error){
   Wintermute::Logger* log = wlog(this);
-  Q_D(Arguments);
-
-  log->error(QString("Malformed command-line arguments. (%1)").arg(error));
-
-  d->args->showVersion();
-  d->args->showHelp();
+  log->error(QString("Unrecognized command-line arguments. (%1)").arg(error));
+  wApp->stop();
 }
 
 void
