@@ -108,22 +108,18 @@ Application::run(int &argc, char **argv){
 
 void
 Application::start(){
-  //Q_D(Application);
   Logger* log = wlog(this);
-  log->info("Starting.");
-
-  // Privately start the Factory.
+  log->info("Starting...");
   Factory::instance()->start();
-
   log->info("Started.");
 }
 
 void
 Application::stop(){
-  //Q_D(Application);
-
-  // Privately clean up the Factory.
+  Logger* log = wlog(this);
   Factory::instance()->stop();
+  log->info("Qutting application...");
+  QCoreApplication::quit();
 }
 
 Version
@@ -142,7 +138,6 @@ Application::version() const {
 Application::setting(const QString& path, const QVariant defaultValue)
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-
   if (d->settings->contains(path))
     return d->settings->value(path);
   else
@@ -159,6 +154,7 @@ Application::setSetting(const QString& path, const QVariant value)
 }
 
 Application::~Application(){
+  this->stop();
   this->deleteLater();
 }
 
