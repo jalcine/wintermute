@@ -19,8 +19,7 @@ set tags+=.git/tags
 let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute" ]
 
 " By default, assume Qt.
-au FileReadPost *.cpp* set ft=qt.cpp
-au FileReadPost *.hpp* set ft=qt.cpp
-au FileReadPost * set tags+=$PWD/.git/tags
+autocmd FileReadPost *.(c|h)pp set ft=qt.cpp
+autocmd FileReadPost *.(c|h)pp set tags+=$PWD/.git/tags
 
-" Load tags whenver we 
+" Load tags whenever we open a C++ file.
