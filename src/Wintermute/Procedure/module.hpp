@@ -26,6 +26,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <Wintermute/Procedure/Call>
+#include <QtCore/QCoreApplication>
 
 namespace Wintermute {
   namespace Procedure {
@@ -34,6 +35,9 @@ namespace Wintermute {
       Q_OBJECT;
       Q_DISABLE_COPY(Module);
       Q_DECLARE_PRIVATE(Module);
+      Q_PROPERTY(QString Domain READ domain);
+      Q_PROPERTY(QString Package READ package);
+
       QScopedPointer<ModulePrivate> d_ptr;
 
       public:
@@ -41,30 +45,41 @@ namespace Wintermute {
       virtual ~Module();
 
       /**
-       * @fn qualifiedName
-       * Obtains a fully qualified name for this Module.
+       * @fn domain
+       * Obtains the domain name that this module lives under.
        */
-      virtual QString qualifiedName() const;
+      virtual QString domain() const = 0;
+
+      /**
+       * @fn domain
+       * Obtains the package name that identifies this module from other
+       * modules.
+       */
+      virtual QString package() const = 0;
+
+      virtual QString qualifiedName() const final {
+        return domain() + QString(".") + package() + QString("/") + QString::number(qApp->applicationPid());
+      }
 
       protected:
-      /**
-       * @fn invokeCall
-       * @param name
-       *
-       * Searches for and invokes a registered call and returns the result.
-       */
-      QVariant invokeCall(const QString& name);
+        /**
+         * @fn invokeCall
+         * @param name
+         *
+         * Searches for and invokes a registered call and returns the result.
+         */
+        QVariant invokeCall(const QString& name);
 
-      /**
-       * @fn mountCall
-       * @param callSig A lambda to be used on invocation.
-       * @param The name of the method to expose this as.
-       *
-       * Registers the provided lambda for invocation when this module is
-       * called to invoke the method by the provided name.
-       *
-       */
-      void mountCall(Call::Signature callSig, const QString& name);
+        /**
+         * @fn mountCall
+         * @param callSig A lambda to be used on invocation.
+         * @param The name of the method to expose this as.
+         *
+         * Registers the provided lambda for invocation when this module is
+         * called to invoke the method by the provided name.
+         *
+         */
+        void mountCall(Call::Signature callSig, const QString& name);
     };
   } /*  Procedure */
 } /*  Wintermute */
