@@ -36,10 +36,6 @@ ModulePrivate::~ModulePrivate() {
 Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
 }
 
-QString Module::qualifiedName() const {
-  return QString::null;
-}
-
 void Module::mountCall(Call::Signature callSig, const QString& name){
   Q_D(Module);
   d->knownMethods[name] = &callSig;
