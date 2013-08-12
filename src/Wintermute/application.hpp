@@ -139,7 +139,7 @@ namespace Wintermute {
      * Starts the initial processing required for execution in Wintermute
      * and begins the event loop.
      */
-    Q_SLOT void start();
+    void start();
 
     /**
      * @fn stop
@@ -148,7 +148,7 @@ namespace Wintermute {
      * Stops the started processes in `start()` and begins the clean up for
      * the event loop.
      */
-    Q_SLOT void stop();
+    void stop();
   };
 }
 
