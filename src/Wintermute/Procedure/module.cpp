@@ -1,3 +1,24 @@
+/**
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
+ *
+ * This file is part of Wintermute, the extensible AI platform.
+ *
+ *
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+**/
+
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
 
@@ -17,6 +38,13 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 
 QString Module::qualifiedName() const {
   return QString::null;
+}
+
+void Module::mountCall(Call::Signature callSig, const QString& name){
+  Q_D(Module);
+  d->knownMethods[name] = &callSig;
+  // TODO: Append to a map that holds all of its methods.
+  // TODO: Throw an exception if the call already exists?
 }
 
 Module::~Module() {
