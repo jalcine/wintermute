@@ -66,7 +66,8 @@ set(WINTERMUTE_HEADERS
   )
 
 # Wrap up the sources.
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute")
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure")
 qt4_automoc(${WINTERMUTE_SOURCES})
 
 # Define the executable.
