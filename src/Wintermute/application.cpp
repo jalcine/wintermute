@@ -92,8 +92,13 @@ Application::stop(){
 }
 
 QString
-Application::processName() {
-  return QString::null;
+Application::processName() const {
+  Q_D(const Application);
+
+  if (!d->module)
+    return QString::null;
+
+  return d->module->qualifiedName();
 }
 
 void
@@ -101,7 +106,7 @@ Application::setModule(Procedure::Module* module) {
   Q_D(Application);
 
   if (!d->module)
-    d->module = module;
+    d->module = QSharedPointer<Procedure::Module>(module);
   else {
     wlog(this)->info("You can't change the module after it's been set!");
   }
