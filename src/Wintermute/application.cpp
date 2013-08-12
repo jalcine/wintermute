@@ -122,6 +122,11 @@ Application::stop(){
   QCoreApplication::quit();
 }
 
+QString
+Application::processName() {
+  return QString::null;
+}
+
 Version
 Application::version() const {
   Version ver;
