@@ -111,8 +111,8 @@ namespace Wintermute {
      * the precision of finding specific processes. Process names are formed
      * from the formulated name of the 'root module'.
      *
-     * @see setRootModule()
-     * @see rootModule()
+     * @see setModule()
+     * @see module()
      */
     QString processName() const;
 
