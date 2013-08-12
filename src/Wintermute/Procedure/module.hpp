@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #ifndef WINTERMUTE_CORE_PROCEDURE_MODULE_HPP
 #define WINTERMUTE_CORE_PROCEDURE_MODULE_HPP
@@ -45,6 +45,15 @@ namespace Wintermute {
        * Obtains a fully qualified name for this Module.
        */
       virtual QString qualifiedName() const;
+
+      protected:
+      /**
+       * @fn invokeCall
+       * @param name
+       *
+       * Searches for and invokes a registered call and returns the result.
+       */
+      QVariant invokeCall(const QString& name);
 
       /**
        * @fn mountCall
