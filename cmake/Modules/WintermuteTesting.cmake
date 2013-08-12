@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -35,23 +35,20 @@ endif(NOT GCOV_PATH)
 ## Define the top-level targets for testing.
 add_custom_target(test
   COMMENT "Executing test suite..."
-  COMMAND "make unittest"
+  DEPENDS unittest
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
 
 add_custom_target(unittest
   COMMENT "Running unit tests..."
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-## Define some dependencies.
-add_dependencies(unittest test)
-add_dependencies(test wintermute)
-
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${QT_QTTEST_INCLUDE_DIR})
 set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
   ${WINTERMUTE_LIBRARIES})
-set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
+set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-random"  "-nocrashhandler"
+  "-tickcounter" "-vs" "-v2" "-vb" )
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})

@@ -33,37 +33,51 @@ macro(generate_lcov _target)
   set(_lcov_target lcov_${_target})
   set(_work_dir ${CMAKE_BINARY_DIR}/test/unit/CMakeFiles/${_target}.dir)
   set(_lcov_file ${_work_dir}/coverage/lcov.info)
+  string(REPLACE "/" "\\/" CMAKE_SOURCE_DIR_REGEX_FRIENDLY ${CMAKE_SOURCE_DIR})
+  set(_lcov_file_regex "..\\/..\\/..\\//${CMAKE_SOURCE_DIR_REGEX_FRIENDLY}")
 
   # Define the target's coverage target.
   add_custom_target(${_lcov_target}
     DEPENDS ${_target})
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Making coverage directory in ${_work_dir}.."
-    COMMAND mkdir -p ${_work_dir}/coverage
+    COMMENT "[lcov] Making coverage directory in ${_work_dir}.."
+    COMMAND cmake -E remove_directory ${_work_dir}/coverage
+    COMMAND cmake -E make_directory ${_work_dir}/coverage
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Prepping coverage collection..."
-    COMMAND ${LCOV_PATH} -q -d ${_work_dir} -z -t "${PROJECT_LABEL} - ${_target}"
+    COMMENT "[lcov] Cleaning up..."
+    COMMAND cmake -E remove -f ${_lcov_file}
+    COMMAND cmake -E remove -f `find . | grep -e gc(ov,da,no)`
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Executing test..."
-    COMMAND ${_target}
+    COMMENT "[lcov] Prepping coverage collection..."
+    COMMAND ${LCOV_PATH} -q -d ${_work_dir} -z
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Analyzing coverage collection data (lcov)..."
+    COMMENT "[test] Executing test..."
+    COMMAND ${_target} ${WINTERMUTE_TEST_ARGUMENTS}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  add_custom_command(TARGET ${_lcov_target}
+    COMMENT "[lcov] Analyzing coverage collection data (lcov)..."
     COMMAND ${LCOV_PATH} -q -f -d ${_work_dir} -b ${CMAKE_SOURCE_DIR} -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  add_custom_command(TARGET ${_lcov_target}
+    COMMENT "[lcov] Correcting paths in lcov data file.."
+    COMMAND sed -i 's/${_lcov_file_regex}/g' ${_lcov_file}
+    COMMAND cat ${_lcov_file}
     COMMAND ${LCOV_PATH} -e ${_lcov_file} "${CMAKE_SOURCE_DIR}/*" -o ${_lcov_file}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   # Generate HTML
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Generating HTML output..."
-    #COMMAND genhtml -o ${_work_dir}/coverage ${_lcov_file} 
-    #COMMAND x-www-browser ./coverage/index.html &
+    COMMENT "[report] Generating HTML output..."
+    COMMAND genhtml -o ${_work_dir}/coverage ${_lcov_file} 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   add_dependencies(coverage ${_lcov_target})
