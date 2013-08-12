@@ -38,7 +38,7 @@ function(git_invoke)
 endfunction(git_invoke)
 
 function(git_current_branch _branch)
-  git_invoke(ARGS rev-parse --abbrev-ref HEAD RESULT ${_branch})
+  git_invoke(ARGS rev-parse HEAD RESULT ${_branch})
 endfunction(git_current_branch)
 
 function(git_current_ref _ref)
