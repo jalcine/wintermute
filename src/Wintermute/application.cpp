@@ -20,10 +20,8 @@
  **/
 
 #include "application.hpp"
-#include "arguments.hpp"
-#include "logging.hpp"
-#include "factory.hpp"
 #include "version.hpp"
+#include "Wintermute/private/application.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
@@ -31,37 +29,8 @@
 using Wintermute::Arguments;
 using Wintermute::Logging;
 using Wintermute::Version;
-using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
-
-namespace Wintermute {
-  class ApplicationPrivate {
-    public:
-      QSharedPointer<QCoreApplication> app;
-      QSettings* settings;
-
-      ApplicationPrivate(int &argc, char **argv) : settings(0) {
-        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-      }
-
-      void initialize(){
-        // Add library paths for plug-ins.
-        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
-
-        // Allocate necessary variables for logging and arguments.
-        // TODO: Move factory initialization to separate thread.
-        Logging::instance();
-        Arguments::instance();
-        Factory::instance();
-      }
-
-      int exec(){
-        return app->exec();
-      }
-  };
-
-}
 
 Application* Application::self = 0;
 
@@ -125,6 +94,17 @@ Application::stop(){
 QString
 Application::processName() {
   return QString::null;
+}
+
+void
+Application::setModule(Procedure::Module* module) {
+  Q_D(Application);
+
+  if (!d->module)
+    d->module = module;
+  else {
+    wlog(this)->info("You can't change the module after it's been set!");
+  }
 }
 
 Version
