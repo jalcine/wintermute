@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -117,7 +117,8 @@ namespace Wintermute {
        */
       Q_SLOT void stop();
   };
-
 }
+
+#define wApp Wintermute::Application::instance()
 
 #endif /* WINTERMUTE_CORE_APPLICATION_HPP */
