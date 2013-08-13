@@ -2,7 +2,7 @@
 # This module is used to discover the necessary libraries, headers and
 # configuration files for the ZeroMQ library.
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alciné <jacky.alcine@thesii.org>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###

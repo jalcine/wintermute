@@ -1,6 +1,6 @@
 ## TODO: Add proper CMake module definition here.
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
