@@ -26,7 +26,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QCoreApplication>
-#include <Wintermute/Application>
 #include <Wintermute/Procedure/Call>
 
 namespace Wintermute {
