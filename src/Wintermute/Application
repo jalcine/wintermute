@@ -19,5 +19,4 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "application.hpp"
-
+#include "Wintermute/application.hpp"
