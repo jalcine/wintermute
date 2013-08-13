@@ -36,6 +36,8 @@ ModulePrivate::ModulePrivate(Module* q) : q_ptr(q) {
 }
 
 ModulePrivate::~ModulePrivate() {
+  socketIn->close();
+  socketOut->close();
 }
 
 Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
@@ -44,6 +46,18 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 void Module::mountCall(Call::Signature callSig, const QString& name){
   Q_D(Module);
   d->knownMethods[name] = &callSig;
+}
+
+QVariant
+Module::dispatchCall(const QString& name, const QVariantList& arguments = QVariantList()){
+  Q_D(Module);
+
+ Call::Signature callSig = *(d->knownMethods.value(name));
+
+ if (!callSig)
+   return QVariant();
+
+ return callSig(arguments);
 }
 
 Module::~Module() {
