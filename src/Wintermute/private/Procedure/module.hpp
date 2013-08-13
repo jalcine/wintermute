@@ -17,22 +17,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #include "Wintermute/Procedure/call.hpp"
 #include <QtCore/QMap>
+#include <zmq.hpp>
 
 namespace Wintermute {
+  class ApplicationPrivate;
   namespace Procedure {
     class Module;
     class ModulePrivate {
+      friend class Wintermute::ApplicationPrivate;
+      static zmq::context_t* context;
       public:
-        Module* q_ptr;
-        ModulePrivate (Module* q);
-        virtual ~ModulePrivate ();
+      Module* q_ptr;
 
-        QMap<QString, Call::Signature*> knownMethods;
 
+      ModulePrivate (Module* q);
+      virtual ~ModulePrivate ();
+      QMap<QString, Call::Signature*> knownMethods;
     };
   } /* Procedure */
 } /* Wintermute  */

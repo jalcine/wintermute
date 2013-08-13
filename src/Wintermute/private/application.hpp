@@ -22,9 +22,11 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
+#include <zmq.hpp>
 #include "Wintermute/logging.hpp"
 #include "Wintermute/arguments.hpp"
 #include "Wintermute/factory.hpp"
+#include "Wintermute/private/Procedure/module.hpp"
 
 namespace Wintermute {
   class ApplicationPrivate {
@@ -36,6 +38,7 @@ namespace Wintermute {
       ApplicationPrivate(int &argc, char **argv) : settings(0) {
         app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
         module.clear();
+        Procedure::ModulePrivate::context = new zmq::context_t(1);
       }
 
       void initialize(){
