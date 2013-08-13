@@ -39,8 +39,6 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 void Module::mountCall(Call::Signature callSig, const QString& name){
   Q_D(Module);
   d->knownMethods[name] = &callSig;
-  // TODO: Append to a map that holds all of its methods.
-  // TODO: Throw an exception if the call already exists?
 }
 
 Module::~Module() {

@@ -25,8 +25,9 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
-#include <Wintermute/Procedure/Call>
 #include <QtCore/QCoreApplication>
+#include <Wintermute/Application>
+#include <Wintermute/Procedure/Call>
 
 namespace Wintermute {
   namespace Procedure {
@@ -39,6 +40,8 @@ namespace Wintermute {
       Q_PROPERTY(QString Package READ package);
 
       QScopedPointer<ModulePrivate> d_ptr;
+
+      friend class Wintermute::Application;
 
       public:
       explicit Module(QObject* parent);
@@ -57,7 +60,7 @@ namespace Wintermute {
        */
       virtual QString package() const = 0;
 
-      virtual QString qualifiedName() const final {
+      virtual QString qualifiedName() const {
         return domain() + QString(".") + package() + QString("/") + QString::number(qApp->applicationPid());
       }
 
