@@ -1,4 +1,3 @@
-## TODO: Add proper CMake module definition here.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
 ###
@@ -55,7 +54,6 @@ add_feature_info("GUI" QT_QTGUI_FOUND "Allows for the rendering of graphical ele
 add_feature_info("Command Line" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
 add_feature_info("Logging" Log4Qt_FOUND "Incorporates logging support.")
-add_feature_info("Message Queue" ZEROMQ_FOUND "Cross platform message queuing service.")
 
 ## }}}
 
