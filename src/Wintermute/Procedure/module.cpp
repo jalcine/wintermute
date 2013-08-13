@@ -28,8 +28,11 @@ using Wintermute::Procedure::ModulePrivate;
 zmq::context_t* ModulePrivate::context;
 
 ModulePrivate::ModulePrivate(Module* q) : q_ptr(q) {
-  // TODO: Grab a pointer to the shared instanec of ZeroMQ here.
-  // TODO: Set up a client/server socket between the ports of '3991' to '4000'.
+  this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
+  this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
+
+  socketIn->bind("tcp://*:3991");
+  socketOut->connect("tcp://*:3991");
 }
 
 ModulePrivate::~ModulePrivate() {
