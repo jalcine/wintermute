@@ -43,7 +43,7 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
   // Define the application in Qt.
   d->app->setApplicationName("Wintermute");
   d->app->setApplicationVersion(this->version().toString());
-  d->app->setOrganizationName("Jacky Alcine");
+  d->app->setOrganizationName("Wintermute");
   d->app->setOrganizationDomain("jalcine.me");
 
   // Grab our settings.
@@ -79,14 +79,11 @@ void
 Application::start(){
   Logger* log = wlog(this);
   log->info("Starting...");
-  Factory::instance()->start();
-  log->info("Started.");
 }
 
 void
 Application::stop(){
   Logger* log = wlog(this);
-  Factory::instance()->stop();
   log->info("Qutting application...");
   QCoreApplication::quit();
 }
