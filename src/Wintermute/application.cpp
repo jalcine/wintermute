@@ -105,13 +105,10 @@ void
 Application::setModule(Procedure::Module* module) {
   Q_D(Application);
 
-  if (!d->module) {
+  if (!d->module)
     d->module = QSharedPointer<Procedure::Module>(module);
-    d->module->register();
-  }
-  else {
+  else
     wlog(this)->info("You can't change the module after it's been set!");
-  }
 }
 
 Version
