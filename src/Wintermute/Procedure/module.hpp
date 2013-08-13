@@ -40,8 +40,6 @@ namespace Wintermute {
 
       QScopedPointer<ModulePrivate> d_ptr;
 
-      friend class Wintermute::Application;
-
       public:
       explicit Module(QObject* parent);
       virtual ~Module();
