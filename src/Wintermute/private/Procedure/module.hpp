@@ -30,13 +30,15 @@ namespace Wintermute {
     class ModulePrivate {
       friend class Wintermute::ApplicationPrivate;
       static zmq::context_t* context;
+
       public:
-      Module* q_ptr;
+        Module* q_ptr;
+        zmq::socket_t* socketIn;
+        zmq::socket_t* socketOut;
+        QMap<QString, Call::Signature*> knownMethods;
 
-
-      ModulePrivate (Module* q);
-      virtual ~ModulePrivate ();
-      QMap<QString, Call::Signature*> knownMethods;
+        ModulePrivate (Module* q);
+        virtual ~ModulePrivate ();
     };
   } /* Procedure */
 } /* Wintermute  */
