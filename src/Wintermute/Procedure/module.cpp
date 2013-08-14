@@ -54,9 +54,12 @@ Module::invokeCall(const Call* call){
   return QVariant();
 }
 
-void Module::mountCall(Call::Signature callSig, const QString& name){
+void
+Module::mountCall(const Call* call){
   Q_D(Module);
-  d->knownMethods[name] = &callSig;
+
+  // TODO: Use a shared pointer to prevent a segfault.
+  d->knownCalls[call->name()] = call;
 }
 
 QVariant

@@ -78,14 +78,13 @@ namespace Wintermute {
 
         /**
          * @fn mountCall
-         * @param callSig A lambda to be used on invocation.
-         * @param The name of the method to expose this as.
+         * @brief Registers the call into the system.
          *
-         * Registers the provided lambda for invocation when this module is
-         * called to invoke the method by the provided name.
+         * Registers the provided Call object as an invokable method for this
+         * Module.
          *
          */
-        void mountCall(Call::Signature callSig, const QString& name);
+        void mountCall(Call* call);
     };
   } /*  Procedure */
 } /*  Wintermute */
