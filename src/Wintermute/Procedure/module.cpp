@@ -43,6 +43,11 @@ ModulePrivate::~ModulePrivate() {
 Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
 }
 
+QVariant
+Module::invokeCall(const Call* call){
+  return QVariant();
+}
+
 void Module::mountCall(Call::Signature callSig, const QString& name){
   Q_D(Module);
   d->knownMethods[name] = &callSig;
