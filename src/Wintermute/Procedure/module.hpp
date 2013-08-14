@@ -61,6 +61,12 @@ namespace Wintermute {
         return domain() + QString(".") + package() + QString("/") + QString::number(qApp->applicationPid());
       }
 
+      /**
+       * @fn invokeCall
+       * @brief Collects data and then administers a call.
+       */
+      static QVariant invokeCall(const Call* call);
+
       protected:
         /**
          * @fn invokeCall
