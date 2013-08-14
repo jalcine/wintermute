@@ -19,8 +19,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "plugininterfaceable.hpp"
-#include "temporaryplugin.hpp"
+#include "plugin_interfaceable.hpp"
+#include "temporary_plugin.hpp"
 #include "private/plugin.hpp"
 
 using Wintermute::Plugin;
@@ -47,4 +47,4 @@ TemporaryPlugin::tryLoad(QPluginLoader* loader){
 TemporaryPlugin::~TemporaryPlugin() {
 }
 
-#include "Wintermute/temporaryplugin.moc"
+#include "Wintermute/temporary_plugin.moc"

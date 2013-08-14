@@ -19,9 +19,9 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "plugininterfaceable.hpp"
+#include "plugin_interfaceable.hpp"
 #include "private/plugin.hpp"
-#include "private/plugininterfaceable.hpp"
+#include "private/plugin_interfaceable.hpp"
 #include "factory.hpp"
 #include "plugin.hpp"
 
@@ -35,4 +35,4 @@ PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr
 PluginInterfaceable::~PluginInterfaceable() {
 }
 
-#include "Wintermute/plugininterfaceable.moc"
+#include "Wintermute/plugin_interfaceable.moc"
