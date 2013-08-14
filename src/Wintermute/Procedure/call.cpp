@@ -71,6 +71,11 @@ Call::toString() const {
     return QString();
 }
 
+QVariant
+Call::operator()(const QVariantList& arguments) {
+  return this->invoke(arguments);
+}
+
 Call::~Call() {
 }
 

@@ -116,6 +116,8 @@ namespace Wintermute {
        * @param arguments A list of QVariant arguments.
        */
       virtual QVariant invoke(const QVariantList& arguments) final;
+
+      virtual QVariant operator()(const QVariantList& arguments) final;
     };
 
     typedef QSharedPointer<Call> CallPointer;
