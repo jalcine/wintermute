@@ -64,26 +64,23 @@ namespace Wintermute {
         Existance = 0x003 // This call handles the existence of other things.
       };
 
+      /**
+       * @ctor
+       * @fn Call
+       */
       explicit Call (QObject* parent);
+
+      /**
+       * @dtor
+       * @fn ~Call
+       */
       virtual ~Call ();
 
       /**
-       * @fn dispatch
-       * @brief Invokes this call out to the network to its intended receiver.
-       *
-       * Converts this message to a simpler string for RPC digestion and sends
-       * it over the network to be recieved by others.
+       * @fn name
+       * @brief Obtains the name of the call.
        */
-      virtual QVariant dispatch(QVariantList& arguments) final;
-
-      /**
-       * @fn doDispatch
-       * @brief Invokes the call in the background and invokes callback on complete.
-       *
-       * Does what dispatch does except that it's done in a separate thread
-       * and upon completion, it invokes the callback passed.
-       */
-      virtual void doDispatch(QVariantList& arguments, Callback callback);
+      virtual QString name() const = 0;
 
       /**
        * @fn type
@@ -91,13 +88,13 @@ namespace Wintermute {
        *
        * Obtains the type of message that this exposes.
        */
-      Type type() const;
+      virtual Type type() const final;
 
       /**
        * @fn toString
        * @brief Generates a string representation of this call.
        */
-      QString toString() const;
+      virtual QString toString() const final;
 
       /**
        * @fn recipient
@@ -106,15 +103,22 @@ namespace Wintermute {
        * Obtains the qualified string name that this Call is sending a message
        * to.
        */
-      QString recipient() const;
+      virtual QString recipient() const final;
 
       /**
        * @fn setRecipient
        * @brief Changes the recipient of this Call.
        */
-      void setRecipient(const QString moduleName);
+      virtual void setRecipient(const QString moduleName) final;
 
+      /**
+       * @fn invoke
+       * @param arguments A list of QVariant arguments.
+       */
+      virtual QVariant invoke(const QVariantList& arguments) final;
     };
+
+    typedef QSharedPointer<Call> CallPointer;
   } /* Procedure */
 } /* Wintermute */
 

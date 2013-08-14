@@ -31,14 +31,9 @@ Call::Call(QObject* parent) : QObject(parent){
 }
 
 QVariant
-Call::dispatch(QVariantList& arguments){
-  return Module::invokeCall(this);
-}
-
-void
-Call::doDispatch(QVariantList& arguments, Callback callback){
-  // TODO: Invoke callback.
-  Module::invokeCall(this);
+Call::invoke(const QVariantList& arguments){
+  Q_D(Call);
+  return d->function(arguments);
 }
 
 void
