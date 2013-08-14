@@ -68,7 +68,7 @@ namespace Wintermute {
          *
          * Searches for and invokes a registered call and returns the result.
          */
-        QVariant invokeCall(const QString& name);
+        QVariant dispatchCall(const QString& name, const QVariantList& arguments);
 
         /**
          * @fn mountCall
