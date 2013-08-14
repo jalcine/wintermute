@@ -35,7 +35,7 @@ namespace Wintermute {
         Module* q_ptr;
         zmq::socket_t* socketIn;
         zmq::socket_t* socketOut;
-        QMap<QString, Call::Signature*> knownMethods;
+        QMap<QString, CallPointer> calls;
 
         ModulePrivate (Module* q);
         virtual ~ModulePrivate ();

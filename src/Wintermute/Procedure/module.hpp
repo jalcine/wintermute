@@ -57,7 +57,7 @@ namespace Wintermute {
        */
       virtual QString package() const = 0;
 
-      virtual QString qualifiedName() const {
+      virtual inline QString qualifiedName() const final {
         return domain() + QString(".") + package() + QString("/") + QString::number(qApp->applicationPid());
       }
 
@@ -65,26 +65,14 @@ namespace Wintermute {
        * @fn invokeCall
        * @brief Collects data and then administers a call.
        */
-      static QVariant invokeCall(const Call* call);
+      QVariant invoke(const QString& name, const QVariantList& arguments);
 
       protected:
         /**
-         * @fn invokeCall
-         * @param name
-         *
-         * Searches for and invokes a registered call and returns the result.
-         */
-        QVariant dispatchCall(const QString& name, const QVariantList& arguments);
-
-        /**
          * @fn mountCall
          * @brief Registers the call into the system.
-         *
-         * Registers the provided Call object as an invokable method for this
-         * Module.
-         *
          */
-        void mountCall(Call* call);
+        void mount(CallPointer call);
     };
   } /*  Procedure */
 } /*  Wintermute */

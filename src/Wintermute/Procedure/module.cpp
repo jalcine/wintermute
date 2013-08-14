@@ -28,7 +28,6 @@ using Wintermute::Procedure::ModulePrivate;
 zmq::context_t* ModulePrivate::context;
 
 ModulePrivate::ModulePrivate(Module* q) : q_ptr(q) {
-  Q_Q(Module);
   // Create our lovely ZMQ sockets using a pub/sub setup.
   this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
   this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
@@ -50,28 +49,22 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 }
 
 QVariant
-Module::invokeCall(const Call* call){
-  return QVariant();
+Module::invoke(const QString& callName, const QVariantList& arguments){
+  Q_D(Module);
+
+  if (!d->calls.contains(callName))
+    return QVariant(-1);
+
+  CallPointer call = d->calls[callName];
+  return call->invoke(arguments);
 }
 
 void
-Module::mountCall(const Call* call){
+Module::mount(CallPointer call){
   Q_D(Module);
 
   // TODO: Use a shared pointer to prevent a segfault.
-  d->knownCalls[call->name()] = call;
-}
-
-QVariant
-Module::dispatchCall(const QString& name, const QVariantList& arguments = QVariantList()){
-  Q_D(Module);
-
- Call::Signature callSig = *(d->knownMethods.value(name));
-
- if (!callSig)
-   return QVariant();
-
- return callSig(arguments);
+  d->calls[call->name()].swap(call);
 }
 
 Module::~Module() {
