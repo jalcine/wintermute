@@ -118,7 +118,6 @@ namespace Wintermute {
 Factory* Factory::self = 0;
 
 Factory::Factory() : QObject(Application::instance()), d_ptr(new FactoryPrivate) {
-  wdebug(this,"Factory created.");
 }
 
 Factory*
