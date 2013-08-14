@@ -20,8 +20,39 @@
 **/
 
 #include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Procedure::Call;
+
+Call::Call(QObject* parent) : QObject(parent){
+}
+
+QVariant
+Call::dispatch(QVariantList& arguments){
+  // TODO: Find the module that would invoke this call.
+  // TODO: Pass the calling work to it.
+  return QVariant();
+}
+
+void
+Call::setRecipient(const QString& moduleName){
+
+}
+
+Call::Type
+Call::type() const {
+  return Call::Method;
+}
+
+QString
+Call::recipient() const {
+  return QString();
+}
+
+QString
+Call::toString() const {
+  return QString();
+}
 
 Call::~Call() {
 }
