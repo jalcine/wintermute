@@ -40,6 +40,20 @@ namespace Wintermute {
 
       public:
       /**
+       * @typedef Signature
+       *
+       * Provides the short-hand signature for Call methods.
+       */
+      typedef std::function<QVariant (QVariantList)> Signature;
+
+      /**
+       * @typedef Callback
+       *
+       * Provides the callback necessary for async calling.
+       */
+      typedef std::function<void (QVariant)> Callback;
+
+      /**
        * @enum Type
        *
        * Defines the potential types a Call can take in the procedural system.
@@ -61,6 +75,15 @@ namespace Wintermute {
        * it over the network to be recieved by others.
        */
       virtual QVariant dispatch(QVariantList& arguments) final;
+
+      /**
+       * @fn doDispatch
+       * @brief Invokes the call in the background and invokes callback on complete.
+       *
+       * Does what dispatch does except that it's done in a separate thread
+       * and upon completion, it invokes the callback passed.
+       */
+      virtual void doDispatch(QVariantList& arguments, Callback callback);
 
       /**
        * @fn type
@@ -89,14 +112,8 @@ namespace Wintermute {
        * @fn setRecipient
        * @brief Changes the recipient of this Call.
        */
-      void setRecipient(const QString& moduleName);
+      void setRecipient(const QString moduleName);
 
-      /**
-       * @typedef Signature
-       *
-       * Provides the short-hand signature for Call methods.
-       */
-      typedef std::function<QVariant (QVariantList)> Signature;
     };
   } /* Procedure */
 } /* Wintermute */
