@@ -22,6 +22,7 @@
 #include "application.hpp"
 #include "version.hpp"
 #include "Wintermute/private/application.hpp"
+#include "Wintermute/Procedure/module.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
@@ -77,6 +78,7 @@ Application::run(int &argc, char **argv){
 void
 Application::start(){
   Logger* log = wlog(this);
+  log->info("Starting Wintermute...");
 }
 
 void

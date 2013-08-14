@@ -24,9 +24,9 @@
 
 #include <QtCore/QVariant>
 #include <Wintermute/Globals>
-#include <Wintermute/Procedure/Module>
 
 namespace Wintermute {
+  namespace Procedure { class Module; }
   class Version;
   class ApplicationPrivate;
 
