@@ -28,11 +28,17 @@ using Wintermute::Procedure::ModulePrivate;
 zmq::context_t* ModulePrivate::context;
 
 ModulePrivate::ModulePrivate(Module* q) : q_ptr(q) {
+  Q_Q(Module);
+  // Create our lovely ZMQ sockets using a pub/sub setup.
   this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
   this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
 
+  // Now listen for and send messages over our favorite port, 3991.
+  // TODO: Make port number changable.
   socketIn->bind("tcp://*:3991");
   socketOut->connect("tcp://*:3991");
+
+  // TODO: Send out a hello message to the heartbeat module.
 }
 
 ModulePrivate::~ModulePrivate() {
