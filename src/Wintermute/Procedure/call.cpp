@@ -19,24 +19,32 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
+#include <qjson/serializer.h>
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
+#include "Wintermute/Procedure/module.hpp"
 
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Module;
 
 Call::Call(QObject* parent) : QObject(parent){
 }
 
 QVariant
 Call::dispatch(QVariantList& arguments){
-  // TODO: Find the module that would invoke this call.
-  // TODO: Pass the calling work to it.
-  return QVariant();
+  return Module::invokeCall(this);
 }
 
 void
-Call::setRecipient(const QString& moduleName){
+Call::doDispatch(QVariantList& arguments, Callback callback){
+  // TODO: Invoke callback.
+  Module::invokeCall(this);
+}
 
+void
+Call::setRecipient(const QString moduleName){
+  Q_D(Call);
+  d->recipient = QString(moduleName);
 }
 
 Call::Type
@@ -51,7 +59,21 @@ Call::recipient() const {
 
 QString
 Call::toString() const {
-  return QString();
+  Q_D(const Call);
+  QJson::Serializer serializer;
+  bool ok;
+
+  QMap<QString, QVariant> callMap;
+  callMap["type"] = (int) type();
+  callMap["recipient"] = recipient();
+  callMap["data"] = d->data;
+
+  QByteArray json = serializer.serialize(callMap, &ok);
+
+  if (ok)
+    return QString(json);
+  else
+    return QString();
 }
 
 Call::~Call() {
