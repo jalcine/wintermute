@@ -61,13 +61,12 @@ Application::run(int &argc, char **argv){
 
     // Invoke the initialization code.
     self->d_ptr->initialize();
-    log->debug("Completed initialization phase.");
 
     // Start thyself.
     self->start(); 
 
     // Begin the event loop.
-    log->debug("Beginning event loop.");
+    log->debug("Starting event loop.");
     returnCode = self->d_ptr->exec();
     log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
   }
@@ -78,7 +77,6 @@ Application::run(int &argc, char **argv){
 void
 Application::start(){
   Logger* log = wlog(this);
-  log->info("Starting...");
 }
 
 void
