@@ -62,10 +62,12 @@ namespace Wintermute {
       }
 
       /**
-       * @fn invokeCall
-       * @brief Collects data and then administers a call.
+       * @fn dispatch
+       * @brief Collects and crafts a call for sending.
+       *
+       * Uses the arguments to craft a Call to send over the wire.
        */
-      QVariant invoke(const QString& name, const QVariantList& arguments);
+      QVariant dispatch(const QString& module, const QVariantList& arguments);
 
       protected:
         /**
