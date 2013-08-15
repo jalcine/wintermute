@@ -23,7 +23,7 @@
 #include "plugin.hpp"
 #include "logging.hpp"
 #include "application.hpp"
-#include "temporaryplugin.hpp"
+#include "temporary_plugin.hpp"
 #include <QDir>
 #include <QFile>
 #include <QCoreApplication>
