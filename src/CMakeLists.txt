@@ -26,18 +26,19 @@ list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 # Grab the sources!
 set(WINTERMUTE_SOURCES
   main.cpp
-  Wintermute/application.cpp
-  Wintermute/arguments.cpp
   Wintermute/logging.cpp
-  Wintermute/plugin.cpp
-  Wintermute/plugininterfaceable.cpp
+  Wintermute/arguments.cpp
   Wintermute/factory.cpp
-  Wintermute/temporaryplugin.cpp
+  Wintermute/plugin.cpp
+  Wintermute/plugin_interfaceable.cpp
+  Wintermute/temporary_plugin.cpp
   Wintermute/version.cpp
+  Wintermute/application.cpp
 
   ## Procedure Calling
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/method_call.cpp
   )
 
 set(WINTERMUTE_HEADERS 
@@ -51,6 +52,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/Version
   Wintermute/Procedure/Module
   Wintermute/Procedure/Call
+  Wintermute/Procedure/MethodCall
 
   ## Native headers
   Wintermute/application.hpp
@@ -59,9 +61,10 @@ set(WINTERMUTE_HEADERS
   Wintermute/version.hpp
   Wintermute/factory.hpp
   Wintermute/plugin.hpp
-  Wintermute/plugininterfaceable.hpp
+  Wintermute/plugin_interfaceable.hpp
   Wintermute/Procedure/module.hpp
   Wintermute/Procedure/call.hpp
+  Wintermute/Procedure/method_call.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
