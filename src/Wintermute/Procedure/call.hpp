@@ -37,7 +37,7 @@ namespace Wintermute {
       protected:
       Q_DECLARE_PRIVATE(Call);
       QSharedPointer<CallPrivate> d_ptr;
-      Call(CallPrivate &d);
+      Call(CallPrivate *d);
 
       public:
       /**
