@@ -118,6 +118,10 @@ namespace Wintermute {
        */
       virtual QVariant invoke(const QVariantList& arguments) final;
 
+      /**
+       * @operator operator()
+       * @brief Allow for functor-like capabilities for the Call object.
+       */
       virtual QVariant operator()(const QVariantList& arguments) final;
     };
 
