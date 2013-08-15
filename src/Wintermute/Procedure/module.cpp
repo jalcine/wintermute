@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
@@ -26,24 +26,6 @@ using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ModulePrivate;
 
 zmq::context_t* ModulePrivate::context;
-
-ModulePrivate::ModulePrivate(Module* q) : q_ptr(q) {
-  // Create our lovely ZMQ sockets using a pub/sub setup.
-  this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
-  this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
-
-  // Now listen for and send messages over our favorite port, 3991.
-  // TODO: Make port number changable.
-  socketIn->bind("tcp://*:3991");
-  socketOut->connect("tcp://*:3991");
-
-  // TODO: Send out a hello message to the heartbeat module.
-}
-
-ModulePrivate::~ModulePrivate() {
-  socketIn->close();
-  socketOut->close();
-}
 
 Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
 }
