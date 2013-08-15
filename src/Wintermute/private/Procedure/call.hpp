@@ -29,13 +29,15 @@ namespace Wintermute {
     class CallPrivate {
       public:
         Call* q_ptr;
-        Call::Signature function;
         QString recipient;
+        Call::Signature function;
         QMap<QString, QVariant> data;
-        explicit CallPrivate(Call* q): q_ptr(q) {
+
+        explicit CallPrivate(Call* q): q_ptr(q), recipient(), function(nullptr), data() {
         }
 
-        virtual ~CallPrivate();
+        virtual ~CallPrivate() {
+        }
     };
   }
 }
