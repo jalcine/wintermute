@@ -23,6 +23,7 @@
 #define WINTERMUTE_CORE_APPLICATION_HPP
 
 #include <QtCore/QVariant>
+#include <QtCore/QList>
 #include <Wintermute/Globals>
 
 namespace Wintermute {
@@ -121,6 +122,12 @@ namespace Wintermute {
      * @brief Defines the root module of the process.
      */
     Procedure::Module* module() const;
+
+    /**
+     * @fn modules
+     * @brief Obtains a list of the modules registered locally.
+     */
+    QList<Procedure::Module*> modules() const;
 
     /**
      * @fn setModule()

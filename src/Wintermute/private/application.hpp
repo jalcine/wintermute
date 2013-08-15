@@ -30,9 +30,12 @@
 
 namespace Wintermute {
   class ApplicationPrivate {
+    friend class Wintermute::Procedure::ModulePrivate;
+
     public:
       QSharedPointer<QCoreApplication> app;
       QSharedPointer<Procedure::Module> module;
+      QList<Procedure::Module*> modules;
       QSettings* settings;
 
       ApplicationPrivate(int &argc, char **argv) : settings(0) {

@@ -32,6 +32,7 @@ using Wintermute::Logging;
 using Wintermute::Version;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
+using Wintermute::Procedure::Module;
 
 Application* Application::self = 0;
 
@@ -98,12 +99,18 @@ Application::processName() const {
   return d->module->qualifiedName();
 }
 
+QList<Module*>
+Application::modules() const {
+  Q_D(const Application);
+  return d->modules;
+}
+
 void
-Application::setModule(Procedure::Module* module) {
+Application::setModule(Module* module) {
   Q_D(Application);
 
   if (!d->module)
-    d->module = QSharedPointer<Procedure::Module>(module);
+    d->module = QSharedPointer<Module>(module);
   else
     wlog(this)->info("You can't change the module after it's been set!");
 }
