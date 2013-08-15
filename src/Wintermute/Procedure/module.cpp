@@ -49,7 +49,7 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 }
 
 QVariant
-Module::invoke(const QString& callName, const QVariantList& arguments){
+Module::dispatch(const QString& callName, const QVariantList& arguments){
   Q_D(Module);
 
   if (!d->calls.contains(callName))
