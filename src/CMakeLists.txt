@@ -25,20 +25,23 @@ list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
 set(WINTERMUTE_SOURCES
-  main.cpp
-  Wintermute/logging.cpp
-  Wintermute/arguments.cpp
-  Wintermute/factory.cpp
-  Wintermute/plugin.cpp
-  Wintermute/plugin_interfaceable.cpp
-  Wintermute/temporary_plugin.cpp
-  Wintermute/version.cpp
-  Wintermute/application.cpp
-
-  ## Procedure Calling
+  ## Procedure Calling binaries
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/call.cpp
   Wintermute/Procedure/method_call.cpp
+
+  ## Plugin binaries
+  Wintermute/plugin.cpp
+  Wintermute/plugin_interfaceable.cpp
+  Wintermute/temporary_plugin.cpp
+  Wintermute/factory.cpp
+
+  ## Core binaries
+  Wintermute/logging.cpp
+  Wintermute/arguments.cpp
+  Wintermute/version.cpp
+  Wintermute/application.cpp
+  main.cpp
   )
 
 set(WINTERMUTE_HEADERS 
