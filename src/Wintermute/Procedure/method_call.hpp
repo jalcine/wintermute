@@ -22,14 +22,21 @@
 #ifndef WINTERMUTE_CORE_PROCEDURE_METHOD_CALL_HPP
 #define WINTERMUTE_CORE_PROCEDURE_METHOD_CALL_HPP
 
+#include <QtCore/QObject>
 #include <Wintermute/Procedure/Call>
 
 namespace Wintermute {
   namespace Procedure {
+    class MethodCallPrivate;
     class MethodCall : public Call {
+      Q_OBJECT;
+      Q_DISABLE_COPY(MethodCall);
+      Q_DECLARE_PRIVATE(MethodCall);
+
       public:
         explicit MethodCall(const QString& module, const QString& method, QVariantList arguments = QVariantList());
         virtual ~MethodCall();
+        QString name() const;
     };
   }
 }

@@ -20,12 +20,26 @@
 **/
 
 #include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/private/Procedure/method_call.hpp"
 
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
 
-MethodCall::MethodCall(const QString& module, const QString& method, QVariantList& arguments) :
-  Call(new MethodCallPrivate) {
+MethodCall::MethodCall(const QString& module, const QString& method, const QVariantList arguments) :
+  Call(new MethodCallPrivate(this)) {
+  Q_D(MethodCall);
+  d->module = module;
+  d->method = method;
+  d->arguments = arguments;
 }
 
-//#include "Wintermute/Procedure/method_call.moc"
+QString
+MethodCall::name() const {
+  Q_D(const MethodCall);
+  return d->method;
+}
+
+MethodCall::~MethodCall() {
+}
+
+#include "Wintermute/Procedure/method_call.moc"
