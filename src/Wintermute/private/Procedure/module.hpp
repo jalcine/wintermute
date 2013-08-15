@@ -23,6 +23,7 @@
 #include <QtCore/QMap>
 #include <zmq.hpp>
 
+
 namespace Wintermute {
   class ApplicationPrivate;
   namespace Procedure {
@@ -32,13 +33,39 @@ namespace Wintermute {
       static zmq::context_t* context;
 
       public:
-        Module* q_ptr;
-        zmq::socket_t* socketIn;
-        zmq::socket_t* socketOut;
-        QMap<QString, CallPointer> calls;
+      Module* q_ptr;
+      zmq::socket_t* socketIn;
+      zmq::socket_t* socketOut;
+      QMap<QString, CallPointer> calls;
 
-        ModulePrivate (Module* q);
-        virtual ~ModulePrivate ();
-    };
-  } /* Procedure */
+      ModulePrivate (Module* q) : q_ptr(q) {
+        // Create our lovely ZMQ sockets using a pub/sub setup.
+        this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
+        this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
+
+        // Now listen for and send messages over our favorite port, 3991.
+        // TODO: Make port number changable.
+        socketIn->bind("tcp://*:3991");
+        socketOut->connect("tcp://*:3991");
+
+        // TODO: Send out a hello message to the heartbeat module.
+        sendHeartbeat();
+      }
+
+    }
+
+    void
+      ModulePrivate::sendHeartbeat() {
+        Q_Q(Module);
+        HeartbeatCall heartbeat(q);
+        q->dispatch("me.jalcine.heartbeat", heartbeat.toString());
+      }
+
+    virtual ~ModulePrivate () {
+      socketIn->close();
+      socketOut->close();
+
+    }
+  };
+} /* Procedure */
 } /* Wintermute  */
