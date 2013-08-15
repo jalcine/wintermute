@@ -20,6 +20,7 @@
 **/
 
 #include <qjson/serializer.h>
+#include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
 #include "Wintermute/Procedure/module.hpp"
@@ -27,7 +28,10 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 
-Call::Call(QObject* parent) : QObject(parent){
+Call::Call(QObject* parent) : QObject(parent), d_ptr(new CallPrivate(this)) {
+}
+
+Call::Call(CallPrivate *d) : QObject(Wintermute::Application::instance()), d_ptr(d) {
 }
 
 QVariant
