@@ -19,4 +19,4 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "plugininterfaceable.hpp"
+#include "plugin_interfaceable.hpp"
