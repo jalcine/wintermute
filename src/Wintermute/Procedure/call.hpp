@@ -89,7 +89,7 @@ namespace Wintermute {
        *
        * Obtains the type of message that this exposes.
        */
-      virtual Type type() const final;
+      virtual Type type() const;
 
       /**
        * @fn toString
