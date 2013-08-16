@@ -29,6 +29,7 @@ set(WINTERMUTE_SOURCES
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/call.cpp
   Wintermute/Procedure/method_call.cpp
+  Wintermute/Procedure/heart_beat_call.cpp
 
   ## Plugin binaries
   Wintermute/plugin.cpp
@@ -56,6 +57,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/Procedure/Module
   Wintermute/Procedure/Call
   Wintermute/Procedure/MethodCall
+  WIntermute/Procedure/HeartbeatCall
 
   ## Native headers
   Wintermute/application.hpp
@@ -68,6 +70,7 @@ set(WINTERMUTE_HEADERS
   Wintermute/Procedure/module.hpp
   Wintermute/Procedure/call.hpp
   Wintermute/Procedure/method_call.hpp
+  Wintermute/Procedure/heart_beat_call.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
   )
 
