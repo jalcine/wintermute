@@ -31,8 +31,9 @@ Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)
 }
 
 QVariant
-Module::dispatch(const QString& module, const Call& call) {
-  const QString callStr = call.toString();
+Module::dispatch(Call* call) {
+  const QString callStr = call->toString();
+  return QVariant(callStr);
 }
 
 QVariant

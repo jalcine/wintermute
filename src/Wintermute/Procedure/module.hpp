@@ -67,7 +67,7 @@ namespace Wintermute {
        *
        * Uses the arguments to craft a Call to send over the wire.
        */
-      QVariant dispatch(const QString& module, const QVariantList& arguments);
+      QVariant dispatch(Call* call);
 
       /**
        * @fn invoke
