@@ -20,7 +20,8 @@
  **/
 
 #include "Wintermute/Procedure/call.hpp"
-#include "Wintermute/Procedure/heartbeat_call.hpp"
+#include "Wintermute/Procedure/heart_beat_call.hpp"
+#include "Wintermute/Procedure/module.hpp"
 #include <QtCore/QMap>
 #include <zmq.hpp>
 
@@ -56,7 +57,7 @@ namespace Wintermute {
 
       void sendHeartbeat() {
         Q_Q(Module);
-        q->dispatch("me.jalcine.heartbeat", new HeartbeatCall(q));
+        q->dispatch(new HeartbeatCall(q));
       }
 
       virtual ~ModulePrivate () {
