@@ -20,6 +20,7 @@
  **/
 
 #include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Procedure/heartbeat_call.hpp"
 #include <QtCore/QMap>
 #include <zmq.hpp>
 
@@ -31,6 +32,7 @@ namespace Wintermute {
     class ModulePrivate {
       friend class Wintermute::ApplicationPrivate;
       static zmq::context_t* context;
+      Q_DECLARE_PUBLIC(Module);
 
       public:
       Module* q_ptr;
@@ -49,23 +51,18 @@ namespace Wintermute {
         socketOut->connect("tcp://*:3991");
 
         // TODO: Send out a hello message to the heartbeat module.
-        sendHeartbeat();
+        this->sendHeartbeat();
       }
 
-    }
-
-    void
-      ModulePrivate::sendHeartbeat() {
+      void sendHeartbeat() {
         Q_Q(Module);
-        HeartbeatCall heartbeat(q);
-        q->dispatch("me.jalcine.heartbeat", heartbeat.toString());
+        q->dispatch("me.jalcine.heartbeat", new HeartbeatCall(q));
       }
 
-    virtual ~ModulePrivate () {
-      socketIn->close();
-      socketOut->close();
-
-    }
-  };
-} /* Procedure */
+      virtual ~ModulePrivate () {
+        socketIn->close();
+        socketOut->close();
+      }
+    };
+  } /* Procedure */
 } /* Wintermute  */
