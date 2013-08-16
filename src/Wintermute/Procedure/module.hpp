@@ -69,6 +69,12 @@ namespace Wintermute {
        */
       QVariant dispatch(const QString& module, const QVariantList& arguments);
 
+      /**
+       * @fn invoke
+       * @brief Looks for the named call and invoke with the provided arguments.
+       */
+      QVariant invoke(const QString& name, const QVariantList& arguments);
+
       protected:
         /**
          * @fn mountCall
