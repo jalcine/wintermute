@@ -25,7 +25,6 @@
 #include <QtCore/QMap>
 #include <zmq.hpp>
 
-
 namespace Wintermute {
   class ApplicationPrivate;
   namespace Procedure {
