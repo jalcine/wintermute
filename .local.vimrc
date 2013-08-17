@@ -19,5 +19,5 @@ set tags+=$PWD/.git/tags
 let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute", "/usr/include" ]
 
 " By default, assume Qt.
-autocmd FileReadPost *.(c|h)pp set ft=qt.cpp
-autocmd FileReadPost *.(c|h)pp set tags+=$PWD/.git/tags
+autocmd FileReadPost  *.(c|h)pp set ft=qt.cpp
+autocmd FileReadPost  *.(c|h)pp set tags+=$PWD/.git/tags
