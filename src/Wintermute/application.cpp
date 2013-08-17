@@ -115,12 +115,13 @@ Application::setModule(Module* module) {
     wlog(this)->info("You can't change the module after it's been set!");
 }
 
-Procedure::Module*
+Module*
 Application::findModule(const QString& name) const {
   Q_D(const Application);
   for (int i = 0; i < d->modules.size(); ++i){
-    if (index.at(i).domain().contains(name))
-      return index.at(i);
+    Module* mod = d->modules.at(i);
+    if (mod->domain().contains(name))
+      return mod;
   }
   return nullptr;
 }

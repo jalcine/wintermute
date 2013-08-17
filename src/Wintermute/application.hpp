@@ -127,7 +127,7 @@ namespace Wintermute {
      * @fn findModule
      * @brief Finds a method by its specified module.
      */
-    Procedure::Module* findModule(const QString& name);
+    Procedure::Module* findModule(const QString& name) const;
 
     /**
      * @fn modules
