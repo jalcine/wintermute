@@ -27,7 +27,9 @@ list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 set(WINTERMUTE_SOURCES
   ## Procedure Calling binaries
   Wintermute/Procedure/module.cpp
+  Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/lambda_call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/heart_beat_call.cpp
 
@@ -55,7 +57,9 @@ set(WINTERMUTE_HEADERS
   Wintermute/PluginInterfaceable
   Wintermute/Version
   Wintermute/Procedure/Module
+  Wintermute/Procedure/ProcessModule
   Wintermute/Procedure/Call
+  Wintermute/Procedure/LambdaCall
   Wintermute/Procedure/MethodCall
   WIntermute/Procedure/HeartbeatCall
 
@@ -68,7 +72,9 @@ set(WINTERMUTE_HEADERS
   Wintermute/plugin.hpp
   Wintermute/plugin_interfaceable.hpp
   Wintermute/Procedure/module.hpp
+  Wintermute/Procedure/process_module.hpp
   Wintermute/Procedure/call.hpp
+  Wintermute/Procedure/lambda_call.hpp
   Wintermute/Procedure/method_call.hpp
   Wintermute/Procedure/heart_beat_call.hpp
   "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
