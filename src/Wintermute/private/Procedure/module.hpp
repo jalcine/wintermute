@@ -47,8 +47,8 @@ namespace Wintermute {
 
         // Now listen for and send messages over our favorite port, 3991.
         // TODO: Make port number changable.
-        socketIn->bind("tcp://*:3991");
-        socketOut->connect("tcp://*:3991");
+        socketIn->bind("tcp://0.0.0.0:3991");
+        socketOut->connect("tcp://0.0.0.0:3991");
 
         // TODO: Send out a hello message to the heartbeat module.
         this->sendHeartbeat();
