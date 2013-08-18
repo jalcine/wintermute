@@ -132,7 +132,7 @@ void
 Factory::start() {
   Logger* log = wlog(this);
   log->info("Starting..");
-  this->autoloadPlugins();
+  //this->autoloadPlugins();
   log->info("Started.");
 }
 
@@ -140,6 +140,7 @@ void
 Factory::stop() {
   Logger* log = wlog(this);
   log->info("Stopping..");
+  this->unloadAllPlugins();
   log->info("Stopped.");
 }
 
