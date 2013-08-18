@@ -55,6 +55,13 @@ Module::mount(CallPointer call){
   d->calls[call->name()].swap(call);
 }
 
+LambdaCall*
+Module::mountLambda(Call::Signature lambda){
+  CallPointer call = CallPointer(LambdaCall(lambda));
+  this->mount(call);
+  return *call;
+}
+
 Module::~Module() {
   // TODO: Report to world that you're leaving us.
   // TODO: Disconnect sockets.

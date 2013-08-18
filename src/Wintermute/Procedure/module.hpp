@@ -27,6 +27,7 @@
 #include <QtCore/QScopedPointer>
 #include <QtCore/QCoreApplication>
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/LambdaCall>
 
 namespace Wintermute {
   namespace Procedure {
@@ -77,10 +78,17 @@ namespace Wintermute {
 
       protected:
         /**
-         * @fn mountCall
+         * @fn mount
          * @brief Registers the call into the system.
          */
         void mount(CallPointer call);
+
+        /**
+         * @fn mountLambda
+         * @brief Crafts a LambdaCall out of a function pointer and adds the
+         * call into the system.
+         */
+        LambdaCall* mountLambda(Call::Signature lambda);
     };
   } /*  Procedure */
 } /*  Wintermute */
