@@ -32,9 +32,13 @@ case "${1}" in
     --about )
         echo "Generates tags of branch."
         ;;
+    --clean )
+        rm $TOPLEVELGITDIR/.git/tags
+        echo "[ctags] Cleaned tags."
+        ;;
     * )
         echo "[ctags] Generating tags for repository..."
         PWD=$TOPLEVELGITDIR ctags -R -f $TOPLEVELGITDIR/.git/tags $TOPLEVELGITDIR/* 
-        echo "[ctags] Tags generated."
+        echo "[ctags] Tags generated; update tag clients."
         ;;                
 esac
