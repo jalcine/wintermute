@@ -48,8 +48,7 @@ endif()
 find_package(Log4Qt REQUIRED)
 find_package(QCommandLine REQUIRED)
 find_package(QJSON REQUIRED)
-
-pkg_check_modules(ZMQ REQUIRED libzmq)
+pkg_check_modules(ZEROMQ libzmq)
 
 ## }}}
 
@@ -61,7 +60,7 @@ add_feature_info("Command Line" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
 add_feature_info("Logging" Log4Qt_FOUND
   "Incorporates logging support.")
-add_feature_info("Procedure Calling" ZMQ_FOUND
+add_feature_info("Procedure Calling" ZEROMQ_FOUND
   "Incorporates a transparent means of communicating inbetween processes.")
 
 ## }}}
