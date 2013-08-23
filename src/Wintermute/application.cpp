@@ -78,8 +78,12 @@ Application::run(int &argc, char **argv){
 
 void
 Application::start(){
+  Q_D(Application);
   Logger* log = wlog(this);
   log->info("Starting Wintermute...");
+
+  d->loadProcessModule();
+  d->loadCurrentMode();
 }
 
 void
@@ -103,16 +107,6 @@ QList<Module*>
 Application::modules() const {
   Q_D(const Application);
   return d->modules;
-}
-
-void
-Application::setModule(Module* module) {
-  Q_D(Application);
-
-  if (!d->module)
-    d->module = QSharedPointer<Module>(module);
-  else
-    wlog(this)->info("You can't change the module after it's been set!");
 }
 
 Module*

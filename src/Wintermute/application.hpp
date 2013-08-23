@@ -136,16 +136,6 @@ namespace Wintermute {
     QList<Procedure::Module*> modules() const;
 
     /**
-     * @fn setModule()
-     * @brief Sets the module to be used by this process.
-     *
-     * @note This works only the *first* time it's called. On subsequent
-     * invocations, it just logs out to the console that the method was
-     * used again.
-     */
-    void setModule(Procedure::Module* module);
-
-    /**
      * @fn start
      * @brief
      *
