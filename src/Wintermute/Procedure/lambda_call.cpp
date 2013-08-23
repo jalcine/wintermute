@@ -19,9 +19,9 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "application.hpp"
-#include "Procedure/lambda_call.hpp"
-#include "private/Procedure/call.hpp"
+#include "Wintermute/application.hpp"
+#include "Wintermute/Procedure/lambda_call.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Procedure::LambdaCall;
 
