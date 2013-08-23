@@ -22,36 +22,32 @@
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/Procedure/heart_beat_call.hpp"
 #include "Wintermute/Procedure/module.hpp"
+#include "Wintermute/logging.hpp"
 #include <QtCore/QMap>
-#include <zmq.hpp>
+#include <QtZeroMQ/context.hpp>
+#include <QtZeroMQ/socket.hpp>
+
+using QtZeroMQ::Socket;
+using QtZeroMQ::Context;
 
 namespace Wintermute {
   class ApplicationPrivate;
   namespace Procedure {
     class Module;
     class ModulePrivate {
-      friend class Wintermute::ApplicationPrivate;
-      static zmq::context_t* context;
       Q_DECLARE_PUBLIC(Module);
 
       public:
       Module* q_ptr;
-      zmq::socket_t* socketIn;
-      zmq::socket_t* socketOut;
+      QString package;
+      QString domain;
+      Socket* socketIn;
+      Socket* socketOut;
       QMap<QString, CallPointer> calls;
+      static Context* context;
 
-      ModulePrivate (Module* q) : q_ptr(q) {
-        // Create our lovely ZMQ sockets using a pub/sub setup.
-        this->socketIn  = new zmq::socket_t(*ModulePrivate::context, ZMQ_SUB);
-        this->socketOut = new zmq::socket_t(*ModulePrivate::context, ZMQ_PUB);
-
-        // Now listen for and send messages over our favorite port, 3991.
-        // TODO: Make port number changable.
-        socketIn->bind("tcp://0.0.0.0:3991");
-        socketOut->connect("tcp://0.0.0.0:3991");
-
-        // TODO: Send out a hello message to the heartbeat module.
-        this->sendHeartbeat();
+      ModulePrivate (Module* q) :
+        q_ptr(q), package(""), domain(""), calls() {
       }
 
       void sendHeartbeat() {
@@ -59,9 +55,34 @@ namespace Wintermute {
         q->dispatch(new HeartbeatCall(q));
       }
 
+      void connectToWire() {
+        socketIn = ModulePrivate::context->createSocket(Socket::TYP_SUB);
+        socketIn->bindTo("tcp://0.0.0.0:3991");
+
+        socketOut = ModulePrivate::context->createSocket(Socket::TYP_PUB);
+        socketOut->connectTo("tcp://0.0.0.0:3991");
+      }
+
+      void disconnectFromWire() {
+        socketIn->deleteLater();
+        delete socketIn;
+
+        socketOut->deleteLater();
+        delete socketOut;
+      }
+
+      void sendData(const QString& data) {
+        socketOut->sendMessage(data.toLocal8Bit());
+      }
+
+      QVariant recieveData(){
+        // TODO: Recieve data.
+        return QVariant();
+      }
+
       virtual ~ModulePrivate () {
-        socketIn->close();
-        socketOut->close();
+        disconnectFromWire();
+        winfo(q_ptr, "We out!");
       }
     };
   } /* Procedure */
