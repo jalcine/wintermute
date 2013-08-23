@@ -19,29 +19,44 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
+#include "Wintermute/Procedure/lambda_call.hpp"
 
 using Wintermute::Procedure::Module;
+using Wintermute::Procedure::LambdaCall;
 using Wintermute::Procedure::ModulePrivate;
 
-zmq::context_t* ModulePrivate::context;
+QtZeroMQ::Context* Wintermute::Procedure::ModulePrivate::context = 0;
 
 Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
+  Q_D(Module);
+  winfo(this, "A new module has entered the guild.");
+  d->connectToWire();
+  d->sendHeartbeat();
 }
 
+// TODO: Wait for a response.
+// TODO: Format and return the response.
 QVariant
 Module::dispatch(Call* call) {
+  Q_D(Module);
   const QString callStr = call->toString();
-  return QVariant(callStr);
+
+  winfo(this, QString("Sending %1 over the wire to '%2'...").arg(callStr, call->recipient()));
+  d->sendData(callStr);
+  return d->recieveData();
 }
 
 QVariant
 Module::invoke(const QString& callName, const QVariantList& arguments){
   Q_D(Module);
 
-  if (!d->calls.contains(callName))
+  if (!d->calls.contains(callName)) {
+    werr(this, QString("The call '%1' doesn't exist in the module '%2'.").arg(callName, qualifiedName()));
     return QVariant(-1);
+  }
 
   CallPointer call = d->calls[callName];
   return call->invoke(arguments);
@@ -56,10 +71,34 @@ Module::mount(CallPointer call){
 }
 
 LambdaCall*
-Module::mountLambda(Call::Signature lambda){
-  CallPointer call = CallPointer(LambdaCall(lambda));
+Module::mountLambda(Call::Signature lambda, const QString& name){
+  CallPointer call = CallPointer(new LambdaCall(lambda, name));
   this->mount(call);
-  return *call;
+  return dynamic_cast<LambdaCall*>(&*call);
+}
+
+QString
+Module::domain() const {
+  Q_D(const Module);
+  return d->domain;
+}
+
+QString
+Module::package() const {
+  Q_D(const Module);
+  return d->package;
+}
+
+void
+Module::setDomain(const QString& value) {
+  Q_D(Module);
+  d->domain = value;
+}
+
+void
+Module::setPackage(const QString& value) {
+  Q_D(Module);
+  d->package = value;
 }
 
 Module::~Module() {

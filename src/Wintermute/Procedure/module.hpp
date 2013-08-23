@@ -25,7 +25,6 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
-#include <QtCore/QCoreApplication>
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/LambdaCall>
 
@@ -35,10 +34,11 @@ namespace Wintermute {
     class Module : public QObject {
       Q_OBJECT;
       Q_DISABLE_COPY(Module);
-      Q_DECLARE_PRIVATE(Module);
       Q_PROPERTY(QString Domain READ domain);
       Q_PROPERTY(QString Package READ package);
 
+      protected:
+      Q_DECLARE_PRIVATE(Module);
       QScopedPointer<ModulePrivate> d_ptr;
 
       public:
@@ -49,17 +49,20 @@ namespace Wintermute {
        * @fn domain
        * Obtains the domain name that this module lives under.
        */
-      virtual QString domain() const = 0;
+      QString domain() const;
 
       /**
        * @fn domain
        * Obtains the package name that identifies this module from other
        * modules.
        */
-      virtual QString package() const = 0;
+      QString package() const;
 
-      virtual inline QString qualifiedName() const final {
-        return domain() + QString(".") + package() + QString("/") + QString::number(qApp->applicationPid());
+      /**
+       * @fn qualifiedName
+       */
+      inline QString qualifiedName() const {
+        return domain() + "." + package();
       }
 
       /**
@@ -77,6 +80,8 @@ namespace Wintermute {
       QVariant invoke(const QString& name, const QVariantList& arguments);
 
       protected:
+        void setDomain(const QString& value);
+        void setPackage(const QString& value);
         /**
          * @fn mount
          * @brief Registers the call into the system.
@@ -88,7 +93,7 @@ namespace Wintermute {
          * @brief Crafts a LambdaCall out of a function pointer and adds the
          * call into the system.
          */
-        LambdaCall* mountLambda(Call::Signature lambda);
+        LambdaCall* mountLambda(Call::Signature lambda, const QString& name);
     };
   } /*  Procedure */
 } /*  Wintermute */
