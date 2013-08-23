@@ -35,10 +35,18 @@ namespace Wintermute {
      * it connects it to the other processes quickly.
      */
     class ProcessModule : public Module {
-      friend class Wintermute::Application;
+      Q_OBJECT;
+      Q_DISABLE_COPY(ProcessModule);
+
+      friend class Wintermute::ApplicationPrivate;
       explicit ProcessModule();
+
       public:
         virtual ~ProcessModule();
+
+      protected:
+        void reboot();
+        void quit(const int exitcode = 0);
     };
   }
 }
