@@ -59,6 +59,9 @@ namespace Wintermute {
       static Arguments* instance();
 
       /** TODO: Complete documentation. */
+      bool hasArgument(const QString& argumentName) const;
+
+      /** TODO: Complete documentation. */
       QVariant argument(const QString& argumentName) const;
 
       /** TODO: Complete documentation. */

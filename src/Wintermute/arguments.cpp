@@ -90,6 +90,12 @@ Arguments::instance(){
   return self;
 }
 
+bool
+Arguments::hasArgument(const QString& argumentName) const {
+  Q_D(const Arguments);
+  return d->arguments.contains(argumentName);
+}
+
 QVariant
 Arguments::argument(const QString& argumentName) const {
   Q_D(const Arguments);
@@ -129,6 +135,7 @@ Arguments::parseError(const QString& error){
   Wintermute::Logger* log = wlog(this);
   log->error(QString("Unrecognized command-line arguments. (%1)").arg(error));
   wApp->stop();
+  exit(1);
 }
 
 void
