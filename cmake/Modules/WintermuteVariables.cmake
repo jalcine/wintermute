@@ -37,26 +37,33 @@ set(WINTERMUTE_COMPILE_DEFINITIONS           WINTERMUTE)
 set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG     WINTERMUTE_DEBUG)
 set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE   WINTERMUTE_RELEASE)
 
-set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall ${ZMQ_CFLAGS}")
-set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-O4")
-set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -W -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-set(WINTERMUTE_LINK_FLAGS            "${ZMQ_LDFLAGS}")
+set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall")
+set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-Ofast -frtti -fwhole-program")
+set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -Wextra -Wall -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Wnonnull -Woverflow -fprofile-arcs -ftest-coverage")
+set(WINTERMUTE_LINK_FLAGS            "")
 set(WINTERMUTE_LINK_FLAGS_DEBUG      "-fprofile-arcs -ftest-coverage -lgcov")
 set(WINTERMUTE_LINK_FLAGS_RELEASE    "")
 
-set(WINTERMUTE_LIBRARIES ${QT_QTCORE_LIBRARY}
+set(WINTERMUTE_LIBRARIES
   Log4Qt
-  ${ZMQ_LIBRARIES}
+  QtZeroMQ
+  ${QT_QTCORE_LIBRARY}
   ${QJSON_LIBRARIES}
   ${QCOMMANDLINE_LIBRARIES})
-set(WINTERMUTE_INCLUDE_DIRS ${QT_INCLUDE_DIR}
+set(WINTERMUTE_INCLUDE_DIRS
+  ${QT_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
   ${LOG4QT_INCLUDE_DIRS}
-  ${ZMQ_INCLUDE_DIRS}
+  ${QTZEROMQ_INCLUDE_DIRS}
   ${QJSON_INCLUDE_DIRS}
   ${QCOMMANDLINE_INCLUDE_DIR})
+
 set(WINTERMUTE_PLUGIN_LIBRARY_DIR    "${WINTERMUTE_LIBRARY_DIR}/Wintermute")
 set(WINTERMUTE_PLUGIN_DEFINITION_DIR "${WINTERMUTE_DATA_DIR}/plugindefs")
+
+# Clean up duplicates
+list(REMOVE_DUPLICATES WINTERMUTE_LIBRARIES)
+list(REMOVE_DUPLICATES WINTERMUTE_INCLUDE_DIRS)
 
 # Change some CMake settings.
 set(CMAKE_USE_RELATIVE_PATHS true)
