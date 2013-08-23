@@ -53,7 +53,8 @@ Call::type() const {
 
 QString
 Call::recipient() const {
-  return QString();
+  Q_D(const Call);
+  return d->recipient;
 }
 
 QString
@@ -64,7 +65,7 @@ Call::toString() const {
 
   QMap<QString, QVariant> callMap;
   callMap["type"] = (int) type();
-  callMap["recipient"] = recipient();
+  callMap["recipient"] = d->recipient;
   callMap["data"] = d->data;
 
   QByteArray json = serializer.serialize(callMap, &ok);
