@@ -29,7 +29,7 @@
 #include <QtCore/QSettings>
 #include <QtZeroMQ/globals.hpp>
 
-#define WINTERMUTE_PLUGIN_MODULE_HEARTBEAT "me.jalcine.wintermute.heartbeat"
+#define WINTERMUTE_PLUGIN_DAEMON_UUID QUuid()
 
 namespace Wintermute {
   class ApplicationPrivate {
@@ -41,10 +41,11 @@ namespace Wintermute {
     QList<Procedure::Module*> modules;
     QSettings* settings;
 
-    ApplicationPrivate(int &argc, char **argv) : settings(0) {
-      app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-      module.clear();
-    }
+    ApplicationPrivate(int &argc, char **argv) :
+      app(), module(), modules(), settings(0) {
+        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
+        module.clear();
+      }
 
     void initialize(){
       // Add library paths for plug-ins.
@@ -74,19 +75,29 @@ namespace Wintermute {
     }
 
     void loadCurrentMode() {
-      // Load each instance.
+      Factory::instance()->start();
       const QString mode = Arguments::instance()->argument("mode").toString();
 
       if (mode == "daemon" || mode == "d"){
         wdebug(Application::instance(), "Starting daemon mode...");
-        Factory::instance()->start();
+        bool rt = Factory::instance()->loadPlugin(WINTERMUTE_PLUGIN_DAEMON_UUID);
 
-        if (!Arguments::instance()->hasArgument("fork")){
-          // TODO: Fork this process.
-          // TODO: Exit this process.
+        if (!rt){
+          werr(Application::instance(), "Can't load daemon plugin; bailing out!");
+          Application::instance()->stop(127);
         }
-      } else {
-        Factory::instance()->loadPlugin(WINTERMUTE_PLUGIN_MODULE_HEARTBEAT);
+      }
+      else if (mode == "plugin" || mode == "p") {
+        wdebug(Application::instance(), "Booting plugin...");
+        const QUuid pluginUuid(Arguments::instance()->argument("uuid").toString());
+
+        if (pluginUuid.isNull()){
+          werr(Application::instance(), "Invalid plugin UUID provided.");
+          Application::instance()->stop(127);
+          return;
+        }
+
+        Factory::instance()->loadPlugin(pluginUuid);
       }
     }
   };
