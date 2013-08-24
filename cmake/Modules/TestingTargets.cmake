@@ -67,6 +67,7 @@ macro(generate_lcov _target)
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "[lcov] Analyzing coverage collection data (lcov)..."
+    )
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Cleaning up coverage data..."
     COMMAND ${LCOV_PATH} -e ${_lcov_file} \"${CMAKE_SOURCE_DIR}/*\" -o ${_lcov_file}
