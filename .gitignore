@@ -19,3 +19,4 @@ FindWintermute.cmake
 src/global.hpp
 *.pyc
 gdb.txt
+*.orig
