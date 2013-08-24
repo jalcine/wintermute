@@ -35,10 +35,10 @@ namespace Testing
 {
 QProcess* spawnProcess ( const QStringList& arguments )
 {
-	QProcess* process = new QProcess ( qApp );
-	process->setProcessChannelMode ( QProcess::SeparateChannels );
-	process->start ( WINTERMUTE_EXECUTABLE, arguments );
-	return process;
+  QProcess* process = new QProcess ( qApp );
+  process->setProcessChannelMode ( QProcess::SeparateChannels );
+  process->start ( WINTERMUTE_EXECUTABLE, arguments );
+  return process;
 }
 }
 }

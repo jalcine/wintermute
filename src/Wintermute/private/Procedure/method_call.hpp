@@ -31,16 +31,16 @@ namespace Procedure
 class MethodCallPrivate : public CallPrivate
 {
 public:
-	explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
-	}
+  explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
+  }
 
-	virtual ~MethodCallPrivate() {
-	}
+  virtual ~MethodCallPrivate() {
+  }
 
-	MethodCall* q;
-	QString module;
-	QString method;
-	QVariantList arguments;
+  MethodCall* q;
+  QString module;
+  QString method;
+  QVariantList arguments;
 };
 }
 }

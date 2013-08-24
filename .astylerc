@@ -1,4 +1,4 @@
---style=k&r
+--style=kr
 --indent=spaces=2
 --indent-switches
 --indent-cases
@@ -12,3 +12,4 @@
 --convert-tabs
 --verbose
 --lineend=linux
+--suffix=none

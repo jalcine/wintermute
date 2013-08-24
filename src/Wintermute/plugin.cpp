@@ -42,59 +42,59 @@ Plugin::Plugin ( const QString& uuid ) : QObject ( Factory::instance() ), d_ptr 
 QString
 Plugin::name() const
 {
-	return QString::null;
+  return QString::null;
 }
 
 // TODO: Provide a means of determining the plugin's version.
 Version
 Plugin::version() const
 {
-	return Version::Any;
+  return Version::Any;
 }
 
 // TODO: Provide a means of determining the version of Wintermute required.
 Version
 Plugin::systemVersion() const
 {
-	return Version::Any;
+  return Version::Any;
 }
 
 QSettings*
 Plugin::configuration() const
 {
-	Q_D ( const Plugin );
-	return d->settings;
+  Q_D ( const Plugin );
+  return d->settings;
 }
 
 Plugin::State
 Plugin::state() const
 {
-	return Undefined;
+  return Undefined;
 }
 
 Plugin::Type
 Plugin::type() const
 {
-	return Module;
+  return Module;
 }
 
 QUuid
 Plugin::id() const
 {
-	Q_D ( const Plugin );
-	return d->id;
+  Q_D ( const Plugin );
+  return d->id;
 }
 
 bool
 Plugin::load()
 {
-	return false;
+  return false;
 }
 
 bool
 Plugin::unload()
 {
-	return false;
+  return false;
 }
 
 Plugin::~Plugin()

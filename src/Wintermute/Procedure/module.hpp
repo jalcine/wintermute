@@ -35,68 +35,68 @@ namespace Procedure
 class ModulePrivate;
 class Module : public QObject
 {
-	Q_OBJECT;
-	Q_DISABLE_COPY ( Module );
-	Q_PROPERTY ( QString Domain READ domain );
-	Q_PROPERTY ( QString Package READ package );
+  Q_OBJECT;
+  Q_DISABLE_COPY ( Module );
+  Q_PROPERTY ( QString Domain READ domain );
+  Q_PROPERTY ( QString Package READ package );
 
 protected:
-	Q_DECLARE_PRIVATE ( Module );
-	QScopedPointer<ModulePrivate> d_ptr;
+  Q_DECLARE_PRIVATE ( Module );
+  QScopedPointer<ModulePrivate> d_ptr;
 
 public:
-	explicit Module ( QObject* parent );
-	virtual ~Module();
+  explicit Module ( QObject* parent );
+  virtual ~Module();
 
-	/**
-	 * @fn domain
-	 * Obtains the domain name that this module lives under.
-	 */
-	QString domain() const;
+  /**
+   * @fn domain
+   * Obtains the domain name that this module lives under.
+   */
+  QString domain() const;
 
-	/**
-	 * @fn domain
-	 * Obtains the package name that identifies this module from other
-	 * modules.
-	 */
-	QString package() const;
+  /**
+   * @fn domain
+   * Obtains the package name that identifies this module from other
+   * modules.
+   */
+  QString package() const;
 
-	/**
-	 * @fn qualifiedName
-	 */
-	inline QString qualifiedName() const {
-		return domain() + "." + package();
-	}
+  /**
+   * @fn qualifiedName
+   */
+  inline QString qualifiedName() const {
+    return domain() + "." + package();
+  }
 
-	/**
-	 * @fn dispatch
-	 * @brief Collects and crafts a call for sending.
-	 *
-	 * Uses the arguments to craft a Call to send over the wire.
-	 */
-	QVariant dispatch ( Call* call );
+  /**
+   * @fn dispatch
+   * @brief Collects and crafts a call for sending.
+   *
+   * Uses the arguments to craft a Call to send over the wire.
+   */
+  QVariant dispatch ( Call* call );
 
-	/**
-	 * @fn invoke
-	 * @brief Looks for the named call and invoke with the provided arguments.
-	 */
-	QVariant invoke ( const QString& name, const QVariantList& arguments );
+  /**
+   * @fn invoke
+   * @brief Looks for the named call and invoke with the provided arguments.
+   */
+  QVariant invoke ( const QString& name, const QVariantList& arguments );
 
 protected:
-	void setDomain ( const QString& value );
-	void setPackage ( const QString& value );
-	/**
-	 * @fn mount
-	 * @brief Registers the call into the system.
-	 */
-	void mount ( CallPointer call );
+  void setDomain ( const QString& value );
+  void setPackage ( const QString& value );
+  /**
+   * @fn mount
+   * @brief Registers the call into the system.
+   */
+  void mount ( CallPointer call );
 
-	/**
-	 * @fn mountLambda
-	 * @brief Crafts a LambdaCall out of a function pointer and adds the
-	 * call into the system.
-	 */
-	LambdaCall* mountLambda ( Call::Signature lambda, const QString& name );
+  /**
+   * @fn mountLambda
+   * @brief Crafts a LambdaCall out of a function pointer and adds the
+   * call into the system.
+   */
+  LambdaCall* mountLambda ( Call::Signature lambda, const QString& name );
 };
 } /*  Procedure */
 } /*  Wintermute */

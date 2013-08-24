@@ -5,10 +5,10 @@
 
 class TestCleanStart : public QObject
 {
-	Q_OBJECT;
+  Q_OBJECT;
 
 private Q_SLOTS:
-	void startApp();
+  void startApp();
 };
 
 #endif /* UNIT_TEST_CLEAN_START_HPP */

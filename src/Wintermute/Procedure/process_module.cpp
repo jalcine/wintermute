@@ -27,23 +27,23 @@ using Wintermute::Procedure::ProcessModule;
 
 ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
 {
-	setDomain ( "me.jalcine.wintermute" );
-	setPackage ( "process" );
-	// TODO: Add 'listModules' method via lambda.
-	// TODO: Add 'reboot' method via lambda.
+  setDomain ( "me.jalcine.wintermute" );
+  setPackage ( "process" );
+  // TODO: Add 'listModules' method via lambda.
+  // TODO: Add 'reboot' method via lambda.
 }
 
 void
 ProcessModule::reboot()
 {
-	// TODO: Add forking logic or recycle some.
-	//Wintermute::Application::instance()->exit();
+  // TODO: Add forking logic or recycle some.
+  //Wintermute::Application::instance()->exit();
 }
 
 void
 ProcessModule::quit ( const int exitcode )
 {
-	//Wintermute::Application::instance()->exit(exitcode);
+  //Wintermute::Application::instance()->exit(exitcode);
 }
 
 ProcessModule::~ProcessModule()

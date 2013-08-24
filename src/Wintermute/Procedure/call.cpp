@@ -39,51 +39,51 @@ Call::Call ( CallPrivate* d ) : QObject ( Wintermute::Application::instance() ),
 QVariant
 Call::invoke ( const QVariantList& arguments )
 {
-	Q_D ( Call );
-	return d->function ( arguments );
+  Q_D ( Call );
+  return d->function ( arguments );
 }
 
 void
 Call::setRecipient ( const QString moduleName )
 {
-	Q_D ( Call );
-	d->recipient = QString ( moduleName );
+  Q_D ( Call );
+  d->recipient = QString ( moduleName );
 }
 
 Call::Type
 Call::type() const
 {
-	return Call::Method;
+  return Call::Method;
 }
 
 QString
 Call::recipient() const
 {
-	Q_D ( const Call );
-	return d->recipient;
+  Q_D ( const Call );
+  return d->recipient;
 }
 
 QString
 Call::toString() const
 {
-	Q_D ( const Call );
-	QJson::Serializer serializer;
-	bool ok;
-	QMap<QString, QVariant> callMap;
-	callMap["type"] = ( int ) type();
-	callMap["recipient"] = d->recipient;
-	callMap["data"] = d->data;
-	QByteArray json = serializer.serialize ( callMap, &ok );
-	if ( ok )
-		{ return QString ( json ); }
-	else
-		{ return QString(); }
+  Q_D ( const Call );
+  QJson::Serializer serializer;
+  bool ok;
+  QMap<QString, QVariant> callMap;
+  callMap["type"] = ( int ) type();
+  callMap["recipient"] = d->recipient;
+  callMap["data"] = d->data;
+  QByteArray json = serializer.serialize ( callMap, &ok );
+  if ( ok )
+    { return QString ( json ); }
+  else
+    { return QString(); }
 }
 
 QVariant
 Call::operator() ( const QVariantList& arguments )
 {
-	return this->invoke ( arguments );
+  return this->invoke ( arguments );
 }
 
 Call::~Call()

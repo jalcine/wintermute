@@ -38,18 +38,18 @@ namespace Procedure
  */
 class ProcessModule : public Module
 {
-	Q_OBJECT;
-	Q_DISABLE_COPY ( ProcessModule );
+  Q_OBJECT;
+  Q_DISABLE_COPY ( ProcessModule );
 
-	friend class Wintermute::ApplicationPrivate;
-	explicit ProcessModule();
+  friend class Wintermute::ApplicationPrivate;
+  explicit ProcessModule();
 
 public:
-	virtual ~ProcessModule();
+  virtual ~ProcessModule();
 
 protected:
-	void reboot();
-	void quit ( const int exitcode = 0 );
+  void reboot();
+  void quit ( const int exitcode = 0 );
 };
 }
 }

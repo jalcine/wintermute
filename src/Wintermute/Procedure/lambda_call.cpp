@@ -26,17 +26,17 @@
 using Wintermute::Procedure::LambdaCall;
 
 LambdaCall::LambdaCall ( Call::Signature lambda, QString name ) :
-	Call ( Wintermute::Application::instance() )
+  Call ( Wintermute::Application::instance() )
 {
-	Q_D ( Call );
-	this->setProperty ( "name", name );
-	d->function = lambda;
+  Q_D ( Call );
+  this->setProperty ( "name", name );
+  d->function = lambda;
 }
 
 QString
 LambdaCall::name() const
 {
-	return this->property ( "name" ).toString();
+  return this->property ( "name" ).toString();
 }
 
 LambdaCall::~LambdaCall()

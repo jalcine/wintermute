@@ -29,19 +29,19 @@ using Wintermute::TemporaryPlugin;
 using Wintermute::PluginInterfaceable;
 
 TemporaryPlugin::TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader ) :
-	Plugin ( id )
+  Plugin ( id )
 {
-	Q_D ( Plugin );
-	d->loader = theLoader;
+  Q_D ( Plugin );
+  d->loader = theLoader;
 }
 
 PluginInterfaceable*
 TemporaryPlugin::tryLoad ( QPluginLoader* loader )
 {
-	Q_D ( Plugin );
-	d->loader = loader;
-	d->loader->setParent ( this );
-	return d->tryLoad ( loader );
+  Q_D ( Plugin );
+  d->loader = loader;
+  d->loader->setParent ( this );
+  return d->tryLoad ( loader );
 }
 
 TemporaryPlugin::~TemporaryPlugin()

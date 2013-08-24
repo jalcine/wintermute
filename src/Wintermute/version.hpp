@@ -11,61 +11,61 @@ namespace Wintermute
 class Version
 {
 public:
-	enum DevelopmentStage {
-		Nightly = 0,
-		Alpha,
-		Beta,
-		ReleaseCandidate,
-		FinalRelease
-	};
+  enum DevelopmentStage {
+    Nightly = 0,
+    Alpha,
+    Beta,
+    ReleaseCandidate,
+    FinalRelease
+  };
 
-	ushort major;
-	ushort minor;
-	ushort patch;
-	QString stage;
-	DevelopmentStage state;
+  ushort major;
+  ushort minor;
+  ushort patch;
+  QString stage;
+  DevelopmentStage state;
 
-	static Version Any;
+  static Version Any;
 
-	inline QString toString() const {
-		QString versionStr;
-		versionStr += QString::number ( this->major );
-		versionStr += "." + QString::number ( this->minor );
-		versionStr += "." + QString::number ( this->patch );
-		versionStr += "-";
-		switch ( state ) {
-			case Alpha:
-				versionStr += "a";
-				break;
-			case Beta:
-				versionStr += "b";
-				break;
-			case ReleaseCandidate:
-				versionStr += "rc";
-				break;
-			case FinalRelease:
-				versionStr += "r";
-				break;
-			default:
-			case Nightly:
-				versionStr += "dev";
-				break;
-		}
-		versionStr += "." + this->stage;
-		return versionStr;
-	}
+  inline QString toString() const {
+    QString versionStr;
+    versionStr += QString::number ( this->major );
+    versionStr += "." + QString::number ( this->minor );
+    versionStr += "." + QString::number ( this->patch );
+    versionStr += "-";
+    switch ( state ) {
+      case Alpha:
+        versionStr += "a";
+        break;
+      case Beta:
+        versionStr += "b";
+        break;
+      case ReleaseCandidate:
+        versionStr += "rc";
+        break;
+      case FinalRelease:
+        versionStr += "r";
+        break;
+      default:
+      case Nightly:
+        versionStr += "dev";
+        break;
+    }
+    versionStr += "." + this->stage;
+    return versionStr;
+  }
 
-	inline static Version fromString ( const QString& versionStr ) {
-		Version version;
-		QStringList components = versionStr.split ( "." );
-		QStringList patchInfo = components[2].split ( "-" );
-		version.major = components[0].toUShort();
-		version.minor = components[1].toUShort();
-		version.patch = patchInfo[0].toUShort();
-		version.stage = components[3];
-		version.state = ( DevelopmentStage ) patchInfo[1].toUShort();
-		return version;
-	}
+  inline static Version fromString ( const QString& versionStr ) {
+    Version version;
+    QStringList components = versionStr.split ( "." );
+    QStringList patchInfo = components[2].split ( "-" );
+    version.major = components[0].toUShort();
+    version.minor = components[1].toUShort();
+    version.patch = patchInfo[0].toUShort();
+    version.stage = components[3];
+    version.state = ( DevelopmentStage ) patchInfo[1].toUShort();
+    return version;
+  }
 };
 }
 

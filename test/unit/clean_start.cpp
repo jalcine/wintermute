@@ -7,7 +7,7 @@ using Wintermute::Testing::spawnProcess;
 void
 TestCleanStart::startApp()
 {
-	QSKIP ( "Add tests to determine a clean start up for the application.", SkipAll );
+  QSKIP ( "Add tests to determine a clean start up for the application.", SkipAll );
 }
 
 QTEST_MAIN ( TestCleanStart )

@@ -30,13 +30,13 @@ namespace Wintermute
 {
 class PluginInterfaceablePrivate
 {
-	Q_DECLARE_PUBLIC ( PluginInterfaceable );
-	PluginInterfaceable* q_ptr;
+  Q_DECLARE_PUBLIC ( PluginInterfaceable );
+  PluginInterfaceable* q_ptr;
 
 public:
-	// @note Should we connect signals from interface to plugin here?
-	PluginInterfaceablePrivate ( PluginInterfaceable* q ) : q_ptr ( q ) {
-	}
+  // @note Should we connect signals from interface to plugin here?
+  PluginInterfaceablePrivate ( PluginInterfaceable* q ) : q_ptr ( q ) {
+  }
 };
 }
 

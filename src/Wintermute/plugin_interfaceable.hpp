@@ -48,25 +48,25 @@ class PluginPrivate;
  */
 class PluginInterfaceable : public QObject
 {
-	// {{{ QObject-ified.
-	Q_OBJECT;
-	// }}} QObject-ified.
-	QScopedPointer<PluginInterfaceable> d_ptr;
+  // {{{ QObject-ified.
+  Q_OBJECT;
+  // }}} QObject-ified.
+  QScopedPointer<PluginInterfaceable> d_ptr;
 
 protected:
-	Q_DECLARE_PRIVATE ( PluginInterfaceable );
-	void connectPlugin ( Plugin* const plugin );
+  Q_DECLARE_PRIVATE ( PluginInterfaceable );
+  void connectPlugin ( Plugin* const plugin );
 
 public:
-	explicit PluginInterfaceable();
-	virtual ~PluginInterfaceable();
+  explicit PluginInterfaceable();
+  virtual ~PluginInterfaceable();
 
-	Q_SIGNAL void started();
-	Q_SIGNAL void stopped();
-	virtual Q_SLOT Plugin::State start() = 0;
-	virtual Q_SLOT Plugin::State stop()  = 0;
+  Q_SIGNAL void started();
+  Q_SIGNAL void stopped();
+  virtual Q_SLOT Plugin::State start() = 0;
+  virtual Q_SLOT Plugin::State stop()  = 0;
 
-	friend class PluginPrivate;
+  friend class PluginPrivate;
 };
 }
 

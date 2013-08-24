@@ -7,16 +7,16 @@ class QProcess;
 
 class CommandLineUnitTest : public QObject
 {
-	Q_OBJECT;
+  Q_OBJECT;
 
 private:
-	QProcess* process;
+  QProcess* process;
 
 private slots:
-	void cleanup();
-	void showHelp();
-	void showVersion();
-	void showInvalidArgument();
+  void cleanup();
+  void showHelp();
+  void showVersion();
+  void showInvalidArgument();
 };
 
 #endif /* TEST_COMMAND_LINE_HPP */

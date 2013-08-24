@@ -34,56 +34,56 @@ class Application;
 /** TODO: Write docs **/
 class Arguments : public QObject
 {
-	friend class Application;
-	friend class ApplicationPrivate;
+  friend class Application;
+  friend class ApplicationPrivate;
 
-	Q_OBJECT;
-	Q_DECLARE_PRIVATE ( Arguments );
+  Q_OBJECT;
+  Q_DECLARE_PRIVATE ( Arguments );
 
-	QScopedPointer<ArgumentsPrivate> d_ptr;
-	static Arguments* self;
+  QScopedPointer<ArgumentsPrivate> d_ptr;
+  static Arguments* self;
 
-	/**
-	 * @ctor
-	 * Handles the internal creation of the command-line argument management
-	 * system.
-	 */
-	explicit Arguments();
+  /**
+   * @ctor
+   * Handles the internal creation of the command-line argument management
+   * system.
+   */
+  explicit Arguments();
 
 public:
-	virtual ~Arguments();
-	/**
-	 * @fn instance()
-	 * @brief Provides a pointer to the active Arguments instance.
-	 *
-	 * TODO: Complete documentation.
-	 */
-	static Arguments* instance();
+  virtual ~Arguments();
+  /**
+   * @fn instance()
+   * @brief Provides a pointer to the active Arguments instance.
+   *
+   * TODO: Complete documentation.
+   */
+  static Arguments* instance();
 
-	/** TODO: Complete documentation. */
-	bool hasArgument ( const QString& argumentName ) const;
+  /** TODO: Complete documentation. */
+  bool hasArgument ( const QString& argumentName ) const;
 
-	/** TODO: Complete documentation. */
-	QVariant argument ( const QString& argumentName ) const;
+  /** TODO: Complete documentation. */
+  QVariant argument ( const QString& argumentName ) const;
 
-	/** TODO: Complete documentation. */
-	QVariantMap arguments() const;
+  /** TODO: Complete documentation. */
+  QVariantMap arguments() const;
 
-	/** TODO: Complete documentation. */
-	void addOption ( const QChar& optionName, const QString& longOptionName, const QString& description, QCommandLine::Flags flag );
+  /** TODO: Complete documentation. */
+  void addOption ( const QChar& optionName, const QString& longOptionName, const QString& description, QCommandLine::Flags flag );
 
-	/** TODO: Complete documentation. */
-	void addSwitch ( const QChar& switchName, const QString& longSwitchName, const QString& description, QCommandLine::Flags flag );
+  /** TODO: Complete documentation. */
+  void addSwitch ( const QChar& switchName, const QString& longSwitchName, const QString& description, QCommandLine::Flags flag );
 
-	/** TODO: Complete documentation. */
-	void addParameter ( const QString& parameterName, const QString& description, QCommandLine::Flags flag );
+  /** TODO: Complete documentation. */
+  void addParameter ( const QString& parameterName, const QString& description, QCommandLine::Flags flag );
 
-	//void add
+  //void add
 private:
-	Q_SLOT void switchFound ( const QString& switchName );
-	Q_SLOT void paramFound  ( const QString& paramName,  const QVariant& paramValue );
-	Q_SLOT void optionFound ( const QString& optionName, const QVariant& optionValue );
-	Q_SLOT void parseError  ( const QString& argumentName );
+  Q_SLOT void switchFound ( const QString& switchName );
+  Q_SLOT void paramFound  ( const QString& paramName,  const QVariant& paramValue );
+  Q_SLOT void optionFound ( const QString& optionName, const QVariant& optionValue );
+  Q_SLOT void parseError  ( const QString& argumentName );
 };
 }
 

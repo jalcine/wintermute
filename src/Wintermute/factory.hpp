@@ -50,46 +50,46 @@ class FactoryPrivate;
  */
 class Factory : public QObject
 {
-	friend class Application;
-	friend class ApplicationPrivate;
+  friend class Application;
+  friend class ApplicationPrivate;
 
-	Q_OBJECT;
-	Q_DECLARE_PRIVATE ( Factory );
-	FactoryPrivate* d_ptr;
-	static Factory* self;
+  Q_OBJECT;
+  Q_DECLARE_PRIVATE ( Factory );
+  FactoryPrivate* d_ptr;
+  static Factory* self;
 
-	/**
-	 * @fn Factory
-	 * @constructor
-	 *
-	 */
-	explicit Factory();
+  /**
+   * @fn Factory
+   * @constructor
+   *
+   */
+  explicit Factory();
 
 private:
-	void start();
-	void stop();
-	Q_SLOT void pluginStateChange ( const QUuid& id, const Plugin::State& state );
+  void start();
+  void stop();
+  Q_SLOT void pluginStateChange ( const QUuid& id, const Plugin::State& state );
 
 public:
-	/**
-	 * @fn ~Factory
-	 * @destructor
-	 */
-	virtual ~Factory();
+  /**
+   * @fn ~Factory
+   * @destructor
+   */
+  virtual ~Factory();
 
-	/**
-	 * @fn instance
-	 * @static
-	 */
-	static Factory* instance();
-	PluginList availablePlugins() const;
-	PluginList activePlugins() const;
-	bool loadPlugin ( const QUuid& id );
-	bool unloadPlugin ( const QUuid& id );
-	bool autoloadPlugins();
-	bool unloadAllPlugins();
+  /**
+   * @fn instance
+   * @static
+   */
+  static Factory* instance();
+  PluginList availablePlugins() const;
+  PluginList activePlugins() const;
+  bool loadPlugin ( const QUuid& id );
+  bool unloadPlugin ( const QUuid& id );
+  bool autoloadPlugins();
+  bool unloadAllPlugins();
 
-	Q_SIGNAL void pluginStateChanged ( const QUuid& id, const Plugin::State& state );
+  Q_SIGNAL void pluginStateChanged ( const QUuid& id, const Plugin::State& state );
 };
 }
 

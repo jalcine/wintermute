@@ -44,116 +44,116 @@ class PluginPrivate;
  */
 class Plugin : public QObject
 {
-	Q_OBJECT;
-	Q_ENUMS ( State );
-	Q_PROPERTY ( QString Name          READ name );
-	Q_PROPERTY ( Version Version       READ version );
-	Q_PROPERTY ( Version SystemVersion READ systemVersion );
-	Q_PROPERTY ( State   State         READ state );
+  Q_OBJECT;
+  Q_ENUMS ( State );
+  Q_PROPERTY ( QString Name          READ name );
+  Q_PROPERTY ( Version Version       READ version );
+  Q_PROPERTY ( Version SystemVersion READ systemVersion );
+  Q_PROPERTY ( State   State         READ state );
 
-	QScopedPointer<PluginPrivate> d_ptr;
+  QScopedPointer<PluginPrivate> d_ptr;
 
 protected:
-	Q_DECLARE_PRIVATE ( Plugin );
-	explicit Plugin ( const QString& uuid );
-	QSettings* configuration() const;
+  Q_DECLARE_PRIVATE ( Plugin );
+  explicit Plugin ( const QString& uuid );
+  QSettings* configuration() const;
 
 public:
 
-	virtual ~Plugin();
+  virtual ~Plugin();
 
-	/**
-	 * Flags used to represent the different states that a plug-in can exist
-	 * in.
-	 */
-	enum State {
-		Undefined = 0x0,  // Reserved for a lack of a state (typically null) plugin.
-		Loading   = 0x1,  // The plugin is currently undergoing the act of loading its prerequisties into Wintermute.
-		Loaded    = 0x2,  // The plugin has been successfully loaded into Wintermute.
-		Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
-		Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
-		Crashed   = 0x5   // The plugin has encountered an undefined error.
-	};
+  /**
+   * Flags used to represent the different states that a plug-in can exist
+   * in.
+   */
+  enum State {
+    Undefined = 0x0,  // Reserved for a lack of a state (typically null) plugin.
+    Loading   = 0x1,  // The plugin is currently undergoing the act of loading its prerequisties into Wintermute.
+    Loaded    = 0x2,  // The plugin has been successfully loaded into Wintermute.
+    Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
+    Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
+    Crashed   = 0x5   // The plugin has encountered an undefined error.
+  };
 
-	/**
-	 * Defines the kind of plugin that this is.
-	 */
-	enum Type {
-		Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
-		Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
-		Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
-	};
+  /**
+   * Defines the kind of plugin that this is.
+   */
+  enum Type {
+    Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
+    Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
+    Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
+  };
 
-	/**
-	 * @fn isLoaded
-	 * Determines if the plugin has been loaded.
-	 */
-	inline bool isLoaded() const {
-		return state() == Loaded;
-	}
+  /**
+   * @fn isLoaded
+   * Determines if the plugin has been loaded.
+   */
+  inline bool isLoaded() const {
+    return state() == Loaded;
+  }
 
-	/**
-	 * @fn id
-	 * Obtains the UUID used as a unique identifer for the plugin.
-	 */
-	QUuid id() const;
+  /**
+   * @fn id
+   * Obtains the UUID used as a unique identifer for the plugin.
+   */
+  QUuid id() const;
 
-	/**
-	 * @fn name
-	 * Obtains the friendly name of the plugin.
-	 */
-	QString name() const;
+  /**
+   * @fn name
+   * Obtains the friendly name of the plugin.
+   */
+  QString name() const;
 
-	/**
-	 * @fn version
-	 * Obtains the versioning object for the plugin.
-	 */
-	Version version() const;
+  /**
+   * @fn version
+   * Obtains the versioning object for the plugin.
+   */
+  Version version() const;
 
-	/**
-	 * @fn systemVersion
-	 * Obtians the minimum running version of Wintermute required for plugin.
-	 */
-	Version systemVersion() const;
+  /**
+   * @fn systemVersion
+   * Obtians the minimum running version of Wintermute required for plugin.
+   */
+  Version systemVersion() const;
 
-	/**
-	 * @fn state
-	 * Obtains the current state of the plugin.
-	 */
-	State state() const;
+  /**
+   * @fn state
+   * Obtains the current state of the plugin.
+   */
+  State state() const;
 
-	/**
-	 * @fn type
-	 * Obtains the type of plugin.
-	 */
-	Type type() const;
+  /**
+   * @fn type
+   * Obtains the type of plugin.
+   */
+  Type type() const;
 
-	/**
-	 * @fn loaded
-	 * Emitted when the plugin is loaded.
-	 */
-	Q_SIGNAL void loaded();
+  /**
+   * @fn loaded
+   * Emitted when the plugin is loaded.
+   */
+  Q_SIGNAL void loaded();
 
-	/**
-	 * @fn unloaded
-	 * Emitted when the plugin is unloaded.
-	 */
-	Q_SIGNAL void unloaded();
+  /**
+   * @fn unloaded
+   * Emitted when the plugin is unloaded.
+   */
+  Q_SIGNAL void unloaded();
 
-	/**
-	 * @fn load
-	 * Enacts the work of loading this plugin into the factory.
-	 */
-	Q_SLOT bool load();
+  /**
+   * @fn load
+   * Enacts the work of loading this plugin into the factory.
+   */
+  Q_SLOT bool load();
 
-	/**
-	 * @fn unload
-	 * Enacts the work of unloading this plugin from the factory.
-	 */
-	Q_SLOT bool unload();
+  /**
+   * @fn unload
+   * Enacts the work of unloading this plugin from the factory.
+   */
+  Q_SLOT bool unload();
 
-	friend class Factory;
-	friend class FactoryPrivate;
+  friend class Factory;
+  friend class FactoryPrivate;
 };
 
 typedef QList<Plugin*> PluginList;

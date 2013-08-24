@@ -30,12 +30,12 @@ namespace Wintermute
 class PluginInterfaceable;
 class TemporaryPlugin : public Plugin
 {
-	Q_OBJECT;
+  Q_OBJECT;
 
 public:
-	explicit TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader );
-	virtual ~TemporaryPlugin();
-	PluginInterfaceable* tryLoad ( QPluginLoader* loader );
+  explicit TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader );
+  virtual ~TemporaryPlugin();
+  PluginInterfaceable* tryLoad ( QPluginLoader* loader );
 };
 }
 

@@ -32,14 +32,14 @@ namespace Procedure
 class MethodCallPrivate;
 class MethodCall : public Call
 {
-	Q_OBJECT;
-	Q_DISABLE_COPY ( MethodCall );
-	Q_DECLARE_PRIVATE ( MethodCall );
+  Q_OBJECT;
+  Q_DISABLE_COPY ( MethodCall );
+  Q_DECLARE_PRIVATE ( MethodCall );
 
 public:
-	explicit MethodCall ( const QString& module, const QString& method, QVariantList arguments = QVariantList() );
-	virtual ~MethodCall();
-	QString name() const;
+  explicit MethodCall ( const QString& module, const QString& method, QVariantList arguments = QVariantList() );
+  virtual ~MethodCall();
+  QString name() const;
 };
 }
 }

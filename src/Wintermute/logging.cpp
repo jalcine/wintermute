@@ -34,24 +34,24 @@ namespace Wintermute
 class LoggingPrivate
 {
 public:
-	Log4Qt::Layout* primaryLayout;
-	Log4Qt::ColorConsoleAppender* stdOutAppender;
-	Log4Qt::ColorConsoleAppender* stdErrAppender;
+  Log4Qt::Layout* primaryLayout;
+  Log4Qt::ColorConsoleAppender* stdOutAppender;
+  Log4Qt::ColorConsoleAppender* stdErrAppender;
 
-	LoggingPrivate() : primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) {
-		Log4Qt::LogManager::startup();
-		primaryLayout  = new Log4Qt::SimpleTimeLayout();
-		stdOutAppender = new Log4Qt::ColorConsoleAppender ( primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET );
-		stdErrAppender = new Log4Qt::ColorConsoleAppender ( primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET );
-		primaryLayout->setName ( "root" );
-		stdOutAppender->setName ( "stdout" );
-		primaryLayout->activateOptions();
-		stdOutAppender->activateOptions();
-		stdErrAppender->activateOptions();
-		Log4Qt::Logger::rootLogger()->addAppender ( stdOutAppender );
-	}
+  LoggingPrivate() : primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) {
+    Log4Qt::LogManager::startup();
+    primaryLayout  = new Log4Qt::SimpleTimeLayout();
+    stdOutAppender = new Log4Qt::ColorConsoleAppender ( primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET );
+    stdErrAppender = new Log4Qt::ColorConsoleAppender ( primaryLayout, Log4Qt::ConsoleAppender::STDERR_TARGET );
+    primaryLayout->setName ( "root" );
+    stdOutAppender->setName ( "stdout" );
+    primaryLayout->activateOptions();
+    stdOutAppender->activateOptions();
+    stdErrAppender->activateOptions();
+    Log4Qt::Logger::rootLogger()->addAppender ( stdOutAppender );
+  }
 
-	virtual ~LoggingPrivate() { }
+  virtual ~LoggingPrivate() { }
 };
 }
 
@@ -64,30 +64,30 @@ Logging::Logging() : QObject ( Application::instance() ), d_ptr ( new LoggingPri
 Logger*
 Logging::obtainLogger ( const QString& loggerName )
 {
-	Logger* log = Log4Qt::Logger::logger ( loggerName );
-	log->setParent ( Wintermute::Application::instance() );
-	return log;
+  Logger* log = Log4Qt::Logger::logger ( loggerName );
+  log->setParent ( Wintermute::Application::instance() );
+  return log;
 }
 
 Logger*
 Logging::obtainLogger ( const QObject* object )
 {
-	if ( object == 0 )
-		{ return 0; }
-	return Logging::obtainLogger ( object->metaObject()->className() );
+  if ( object == 0 )
+    { return 0; }
+  return Logging::obtainLogger ( object->metaObject()->className() );
 }
 
 Logging*
 Logging::instance()
 {
-	if ( !self )
-		{ self = new Logging; }
-	return self;
+  if ( !self )
+    { self = new Logging; }
+  return self;
 }
 
 Logging::~Logging()
 {
-	Log4Qt::LogManager::shutdown();
+  Log4Qt::LogManager::shutdown();
 }
 
 #include "Wintermute/logging.moc"
