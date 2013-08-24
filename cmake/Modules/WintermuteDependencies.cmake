@@ -54,6 +54,7 @@ find_package(QtZeroMQ REQUIRED)
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
+add_feature_info("Package Discovery" PKGCONFIG_FOUND)
 add_feature_info("JSON parsing" QJSON_FOUND
   "Allows for the use of JSON.")
 add_feature_info("Command Line" QCOMMANDLINE_FOUND
