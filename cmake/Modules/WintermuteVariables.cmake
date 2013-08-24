@@ -39,7 +39,7 @@ set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE   WINTERMUTE_RELEASE)
 
 set(WINTERMUTE_COMPILE_FLAGS         "-std=c++11 -Wall")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-Ofast -frtti -fwhole-program")
-set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -Wextra -Wall -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Wnonnull -Woverflow -fprofile-arcs -ftest-coverage")
+set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -Wextra -Wall -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Woverflow -fprofile-arcs -ftest-coverage")
 set(WINTERMUTE_LINK_FLAGS            "")
 set(WINTERMUTE_LINK_FLAGS_DEBUG      "-fprofile-arcs -ftest-coverage -lgcov")
 set(WINTERMUTE_LINK_FLAGS_RELEASE    "")
