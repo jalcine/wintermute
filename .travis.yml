@@ -19,7 +19,7 @@ before_install:
 
 before_script:
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/ && cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/; cmake ..
 
 script:
   - make wintermute
