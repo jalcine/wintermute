@@ -75,8 +75,12 @@ namespace Wintermute {
         socketOut->sendMessage(data.toLocal8Bit());
       }
 
-      QVariant recieveData(){
-        // TODO: Recieve data.
+      void recieveDataAsync(std::function<void (QVariant)> callback){
+        // TODO: Recieve data in async.
+      }
+
+      QVariant receiveData(){
+        QList<QByteArray> bytes = socketIn->receiveFullMessage();
         return QVariant();
       }
 
