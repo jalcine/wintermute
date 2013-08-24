@@ -21,6 +21,7 @@
 
 #include "Wintermute/Procedure/process_module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
+#include "Wintermute/Procedure/process_module.moc"
 
 using Wintermute::Procedure::ProcessModule;
 

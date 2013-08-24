@@ -46,7 +46,7 @@ Module::dispatch(Call* call) {
 
   winfo(this, QString("Sending %1 over the wire to '%2'...").arg(callStr, call->recipient()));
   d->sendData(callStr);
-  return d->recieveData();
+  return d->receiveData();
 }
 
 QVariant
