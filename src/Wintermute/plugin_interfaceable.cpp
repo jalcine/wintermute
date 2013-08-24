@@ -29,10 +29,12 @@ using Wintermute::PluginInterfaceablePrivate;
 using Wintermute::PluginInterfaceable;
 using Wintermute::Factory;
 
-PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr(this) {
+PluginInterfaceable::PluginInterfaceable() : QObject ( Factory::instance() ), d_ptr ( this )
+{
 }
 
-PluginInterfaceable::~PluginInterfaceable() {
+PluginInterfaceable::~PluginInterfaceable()
+{
 }
 
 #include "Wintermute/plugin_interfaceable.moc"

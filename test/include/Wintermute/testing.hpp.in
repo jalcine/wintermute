@@ -29,13 +29,16 @@
 // TODO: Implement Wintermute::Testing::UnitTest.
 // TODO: Implement Wintermute::Testing::FeatureTest.
 // TODO: Implement Wintermute::Testing::RegressionTest.
-namespace Wintermute {
-  namespace Testing {
-    QProcess* spawnProcess(const QStringList& arguments){
-      QProcess* process = new QProcess(qApp);
-      process->setProcessChannelMode(QProcess::SeparateChannels);
-      process->start(WINTERMUTE_EXECUTABLE,arguments);
-      return process;
-    }
-  }
+namespace Wintermute
+{
+namespace Testing
+{
+QProcess* spawnProcess ( const QStringList& arguments )
+{
+	QProcess* process = new QProcess ( qApp );
+	process->setProcessChannelMode ( QProcess::SeparateChannels );
+	process->start ( WINTERMUTE_EXECUTABLE, arguments );
+	return process;
+}
+}
 }

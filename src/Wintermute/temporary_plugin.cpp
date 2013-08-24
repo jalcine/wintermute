@@ -28,23 +28,24 @@ using Wintermute::PluginPrivate;
 using Wintermute::TemporaryPlugin;
 using Wintermute::PluginInterfaceable;
 
-TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
-  Plugin(id) {
-  Q_D(Plugin);
-
-  d->loader = theLoader;
+TemporaryPlugin::TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader ) :
+	Plugin ( id )
+{
+	Q_D ( Plugin );
+	d->loader = theLoader;
 }
 
 PluginInterfaceable*
-TemporaryPlugin::tryLoad(QPluginLoader* loader){
-  Q_D(Plugin);
-  d->loader = loader;
-  d->loader->setParent(this);
-
-  return d->tryLoad(loader);
+TemporaryPlugin::tryLoad ( QPluginLoader* loader )
+{
+	Q_D ( Plugin );
+	d->loader = loader;
+	d->loader->setParent ( this );
+	return d->tryLoad ( loader );
 }
 
-TemporaryPlugin::~TemporaryPlugin() {
+TemporaryPlugin::~TemporaryPlugin()
+{
 }
 
 #include "Wintermute/temporary_plugin.moc"

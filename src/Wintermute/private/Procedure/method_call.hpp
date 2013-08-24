@@ -24,20 +24,23 @@
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
 
-namespace Wintermute {
-  namespace Procedure {
-    class MethodCallPrivate : public CallPrivate {
-      public:
-        explicit MethodCallPrivate(MethodCall* q) : CallPrivate(q) {
-        }
+namespace Wintermute
+{
+namespace Procedure
+{
+class MethodCallPrivate : public CallPrivate
+{
+public:
+	explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
+	}
 
-        virtual ~MethodCallPrivate() {
-        }
+	virtual ~MethodCallPrivate() {
+	}
 
-        MethodCall* q;
-        QString module;
-        QString method;
-        QVariantList arguments;
-    };
-  }
+	MethodCall* q;
+	QString module;
+	QString method;
+	QVariantList arguments;
+};
+}
 }

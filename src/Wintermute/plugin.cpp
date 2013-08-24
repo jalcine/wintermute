@@ -34,60 +34,71 @@ using Wintermute::Logging;
 using Wintermute::Logger;
 
 // TODO: Check if loading in its own space, if so, load necessary data.
-Plugin::Plugin(const QString& uuid) : QObject(Factory::instance()), d_ptr(new PluginPrivate(this,uuid)){
+Plugin::Plugin ( const QString& uuid ) : QObject ( Factory::instance() ), d_ptr ( new PluginPrivate ( this, uuid ) )
+{
 }
 
 // TODO: Provide a means of obtaining a name for plug-ins.
 QString
-Plugin::name() const {
-  return QString::null;
+Plugin::name() const
+{
+	return QString::null;
 }
 
 // TODO: Provide a means of determining the plugin's version.
 Version
-Plugin::version() const {
-  return Version::Any;
+Plugin::version() const
+{
+	return Version::Any;
 }
 
 // TODO: Provide a means of determining the version of Wintermute required.
 Version
-Plugin::systemVersion() const {
-  return Version::Any;
+Plugin::systemVersion() const
+{
+	return Version::Any;
 }
 
 QSettings*
-Plugin::configuration() const {
-  Q_D(const Plugin);
-  return d->settings;
+Plugin::configuration() const
+{
+	Q_D ( const Plugin );
+	return d->settings;
 }
 
 Plugin::State
-Plugin::state() const {
-  return Undefined;
+Plugin::state() const
+{
+	return Undefined;
 }
 
 Plugin::Type
-Plugin::type() const {
-  return Module;
+Plugin::type() const
+{
+	return Module;
 }
 
 QUuid
-Plugin::id() const {
-  Q_D(const Plugin);
-  return d->id;
+Plugin::id() const
+{
+	Q_D ( const Plugin );
+	return d->id;
 }
 
 bool
-Plugin::load() {
- return false;
+Plugin::load()
+{
+	return false;
 }
 
 bool
-Plugin::unload() {
-  return false;
+Plugin::unload()
+{
+	return false;
 }
 
-Plugin::~Plugin(){
+Plugin::~Plugin()
+{
 }
 
 #include "Wintermute/plugin.moc"

@@ -30,80 +30,86 @@ using Wintermute::Procedure::ModulePrivate;
 
 QtZeroMQ::Context* Wintermute::Procedure::ModulePrivate::context = 0;
 
-Module::Module(QObject* parent) : QObject(parent), d_ptr(new ModulePrivate(this)){
-  Q_D(Module);
-  winfo(this, "A new module has entered the guild.");
-  d->connectToWire();
-  d->sendHeartbeat();
+Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
+{
+	Q_D ( Module );
+	winfo ( this, "A new module has entered the guild." );
+	d->connectToWire();
+	d->sendHeartbeat();
 }
 
 // TODO: Wait for a response.
 // TODO: Format and return the response.
 QVariant
-Module::dispatch(Call* call) {
-  Q_D(Module);
-  const QString callStr = call->toString();
-
-  winfo(this, QString("Sending %1 over the wire to '%2'...").arg(callStr, call->recipient()));
-  d->sendData(callStr);
-  return d->receiveData();
+Module::dispatch ( Call* call )
+{
+	Q_D ( Module );
+	const QString callStr = call->toString();
+	winfo ( this, QString ( "Sending %1 over the wire to '%2'..." ).arg ( callStr, call->recipient() ) );
+	d->sendData ( callStr );
+	return d->receiveData();
 }
 
 QVariant
-Module::invoke(const QString& callName, const QVariantList& arguments){
-  Q_D(Module);
-
-  if (!d->calls.contains(callName)) {
-    werr(this, QString("The call '%1' doesn't exist in the module '%2'.").arg(callName, qualifiedName()));
-    return QVariant(-1);
-  }
-
-  CallPointer call = d->calls[callName];
-  return call->invoke(arguments);
+Module::invoke ( const QString& callName, const QVariantList& arguments )
+{
+	Q_D ( Module );
+	if ( !d->calls.contains ( callName ) ) {
+		werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." ).arg ( callName, qualifiedName() ) );
+		return QVariant ( -1 );
+	}
+	CallPointer call = d->calls[callName];
+	return call->invoke ( arguments );
 }
 
 void
-Module::mount(CallPointer call){
-  Q_D(Module);
-
-  // TODO: Use a shared pointer to prevent a segfault.
-  d->calls[call->name()].swap(call);
+Module::mount ( CallPointer call )
+{
+	Q_D ( Module );
+	// TODO: Use a shared pointer to prevent a segfault.
+	d->calls[call->name()].swap ( call );
 }
 
 LambdaCall*
-Module::mountLambda(Call::Signature lambda, const QString& name){
-  CallPointer call = CallPointer(new LambdaCall(lambda, name));
-  this->mount(call);
-  return dynamic_cast<LambdaCall*>(&*call);
+Module::mountLambda ( Call::Signature lambda, const QString& name )
+{
+	CallPointer call = CallPointer ( new LambdaCall ( lambda, name ) );
+	this->mount ( call );
+	return dynamic_cast<LambdaCall*> ( &*call );
 }
 
 QString
-Module::domain() const {
-  Q_D(const Module);
-  return d->domain;
+Module::domain() const
+{
+	Q_D ( const Module );
+	return d->domain;
 }
 
 QString
-Module::package() const {
-  Q_D(const Module);
-  return d->package;
+Module::package() const
+{
+	Q_D ( const Module );
+	return d->package;
 }
 
 void
-Module::setDomain(const QString& value) {
-  Q_D(Module);
-  d->domain = value;
+Module::setDomain ( const QString& value )
+{
+	Q_D ( Module );
+	d->domain = value;
 }
 
 void
-Module::setPackage(const QString& value) {
-  Q_D(Module);
-  d->package = value;
+Module::setPackage ( const QString& value )
+{
+	Q_D ( Module );
+	d->package = value;
 }
 
-Module::~Module() {
-  // TODO: Report to world that you're leaving us.
-  // TODO: Disconnect sockets.
+Module::~Module()
+{
+	// TODO: Report to world that you're leaving us.
+	// TODO: Disconnect sockets.
 }
 
 #include "Wintermute/Procedure/module.moc"

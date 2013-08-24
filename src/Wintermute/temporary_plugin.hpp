@@ -25,16 +25,18 @@
 #include "plugin.hpp"
 #include <QPluginLoader>
 
-namespace Wintermute {
-  class PluginInterfaceable;
-  class TemporaryPlugin : public Plugin {
-    Q_OBJECT;
+namespace Wintermute
+{
+class PluginInterfaceable;
+class TemporaryPlugin : public Plugin
+{
+	Q_OBJECT;
 
-    public:
-      explicit TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader);
-      virtual ~TemporaryPlugin();
-      PluginInterfaceable* tryLoad(QPluginLoader* loader);
-  };
+public:
+	explicit TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader );
+	virtual ~TemporaryPlugin();
+	PluginInterfaceable* tryLoad ( QPluginLoader* loader );
+};
 }
 
 #endif /* WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP */

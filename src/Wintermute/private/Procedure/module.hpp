@@ -30,64 +30,65 @@
 using QtZeroMQ::Socket;
 using QtZeroMQ::Context;
 
-namespace Wintermute {
-  class ApplicationPrivate;
-  namespace Procedure {
-    class Module;
-    class ModulePrivate {
-      Q_DECLARE_PUBLIC(Module);
+namespace Wintermute
+{
+class ApplicationPrivate;
+namespace Procedure
+{
+class Module;
+class ModulePrivate
+{
+	Q_DECLARE_PUBLIC ( Module );
 
-      public:
-      Module* q_ptr;
-      QString package;
-      QString domain;
-      Socket* socketIn;
-      Socket* socketOut;
-      QMap<QString, CallPointer> calls;
-      static Context* context;
+public:
+	Module* q_ptr;
+	QString package;
+	QString domain;
+	Socket* socketIn;
+	Socket* socketOut;
+	QMap<QString, CallPointer> calls;
+	static Context* context;
 
-      ModulePrivate (Module* q) :
-        q_ptr(q), package(""), domain(""), calls() {
-      }
+	ModulePrivate ( Module* q ) :
+		q_ptr ( q ), package ( "" ), domain ( "" ), calls() {
+	}
 
-      void sendHeartbeat() {
-        Q_Q(Module);
-        q->dispatch(new HeartbeatCall(q));
-      }
+	void sendHeartbeat() {
+		Q_Q ( Module );
+		q->dispatch ( new HeartbeatCall ( q ) );
+	}
 
-      void connectToWire() {
-        socketIn = ModulePrivate::context->createSocket(Socket::TYP_SUB);
-        socketIn->bindTo("tcp://0.0.0.0:3991");
+	void connectToWire() {
+		socketIn = ModulePrivate::context->createSocket ( Socket::TYP_SUB );
+		socketIn->bindTo ( "tcp://0.0.0.0:3991" );
+		socketOut = ModulePrivate::context->createSocket ( Socket::TYP_PUB );
+		socketOut->connectTo ( "tcp://0.0.0.0:3991" );
+	}
 
-        socketOut = ModulePrivate::context->createSocket(Socket::TYP_PUB);
-        socketOut->connectTo("tcp://0.0.0.0:3991");
-      }
+	void disconnectFromWire() {
+		socketIn->deleteLater();
+		delete socketIn;
+		socketOut->deleteLater();
+		delete socketOut;
+	}
 
-      void disconnectFromWire() {
-        socketIn->deleteLater();
-        delete socketIn;
+	void sendData ( const QString& data ) {
+		socketOut->sendMessage ( data.toLocal8Bit() );
+	}
 
-        socketOut->deleteLater();
-        delete socketOut;
-      }
+	void recieveDataAsync ( std::function<void ( QVariant ) > callback ) {
+		// TODO: Recieve data in async.
+	}
 
-      void sendData(const QString& data) {
-        socketOut->sendMessage(data.toLocal8Bit());
-      }
+	QVariant receiveData() {
+		QList<QByteArray> bytes = socketIn->receiveFullMessage();
+		return QVariant();
+	}
 
-      void recieveDataAsync(std::function<void (QVariant)> callback){
-        // TODO: Recieve data in async.
-      }
-
-      QVariant receiveData(){
-        QList<QByteArray> bytes = socketIn->receiveFullMessage();
-        return QVariant();
-      }
-
-      virtual ~ModulePrivate () {
-        disconnectFromWire();
-        winfo(q_ptr, "We out!");
-      }
-    };
-  } /* Procedure */
+	virtual ~ModulePrivate () {
+		disconnectFromWire();
+		winfo ( q_ptr, "We out!" );
+	}
+};
+} /* Procedure */
 } /* Wintermute  */

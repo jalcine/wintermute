@@ -25,30 +25,32 @@
 #include <Wintermute/Globals>
 #include <Logger>
 
-namespace Wintermute {
-  class LoggingPrivate;
+namespace Wintermute
+{
+class LoggingPrivate;
 
-  typedef ::Log4Qt::Logger Logger;
+typedef ::Log4Qt::Logger Logger;
 
-  class Logging : public QObject {
-    Q_OBJECT;
-    Q_DECLARE_PRIVATE(Logging);
+class Logging : public QObject
+{
+	Q_OBJECT;
+	Q_DECLARE_PRIVATE ( Logging );
 
-    friend class Application;
-    friend class ApplicationPrivate;
+	friend class Application;
+	friend class ApplicationPrivate;
 
-    QScopedPointer<LoggingPrivate> d_ptr;
-    static Logging* self;
-    explicit Logging();
+	QScopedPointer<LoggingPrivate> d_ptr;
+	static Logging* self;
+	explicit Logging();
 
-    public:
-    virtual ~Logging();
+public:
+	virtual ~Logging();
 
-    static Logging* instance();
-    static Logger* obtainLogger(const QString& loggerName);
-    static Logger* obtainLogger(const QObject* object);
-    static Logger* obtainRootLogger();
-  };
+	static Logging* instance();
+	static Logger* obtainLogger ( const QString& loggerName );
+	static Logger* obtainLogger ( const QObject* object );
+	static Logger* obtainRootLogger();
+};
 }
 
 // Shortcuts for quick logging support.
@@ -66,7 +68,7 @@ namespace Wintermute {
  * @param qobj An object based on QObject.
  * @param text The text to be displayed for debugging.
  *
- * Obtains a logger for the specific QObject and then prints out a 
+ * Obtains a logger for the specific QObject and then prints out a
  * line of text for debubgging view.
  *
  * TODO: Make this conditionally visible if WINTERMUTE_DEBUG isn't set.

@@ -33,118 +33,119 @@ using Wintermute::FactoryPrivate;
 
 Factory* Factory::self = 0;
 
-Factory::Factory() : QObject(Application::instance()), d_ptr(new FactoryPrivate) {
+Factory::Factory() : QObject ( Application::instance() ), d_ptr ( new FactoryPrivate )
+{
 }
 
 Factory*
-Factory::instance() {
-  if (!self)
-    self = new Factory;
-
-  return self;
+Factory::instance()
+{
+	if ( !self )
+		{ self = new Factory; }
+	return self;
 }
 
 PluginList
-Factory::availablePlugins() const {
-  Q_D(const Factory);
-  return d->availablePlugins();
+Factory::availablePlugins() const
+{
+	Q_D ( const Factory );
+	return d->availablePlugins();
 }
 
 PluginList
-Factory::activePlugins() const {
-  Q_D(const Factory);
-  return d->activePlugins();
+Factory::activePlugins() const
+{
+	Q_D ( const Factory );
+	return d->activePlugins();
 }
 
 // TODO: Ensure plug-in loading process.
 bool
-Factory::loadPlugin(const QUuid& id){
-  Q_D(Factory);
-  PluginInterfaceable* obtainedPluginInterface = 0;
-  Logger* log = wlog(this);
-  QPluginLoader* loader = d->obtainBinary(id);
-  TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
-  
-  if (!loader){
-    log->debug(QString("Couldn't find binary for plugin '%1'.").arg(id.toString()));
-    return false;
-  } else {
-    log->debug(QString("Found binary for plugin '%1'.").arg(id.toString()));
-  }
-
-  log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
-  obtainedPluginInterface = plugin->tryLoad(loader);
-
-  if (obtainedPluginInterface == 0){
-    log->error(QString("Plug-in instance for %1 failed to load due to '%2'.").arg(id.toString()).arg(loader->errorString()));
-  }
-
-  return obtainedPluginInterface;
+Factory::loadPlugin ( const QUuid& id )
+{
+	Q_D ( Factory );
+	PluginInterfaceable* obtainedPluginInterface = 0;
+	Logger* log = wlog ( this );
+	QPluginLoader* loader = d->obtainBinary ( id );
+	TemporaryPlugin* plugin = new TemporaryPlugin ( id, loader );
+	if ( !loader ) {
+		log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id.toString() ) );
+		return false;
+	} else {
+		log->debug ( QString ( "Found binary for plugin '%1'." ).arg ( id.toString() ) );
+	}
+	log->info ( QString ( "Attempted to load plug-in instance for %1..." ).arg ( id.toString() ) );
+	obtainedPluginInterface = plugin->tryLoad ( loader );
+	if ( obtainedPluginInterface == 0 ) {
+		log->error ( QString ( "Plug-in instance for %1 failed to load due to '%2'." ).arg ( id.toString() ).arg ( loader->errorString() ) );
+	}
+	return obtainedPluginInterface;
 }
 
 // TODO: Verify the unloading process.
 bool
-Factory::unloadPlugin(const QUuid& id){
-  Q_D(Factory);
-
-  Plugin* plugin = d->plugin(id);
-  if (!plugin->isLoaded()){
-    return true;
-  }
-
-  return plugin->unload();
+Factory::unloadPlugin ( const QUuid& id )
+{
+	Q_D ( Factory );
+	Plugin* plugin = d->plugin ( id );
+	if ( !plugin->isLoaded() ) {
+		return true;
+	}
+	return plugin->unload();
 }
 
 // TODO: Auto load plugins on start.
 bool
-Factory::autoloadPlugins(){
-  Logger* log = wlog(this);
-  QVariantList autoloadList = Wintermute::Application::setting("Plugins/Autoload", QVariantList()).toList();
-  PluginList all = this->availablePlugins();
-
-  log->info(QString("Loading %1 of %2 plugins...").arg(autoloadList.length()).arg(all.length()));
-
-  Q_FOREACH(Plugin* plugin, all){
-    bool pluginLoaded = this->loadPlugin(plugin->id().toString());
-    if (!pluginLoaded){
-      log->info(QString("Autoload of %1 failed; thus cancelling the auto-loading process.").arg(plugin->id().toString()));
-      //return false;
-    }
-  }
-
-  return true;
+Factory::autoloadPlugins()
+{
+	Logger* log = wlog ( this );
+	QVariantList autoloadList = Wintermute::Application::setting ( "Plugins/Autoload", QVariantList() ).toList();
+	PluginList all = this->availablePlugins();
+	log->info ( QString ( "Loading %1 of %2 plugins..." ).arg ( autoloadList.length() ).arg ( all.length() ) );
+	Q_FOREACH ( Plugin * plugin, all ) {
+		bool pluginLoaded = this->loadPlugin ( plugin->id().toString() );
+		if ( !pluginLoaded ) {
+			log->info ( QString ( "Autoload of %1 failed; thus cancelling the auto-loading process." ).arg ( plugin->id().toString() ) );
+			//return false;
+		}
+	}
+	return true;
 }
 
 bool
-Factory::unloadAllPlugins(){
-  return false;
-}
-
-void
-Factory::pluginStateChange(const QUuid& id, const Plugin::State& state)
+Factory::unloadAllPlugins()
 {
-  Logger* log = wlog(this);
-  log->info("Passing signal.");
-  emit this->pluginStateChanged(id, state);
+	return false;
 }
 
 void
-Factory::start() {
-  Logger* log = wlog(this);
-  log->info("Starting..");
-  //this->autoloadPlugins();
-  log->info("Started.");
+Factory::pluginStateChange ( const QUuid& id, const Plugin::State& state )
+{
+	Logger* log = wlog ( this );
+	log->info ( "Passing signal." );
+	emit this->pluginStateChanged ( id, state );
 }
 
 void
-Factory::stop() {
-  Logger* log = wlog(this);
-  log->info("Stopping..");
-  this->unloadAllPlugins();
-  log->info("Stopped.");
+Factory::start()
+{
+	Logger* log = wlog ( this );
+	log->info ( "Starting.." );
+	//this->autoloadPlugins();
+	log->info ( "Started." );
 }
 
-Factory::~Factory(){
+void
+Factory::stop()
+{
+	Logger* log = wlog ( this );
+	log->info ( "Stopping.." );
+	this->unloadAllPlugins();
+	log->info ( "Stopped." );
+}
+
+Factory::~Factory()
+{
 }
 
 #include "Wintermute/factory.moc"
