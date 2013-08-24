@@ -25,7 +25,6 @@ endif()
 
 # Include necessary modules.
 include(FeatureSummary)
-include(FindPkgConfig)
 
 ## Pass options to manipulate Wintermute's dependency.
 option(PROVIDE_GUI_SUPPORT "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
@@ -45,6 +44,7 @@ endif()
 
 ## {{{ Packages
 
+find_package(PkgConfig REQUIRED)
 find_package(Log4Qt REQUIRED)
 find_package(QCommandLine REQUIRED)
 find_package(QJSON REQUIRED)
