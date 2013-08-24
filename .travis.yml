@@ -8,9 +8,6 @@ branches:
     - develop
     - testing
 
-env:
-  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
-
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq pkg-config cmake qt4-dev-tools libqt4-dev libqt4-dbg libqjson0 libqjson-dev libqjson-dbg python-pip python lcov valgrind libzmq3-dev libzmq3-dbg libzmq3
@@ -18,8 +15,9 @@ before_install:
   - test/build_deps.sh
 
 before_script:
+  - export CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/; cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug; cmake .. -DLog4Qt_DIR=/usr/share/qt4/mkspecs/cmake/Log4Qt/;
 
 script:
   - make wintermute
@@ -33,4 +31,4 @@ after_success:
 notifications:
   email: me@jalcine.me
   on_success: change
-  on_failure: always
+  on_failure: change
