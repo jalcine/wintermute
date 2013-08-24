@@ -1,3 +1,5 @@
+# vim: ft=conf
+
 --style=kr
 --indent=spaces=2
 --indent-switches
@@ -14,3 +16,6 @@
 --lineend=linux
 --suffix=none
 --preserve-date
+
+# Exclude some files.
+--exclude=CMakeLists.txt
