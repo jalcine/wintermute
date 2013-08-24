@@ -17,6 +17,7 @@ before_install:
   - sudo apt-get install -qq libqjson0 libqjson-dev libqjson-dbg
   - sudo apt-get install -qq python-pip python
   - sudo apt-get install -qq g++-4.6 lcov valgrind
+  - sudo pip install cpp-coveralls
   - test/build_deps.sh
 
 before_script:

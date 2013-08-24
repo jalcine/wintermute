@@ -20,5 +20,4 @@ sudo install cppzmq/zmq.hpp /usr/include/zmq.hpp
 git clone git://github.com/jalcine/QtZeroMQ
 cm && db
 
-# Install coveralls's command line tool.
-sudo pip install cpp-coveralls --use-mirrors
+echo "Done loading dependencies."
