@@ -22,14 +22,6 @@ make
 sudo make install
 cd ..
 
-git clone git://github.com/zeromq/libzmq
-cd libzmq
-./autogen.sh
-./configure --prefix=/usr
-make
-sudo make install
-cd ..
-
 git clone git://github.com/zeromq/cppzmq
 sudo install cppzmq/zmq.hpp /usr/include/zmq.hpp
 
