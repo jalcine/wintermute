@@ -1,3 +1,15 @@
 --style=k&r
 --indent=spaces=2
---indent=tabs=2
+--indent=tab=2
+--indent-switches
+--indent-cases
+--pad-oper
+--pad-paren
+--pad-header
+--delete-empty-lines
+--align-pointer=type
+--add-brackets
+--add-one-line-brackets
+--convert-tabs
+--verbose
+--lineend=linux
