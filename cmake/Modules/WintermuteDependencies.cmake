@@ -31,6 +31,7 @@ option(PROVIDE_GUI_SUPPORT "Compile Wintermute with QtGui libraries linked and u
 
 ## Define variables necessary for Qt discovery.
 set(WINTERMUTE_QT_VERSION 4.7)
+set(QT_DONT_USE_QTGUI ON)
 
 ## {{{ Look for Qt, if not found already.
 
@@ -54,7 +55,8 @@ find_package(QtZeroMQ REQUIRED)
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
-add_feature_info("Package Discovery" PKGCONFIG_FOUND)
+add_feature_info("Package Discovery" PKGCONFIG_FOUND
+  "Allows for rapid package discovery.")
 add_feature_info("JSON parsing" QJSON_FOUND
   "Allows for the use of JSON.")
 add_feature_info("Command Line" QCOMMANDLINE_FOUND
