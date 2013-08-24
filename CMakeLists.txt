@@ -17,10 +17,10 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-cmake_minimum_required(VERSION 2.8)
-project(Wintermute)
+cmake_minimum_required ( VERSION 2.8 )
+project ( Wintermute )
 
-## Include our modules in the discovery of modules and incorporate our build 
+## Include our modules in the discovery of modules and incorporate our build
 ## system's logic.
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 set(WINTERMUTE_BUILD_PREFIX "${CMAKE_INSTALL_PREFIX}")
@@ -29,12 +29,12 @@ include(CMakeProvideUninstallTarget)
 add_subdirectory(cmake)
 
 ## Import Wintermute's CMake infrastructure.
-include(WintermuteVersioning)
-include(WintermuteVariables)
-include(WintermuteDependencies)
-include(WintermuteMacros)
+include ( WintermuteVersioning )
+include ( WintermuteVariables )
+include ( WintermuteDependencies )
+include ( WintermuteMacros )
 
 ## Include sub-directories.
-add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory ( src )
+add_subdirectory ( test )
 #add_subdirectory(doc)
