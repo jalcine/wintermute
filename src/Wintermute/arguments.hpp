@@ -85,4 +85,6 @@ namespace Wintermute {
   };
 }
 
+#define wntrArgs Wintermute::Arguments::instance()
+
 #endif /* WINTERMUTE_ARGUMENTS_HPP */
