@@ -20,5 +20,15 @@ cmake .. -DCMAKE_BUILD_TYPE=/usr -DCMAKE_BUILD_TYPE=Debug
 make
 sudo make install
 
+# Build QtZeroMQ.
+# TODO: Add this from a PPA.
+git clone git://github.com/jalcine/QtZeroMQ
+cd QtZeroMQ
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr
+make
+sudo make install
+
 # Install coveralls's command line tool.
 sudo pip install cpp-coveralls --use-mirrors
