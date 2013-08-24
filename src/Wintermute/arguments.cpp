@@ -50,7 +50,9 @@ namespace Wintermute {
        * TODO: Allow dynamic appending to list of default methods.
        */
       void addArguments() {
-        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Optional);
+        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Mandatory);
+        args->addOption('f', "fork", "Runs this process in the background.", QCommandLine::Optional);
+        args->addOption('p', "plugin", "Defines the plugin UUID to be used.", QCommandLine::Optional);
       };
   };
 }
@@ -134,7 +136,7 @@ void
 Arguments::parseError(const QString& error){
   Wintermute::Logger* log = wlog(this);
   log->error(QString("Unrecognized command-line arguments. (%1)").arg(error));
-  wApp->stop();
+  wntrApp->stop();
   exit(1);
 }
 
