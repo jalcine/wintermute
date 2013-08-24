@@ -87,10 +87,11 @@ Application::start(){
 }
 
 void
-Application::stop(){
+Application::stop(int exitcode){
   Logger* log = wlog(this);
   log->info("Qutting application...");
   QCoreApplication::quit();
+  exit(exitcode);
 }
 
 QString

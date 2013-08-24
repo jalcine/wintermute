@@ -151,10 +151,10 @@ namespace Wintermute {
      * Stops the started processes in `start()` and begins the clean up for
      * the event loop.
      */
-    void stop();
+    void stop(int exitcode = 0x0);
   };
 }
 
-#define wApp Wintermute::Application::instance()
+#define wntrApp Wintermute::Application::instance()
 
 #endif /* WINTERMUTE_CORE_APPLICATION_HPP */
