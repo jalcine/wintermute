@@ -18,7 +18,7 @@ sudo install ~/cppzmq/zmq.hpp /usr/include/zmq.hpp
 
 # Build QtZeroMQ.
 # TODO: Add this from a PPA.
-git clone git://github.com/jalcine/QtZeroMQ ~/QtZeroMQ
+git clone git://github.com/jalcine/QtZeroMQ ~/QtZeroMQ --branch develop
 cd ~/QtZeroMQ && cm && db
 
 echo "Done loading dependencies."
