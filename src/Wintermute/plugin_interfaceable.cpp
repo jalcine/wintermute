@@ -1,5 +1,5 @@
 /**
- * vim: ft=cpp
+ *
  * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -17,6 +17,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- **/
+**/
 
 #include "plugin_interfaceable.hpp"
+#include "private/plugin.hpp"
+#include "private/plugin_interfaceable.hpp"
+#include "factory.hpp"
+#include "plugin.hpp"
+
+using Wintermute::PluginInterfaceablePrivate;
+using Wintermute::PluginInterfaceable;
+using Wintermute::Factory;
+
+PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr(this) {
+}
+
+PluginInterfaceable::~PluginInterfaceable() {
+}
+
+#include "Wintermute/plugin_interfaceable.moc"

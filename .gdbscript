@@ -1,2 +1,0 @@
-file build/src/wintermute
-break Wintermute::FactoryPrivate::availablePlugins() const

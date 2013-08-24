@@ -1,7 +1,7 @@
 ## TODO: Add proper CMake module definition here.
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <jacky.alcine@thesii.org>
-###
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+##
 ### This file is part of Wintermute, the extensible AI platform.
 ###
 ### Wintermute is free software; you can redistribute it and/or modify
@@ -34,14 +34,13 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   add_dependencies(unittest unittest_${unittestname})
 
   # Tweak commands for unit testing.
-  add_custom_command(TARGET unittest POST_BUILD
-    COMMAND "unittest_${unittestname}"
+  message("${unittest_${unittestname}}")
+  add_custom_command(TARGET test PRE_LINK
+    COMMAND ${unittest_${unittestname}}
     COMMENT "Executing unit test '${unittestname}'..."
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
 
-  # Add coverage support
+  # Add coverage and valgrind support.
   generate_lcov(unittest_${unittestname})
-
-  # Add valgrind support
   generate_valgrind(unittest_${unittestname})
 endmacro(wintermute_add_unit_test unittestname unittestsrc)

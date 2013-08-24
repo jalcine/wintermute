@@ -16,11 +16,10 @@ provided by contributors of other platforms.
   * Qt 4.7 or greater - http://qt-project.org
   * QCommandLine - https://github.com/jalcine/qcommandline
   * QLogger - https://gitorious.org/log4qt/log4qt
-  * C++ bindings to ZeroMQ - http://www.zeromq.org/bindings:cpp
+  * Qt bindings to [ZeroMQ](http://zeromq.org) - https://github.com/jonnydee/nzmqt
 
 If you want to test Wintermute, you'll need the following:
 
-  * Ruby - for running tests
   * gcov 4.6
   * lcov 1.9
   * valgrind 3.8.1
@@ -40,11 +39,11 @@ $ make install                         # Install Wintermute if `CMAKE_INSTALL_PR
 # make install                         # Install Wintermute system-wide.
 ```
 
-  Once you've satisfied those dependencies, building is a breeze. Seriously.
+Once you've satisfied those dependencies, building is a breeze. Seriously.
 The instructions above install Wintermute to a local binary directory (my personal setup)
-  and can be executed like so:
+and can be executed like so:
 
-  ```bash
-  $ ~/.local/bin/wintermute
-  $ wintermute # If ~/.local/bin is in your $PATH
-  ```
+```bash
+$ ~/.local/bin/wintermute
+$ wintermute # If ~/.local/bin is in your $PATH
+```

@@ -1,6 +1,6 @@
 /**
- * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -17,6 +17,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- **/
+**/
 
-#include "plugin_interfaceable.hpp"
+#include "Wintermute/Procedure/lambda_call.hpp"

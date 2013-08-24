@@ -19,4 +19,29 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "Wintermute/application.hpp"
+#include "Wintermute/Procedure/process_module.hpp"
+#include "Wintermute/private/Procedure/module.hpp"
+#include "Wintermute/Procedure/process_module.moc"
+
+using Wintermute::Procedure::ProcessModule;
+
+ProcessModule::ProcessModule() : Module(Wintermute::Application::instance()) {
+  setDomain("me.jalcine.wintermute");
+  setPackage("process");
+  // TODO: Add 'listModules' method via lambda.
+  // TODO: Add 'reboot' method via lambda.
+}
+
+void
+ProcessModule::reboot() {
+  // TODO: Add forking logic or recycle some.
+  //Wintermute::Application::instance()->exit();
+}
+
+void
+ProcessModule::quit(const int exitcode) {
+  //Wintermute::Application::instance()->exit(exitcode);
+}
+
+ProcessModule::~ProcessModule() {
+}

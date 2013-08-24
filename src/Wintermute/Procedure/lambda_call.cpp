@@ -1,6 +1,6 @@
 /**
- * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -17,6 +17,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- **/
+**/
 
-#include "plugin_interfaceable.hpp"
+#include "Wintermute/application.hpp"
+#include "Wintermute/Procedure/lambda_call.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
+
+using Wintermute::Procedure::LambdaCall;
+
+LambdaCall::LambdaCall(Call::Signature lambda, QString name) :
+  Call(Wintermute::Application::instance()) {
+  Q_D(Call);
+  this->setProperty("name", name);
+  d->function = lambda;
+}
+
+QString
+LambdaCall::name() const {
+  return this->property("name").toString();
+}
+
+LambdaCall::~LambdaCall() {
+}

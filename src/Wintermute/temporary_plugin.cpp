@@ -1,5 +1,5 @@
 /**
- * vim: ft=cpp
+ *
  * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -17,6 +17,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- **/
+**/
 
 #include "plugin_interfaceable.hpp"
+#include "temporary_plugin.hpp"
+#include "private/plugin.hpp"
+
+using Wintermute::Plugin;
+using Wintermute::PluginPrivate;
+using Wintermute::TemporaryPlugin;
+using Wintermute::PluginInterfaceable;
+
+TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
+  Plugin(id) {
+  Q_D(Plugin);
+
+  d->loader = theLoader;
+}
+
+PluginInterfaceable*
+TemporaryPlugin::tryLoad(QPluginLoader* loader){
+  Q_D(Plugin);
+  d->loader = loader;
+  d->loader->setParent(this);
+
+  return d->tryLoad(loader);
+}
+
+TemporaryPlugin::~TemporaryPlugin() {
+}
+
+#include "Wintermute/temporary_plugin.moc"

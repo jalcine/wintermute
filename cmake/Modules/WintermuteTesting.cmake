@@ -22,34 +22,33 @@ find_program(GCOV_PATH gcov-4.6)
 find_program(LCOV_PATH lcov)
 find_program(VALGRIND_PATH valgrind)
 find_program(GENHTML_PATH genhtml)
-find_package(Ruby)
 
+# Check for gcov.
 if (NOT GCOV_PATH)
   message(FATAL_ERROR "We need `gcov` for coverage information.")
 endif(NOT GCOV_PATH)
 
+# TODO: Add a check for lcov.
+# TODO: Add a check for valgrind.
+# TODO: Add a check for genhtml.
+
 ## Define the top-level targets for testing.
-add_custom_target(test ALL
-  COMMAND ${RUBY_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/Scripts/tests.rb
-  COMMENT "Executing test suite...")
+add_custom_target(test
+  COMMENT "Executing test suite..."
+  DEPENDS unittest
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
 
-add_custom_target(unittest ALL
-  COMMENT "Running unit tests...")
-
-if (PROJECT_LABEL EQUAL "Wintermute")
-  add_dependencies(test wintermute)
-endif(PROJECT_LABEL EQUAL "Wintermute")
-
-## Define some dependencies.
-add_dependencies(unittest test)
-add_dependencies(test wintermute)
+add_custom_target(unittest
+  COMMENT "Running unit tests..."
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
   ${QT_QTTEST_INCLUDE_DIR})
 set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
   ${WINTERMUTE_LIBRARIES})
-set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
+set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-random"  "-nocrashhandler"
+  "-tickcounter" "-vs" "-v2" "-vb" )
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})

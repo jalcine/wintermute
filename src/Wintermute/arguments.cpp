@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alciné <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -50,7 +50,9 @@ namespace Wintermute {
        * TODO: Allow dynamic appending to list of default methods.
        */
       void addArguments() {
-        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Optional);
+        args->addOption('m', "mode", "Defines the mode that of which Wintermute will operate as.", QCommandLine::Mandatory);
+        args->addOption('f', "fork", "Runs this process in the background.", QCommandLine::Optional);
+        args->addOption('p', "plugin", "Defines the plugin UUID to be used.", QCommandLine::Optional);
       };
   };
 }
@@ -90,6 +92,12 @@ Arguments::instance(){
   return self;
 }
 
+bool
+Arguments::hasArgument(const QString& argumentName) const {
+  Q_D(const Arguments);
+  return d->arguments.contains(argumentName);
+}
+
 QVariant
 Arguments::argument(const QString& argumentName) const {
   Q_D(const Arguments);
@@ -103,14 +111,12 @@ Arguments::argument(const QString& argumentName) const {
 QVariantMap
 Arguments::arguments() const {
   Q_D(const Arguments);
-
   return d->arguments;
 }
 
 void
 Arguments::switchFound(const QString& switchName){
   Q_D(Arguments);
-
   d->arguments.insert(switchName, true);
 }
 
@@ -129,12 +135,9 @@ Arguments::optionFound(const QString&  optionName, const QVariant& optionValue){
 void
 Arguments::parseError(const QString& error){
   Wintermute::Logger* log = wlog(this);
-  Q_D(Arguments);
-
-  log->error(QString("Malformed command-line arguments. (%1)").arg(error));
-
-  d->args->showVersion();
-  d->args->showHelp();
+  log->error(QString("Unrecognized command-line arguments. (%1)").arg(error));
+  wntrApp->stop();
+  exit(1);
 }
 
 void

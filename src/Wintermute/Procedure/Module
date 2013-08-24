@@ -1,0 +1,54 @@
+/**
+ * vim: ft=cpp
+ *
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
+ *
+ * This file is part of Wintermute, the extensible AI platform.
+ *
+ *
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/**
+ * Modules are two-fold object. They serve as a server that sends out
+ * information about signals emission and method return values and as clients
+ * that request methods to be invoked and subscribe to signal emission logic.
+ *
+ * Everything expects all of the work to be done locally. Thus, the primary
+ * socket that Wintermute listens for activity is on a local socket. The
+ * location of this socket has yet to be determined.
+ *
+ * Keeping in mind that Wintermute itself only provides the parallel
+ * processing nature required to upkeep itself, each process can be considered
+ * a 'node'. Each node would listen over a general local socket in order
+ * to communicate with one another, like a watering hole. This socket is
+ * typically named '/tmp/wintermute/waterhole.socket'. Also, each module is
+ * designed to listen and send messages over TCP as well, but this can be
+ * tweaked on a per-module, per-process basis.
+ *
+ * ## SUPPORT PLUG-INS
+ * A few plug-ins are added to facilitate the procedure calling flow.
+ *
+ * (watchdog): allow modules to provide a 'heartbeat'; a ping every half
+ * minute to determine whether or not they are still active on the network.
+ * This allows for more accurate module detection and health reporting.
+ *
+ * (relay): Modules are meant to be run locally. What 'relay' does is takes
+ * the output of each message sent and relays over another protocol. By
+ * itself, this plug-in can't do much as it serves as a hub for protocol
+ * implementations to hook in but work for HTTP and serial sockets.
+ */
+
+#include "Wintermute/Procedure/module.hpp"

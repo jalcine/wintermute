@@ -12,11 +12,15 @@
 set expandtab ts=2 sw=2 ai
 set shiftwidth=2
 set tabstop=2
-set wildignore+=build/*
-set tags+=.git/tags
+set wildignore+=*/build/*
+set tags+=$PWD/.git/tags
 
 " Update Syntastic.
-let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src/Wintermute", "$PWD/src" ]
+let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "./src", "$PWD/src/Wintermute", "/usr/include" ]
 
 " By default, assume Qt.
-au BufEnter cpp set ft=qt.cpp
+autocmd FileReadPost  *.(c|h)pp set ft=qt.cpp
+autocmd FileReadPost  *.(c|h)pp set tags+=$PWD/.git/tags
+
+" Set the make program.
+set makeprg=make\ -C\ build\/src\ all

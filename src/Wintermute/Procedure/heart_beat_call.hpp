@@ -1,6 +1,6 @@
 /**
- * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -19,4 +19,25 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "plugin_interfaceable.hpp"
+#ifndef WINTERMUTE_CORE_PROCEDURE_HEARTBEAT_HPP
+#define WINTERMUTE_CORE_PROCEDURE_HEARTBEAT_HPP
+
+#include <Wintermute/Procedure/Call>
+
+namespace Wintermute {
+  namespace Procedure {
+    class Module;
+    class HeartbeatCall : public Call {
+      Q_OBJECT;
+      Q_DISABLE_COPY(HeartbeatCall);
+
+      public:
+        explicit HeartbeatCall(Module* module);
+        virtual ~HeartbeatCall();
+        virtual inline QString name() const { return "heartbeat"; }
+        virtual inline Call::Type type() const{ return Call::Signal; }
+    };
+  }
+}
+
+#endif

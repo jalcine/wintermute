@@ -1,6 +1,6 @@
 /**
- * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -17,6 +17,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- **/
+**/
 
-#include "plugin_interfaceable.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/private/Procedure/method_call.hpp"
+
+using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::Call;
+
+MethodCall::MethodCall(const QString& module, const QString& method, const QVariantList arguments) :
+  Call(new MethodCallPrivate(this)) {
+  Q_D(MethodCall);
+  d->module = module;
+  d->method = method;
+  d->arguments = arguments;
+}
+
+QString
+MethodCall::name() const {
+  Q_D(const MethodCall);
+  return d->method;
+}
+
+MethodCall::~MethodCall() {
+}
+
+#include "Wintermute/Procedure/method_call.moc"

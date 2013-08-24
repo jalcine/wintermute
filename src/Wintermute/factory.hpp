@@ -91,4 +91,6 @@ namespace Wintermute {
   };
 }
 
+#define wntrFactory Wintermute::Factory::instance()
+
 #endif /* WINTERMUTE_CORE_FACTORY_HPP */
