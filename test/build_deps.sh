@@ -9,6 +9,7 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug
 make
 sudo make install
+cd ..
 
 # Build log4qt
 # TODO: Add this from a PPA instead.
@@ -19,6 +20,18 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=/usr -DCMAKE_BUILD_TYPE=Debug
 make
 sudo make install
+cd ..
+
+git clone git://github.com/zeromq/libzmq
+cd libzmq
+./autogen.sh
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+
+git clone git://github.com/zeromq/cppzmq
+sudo install cppzmq/zmq.hpp /usr/include/zmq.hpp
 
 # Build QtZeroMQ.
 # TODO: Add this from a PPA.
@@ -29,6 +42,7 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr
 make
 sudo make install
+cd ..
 
 # Install coveralls's command line tool.
 sudo pip install cpp-coveralls --use-mirrors
