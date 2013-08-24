@@ -45,6 +45,7 @@ macro(generate_lcov _target)
     COMMENT "[lcov] Cleaning up..."
     COMMAND cmake -E remove -f ${_lcov_file}
     COMMAND cmake -E remove -f `find . | grep -e gc(ov,da,no)`
+  )
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "[lcov] Prepping coverage collection..."
@@ -71,8 +72,8 @@ macro(generate_lcov _target)
     COMMAND ${LCOV_PATH} -e ${_lcov_file} \"${CMAKE_SOURCE_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"${CMAKE_BINARY_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"*.moc\" -o ${_lcov_file}
-    )
     COMMAND cat ${_lcov_file}
+    )
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "[report] Generating HTML output..."
