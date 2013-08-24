@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -34,24 +34,21 @@ namespace Wintermute {
   /**
    * @class Wintermute::PluginInterface
    *
-   * This interface provides libraries that wish to be manipulated by 
-   * Wintermute to have a direct proxy into the application. As opposed to the 
-   * classical approach of having libraries define the Wintermute::Plugin 
-   * directly and resolve its symbol, we require this to be the object in 
+   * This interface provides libraries that wish to be manipulated by
+   * Wintermute to have a direct proxy into the application. As opposed to the
+   * classical approach of having libraries define the Wintermute::Plugin
+   * directly and resolve its symbol, we require this to be the object in
    * question for resolution and implementation.
-   *
-   * This object serves as a proxy between the library defined and the 
-   * Wintermute application running this application. It provides all of the 
-   * necessary aspects of manipulating and toggling the library and is meant 
+   * This object serves as a proxy between the library defined and the
+   * Wintermute application running this application. It provides all of the
+   * necessary aspects of manipulating and toggling the library and is meant
    * to be small in feature set.
    *
-   * @todo Update with some sensable docs.
    */
   class PluginInterfaceable : public QObject {
     // {{{ QObject-ified.
     Q_OBJECT;
     // }}} QObject-ified.
-    
     QScopedPointer<PluginInterfaceable> d_ptr;
 
     protected:
@@ -71,7 +68,7 @@ namespace Wintermute {
   };
 }
 
-Q_DECLARE_INTERFACE(Wintermute::PluginInterfaceable, "org.thesii.Wintermute.PluginInterface");
+Q_DECLARE_INTERFACE(Wintermute::PluginInterfaceable, "me.jalcine.Wintermute.PluginInterface");
 
 #define WINTERMUTE_PLUGIN_DECLARE(LibraryTargetName, LibraryInterfaceName) \
   Q_EXPORT_PLUGIN2(LibraryTargetName, LibraryInterfaceName);

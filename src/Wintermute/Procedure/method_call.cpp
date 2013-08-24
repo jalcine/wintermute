@@ -1,6 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -19,22 +19,27 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#ifndef WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP
-#define WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP
+#include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/private/Procedure/method_call.hpp"
 
-#include "plugin.hpp"
-#include <QPluginLoader>
+using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::Call;
 
-namespace Wintermute {
-  class PluginInterfaceable;
-  class TemporaryPlugin : public Plugin {
-    Q_OBJECT;
-
-    public:
-      explicit TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader);
-      virtual ~TemporaryPlugin();
-      PluginInterfaceable* tryLoad(QPluginLoader* loader);
-  };
+MethodCall::MethodCall(const QString& module, const QString& method, const QVariantList arguments) :
+  Call(new MethodCallPrivate(this)) {
+  Q_D(MethodCall);
+  d->module = module;
+  d->method = method;
+  d->arguments = arguments;
 }
 
-#endif /* WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP */
+QString
+MethodCall::name() const {
+  Q_D(const MethodCall);
+  return d->method;
+}
+
+MethodCall::~MethodCall() {
+}
+
+#include "Wintermute/Procedure/method_call.moc"

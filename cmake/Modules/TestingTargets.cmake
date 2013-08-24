@@ -1,6 +1,6 @@
 ## TODO: Add proper CMake module definition here.
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -33,8 +33,8 @@ macro(generate_lcov _target)
   set(_lcov_target ${_target})
   set(_lcov_file coverage/lcov.info)
   set(_regex "build\\/test\\/test/test")
-  string(REPLACE "/" "\\/" _fixed_src_dir ${CMAKE_SOURCE_DIR})
-  set(_gcov_regex "..\\/..\\/../${_fixed_src_dir}")
+  string(REPLACE "/" "\\/" CMAKE_SOURCE_DIR_REGEX_FRIENDLY ${CMAKE_SOURCE_DIR})
+  set(_lcov_file_regex "..\\/..\\/..\\//${CMAKE_SOURCE_DIR_REGEX_FRIENDLY}")
 
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Making coverage directory for ${_target}.."
@@ -42,13 +42,13 @@ macro(generate_lcov _target)
     )
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Prepping coverage collection..."
-    COMMAND ${LCOV_PATH} -d . -z -t \"${PROJECT_LABEL} - ${_target}\"
-    )
+    COMMENT "[lcov] Cleaning up..."
+    COMMAND cmake -E remove -f ${_lcov_file}
+    COMMAND cmake -E remove -f `find . | grep -e gc(ov,da,no)`
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Executing test..."
-    COMMAND ${_target} ${WINTERMUTE_TEST_ARGUMENTS}
+    COMMENT "[lcov] Prepping coverage collection..."
+    COMMAND ${LCOV_PATH} -q -d ${_work_dir} -z
     )
 
   get_target_property(_sources ${_lcov_target} SOURCES)
@@ -60,21 +60,22 @@ macro(generate_lcov _target)
   endforeach(_source ${_sources})
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Analyzing coverage collection data (lcov)..."
-    COMMAND ${LCOV_PATH} -f -c -o ${_lcov_file} --gcov-tool ${GCOV_PATH} --no-checksum -d  .
-    COMMAND sed -s -u -i 's/${_gcov_regex}/g' ${_lcov_file} `find . | grep *.gcov`
-    COMMAND sed -s -u -i 's/${_regex}/g' ${_lcov_file}
-    )
+    COMMENT "[test] Executing test..."
+    COMMAND ${_target} ${WINTERMUTE_TEST_ARGUMENTS}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
+  add_custom_command(TARGET ${_lcov_target}
+    COMMENT "[lcov] Analyzing coverage collection data (lcov)..."
   add_custom_command(TARGET ${_lcov_target}
     COMMENT "Cleaning up coverage data..."
     COMMAND ${LCOV_PATH} -e ${_lcov_file} \"${CMAKE_SOURCE_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"${CMAKE_BINARY_DIR}/*\" -o ${_lcov_file}
     COMMAND ${LCOV_PATH} -r ${_lcov_file} \"*.moc\" -o ${_lcov_file}
     )
+    COMMAND cat ${_lcov_file}
 
   add_custom_command(TARGET ${_lcov_target}
-    COMMENT "Generating HTML output..."
+    COMMENT "[report] Generating HTML output..."
     COMMAND genhtml -o ./coverage ${_lcov_file} --prefix ${CMAKE_SOURCE_DIR}
     COMMAND command_exists x-www-browser && x-www-browser ./coverage/index.html &
     )

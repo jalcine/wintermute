@@ -6,10 +6,13 @@ its core but hopes are made to extend the platform to work with **Ruby**,
 **Python**, **JavaScript**, **Java**, **Scala**, **Lua**, **Haskell** and
 **Go** (not in that exact order!). It'd be awesome!
 
-## Installing
+> Installing? **Easy**. We use [CMake](http://cmake.org); we gotcha. But read
+> [INSTALL.md](./INSTALL.md) for more information.
 
-Installing? **Easy**. We use [CMake](http://cmake.org); we gotcha. But read
-[INSTALL.md](./INSTALL.md) for more information.
+## Notes
+**Wintermute** itself is built on top of the [Qt framework](http://qt-project.org).
+It also uses a few C++11 features like lambdas and `auto`/`decltype` so it's
+recommended that you build with either `clang` or `gcc >= 4.7`.
 
 ## Tested Operating Systems
 So far, Wintermute has only been built and tested on a Linux operating system,
@@ -22,9 +25,17 @@ Please build, test and upload your results for comparsion!
  - Build and test Wintermute on a foreign, untested system!
  - Spread the word and do your part to make Wintermute an awesome app!
 
+I *strongly* recommend using tools like
+[`git-flow`](https://github.com/nvie/gitflow) and
+[`git-hooks`](https://github.com/icefox/git-hooks) to accelerate your
+development process.
+
+Also, if you're adding a new feature, try writing a test
+for it first!
+
 ## Support
 
-I (the project maintainer, Jacky Alcine) do my best to answer any and all 
+I (the project maintainer, Jacky Alciné) do my best to answer any and all
 questions pertaining to Wintermute. You can e-mail me at me@jalcine.me or 
 find me on IRC on Freenode, OFTC or the Perl servers with the nick
 `jalcine` or `Jacky`.

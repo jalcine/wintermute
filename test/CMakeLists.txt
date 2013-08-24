@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -22,7 +22,7 @@ include(WintermuteTesting)
 
 ## Include the extra code.
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
-                    "${CMAKE_CURRENT_BINARY_DIR}/include")
+  "${CMAKE_CURRENT_BINARY_DIR}/include")
 
 ## Add in subdirectories for testing.
 add_subdirectory(include)

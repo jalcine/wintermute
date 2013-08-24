@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -53,3 +53,5 @@ else(CMAKE_ENVIRONMENT_MODULE_DIR)
   message(STATUS "Environment variable 'CMAKE_MODULE_PATH' was unset or doesn't exist.")
 endif(CMAKE_ENVIRONMENT_MODULE_DIR)
 
+
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH})

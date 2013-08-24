@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -59,6 +59,9 @@ namespace Wintermute {
       static Arguments* instance();
 
       /** TODO: Complete documentation. */
+      bool hasArgument(const QString& argumentName) const;
+
+      /** TODO: Complete documentation. */
       QVariant argument(const QString& argumentName) const;
 
       /** TODO: Complete documentation. */
@@ -81,5 +84,7 @@ namespace Wintermute {
       Q_SLOT void parseError  (const QString& argumentName);
   };
 }
+
+#define wntrArgs Wintermute::Arguments::instance()
 
 #endif /* WINTERMUTE_ARGUMENTS_HPP */

@@ -1,6 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -19,32 +19,23 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "plugininterfaceable.hpp"
-#include "temporaryplugin.hpp"
-#include "private/plugin.hpp"
+#ifndef WINTERMUTE_CORE_PRIVATE_PLUGININTERFACEABLE_HPP
+#define WINTERMUTE_CORE_PRIVATE_PLUGININTERFACEABLE_HPP
 
-using Wintermute::Plugin;
-using Wintermute::PluginPrivate;
-using Wintermute::TemporaryPlugin;
-using Wintermute::PluginInterfaceable;
+#include <Wintermute/Globals>
+#include <QtCore/QObject>
+#include "plugin_interfaceable.hpp"
 
-TemporaryPlugin::TemporaryPlugin(const QUuid& id, QPluginLoader* theLoader) :
-  Plugin(id) {
-  Q_D(Plugin);
+namespace Wintermute {
+  class PluginInterfaceablePrivate {
+    Q_DECLARE_PUBLIC(PluginInterfaceable);
+    PluginInterfaceable* q_ptr;
 
-  d->loader = theLoader;
+    public:
+    // @note Should we connect signals from interface to plugin here?
+    PluginInterfaceablePrivate(PluginInterfaceable* q) : q_ptr(q) {
+    }
+  };
 }
 
-PluginInterfaceable*
-TemporaryPlugin::tryLoad(QPluginLoader* loader){
-  Q_D(Plugin);
-  d->loader = loader;
-  d->loader->setParent(this);
-
-  return d->tryLoad(loader);
-}
-
-TemporaryPlugin::~TemporaryPlugin() {
-}
-
-#include "Wintermute/temporaryplugin.moc"
+#endif

@@ -1,6 +1,6 @@
 /**
  * vim: ft=qt.cpp
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -20,10 +20,9 @@
  **/
 
 #include "application.hpp"
-#include "arguments.hpp"
-#include "logging.hpp"
-#include "factory.hpp"
 #include "version.hpp"
+#include "Wintermute/private/application.hpp"
+#include "Wintermute/Procedure/module.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
@@ -31,37 +30,9 @@
 using Wintermute::Arguments;
 using Wintermute::Logging;
 using Wintermute::Version;
-using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
-
-namespace Wintermute {
-  class ApplicationPrivate {
-    public:
-      QSharedPointer<QCoreApplication> app;
-      QSettings* settings;
-
-      ApplicationPrivate(int &argc, char **argv) : settings(0) {
-        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-      }
-
-      void initialize(){
-        // Add library paths for plug-ins.
-        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
-
-        // Allocate necessary variables for logging and arguments.
-        // TODO: Move factory initialization to separate thread.
-        Logging::instance();
-        Arguments::instance();
-        Factory::instance();
-      }
-
-      int exec(){
-        return app->exec();
-      }
-  };
-
-}
+using Wintermute::Procedure::Module;
 
 Application* Application::self = 0;
 
@@ -74,8 +45,8 @@ Application::Application(int &argc, char **argv) : QObject(), d_ptr(new Applicat
   // Define the application in Qt.
   d->app->setApplicationName("Wintermute");
   d->app->setApplicationVersion(this->version().toString());
-  d->app->setOrganizationName("Synthetic Intellect Institute");
-  d->app->setOrganizationDomain("thesii.org");
+  d->app->setOrganizationName("Wintermute");
+  d->app->setOrganizationDomain("jalcine.me");
 
   // Grab our settings.
   d->settings = new QSettings;
@@ -92,13 +63,12 @@ Application::run(int &argc, char **argv){
 
     // Invoke the initialization code.
     self->d_ptr->initialize();
-    log->debug("Completed initialization phase.");
 
     // Start thyself.
     self->start(); 
 
     // Begin the event loop.
-    log->debug("Beginning event loop.");
+    log->debug("Starting event loop.");
     returnCode = self->d_ptr->exec();
     log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
   }
@@ -108,22 +78,47 @@ Application::run(int &argc, char **argv){
 
 void
 Application::start(){
-  //Q_D(Application);
+  Q_D(Application);
   Logger* log = wlog(this);
-  log->info("Starting.");
+  log->info("Starting Wintermute...");
 
-  // Privately start the Factory.
-  Factory::instance()->start();
-
-  log->info("Started.");
+  d->loadProcessModule();
+  d->loadCurrentMode();
 }
 
 void
-Application::stop(){
-  //Q_D(Application);
+Application::stop(int exitcode){
+  Logger* log = wlog(this);
+  log->info("Qutting application...");
+  QCoreApplication::quit();
+  exit(exitcode);
+}
 
-  // Privately clean up the Factory.
-  Factory::instance()->stop();
+QString
+Application::processName() const {
+  Q_D(const Application);
+
+  if (!d->module)
+    return QString::null;
+
+  return d->module->qualifiedName();
+}
+
+QList<Module*>
+Application::modules() const {
+  Q_D(const Application);
+  return d->modules;
+}
+
+Module*
+Application::findModule(const QString& name) const {
+  Q_D(const Application);
+  for (int i = 0; i < d->modules.size(); ++i){
+    Module* mod = d->modules.at(i);
+    if (mod->domain().contains(name))
+      return mod;
+  }
+  return nullptr;
 }
 
 Version
@@ -142,7 +137,6 @@ Application::version() const {
 Application::setting(const QString& path, const QVariant defaultValue)
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-
   if (d->settings->contains(path))
     return d->settings->value(path);
   else
@@ -159,6 +153,7 @@ Application::setSetting(const QString& path, const QVariant value)
 }
 
 Application::~Application(){
+  this->stop();
   this->deleteLater();
 }
 

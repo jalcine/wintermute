@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -90,5 +90,7 @@ namespace Wintermute {
     Q_SIGNAL void pluginStateChanged(const QUuid& id, const Plugin::State& state);
   };
 }
+
+#define wntrFactory Wintermute::Factory::instance()
 
 #endif /* WINTERMUTE_CORE_FACTORY_HPP */

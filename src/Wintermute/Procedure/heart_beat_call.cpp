@@ -1,6 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+ * vim: ft=qt.cpp
+ * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
  *
@@ -19,20 +19,22 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "plugininterfaceable.hpp"
-#include "private/plugin.hpp"
-#include "private/plugininterfaceable.hpp"
-#include "factory.hpp"
-#include "plugin.hpp"
+#include <QtCore/QDateTime>
+#include "Wintermute/Procedure/module.hpp"
+#include "Wintermute/Procedure/heart_beat_call.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
 
-using Wintermute::PluginInterfaceablePrivate;
-using Wintermute::PluginInterfaceable;
-using Wintermute::Factory;
+using Wintermute::Procedure::HeartbeatCall;
 
-PluginInterfaceable::PluginInterfaceable() : QObject(Factory::instance()), d_ptr(this) {
+HeartbeatCall::HeartbeatCall(Module* module) : Call(module) {
+  Q_D(Call);
+  d->data["_heartbeat"] = true;
+  d->data["module"] = module->qualifiedName();
+  d->data["time"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+  d->recipient = "me.jalcine.wintermute.heartbeat";
 }
 
-PluginInterfaceable::~PluginInterfaceable() {
+HeartbeatCall::~HeartbeatCall() {
 }
 
-#include "Wintermute/plugininterfaceable.moc"
+#include "Wintermute/Procedure/heart_beat_call.moc"
