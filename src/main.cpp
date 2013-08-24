@@ -23,5 +23,5 @@
 
 int main ( int argc, char** argv )
 {
-	return Wintermute::Application::run ( argc, argv );
+  return Wintermute::Application::run ( argc, argv );
 }
