@@ -40,7 +40,8 @@ ProcessModule::reboot() {
 
 void
 ProcessModule::quit(const int exitcode) {
-  //Wintermute::Application::instance()->exit(exitcode);
+  winfo(this, "Invoking remote exit...");
+  wntrApp->stop(exitcode);
 }
 
 ProcessModule::~ProcessModule() {

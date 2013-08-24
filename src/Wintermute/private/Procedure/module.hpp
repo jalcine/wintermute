@@ -77,6 +77,7 @@ namespace Wintermute {
 
       void recieveDataAsync(std::function<void (QVariant)> callback){
         // TODO: Recieve data in async.
+        callback(QVariant());
       }
 
       QVariant receiveData(){
