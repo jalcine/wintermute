@@ -13,3 +13,4 @@
 --verbose
 --lineend=linux
 --suffix=none
+--preserve-date
