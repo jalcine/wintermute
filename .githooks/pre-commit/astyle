@@ -33,6 +33,7 @@ case "${1}" in
 EOF
     ;;
   * )
-    astyle --options=./.astylerc `find src test -type f`
+    astyle --options=./.astylerc --recursive "src/*"
+    astyle --options=./.astylerc --recursive --exclude=build_deps.sh "test/*"
     ;;
 esac
