@@ -17,17 +17,21 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+if (EXISTS wntrpluginmacros)
+  return()
+else()
+  set(wntrpluginmacros ON CACHE STRING "FOO")
+endif()
+
 include(CMakeParseArguments)
 include(WintermuteVariables)
 
 ## Determine the location of the necessary configuration file for Wintermute's 
 ## plugin.
 
-if (CMAKE_PROJECT_NAME EQUAL "Wintermute")
-  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE "${CMAKE_SOURCE_DIR}/cmake/Templates/PluginDefinition.spec.in")
-else(CMAKE_PROJECT_NAME EQUAL "Wintermute")
+if (NOT DEFINED WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE)
   set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
-endif(CMAKE_PROJECT_NAME EQUAL "Wintermute")
+endif()
 
 ##
 ## @fn wintermute_plugin_declare
@@ -40,23 +44,23 @@ endif(CMAKE_PROJECT_NAME EQUAL "Wintermute")
 ##
 function(wintermute_plugin_declare)
   set(_oneArgs   TARGET UUID)
-  set(_multiArgs )
+  set(_multiArgs SOURCES)
   cmake_parse_arguments(wdp "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER ${wdp_TARGET} _minLocal)
   string(TOUPPER ${wdp_TARGET}   ${_local}_EXPORT_SYMBOL)
-  
+
   # Define the plugin's CMake properties.
-  set("${_local}_SOURCES"         ${wdp_SOURCES}                 CACHE STRING "Sources.")
-  set("${_local}_TARGET"          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
-  set("${_local}_UUID"            ${wdp_UUID}                    CACHE STRING "Uuid.")
-  set("${_local}_LIBRARIES"       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
-  set("${_local}_INCLUDE_DIRS"    ${WINTERMUTE_INCLUDE_DIRS}
-                                  ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING "Directories.")
-  set("${_local}_HEADERS_PATH"    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
-  set("${_local}_DEFINITION_FILE" "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
+  set(${_local}_SOURCES         ${wdp_SOURCES}                 CACHE STRING "Sources.")
+  set(${_local}_TARGET          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
+  set(${_local}_UUID            ${wdp_UUID}                    CACHE STRING "Uuid.")
+  set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
+  set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
+                                ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING INTERNAL FORCE)
+  set(${_local}_HEADERS_PATH    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
+  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
 
 endfunction(wintermute_plugin_declare)
 
@@ -76,22 +80,28 @@ function(wintermute_plugin_target_declare)
 
   # Ensure that we handle the automagically moc-ing of files.
   qt4_automoc(${wptd_SOURCES})
-  
+
   # Define the library.
   add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
 
   # Coat the target with Wintermute's build options.
   wintermute_add_properties(${${_local}_TARGET})
-  
+
+  message(${${_local}_INCLUDE_DIRS})
+
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
-    FOLDER        "Wintermute/${${_local}_TARGET}"
-    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
-    VERSION       ${${_local}_VERSION}
-    SOVERSION     ${${_local}_VERSION}
-    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}"
-  )
+    FOLDER        "Wintermute/${${_local}_TARGET}")
+  set_target_properties(${${_local}_TARGET} PROPERTIES
+    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}")
+  set_target_properties(${${_local}_TARGET} PROPERTIES
+    VERSION       ${${_local}_VERSION})
+  set_target_properties(${${_local}_TARGET} PROPERTIES
+    SOVERSION     ${${_local}_VERSION})
+  set_target_properties(${${_local}_TARGET} PROPERTIES
+    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}")
 
+  message(${${_local}_INCLUDE_DIRS})
   # Set up linking.
   target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
 
@@ -101,7 +111,7 @@ endfunction(wintermute_plugin_target_declare)
 ## TODO: Document this method.
 ## TODO: Implement this method.
 #function(wintermute_plugin_generate_documentation)
-  #message(WARNING "[cmake] Documentation function not yet built.")
+#message(WARNING "[cmake] Documentation function not yet built.")
 #endfunction(wintermute_plugin_generate_documentation)
 
 ##
@@ -113,8 +123,7 @@ function(wintermute_plugin_add_include_directories)
   cmake_parse_arguments(wpad "" "TARGET" "DIRECTORIES" ${ARGN})
 
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpad_TARGET}" _local)
-  list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES} ${WINTERMUTE_INLCUDE_DIRS})
-  list(REMOVE_DUPLICATES ${_local}_INCLUDE_DIRECTORIES)
+  list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES} ${WINTERMUTE_INCLUDE_DIRS})
 endfunction(wintermute_plugin_add_include_directories)
 
 ##
@@ -146,17 +155,17 @@ endfunction(wintermute_plugin_add_libraries)
 ##
 function(wintermute_plugin_configure)
   set(_validProperties AUTHOR_NAME
-                       NAME_RPC
-                       EMAIL
-                       URI
-  )
+    NAME_RPC
+    EMAIL
+    URI
+    )
 
   set(_options )
   set(_singleVals ${_validProperties} TARGET)
   cmake_parse_arguments(wpc "${_options}" "${_singleVals}" "" ${ARGN})
 
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}_" _local)
-  
+
   foreach(_validProperty ${_validProperties})
     set("${_local}${_validProperty}" "${wpc_${_validProperty}}" CACHE STRING "Configuration property.")
   endforeach(_validProperty ${_validProperties})
@@ -168,17 +177,17 @@ endfunction(wintermute_plugin_configure)
 ##
 function(wintermute_plugin_set_version)
   set(_pluginVersions PLUGIN_VERSION_MAJOR
-                      PLUGIN_VERSION_MINOR
-                      PLUGIN_VERSION_PATCH
-                      PLUGIN_VERSION_STAGE
-  )
+    PLUGIN_VERSION_MINOR
+    PLUGIN_VERSION_PATCH
+    PLUGIN_VERSION_STAGE
+    )
 
   set(_systemVersions SYSTEM_VERSION_MAJOR
-                      SYSTEM_VERSION_MINOR
-                      SYSTEM_VERSION_PATCH
-                      SYSTEM_VERSION_STAGE
-                      SYSTEM_VERSION_COMPARISON
-  )
+    SYSTEM_VERSION_MINOR
+    SYSTEM_VERSION_PATCH
+    SYSTEM_VERSION_STAGE
+    SYSTEM_VERSION_COMPARISON
+    )
 
   set(_singleVals ${_pluginVersions} ${_systemVersions} TARGET)
   cmake_parse_arguments(wpsv "" "${_singleVals}" "" ${ARGN})
@@ -206,11 +215,11 @@ function(wintermute_plugin_install)
   # DONE: Define the plug-in's definition file.
   set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
   configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
- 
+
   # DONE: Install the library itself.
   install(TARGETS        ${${_local}TARGET}
     LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
-  )
+    )
 
   # TODO: Install exported information.
   # TODO: Install build-time headers.
