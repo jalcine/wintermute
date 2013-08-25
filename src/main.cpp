@@ -1,5 +1,5 @@
 /**
- * vim: ft=qt.cpp
+ * vim: ft=cpp
  * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
