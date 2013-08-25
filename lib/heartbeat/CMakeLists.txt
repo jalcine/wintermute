@@ -28,6 +28,9 @@ set(heartbeat_HDRS
   plugin.hpp
   module.hpp)
 
+configure_file(globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/heartbeat/globals.hpp
+  @ONLY)
+
 wintermute_plugin_declare(TARGET heartbeat UUID ${heartbeat_UUID} SOURCES ${heartbeat_SRCS})
 wintermute_plugin_set_version(TARGET heartbeat
   PLUGIN_VERSION_MAJOR 0
