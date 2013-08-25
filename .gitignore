@@ -16,7 +16,7 @@ Makefile
 cmake_install.cmake
 cmake_uninstall.cmake
 FindWintermute.cmake
-src/global.hpp
+src/Wintermute/Globals
 *.pyc
 gdb.txt
 *.orig
