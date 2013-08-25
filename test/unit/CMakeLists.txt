@@ -18,7 +18,7 @@
 ###############################################################################
 
 ## Make sure we can automoc the tests.
-include_directories ( $ {CMAKE_CURRENT_BINARY_DIR} )
+include_directories ( ${CMAKE_CURRENT_BINARY_DIR} )
 
 ## Produce the list of buildable tests.
 set ( WINTERMUTE_TEST_UNITS
@@ -28,7 +28,7 @@ set ( WINTERMUTE_TEST_UNITS
     )
 
 ## Add each unit test to the test suite.
-foreach ( WINTERMUTE_TEST_UNIT $ {WINTERMUTE_TEST_UNITS} )
-wintermute_add_unit_test ( $ {WINTERMUTE_TEST_UNIT} "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp" )
-endforeach ( WINTERMUTE_TEST_UNIT $ {WINTERMUTE_TEST_UNITS} )
+foreach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
+wintermute_add_unit_test ( ${WINTERMUTE_TEST_UNIT} "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp" )
+endforeach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
 
