@@ -56,6 +56,5 @@ include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
 ## Make some directories
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
 
-## Include macros
-include(TestingTargets)
+## Include macros.
 include(WintermuteTestingMacros)
