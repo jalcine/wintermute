@@ -21,3 +21,4 @@ lib/heartbeat/globals.hpp
 *.pyc
 gdb.txt
 *.orig
+tags
