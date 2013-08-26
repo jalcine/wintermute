@@ -17,6 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ *
 **/
 
 #include "plugin.hpp"
@@ -34,29 +35,8 @@ using Wintermute::Logging;
 using Wintermute::Logger;
 
 // TODO: Check if loading in its own space, if so, load necessary data.
-Plugin::Plugin ( const QString& uuid ) : QObject ( Factory::instance() ), d_ptr ( new PluginPrivate ( this, uuid ) )
+Plugin::Plugin ( const QString& uuid ) : QObject ( Factory::instance() ), d_ptr ( new PluginPrivate ( this, id() ) )
 {
-}
-
-// TODO: Provide a means of obtaining a name for plug-ins.
-QString
-Plugin::name() const
-{
-  return QString::null;
-}
-
-// TODO: Provide a means of determining the plugin's version.
-Version
-Plugin::version() const
-{
-  return Version::Any;
-}
-
-// TODO: Provide a means of determining the version of Wintermute required.
-Version
-Plugin::systemVersion() const
-{
-  return Version::Any;
 }
 
 QSettings*
@@ -64,25 +44,6 @@ Plugin::configuration() const
 {
   Q_D ( const Plugin );
   return d->settings;
-}
-
-Plugin::State
-Plugin::state() const
-{
-  return Undefined;
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  return Module;
-}
-
-QUuid
-Plugin::id() const
-{
-  Q_D ( const Plugin );
-  return d->id;
 }
 
 bool
