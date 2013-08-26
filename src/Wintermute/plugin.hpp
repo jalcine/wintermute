@@ -96,37 +96,37 @@ public:
    * @fn id
    * Obtains the UUID used as a unique identifer for the plugin.
    */
-  QUuid id() const;
+  virtual QUuid id() const = 0;
 
   /**
    * @fn name
    * Obtains the friendly name of the plugin.
    */
-  QString name() const;
+  virtual QString name() const = 0;
 
   /**
    * @fn version
    * Obtains the versioning object for the plugin.
    */
-  Version version() const;
+  virtual Version version() const = 0;
 
   /**
    * @fn systemVersion
-   * Obtians the minimum running version of Wintermute required for plugin.
+   * Obtains the minimum running version of Wintermute required for plugin.
    */
-  Version systemVersion() const;
+  virtual Version systemVersion() const = 0;
 
   /**
    * @fn state
    * Obtains the current state of the plugin.
    */
-  State state() const;
+  virtual State state() const = 0;
 
   /**
    * @fn type
    * Obtains the type of plugin.
    */
-  Type type() const;
+  virtual Type type() const = 0;
 
   /**
    * @fn loaded
