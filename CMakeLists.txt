@@ -16,9 +16,7 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-
 cmake_minimum_required (VERSION 2.8)
-project(Wintermute)
 
 ## Include our modules in the discovery of modules and incorporate our build
 ## system's logic.

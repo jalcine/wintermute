@@ -16,7 +16,7 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-
+project(WintermuteHeartbeat)
 # Whatever you do, refrain from changing this value. Just don't do it.
 set(heartbeat_UUID "764653f8-14cb-419c-a5ff-db7a036ef0de")
 
@@ -49,6 +49,5 @@ wintermute_plugin_configure(TARGET heartbeat
   URI "http://wintermute.jalcine.me/plugins/heartbeart.html"
   )
 wintermute_plugin_target_declare(TARGET heartbeat SOURCES ${heartbeat_SRCS})
-wintermute_plugin_add_include_directories(TARGET heartbeat DIRECTORIES
-  ${WINTERMUTE_BINARY_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/src)
+include_directories(${Wintermute_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 wintermute_plugin_install(TARGET heartbeat)
