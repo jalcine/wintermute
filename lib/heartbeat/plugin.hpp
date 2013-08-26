@@ -27,6 +27,9 @@ namespace Wintermute {
     class Plugin : public Wintermute::Plugin {
       Q_OBJECT;
       Q_DISABLE_COPY(Plugin);
+
+      public:
+      virtual QUuid id() const;
     };
   }
 }

@@ -22,3 +22,11 @@
 
 #include "plugin.hpp"
 #include "plugin.moc"
+
+using Wintermute::Heartbeat::Plugin;
+
+QUuid
+Plugin::id() const
+{
+  return QUuid(WINTERMUTE_PLUGIN_HEARTBEAT_UUID);
+}
