@@ -1,5 +1,5 @@
 /**
- * vim: ft=qt.cpp
+ * vim: ft=cpp
  * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -28,8 +28,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
 #include <QtZeroMQ/globals.hpp>
-
-#define WINTERMUTE_PLUGIN_DAEMON_UUID QUuid()
+#include "../../../lib/heartbeat/globals.hpp"
 
 namespace Wintermute
 {
@@ -78,9 +77,9 @@ public:
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
     if ( mode == "daemon" || mode == "d" ) {
       wdebug ( Application::instance(), "Starting daemon mode..." );
-      bool rt = Factory::instance()->loadPlugin ( WINTERMUTE_PLUGIN_DAEMON_UUID );
-      if ( !rt ) {
-        werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
+      bool heartBeatLoaded = Factory::instance()->loadPlugin ( WINTERMUTE_PLUGIN_HEARTBEAT_UUID );
+      if ( !heartBeatLoaded ) {
+        werr ( Application::instance(), "Can't load heartbeat plugin for daemon; bailing out!" );
         Application::instance()->stop ( 127 );
       }
     } else if ( mode == "plugin" || mode == "p" ) {
