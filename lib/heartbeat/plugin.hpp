@@ -20,6 +20,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef WINTERMUTE_HEARTBEAT_PLUGIN_HPP
+#define WINTERMUTE_HEARTBEAT_PLUGIN_HPP
+
 #include <Wintermute/Plugin>
 
 namespace Wintermute {
@@ -33,3 +36,5 @@ namespace Wintermute {
     };
   }
 }
+
+#endif /* */

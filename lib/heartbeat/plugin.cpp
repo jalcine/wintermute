@@ -21,6 +21,7 @@
  */
 
 #include "plugin.hpp"
+#include "globals.hpp"
 #include "plugin.moc"
 
 using Wintermute::Heartbeat::Plugin;
