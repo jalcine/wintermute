@@ -55,7 +55,7 @@ class Plugin : public QObject
 
 protected:
   Q_DECLARE_PRIVATE ( Plugin );
-  explicit Plugin ( const QString& uuid );
+  explicit Plugin ( );
   QSettings* configuration() const;
 
 public:

@@ -22,8 +22,10 @@
 #ifndef WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP
 #define WINTERMUTE_CORE_INTERNAL_TEMPORARYPLUGIN_HPP
 
-#include "plugin.hpp"
-#include <QPluginLoader>
+#include <QtCore/QUuid>
+#include <QtCore/QPluginLoader>
+#include <Wintermute/Plugin>
+#include <Wintermute/Version>
 
 namespace Wintermute
 {
@@ -31,11 +33,18 @@ class PluginInterfaceable;
 class TemporaryPlugin : public Plugin
 {
   Q_OBJECT;
+  QUuid m_id;
 
 public:
   explicit TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader );
   virtual ~TemporaryPlugin();
   PluginInterfaceable* tryLoad ( QPluginLoader* loader );
+  virtual inline QUuid id() const { return m_id; }
+  virtual inline QString name() const { return name(); }
+  virtual Version version() const { return Version::Any; }
+  virtual Version systemVersion() const { return Version::Any; }
+  virtual Plugin::State state() const { return Undefined; }
+  virtual Plugin::Type type() const { return Module; }
 };
 }
 

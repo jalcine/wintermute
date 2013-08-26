@@ -29,10 +29,11 @@ using Wintermute::TemporaryPlugin;
 using Wintermute::PluginInterfaceable;
 
 TemporaryPlugin::TemporaryPlugin ( const QUuid& id, QPluginLoader* theLoader ) :
-  Plugin ( id )
+  Plugin ( )
 {
   Q_D ( Plugin );
   d->loader = theLoader;
+  this->m_id = id;
 }
 
 PluginInterfaceable*
