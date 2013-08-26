@@ -1,4 +1,4 @@
- /**
+/**
  * vim: ft=qt.cpp
  *
  * Copyright (c) 2013 Jacky Alcine <me@jalcine.me>
