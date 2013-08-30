@@ -16,83 +16,78 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
+project ( Wintermute )
+include ( WintermuteVersioning )
 
-include(WintermuteVersioning)
-
-set(WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
+set ( WINTERMUTE_BINARY_INCLUDE_DIRS $ {WINTERMUTE_INCLUDE_DIRS}
+      $ {CMAKE_CURRENT_SOURCE_DIR} $ {CMAKE_CURRENT_BINARY_DIR} )
+list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS $ {WINTERMUTE_INCLUDE_DIR} )
 
 # Grab the sources!
-set(WINTERMUTE_SOURCES
-  ## Procedure Calling binaries
-  Wintermute/Procedure/module.cpp
-  Wintermute/Procedure/process_module.cpp
-  Wintermute/Procedure/call.cpp
-  Wintermute/Procedure/lambda_call.cpp
-  Wintermute/Procedure/method_call.cpp
-  Wintermute/Procedure/heart_beat_call.cpp
+set ( WINTERMUTE_SOURCES
+## Procedure Calling binaries
+      Wintermute / Procedure / module.cpp
+      Wintermute / Procedure / process_module.cpp
+      Wintermute / Procedure / call.cpp
+      Wintermute / Procedure / lambda_call.cpp
+      Wintermute / Procedure / method_call.cpp
+      Wintermute / Procedure / heart_beat_call.cpp
 
-  ## Plugin binaries
-  Wintermute/plugin.cpp
-  Wintermute/plugin_interfaceable.cpp
-  Wintermute/temporary_plugin.cpp
-  Wintermute/factory.cpp
+## Plugin binaries
+      Wintermute / plugin.cpp
+      Wintermute / factory.cpp
 
-  ## Core binaries
-  Wintermute/logging.cpp
-  Wintermute/arguments.cpp
-  Wintermute/version.cpp
-  Wintermute/application.cpp
-  main.cpp
-  )
+## Core binaries
+      Wintermute / logging.cpp
+      Wintermute / arguments.cpp
+      Wintermute / version.cpp
+      Wintermute / application.cpp
+      main.cpp
+    )
 
-set(WINTERMUTE_HEADERS 
-  ## Pretty headers
-  Wintermute/Application
-  Wintermute/Arguments
-  Wintermute/Globals
-  Wintermute/Logging
-  Wintermute/Plugin
-  Wintermute/PluginInterfaceable
-  Wintermute/Version
-  Wintermute/Procedure/Module
-  Wintermute/Procedure/ProcessModule
-  Wintermute/Procedure/Call
-  Wintermute/Procedure/LambdaCall
-  Wintermute/Procedure/MethodCall
-  WIntermute/Procedure/HeartbeatCall
+set ( WINTERMUTE_HEADERS
+## Pretty headers
+      Wintermute / Application
+      Wintermute / Arguments
+      Wintermute / Globals
+      Wintermute / Logging
+      Wintermute / Plugin
+      Wintermute / Version
+      Wintermute / Procedure / Module
+      Wintermute / Procedure / ProcessModule
+      Wintermute / Procedure / Call
+      Wintermute / Procedure / LambdaCall
+      Wintermute / Procedure / MethodCall
+      Wintermute / Procedure / HeartbeatCall
 
-  ## Native headers
-  Wintermute/application.hpp
-  Wintermute/arguments.hpp
-  Wintermute/logging.hpp
-  Wintermute/version.hpp
-  Wintermute/factory.hpp
-  Wintermute/plugin.hpp
-  Wintermute/plugin_interfaceable.hpp
-  Wintermute/Procedure/module.hpp
-  Wintermute/Procedure/process_module.hpp
-  Wintermute/Procedure/call.hpp
-  Wintermute/Procedure/lambda_call.hpp
-  Wintermute/Procedure/method_call.hpp
-  Wintermute/Procedure/heart_beat_call.hpp
-  "${CMAKE_CURRENT_BINARY_DIR}/globals.hpp"
-  )
+## Native headers
+      Wintermute / application.hpp
+      Wintermute / arguments.hpp
+      Wintermute / logging.hpp
+      Wintermute / version.hpp
+      Wintermute / factory.hpp
+      Wintermute / plugin.hpp
+      Wintermute / Procedure / module.hpp
+      Wintermute / Procedure / process_module.hpp
+      Wintermute / Procedure / call.hpp
+      Wintermute / Procedure / lambda_call.hpp
+      Wintermute / Procedure / method_call.hpp
+      Wintermute / Procedure / heart_beat_call.hpp
+    )
 
 # Wrap up the sources.
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
-  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure")
-qt4_automoc(${WINTERMUTE_SOURCES})
+file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
+       "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure" )
+qt4_automoc ( $ {WINTERMUTE_SOURCES} )
 
 # Define the executable.
-add_executable(wintermute ${WINTERMUTE_SOURCES})
+add_executable ( wintermute $ {WINTERMUTE_SOURCES} )
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
-  FOLDER        "Wintermute/Core"
-  #VERSION       "${WINTERMUTE_VERSION}"
-  PROJECT_LABEL "Wintermute")
+                      FOLDER        "Wintermute/Core"
+#VERSION       "${WINTERMUTE_VERSION}"
+                      PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
@@ -101,11 +96,12 @@ include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.
-configure_file(globals.hpp.in Wintermute/globals.hpp @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in ${CMAKE_SOURCE_DIR}/src/Wintermute/Globals @ONLY)
 
 # Install the binary.
 install(TARGETS wintermute
-  RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})        
+        RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})
 
+# Install the headers.
 install(FILES ${WINTERMUTE_HEADERS}
-  DESTINATION ${WINTERMUTE_CORE_INCLUDE_DIR})
+        DESTINATION ${WINTERMUTE_CORE_INCLUDE_DIR}/Wintermute)

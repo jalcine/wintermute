@@ -24,20 +24,23 @@
 
 #include <Wintermute/Procedure/Call>
 
-namespace Wintermute {
-  namespace Procedure {
-    class Module;
-    class HeartbeatCall : public Call {
-      Q_OBJECT;
-      Q_DISABLE_COPY(HeartbeatCall);
+namespace Wintermute
+{
+namespace Procedure
+{
+class Module;
+class HeartbeatCall : public Call
+{
+  Q_OBJECT;
+  Q_DISABLE_COPY ( HeartbeatCall );
 
-      public:
-        explicit HeartbeatCall(Module* module);
-        virtual ~HeartbeatCall();
-        virtual inline QString name() const { return "heartbeat"; }
-        virtual inline Call::Type type() const{ return Call::Signal; }
-    };
-  }
+public:
+  explicit HeartbeatCall ( Module* module );
+  virtual ~HeartbeatCall();
+  virtual inline QString name() const { return "heartbeat"; }
+  virtual inline Call::Type type() const { return Call::Signal; }
+};
+}
 }
 
 #endif

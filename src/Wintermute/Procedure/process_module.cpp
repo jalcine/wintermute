@@ -25,24 +25,27 @@
 
 using Wintermute::Procedure::ProcessModule;
 
-ProcessModule::ProcessModule() : Module(Wintermute::Application::instance()) {
-  setDomain("me.jalcine.wintermute");
-  setPackage("process");
+ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
+{
+  setDomain ( "me.jalcine.wintermute" );
+  setPackage ( "process" );
   // TODO: Add 'listModules' method via lambda.
   // TODO: Add 'reboot' method via lambda.
 }
 
 void
-ProcessModule::reboot() {
+ProcessModule::reboot()
+{
   // TODO: Add forking logic or recycle some.
-  //Wintermute::Application::instance()->exit();
+  Wintermute::Application::instance()->stop();
 }
 
 void
-ProcessModule::quit(const int exitcode) {
+ProcessModule::quit ( const int exitcode )
   winfo(this, "Invoking remote exit...");
   wntrApp->stop(exitcode);
 }
 
-ProcessModule::~ProcessModule() {
+ProcessModule::~ProcessModule()
+{
 }

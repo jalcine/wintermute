@@ -16,6 +16,9 @@ Makefile
 cmake_install.cmake
 cmake_uninstall.cmake
 FindWintermute.cmake
-src/global.hpp
+src/Wintermute/Globals
+lib/heartbeat/globals.hpp
 *.pyc
 gdb.txt
+*.orig
+tags

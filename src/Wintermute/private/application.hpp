@@ -1,5 +1,4 @@
 /**
- * vim: ft=cpp
  * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -27,78 +26,69 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
+#include <QtCore/QDir>
 #include <QtZeroMQ/globals.hpp>
 
-#define WINTERMUTE_PLUGIN_DAEMON_UUID QUuid()
+namespace Wintermute
+{
+class ApplicationPrivate
+{
+  friend class Wintermute::Procedure::ModulePrivate;
 
-namespace Wintermute {
-  class ApplicationPrivate {
-    friend class Wintermute::Procedure::ModulePrivate;
+public:
+  QSharedPointer<QCoreApplication> app;
+  QSharedPointer<Procedure::ProcessModule> module;
+  QList<Procedure::Module*> modules;
+  QSettings* settings;
 
-    public:
-    QSharedPointer<QCoreApplication> app;
-    QSharedPointer<Procedure::ProcessModule> module;
-    QList<Procedure::Module*> modules;
-    QSettings* settings;
+  ApplicationPrivate ( int& argc, char** argv ) :
+    app(), module(), modules(), settings ( 0 ) {
+    app = QSharedPointer<QCoreApplication> ( new QCoreApplication ( argc, argv ) );
+    module.clear();
+  }
 
-    ApplicationPrivate(int &argc, char **argv) :
-      app(), module(), modules(), settings(0) {
-        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-        module.clear();
+  void initialize() {
+    // Add library paths for plug-ins.
+    // TODO: Add more potential paths for plugins.
+    // TODO: Allow paths to be specified over command-line and environment.
+    app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
+    // Define context for platform.
+    Procedure::ModulePrivate::context = QtZeroMQ::createDefaultContext ( Wintermute::Application::instance() );
+    // Allocate necessary variables for logging and arguments.
+    // TODO: Move factory initialization to separate thread.
+    Logging::instance();
+    Arguments::instance();
+    Factory::instance();
+  }
+
+  int exec() {
+    return app->exec();
+  }
+
+  void loadProcessModule() {
+    Procedure::ProcessModule* modulePtr = new Procedure::ProcessModule;
+    module = QSharedPointer<Procedure::ProcessModule> ( modulePtr );
+  }
+
+  void loadCurrentMode() {
+    Factory::instance()->start();
+    const QString mode = Arguments::instance()->argument ( "mode" ).toString();
+    if ( mode == "daemon" || mode == "d" ) {
+      bool heartBeatLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
+      if ( !heartBeatLoaded ) {
+        werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
+        Application::instance()->stop ( 127 );
       }
-
-    void initialize(){
-      // Add library paths for plug-ins.
-      app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
-
-      // Define context for platform.
-      Procedure::ModulePrivate::context = QtZeroMQ::createDefaultContext(Wintermute::Application::instance());
-
-      // Allocate necessary variables for logging and arguments.
-      // TODO: Move factory initialization to separate thread.
-      Logging::instance();
-      Arguments::instance();
-      Factory::instance();
-    }
-
-    int exec(){
-      return app->exec();
-    }
-
-    void loadProcessModule() {
-      // Create the module.
-      Procedure::ProcessModule* modulePtr = new Procedure::ProcessModule;
-      module = QSharedPointer<Procedure::ProcessModule>(modulePtr);
-
-      // TODO: Say 'hello!'.
-      module->invoke("hello", QVariantList());
-    }
-
-    void loadCurrentMode() {
-      Factory::instance()->start();
-      const QString mode = Arguments::instance()->argument("mode").toString();
-
-      if (mode == "daemon" || mode == "d"){
-        wdebug(Application::instance(), "Starting daemon mode...");
-        bool rt = Factory::instance()->loadPlugin(WINTERMUTE_PLUGIN_DAEMON_UUID);
-
-        if (!rt){
-          werr(Application::instance(), "Can't load daemon plugin; bailing out!");
-          Application::instance()->stop(127);
-        }
+    } else if ( mode == "plugin" || mode == "p" ) {
+      wdebug ( Application::instance(), "Booting plugin..." );
+      const QString pluginName ( Arguments::instance()->argument ( "plugin" ).toString() );
+      if ( pluginName.isNull() ) {
+        werr ( Application::instance(), "Invalid plugin name provided." );
+        Application::instance()->stop ( 127 );
+        return;
       }
-      else if (mode == "plugin" || mode == "p") {
-        wdebug(Application::instance(), "Booting plugin...");
-        const QUuid pluginUuid(Arguments::instance()->argument("uuid").toString());
-
-        if (pluginUuid.isNull()){
-          werr(Application::instance(), "Invalid plugin UUID provided.");
-          Application::instance()->stop(127);
-          return;
-        }
-
-        Factory::instance()->loadPlugin(pluginUuid);
-      }
+      Factory::instance()->loadPlugin ( pluginName );
     }
-  };
+  }
+};
 }

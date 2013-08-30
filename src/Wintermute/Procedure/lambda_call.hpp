@@ -24,15 +24,18 @@
 
 #include <Wintermute/Procedure/Call>
 
-namespace Wintermute {
-  namespace Procedure {
-    class LambdaCall : public Call {
-      public:
-        explicit LambdaCall(Call::Signature lambda, QString name);
-        virtual ~LambdaCall();
-        virtual QString name() const;
-    };
-  }
+namespace Wintermute
+{
+namespace Procedure
+{
+class LambdaCall : public Call
+{
+public:
+  explicit LambdaCall ( Call::Signature lambda, QString name );
+  virtual ~LambdaCall();
+  virtual QString name() const;
+};
+}
 }
 
 #endif

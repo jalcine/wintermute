@@ -19,58 +19,43 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QUuid>
-#include <QSettings>
-#include <QPluginLoader>
+#include <QtCore/QSettings>
+#include <QtCore/QPluginLoader>
 #include <Wintermute/Logging>
-#include <Wintermute/PluginInterfaceable>
 
-namespace Wintermute {
-  class PluginPrivate {
-    public:
-      Plugin* q_ptr;
-      QUuid id;
-      QSettings* settings;
-      QPluginLoader* loader;
+namespace Wintermute
+{
+class PluginPrivate
+{
+public:
+  Q_DECLARE_PUBLIC ( Plugin );
+  Plugin* q_ptr;
+  QSettings* settings;
+  QPluginLoader* loader;
 
-      PluginPrivate(Plugin* q, QUuid const id) : q_ptr(q), id(id), settings(0), loader(0) { }
+  PluginPrivate ( Plugin* q ) : q_ptr ( q ), settings ( 0 ), loader ( 0 ) { }
 
-      ~PluginPrivate() { }
+  ~PluginPrivate() { }
 
-      bool loadBinary() {
-        loader->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
-        return loader->load();
-      }
+  bool loadBinary() {
+    loader->setLoadHints ( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
+    return loader->load();
+  }
 
-      bool unloadBinary() { 
-        return loader->unload();
-      }
+  bool unloadBinary() {
+    return loader->unload();
+  }
 
-      PluginInterfaceable* tryLoad(QPluginLoader* pluginLoader){
-        this->loader = pluginLoader;
-
-        if (!this->loadBinary()){
-          werr(q_ptr, QString("Can't load binary!").arg(pluginLoader->errorString()));
-          return 0;
-        } else {
-          if (!pluginLoader->isLoaded()){
-            werr(q_ptr, QString("Failed to load plugin binary. Error: %1").arg(pluginLoader->errorString()));
-            return 0;
-          }
-
-          else
-            winfo(q_ptr, QString("Plugin interface loaded for %1").arg(id.toString()));
-        }
-
-        return this->getPluginInterface();
-      }
-
-      PluginInterfaceable* getPluginInterface() {
-        QObject* obj = this->loader->instance();
-        PluginInterfaceable* interface = 0;
-        interface = dynamic_cast<PluginInterfaceable*>(obj);
-        return interface;
-      }
-  };
+  bool tryLoad ( QPluginLoader* pluginLoader ) {
+    Q_Q ( Plugin );
+    this->loader = pluginLoader;
+    if ( !this->loadBinary() ) {
+      werr ( q_ptr, QString ( "Can't load binary!" ).arg ( pluginLoader->errorString() ) );
+      this->loader = 0;
+      return false;
+    }
+    winfo ( q_ptr, QString ( "Plugin interface loaded for %1" ).arg ( q->name() ) );
+    return true;
+  }
+};
 }
-

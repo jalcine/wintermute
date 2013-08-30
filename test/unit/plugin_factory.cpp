@@ -1,4 +1,2 @@
-int main(int argc, char const *argv[])
-{
-  return 0;
-}
+#include "plugin_factory.hpp"
+#include "plugin_factory.moc"

@@ -19,6 +19,7 @@
 ###############################################################################
 
 include(WintermuteMacros)
+include(GCovMacros)
 
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
@@ -41,6 +42,5 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/unit)
 
   # Add coverage and valgrind support.
-  generate_lcov(unittest_${unittestname})
-  generate_valgrind(unittest_${unittestname})
+  gcov_generate(unittest_${unittestname} "test/unit")
 endmacro(wintermute_add_unit_test unittestname unittestsrc)

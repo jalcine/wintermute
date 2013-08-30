@@ -24,71 +24,128 @@
 
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
-#include <Wintermute/PluginInterfaceable>
 #include <QtCore/QStringList>
-#include <QtCore/QUuid>
 
-namespace Wintermute {
-  class FactoryPrivate;
+namespace Wintermute
+{
+class FactoryPrivate;
+
+/**
+ * @class Factory
+ * @brief Handles the loading and manufactoring of plug-ins.
+ *
+ * In the core module state, plug-ins are loaded in the following fashion:
+ *
+ *  - Grab metadata: Obtain the plug-in's meta information, as much as
+ *  possible. At the moment, the only two bits of data we'd need is the
+ *  version of the plug-in and the ABI version. This is how we determine
+ *  whether or not loading this plug-in would cause a loading issue.
+ *
+ *  - Check ABI: Determine whether or not this plug-in will work properly in
+ *  this version of Wintermute. Simple decimal number comparison.
+ *
+ *  - Load binary: Loads the binary.
+ */
+class Factory : public QObject
+{
+  friend class Application;
+  friend class ApplicationPrivate;
+
+  Q_OBJECT;
+  Q_DECLARE_PRIVATE ( Factory );
+  FactoryPrivate* d_ptr;
+  static Factory* self;
 
   /**
-   * @class Factory
-   * @brief Handles the loading and manufactoring of plug-ins.
+   * @fn Factory
+   * @constructor
    *
-   * In the core module state, plug-ins are loaded in the following fashion:
-   *
-   *  - Grab metadata: Obtain the plug-in's meta information, as much as 
-   *  possible. At the moment, the only two bits of data we'd need is the 
-   *  version of the plug-in and the ABI version. This is how we determine 
-   *  whether or not loading this plug-in would cause a loading issue.
-   *
-   *  - Check ABI: Determine whether or not this plug-in will work properly in 
-   *  this version of Wintermute. Simple decimal number comparison.
-   *
-   *  - Load binary: Loads the binary.
    */
-  class Factory : public QObject {
-    friend class Application;
-    friend class ApplicationPrivate;
+  explicit Factory();
 
-    Q_OBJECT;
-    Q_DECLARE_PRIVATE(Factory);
-    FactoryPrivate* d_ptr;
-    static Factory* self;
+private:
+  void start();
+  void stop();
+  Q_SLOT void pluginStateChange ( const QString& name, const Plugin::State& state );
 
-    /**
-     * @fn Factory
-     * @constructor
-     *
-     */
-    explicit Factory();
+public:
+  /**
+   * @fn ~Factory
+   * @destructor
+   */
+  virtual ~Factory();
 
-    private:
-    void start();
-    void stop();
-    Q_SLOT void pluginStateChange(const QUuid& id, const Plugin::State& state);
+  /**
+   * @fn instance
+   * @static
+   */
+  static Factory* instance();
 
-    public:
-    /**
-     * @fn ~Factory
-     * @destructor
-     */
-    virtual ~Factory();
+  /**
+   * @fn availablePlugins
+   *
+   * A list of all of the plugins that Wintermute can load.
+   */
+  QStringList availablePlugins() const;
 
-    /**
-     * @fn instance
-     * @static
-     */
-    static Factory* instance();
-    PluginList availablePlugins() const;
-    PluginList activePlugins() const;
-    bool loadPlugin(const QUuid& id);
-    bool unloadPlugin(const QUuid& id);
-    bool autoloadPlugins();
-    bool unloadAllPlugins();
+  /**
+   * @fn activePlugins
+   *
+   * Obtains a list of actively loaded plugins in this process.
+   */
+  QStringList activePlugins() const;
 
-    Q_SIGNAL void pluginStateChanged(const QUuid& id, const Plugin::State& state);
-  };
+  /**
+   * @fn plugin
+   * @param name
+   *
+   * Obtains the specified plugin.
+   */
+  Plugin* plugin ( const QString& name ) const;
+
+  /**
+   * @fn loadPlugin
+   * @param name The name of the plug-in.
+   *
+   * Loads the specified plugin into this Wintermute process.
+   */
+  bool loadPlugin ( const QString& name );
+
+  /**
+   * @fn unloadPlugin
+   * @param name The name of the plug-in.
+   *
+   * Unloads the specified plugin from this Wintermute process.
+   */
+  bool unloadPlugin ( const QString& name );
+
+  /**
+   * @fn autoloadPlugins
+   *
+   * Automatically loads the approriate plugins for this process. This
+   * operation changes on the following cases:
+   *
+   *  + --mode=daemon (loads the daemon plugin)
+   *  + --mode=plugin (loads the plugin as specified by --plugin)
+   */
+  bool autoloadPlugins();
+
+  /**
+   * @fn unloadAllPlugins
+   *
+   * Unloads all of the plugins that are currently running in this process.
+   */
+  bool unloadAllPlugins();
+
+  /**
+   * @fn pluginStateChanged
+   *
+   * Raised when a plugin state has changed. This is risen for every plugin so
+   * it's recommended that you listen specificially for the plug-in in
+   * question by the 'name' parameter.
+   */
+  Q_SIGNAL void pluginStateChanged ( const QString& name, const Plugin::State& state );
+};
 }
 
 #define wntrFactory Wintermute::Factory::instance()

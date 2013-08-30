@@ -13,7 +13,7 @@ set print pretty 1
 # Load the binary file.
 file build/src/wintermute
 
-## Define some breakpoints.
-break main
-break Wintermute::Application::start()
-break Wintermute::Application::stop()
+# TODO: Define a few critical break-points.
+
+# Jump start the debugging process.
+run --mode daemon

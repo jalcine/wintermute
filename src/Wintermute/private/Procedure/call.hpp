@@ -23,21 +23,24 @@
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
 
-namespace Wintermute {
-  namespace Procedure {
-    class Call;
-    class CallPrivate {
-      public:
-        Call* q_ptr;
-        QString recipient;
-        Call::Signature function;
-        QMap<QString, QVariant> data;
+namespace Wintermute
+{
+namespace Procedure
+{
+class Call;
+class CallPrivate
+{
+public:
+  Call* q_ptr;
+  QString recipient;
+  Call::Signature function;
+  QMap<QString, QVariant> data;
 
-        explicit CallPrivate(Call* q): q_ptr(q), recipient(), function(nullptr), data() {
-        }
-
-        virtual ~CallPrivate() {
-        }
-    };
+  explicit CallPrivate ( Call* q ) : q_ptr ( q ), recipient(), function ( nullptr ), data() {
   }
+
+  virtual ~CallPrivate() {
+  }
+};
+}
 }

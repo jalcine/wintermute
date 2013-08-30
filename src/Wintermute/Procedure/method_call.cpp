@@ -25,21 +25,24 @@
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
 
-MethodCall::MethodCall(const QString& module, const QString& method, const QVariantList arguments) :
-  Call(new MethodCallPrivate(this)) {
-  Q_D(MethodCall);
+MethodCall::MethodCall ( const QString& module, const QString& method, const QVariantList arguments ) :
+  Call ( new MethodCallPrivate ( this ) )
+{
+  Q_D ( MethodCall );
   d->module = module;
   d->method = method;
   d->arguments = arguments;
 }
 
 QString
-MethodCall::name() const {
-  Q_D(const MethodCall);
+MethodCall::name() const
+{
+  Q_D ( const MethodCall );
   return d->method;
 }
 
-MethodCall::~MethodCall() {
+MethodCall::~MethodCall()
+{
 }
 
 #include "Wintermute/Procedure/method_call.moc"

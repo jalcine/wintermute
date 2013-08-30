@@ -21,6 +21,7 @@
 
 #include <Wintermute/Application>
 
-int main( int argc, char** argv ){
-  return Wintermute::Application::run(argc,argv);
+int main ( int argc, char** argv )
+{
+  return Wintermute::Application::run ( argc, argv );
 }

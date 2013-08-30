@@ -28,60 +28,66 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 
-Call::Call(QObject* parent) : QObject(parent), d_ptr(new CallPrivate(this)) {
+Call::Call ( QObject* parent ) : QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
+{
 }
 
-Call::Call(CallPrivate *d) : QObject(Wintermute::Application::instance()), d_ptr(d) {
+Call::Call ( CallPrivate* d ) : QObject ( Wintermute::Application::instance() ), d_ptr ( d )
+{
 }
 
 QVariant
-Call::invoke(const QVariantList& arguments){
-  Q_D(Call);
-  return d->function(arguments);
+Call::invoke ( const QVariantList& arguments )
+{
+  Q_D ( Call );
+  return d->function ( arguments );
 }
 
 void
-Call::setRecipient(const QString moduleName){
-  Q_D(Call);
-  d->recipient = QString(moduleName);
+Call::setRecipient ( const QString moduleName )
+{
+  Q_D ( Call );
+  d->recipient = QString ( moduleName );
 }
 
 Call::Type
-Call::type() const {
+Call::type() const
+{
   return Call::Method;
 }
 
 QString
-Call::recipient() const {
-  Q_D(const Call);
+Call::recipient() const
+{
+  Q_D ( const Call );
   return d->recipient;
 }
 
 QString
-Call::toString() const {
-  Q_D(const Call);
+Call::toString() const
+{
+  Q_D ( const Call );
   QJson::Serializer serializer;
   bool ok;
-
   QMap<QString, QVariant> callMap;
-  callMap["type"] = (int) type();
+  callMap["type"] = ( int ) type();
   callMap["recipient"] = d->recipient;
   callMap["data"] = d->data;
-
-  QByteArray json = serializer.serialize(callMap, &ok);
-
-  if (ok)
-    return QString(json);
+  QByteArray json = serializer.serialize ( callMap, &ok );
+  if ( ok )
+    { return QString ( json ); }
   else
-    return QString();
+    { return QString(); }
 }
 
 QVariant
-Call::operator()(const QVariantList& arguments) {
-  return this->invoke(arguments);
+Call::operator() ( const QVariantList& arguments )
+{
+  return this->invoke ( arguments );
 }
 
-Call::~Call() {
+Call::~Call()
+{
 }
 
 #include "Wintermute/Procedure/call.moc"
