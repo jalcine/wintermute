@@ -61,7 +61,7 @@ Factory::activePlugins() const
 
 // TODO: Ensure plug-in loading process.
 bool
-Factory::loadPlugin ( const QUuid& id )
+Factory::loadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   PluginInterfaceable* obtainedPluginInterface = 0;
@@ -84,7 +84,7 @@ Factory::loadPlugin ( const QUuid& id )
 
 // TODO: Verify the unloading process.
 bool
-Factory::unloadPlugin ( const QUuid& id )
+Factory::unloadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   Plugin* plugin = d->plugin ( id );
@@ -103,7 +103,7 @@ Factory::autoloadPlugins()
   PluginList all = this->availablePlugins();
   log->info ( QString ( "Loading %1 of %2 plugins..." ).arg ( autoloadList.length() ).arg ( all.length() ) );
   Q_FOREACH ( Plugin * plugin, all ) {
-    bool pluginLoaded = this->loadPlugin ( plugin->id().toString() );
+    bool pluginLoaded = this->loadPlugin ( plugin->id() );
     if ( !pluginLoaded ) {
       log->info ( QString ( "Autoload of %1 failed; thus cancelling the auto-loading process." ).arg ( plugin->id().toString() ) );
       //return false;
@@ -119,7 +119,7 @@ Factory::unloadAllPlugins()
 }
 
 void
-Factory::pluginStateChange ( const QUuid& id, const Plugin::State& state )
+Factory::pluginStateChange ( const QString& id, const Plugin::State& state )
 {
   Logger* log = wlog ( this );
   log->info ( "Passing signal." );
@@ -131,7 +131,7 @@ Factory::start()
 {
   Logger* log = wlog ( this );
   log->info ( "Starting.." );
-  //this->autoloadPlugins();
+  this->autoloadPlugins();
   log->info ( "Started." );
 }
 

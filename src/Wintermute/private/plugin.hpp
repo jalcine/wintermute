@@ -19,9 +19,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QUuid>
-#include <QSettings>
-#include <QPluginLoader>
+#include <QtCore/QSettings>
+#include <QtCore/QPluginLoader>
 #include <Wintermute/Logging>
 #include <Wintermute/PluginInterfaceable>
 
@@ -32,7 +31,7 @@ class PluginPrivate
 public:
   Q_DECLARE_PUBLIC ( Plugin );
   Plugin* q_ptr;
-  QUuid id;
+  QString id;
   QSettings* settings;
   QPluginLoader* loader;
 
@@ -60,7 +59,7 @@ public:
         werr ( q_ptr, QString ( "Failed to load plugin binary. Error: %1" ).arg ( pluginLoader->errorString() ) );
         return 0;
       } else
-        { winfo ( q_ptr, QString ( "Plugin interface loaded for %1" ).arg ( q->id().toString() ) ); }
+        { winfo ( q_ptr, QString ( "Plugin interface loaded for %1" ).arg ( q->id() ) ); }
     }
     return this->getPluginInterface();
   }
@@ -73,4 +72,3 @@ public:
   }
 };
 }
-

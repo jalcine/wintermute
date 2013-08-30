@@ -26,7 +26,6 @@
 #include <Wintermute/Plugin>
 #include <Wintermute/PluginInterfaceable>
 #include <QtCore/QStringList>
-#include <QtCore/QUuid>
 
 namespace Wintermute
 {
@@ -68,7 +67,7 @@ class Factory : public QObject
 private:
   void start();
   void stop();
-  Q_SLOT void pluginStateChange ( const QUuid& id, const Plugin::State& state );
+  Q_SLOT void pluginStateChange ( const QString& name, const Plugin::State& state );
 
 public:
   /**
@@ -82,14 +81,59 @@ public:
    * @static
    */
   static Factory* instance();
+
+
   PluginList availablePlugins() const;
+
+  /**
+   * @fn activePlugins
+   *
+   * Obtains a list of actively loaded plugins in this process.
+   */
   PluginList activePlugins() const;
-  bool loadPlugin ( const QUuid& id );
-  bool unloadPlugin ( const QUuid& id );
+
+  /**
+   * @fn loadPlugin
+   * @param name The name of the plug-in.
+   *
+   * Loads the specified plugin into this Wintermute process.
+   */
+  bool loadPlugin ( const QString& name );
+
+  /**
+   * @fn unloadPlugin
+   * @param name The name of the plug-in.
+   *
+   * Unloads the specified plugin from this Wintermute process.
+   */
+  bool unloadPlugin ( const QString& name );
+
+  /**
+   * @fn autoloadPlugins
+   *
+   * Automatically loads the approriate plugins for this process. This
+   * operation changes on the following cases:
+   *
+   *  + --mode=daemon (loads the daemon plugin)
+   *  + --mode=plugin (loads the plugin as specified by --plugin)
+   */
   bool autoloadPlugins();
+
+  /**
+   * @fn unloadAllPlugins
+   *
+   * Unloads all of the plugins that are currently running in this process.
+   */
   bool unloadAllPlugins();
 
-  Q_SIGNAL void pluginStateChanged ( const QUuid& id, const Plugin::State& state );
+  /**
+   * @fn pluginStateChanged
+   *
+   * Raised when a plugin state has changed. This is risen for every plugin so
+   * it's recommended that you listen specificially for the plug-in in
+   * question by the 'name' parameter.
+   */
+  Q_SIGNAL void pluginStateChanged ( const QString& name, const Plugin::State& state );
 };
 }
 

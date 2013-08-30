@@ -22,7 +22,6 @@
 #define WINTERMUTE_CORE_PLUGIN_HPP
 
 #include <Wintermute/Globals>
-#include <QtCore/QUuid>
 #include <QtCore/QObject>
 #include <QtCore/QSettings>
 #include <QtCore/QList>
@@ -93,14 +92,8 @@ public:
   }
 
   /**
-   * @fn id
-   * Obtains the UUID used as a unique identifer for the plugin.
-   */
-  virtual QUuid id() const = 0;
-
-  /**
    * @fn name
-   * Obtains the friendly name of the plugin.
+   * Obtains the unique name of the plugin.
    */
   virtual QString name() const = 0;
 
