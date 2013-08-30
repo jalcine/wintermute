@@ -1,5 +1,5 @@
 /**
- * vim: ft=qt.cpp
+ * vim: ft=cpp
  *
  * Copyright (c) 2013 Jacky Alcine <me@jalcine.me>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,21 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef WINTERMUTE_HEARTBEAT_PLUGIN_HPP
-#define WINTERMUTE_HEARTBEAT_PLUGIN_HPP
-
-#include <Wintermute/Plugin>
-
-namespace Wintermute {
-  namespace Heartbeat {
-    class Plugin : public Wintermute::Plugin {
-      Q_OBJECT;
-      Q_DISABLE_COPY(Plugin);
-
-      public:
-      virtual QString name() const;
-    };
-  }
-}
+#ifndef WINTERMUTE_PLUGIN_DAEMON_GLOBALS_HPP
+#define WINTERMUTE_PLUGIN_DAEMON_GLOBALS_HPP
 
 #endif /* */

@@ -22,14 +22,15 @@
 #define WINTERMUTE_CORE_PLUGIN_HPP
 
 #include <Wintermute/Globals>
+#include <Wintermute/Version>
 #include <QtCore/QObject>
 #include <QtCore/QSettings>
 #include <QtCore/QList>
 #include <QtCore/QMap>
+#include <QtCore/QtPlugin>
 
 namespace Wintermute
 {
-class Version;
 class PluginPrivate;
 
 /**
@@ -51,9 +52,9 @@ class Plugin : public QObject
   Q_PROPERTY ( State   State         READ state );
 
   QScopedPointer<PluginPrivate> d_ptr;
+  Q_DECLARE_PRIVATE ( Plugin );
 
 protected:
-  Q_DECLARE_PRIVATE ( Plugin );
   explicit Plugin ( );
   QSettings* configuration() const;
 
@@ -122,31 +123,20 @@ public:
   virtual Type type() const = 0;
 
   /**
-   * @fn loaded
-   * Emitted when the plugin is loaded.
+   * @fn start
+   * Defines the logic for the activation of the plugin.
    */
-  Q_SIGNAL void loaded();
+  virtual void start() = 0;
 
   /**
-   * @fn unloaded
-   * Emitted when the plugin is unloaded.
+   * @fn stop
+   * Defines the logic for the deactivation of the plugin.
    */
-  Q_SIGNAL void unloaded();
-
-  /**
-   * @fn load
-   * Enacts the work of loading this plugin into the factory.
-   */
-  Q_SLOT bool load();
-
-  /**
-   * @fn unload
-   * Enacts the work of unloading this plugin from the factory.
-   */
-  Q_SLOT bool unload();
+  virtual void stop() = 0;
 
   friend class Factory;
   friend class FactoryPrivate;
+  friend class TemporaryPlugin;
 };
 
 typedef QList<Plugin*> PluginList;

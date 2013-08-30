@@ -37,13 +37,13 @@ void
 ProcessModule::reboot()
 {
   // TODO: Add forking logic or recycle some.
-  //Wintermute::Application::instance()->exit();
+  Wintermute::Application::instance()->stop();
 }
 
 void
 ProcessModule::quit ( const int exitcode )
 {
-  //Wintermute::Application::instance()->exit(exitcode);
+  Wintermute::Application::instance()->stop ( exitcode );
 }
 
 ProcessModule::~ProcessModule()

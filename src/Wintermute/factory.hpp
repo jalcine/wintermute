@@ -24,7 +24,6 @@
 
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
-#include <Wintermute/PluginInterfaceable>
 #include <QtCore/QStringList>
 
 namespace Wintermute
@@ -82,15 +81,27 @@ public:
    */
   static Factory* instance();
 
-
-  PluginList availablePlugins() const;
+  /**
+   * @fn availablePlugins
+   *
+   * A list of all of the plugins that Wintermute can load.
+   */
+  QStringList availablePlugins() const;
 
   /**
    * @fn activePlugins
    *
    * Obtains a list of actively loaded plugins in this process.
    */
-  PluginList activePlugins() const;
+  QStringList activePlugins() const;
+
+  /**
+   * @fn plugin
+   * @param name
+   *
+   * Obtains the specified plugin.
+   */
+  Plugin* plugin ( const QString& name ) const;
 
   /**
    * @fn loadPlugin

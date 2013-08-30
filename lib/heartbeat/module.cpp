@@ -1,2 +1,2 @@
 #include "module.hpp"
-//#include "module.moc"
+#include "module.moc"

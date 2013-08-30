@@ -17,5 +17,6 @@
 --suffix=none
 --preserve-date
 
-# Exclude some files.
---exclude=CMakeLists.txt
+# Ignore build env stuff.
+#--exclude=CMakeLists.txt
+#--exclude=.githooks

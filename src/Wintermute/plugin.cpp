@@ -34,7 +34,6 @@ using Wintermute::Plugin;
 using Wintermute::Logging;
 using Wintermute::Logger;
 
-// TODO: Check if loading in its own space, if so, load necessary data.
 Plugin::Plugin ( ) : QObject ( Factory::instance() ), d_ptr ( new PluginPrivate ( this ) )
 {
 }
@@ -44,18 +43,6 @@ Plugin::configuration() const
 {
   Q_D ( const Plugin );
   return d->settings;
-}
-
-bool
-Plugin::load()
-{
-  return false;
-}
-
-bool
-Plugin::unload()
-{
-  return false;
 }
 
 Plugin::~Plugin()

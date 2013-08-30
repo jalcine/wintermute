@@ -154,6 +154,9 @@ public:
    * the event loop.
    */
   void stop ( int exitcode = 0x0 );
+
+  Q_SIGNAL void started();
+  Q_SIGNAL void stopped();
 };
 }
 

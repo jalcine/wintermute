@@ -78,6 +78,7 @@ Application::start()
   log->info ( "Starting Wintermute..." );
   d->loadProcessModule();
   d->loadCurrentMode();
+  emit this->started();
 }
 
 void
@@ -86,6 +87,7 @@ Application::stop ( int exitcode )
   Logger* log = wlog ( this );
   log->info ( "Qutting application..." );
   QCoreApplication::quit();
+  emit this->stopped();
   exit ( exitcode );
 }
 

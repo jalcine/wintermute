@@ -43,7 +43,7 @@ endif()
 ##       this.
 ##
 function(wintermute_plugin_declare)
-  set(_oneArgs   TARGET UUID)
+  set(_oneArgs   TARGET)
   set(_multiArgs SOURCES)
   cmake_parse_arguments(wdp "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
@@ -55,12 +55,11 @@ function(wintermute_plugin_declare)
   # Define the plugin's CMake properties.
   set(${_local}_SOURCES         ${wdp_SOURCES}                 CACHE STRING "Sources.")
   set(${_local}_TARGET          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
-  set(${_local}_UUID            ${wdp_UUID}                    CACHE STRING "Uuid.")
   set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
   set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
                                 ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING INTERNAL FORCE)
   set(${_local}_HEADERS_PATH    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
-  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_UUID}.spec" CACHE STRING "Def.")
+  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_TARGET}.spec" CACHE STRING "Def.")
 
 endfunction(wintermute_plugin_declare)
 
@@ -87,8 +86,6 @@ function(wintermute_plugin_target_declare)
   # Coat the target with Wintermute's build options.
   wintermute_add_properties(${${_local}_TARGET})
 
-  message(${${_local}_INCLUDE_DIRS})
-
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
     FOLDER        "Wintermute/${${_local}_TARGET}")
@@ -101,11 +98,10 @@ function(wintermute_plugin_target_declare)
   set_target_properties(${${_local}_TARGET} PROPERTIES
     INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}")
 
-  message(${${_local}_INCLUDE_DIRS})
   # Set up linking.
   target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
 
-  message(STATUS "Plugin '${${_local}_TARGET}' version ${${_local}_VERSION} defined.")
+  message(STATUS "Plugin '${${_local}_TARGET}' v. ${${_local}_VERSION} defined.")
 endfunction(wintermute_plugin_target_declare)
 
 ## TODO: Document this method.
@@ -213,7 +209,7 @@ function(wintermute_plugin_install)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
 
   # DONE: Define the plug-in's definition file.
-  set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}UUID}.spec")
+  set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}TARGET}.spec")
   configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
 
   # DONE: Install the library itself.

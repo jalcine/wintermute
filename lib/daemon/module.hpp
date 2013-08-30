@@ -1,5 +1,5 @@
 /**
- * vim: ft=qt.cpp
+ * vim: ft=cpp
  *
  * Copyright (c) 2013 Jacky Alcine <me@jalcine.me>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,19 +20,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef WINTERMUTE_HEARTBEAT_PLUGIN_HPP
-#define WINTERMUTE_HEARTBEAT_PLUGIN_HPP
+#ifndef WINTERMUTE_DAEMON_PLUGIN_MODULE_HPP
+#define WINTERMUTE_DAEMON_PLUGIN_MODULE_HPP
 
-#include <Wintermute/Plugin>
+#include <Wintermute/Procedure/Module>
 
 namespace Wintermute {
-  namespace Heartbeat {
-    class Plugin : public Wintermute::Plugin {
-      Q_OBJECT;
-      Q_DISABLE_COPY(Plugin);
-
+  namespace Daemon {
+    class Module : public Wintermute::Procedure::Module {
       public:
-      virtual QString name() const;
+        explicit Module();
+        virtual ~Module();
     };
   }
 }

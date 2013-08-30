@@ -1,5 +1,4 @@
 /**
- * vim: ft=cpp
  * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
  *
  * This file is part of Wintermute, the extensible AI platform.
@@ -27,8 +26,8 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
+#include <QtCore/QDir>
 #include <QtZeroMQ/globals.hpp>
-#include "../../../lib/heartbeat/globals.hpp"
 
 namespace Wintermute
 {
@@ -50,6 +49,8 @@ public:
 
   void initialize() {
     // Add library paths for plug-ins.
+    // TODO: Add more potential paths for plugins.
+    // TODO: Allow paths to be specified over command-line and environment.
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
     // Define context for platform.
     Procedure::ModulePrivate::context = QtZeroMQ::createDefaultContext ( Wintermute::Application::instance() );
@@ -65,32 +66,28 @@ public:
   }
 
   void loadProcessModule() {
-    // Create the module.
     Procedure::ProcessModule* modulePtr = new Procedure::ProcessModule;
     module = QSharedPointer<Procedure::ProcessModule> ( modulePtr );
-    // TODO: Say 'hello!'.
-    module->invoke ( "hello", QVariantList() );
   }
 
   void loadCurrentMode() {
     Factory::instance()->start();
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
     if ( mode == "daemon" || mode == "d" ) {
-      wdebug ( Application::instance(), "Starting daemon mode..." );
-      bool heartBeatLoaded = Factory::instance()->loadPlugin ( WINTERMUTE_PLUGIN_HEARTBEAT_UUID );
+      bool heartBeatLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
       if ( !heartBeatLoaded ) {
-        werr ( Application::instance(), "Can't load heartbeat plugin for daemon; bailing out!" );
+        werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
         Application::instance()->stop ( 127 );
       }
     } else if ( mode == "plugin" || mode == "p" ) {
       wdebug ( Application::instance(), "Booting plugin..." );
-      const QUuid pluginUuid ( Arguments::instance()->argument ( "uuid" ).toString() );
-      if ( pluginUuid.isNull() ) {
-        werr ( Application::instance(), "Invalid plugin UUID provided." );
+      const QString pluginName ( Arguments::instance()->argument ( "plugin" ).toString() );
+      if ( pluginName.isNull() ) {
+        werr ( Application::instance(), "Invalid plugin name provided." );
         Application::instance()->stop ( 127 );
         return;
       }
-      Factory::instance()->loadPlugin ( pluginUuid );
+      Factory::instance()->loadPlugin ( pluginName );
     }
   }
 };

@@ -19,8 +19,10 @@ set tags+=$PWD/.git/tags
 let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "./src", "$PWD/src/Wintermute", "/usr/include" ]
 
 " By default, assume Qt.
-autocmd FileReadPost  *.(c|h)pp set ft=qt.cpp
-autocmd FileReadPost  *.(c|h)pp set tags+=$PWD/.git/tags
+augroup TagbarProjects
+  autocmd User *.(c|h)pp* let b:tagbar_type = {'deffile' : './.ctags'}
+  autocmd FileReadPost  *.(c|h)pp* set tags+=$PWD/.git/tags
+augroup END
 
 " Set the make program.
-set makeprg=make\ -C\ build\/src\ all
+set makeprg=make\ -C\ build

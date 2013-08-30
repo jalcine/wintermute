@@ -1,5 +1,5 @@
  /**
- * vim: ft=qt.cpp
+ * vim: ft=cpp
  *
  * Copyright (c) 2013 Jacky Alcine <me@jalcine.me>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -26,8 +26,8 @@
 
 using Wintermute::Heartbeat::Plugin;
 
-QUuid
-Plugin::id() const
+QString
+Plugin::name() const
 {
-  return QUuid(WINTERMUTE_PLUGIN_HEARTBEAT_UUID);
+  return "wintermute-heartbeat";
 }

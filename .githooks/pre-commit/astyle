@@ -28,12 +28,11 @@
 
 case "${1}" in
   --about )
-    cat << EOF
-    Formats files with the `astyle` formatting tool.
+      cat << EOF
+Formats files with the `astyle` formatting tool.
 EOF
-    ;;
+  ;;
   * )
-    astyle --options=./.astylerc --recursive "src/*"
-    astyle --options=./.astylerc --recursive --exclude=build_deps.sh "test/*"
-    ;;
+    astyle --options=./.astylerc `find src -type f`
+  ;;
 esac
