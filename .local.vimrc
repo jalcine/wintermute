@@ -18,11 +18,5 @@ set tags+=$PWD/.git/tags
 " Update Syntastic.
 let g:syntastic_cpp_include_dirs+=[ "/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute", "/usr/include" ]
 
-" By default, assume Qt.
-augroup TagbarProjects
-  autocmd User *.(c|h)pp* let b:tagbar_type = {'deffile' : './.ctags'}
-  autocmd FileReadPost  *.(c|h)pp* set tags+=$PWD/.git/tags
-augroup END
-
 " Set the make program.
 set makeprg=make\ -C\ build
