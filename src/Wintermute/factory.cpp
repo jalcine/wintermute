@@ -69,15 +69,15 @@ Factory::loadPlugin ( const QString& id )
   QPluginLoader* loader = d->obtainBinary ( id );
   TemporaryPlugin* plugin = new TemporaryPlugin ( id, loader );
   if ( !loader ) {
-    log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id.toString() ) );
+    log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id ) );
     return false;
   } else {
-    log->debug ( QString ( "Found binary for plugin '%1'." ).arg ( id.toString() ) );
+    log->debug ( QString ( "Found binary for plugin '%1'." ).arg ( id ) );
   }
-  log->info ( QString ( "Attempted to load plug-in instance for %1..." ).arg ( id.toString() ) );
+  log->info ( QString ( "Attempted to load plug-in instance for %1..." ).arg ( id ) );
   obtainedPluginInterface = plugin->tryLoad ( loader );
   if ( obtainedPluginInterface == 0 ) {
-    log->error ( QString ( "Plug-in instance for %1 failed to load due to '%2'." ).arg ( id.toString() ).arg ( loader->errorString() ) );
+    log->error ( QString ( "Plug-in instance for %1 failed to load due to '%2'." ).arg ( id ).arg ( loader->errorString() ) );
   }
   return obtainedPluginInterface;
 }
@@ -103,10 +103,11 @@ Factory::autoloadPlugins()
   PluginList all = this->availablePlugins();
   log->info ( QString ( "Loading %1 of %2 plugins..." ).arg ( autoloadList.length() ).arg ( all.length() ) );
   Q_FOREACH ( Plugin * plugin, all ) {
-    bool pluginLoaded = this->loadPlugin ( plugin->id() );
+    bool pluginLoaded = this->loadPlugin ( plugin->name() );
     if ( !pluginLoaded ) {
-      log->info ( QString ( "Autoload of %1 failed; thus cancelling the auto-loading process." ).arg ( plugin->id().toString() ) );
-      //return false;
+      log->info ( QString ( "Autoload of %1 failed; thus cancelling the auto-loading process." ).arg ( plugin->name() ) );
+      this->unloadAllPlugins();
+      return false;
     }
   }
   return true;
@@ -119,11 +120,11 @@ Factory::unloadAllPlugins()
 }
 
 void
-Factory::pluginStateChange ( const QString& id, const Plugin::State& state )
+Factory::pluginStateChange ( const QString& name, const Plugin::State& state )
 {
   Logger* log = wlog ( this );
   log->info ( "Passing signal." );
-  emit this->pluginStateChanged ( id, state );
+  emit this->pluginStateChanged ( name, state );
 }
 
 void

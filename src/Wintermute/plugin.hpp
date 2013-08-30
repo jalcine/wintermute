@@ -150,7 +150,7 @@ public:
 };
 
 typedef QList<Plugin*> PluginList;
-typedef QMap<QUuid, Plugin*> PluginMap;
+typedef QMap<QString, Plugin*> PluginMap;
 }
 
 #endif /* WINTERMUTE_CORE_PLUGIN_HPP */
