@@ -38,7 +38,7 @@ case "${1}" in
         ;;
     * )
         echo "[ctags] Generating tags for repository..."
-        PWD=$TOPLEVELGITDIR ctags -R -f $TOPLEVELGITDIR/.git/tags $TOPLEVELGITDIR/*  --options=.ctags
+        PWD=$TOPLEVELGITDIR ctags -R -f $TOPLEVELGITDIR/.git/tags $TOPLEVELGITDIR/*
         echo "[ctags] Tags generated; update tag clients."
         ;;                
 esac
