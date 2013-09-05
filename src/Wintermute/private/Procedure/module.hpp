@@ -60,9 +60,9 @@ public:
 
   void connectToWire() {
     socketIn = ModulePrivate::context->createSocket ( Socket::TYP_SUB );
-    socketIn->bindTo ( "tcp://0.0.0.0:3991" );
+    socketIn->bindTo ( "ipc:///tmp/wintermute.socket" );
     socketOut = ModulePrivate::context->createSocket ( Socket::TYP_PUB );
-    socketOut->connectTo ( "tcp://0.0.0.0:3991" );
+    socketOut->connectTo ( "ipc:///tmp/wintermute.socket" );
   }
 
   void disconnectFromWire() {
