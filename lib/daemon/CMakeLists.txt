@@ -16,20 +16,20 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-project(WintermuteDaemon)
-set(daemon_SRCS
+project ( WintermuteDaemon )
+set ( daemon_SRCS
   plugin.cpp
-  module.cpp)
+  module.cpp )
 
-set(daemon_HDRS
+set ( daemon_HDRS
   plugin.hpp
-  module.hpp)
+  module.hpp )
 
-configure_file(globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/daemon/globals.hpp
-  @ONLY)
+configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/daemon/globals.hpp
+  @ONLY )
 
-wintermute_plugin_declare(TARGET daemon UUID ${daemon_UUID} SOURCES ${daemon_SRCS})
-wintermute_plugin_set_version(TARGET daemon
+wintermute_plugin_declare ( TARGET daemon UUID ${daemon_UUID} SOURCES ${daemon_SRCS} )
+wintermute_plugin_set_version ( TARGET daemon
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1
   PLUGIN_VERSION_PATCH 0
@@ -38,14 +38,14 @@ wintermute_plugin_set_version(TARGET daemon
   SYSTEM_VERSION_MAJOR ${WINTERMUTE_VERSION_MAJOR}
   SYSTEM_VERSION_MINOR ${WINTERMUTE_VERSION_MINOR}
   SYSTEM_VERSION_PATCH ${WINTERMUTE_VERSION_PATCH}
-  SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE})
+  SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE} )
 
-wintermute_plugin_configure(TARGET daemon
+wintermute_plugin_configure ( TARGET daemon
   AUTHOR_NAME "Jacky Alcine"
   NAME_RPC "me.jalcine.wintermute.daemon"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/daemon.html"
   )
-wintermute_plugin_target_declare(TARGET daemon SOURCES ${daemon_SRCS})
-include_directories(${Wintermute_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-wintermute_plugin_install(TARGET daemon)
+wintermute_plugin_target_declare ( TARGET daemon SOURCES ${daemon_SRCS} )
+include_directories ( ${Wintermute_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
+wintermute_plugin_install ( TARGET daemon )
