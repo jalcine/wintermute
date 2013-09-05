@@ -25,16 +25,19 @@
 
 #include <Wintermute/Plugin>
 
-namespace Wintermute {
-  namespace Heartbeat {
-    class Plugin : public Wintermute::Plugin {
-      Q_OBJECT;
-      Q_DISABLE_COPY(Plugin);
+namespace Wintermute
+{
+namespace Heartbeat
+{
+class Plugin : public Wintermute::Plugin
+{
+  Q_OBJECT;
+  Q_DISABLE_COPY ( Plugin );
 
-      public:
-      virtual QString name() const;
-    };
-  }
+public:
+  virtual QString name() const;
+};
+}
 }
 
 #endif /* */
