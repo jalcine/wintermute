@@ -84,7 +84,7 @@ public:
    * @fn name
    * @brief Obtains the name of the call.
    */
-  virtual QString name() const = 0;
+  QString name() const;
 
   /**
    * @fn type
@@ -92,13 +92,13 @@ public:
    *
    * Obtains the type of message that this exposes.
    */
-  virtual Type type() const;
+  Type type() const;
 
   /**
    * @fn toString
    * @brief Generates a string representation of this call.
    */
-  virtual QString toString() const final;
+  QString toString() const;
 
   /**
    * @fn recipient
@@ -107,25 +107,25 @@ public:
    * Obtains the qualified string name that this Call is sending a message
    * to.
    */
-  virtual QString recipient() const final;
+  QString recipient() const;
 
   /**
    * @fn setRecipient
    * @brief Changes the recipient of this Call.
    */
-  virtual void setRecipient ( const QString moduleName ) final;
+  void setRecipient ( const QString moduleName );
 
   /**
    * @fn invoke
-   * @param arguments A list of QVariant arguments.
+   * @param data A list of QVariant variables.
    */
-  virtual QVariant invoke ( const QVariantList& arguments ) final;
+  QVariant invoke ( const QVariantList& data );
 
   /**
    * @operator operator()
    * @brief Allow for functor-like capabilities for the Call object.
    */
-  virtual QVariant operator() ( const QVariantList& arguments ) final;
+  QVariant operator() ( const QVariantList& arguments );
 };
 
 typedef QSharedPointer<Call> CallPointer;

@@ -37,10 +37,10 @@ Call::Call ( CallPrivate* d ) : QObject ( Wintermute::Application::instance() ),
 }
 
 QVariant
-Call::invoke ( const QVariantList& arguments )
+Call::invoke ( const QVariantList& data )
 {
   Q_D ( Call );
-  return d->function ( arguments );
+  return d->function ( data );
 }
 
 void
@@ -53,7 +53,15 @@ Call::setRecipient ( const QString moduleName )
 Call::Type
 Call::type() const
 {
-  return Call::Method;
+  Q_D ( const Call );
+  return d->type;
+}
+
+QString
+Call::name() const
+{
+  Q_D ( const Call );
+  return d->name;
 }
 
 QString
@@ -71,19 +79,17 @@ Call::toString() const
   bool ok;
   QMap<QString, QVariant> callMap;
   callMap["type"] = ( int ) type();
-  callMap["recipient"] = d->recipient;
+  callMap["recipient"] = recipient();
   callMap["data"] = d->data;
   QByteArray json = serializer.serialize ( callMap, &ok );
-  if ( ok )
-    { return QString ( json ); }
-  else
-    { return QString(); }
+  if ( ok ) { return QString ( json ); }
+  return QString();
 }
 
 QVariant
-Call::operator() ( const QVariantList& arguments )
+Call::operator() ( const QVariantList& data )
 {
-  return this->invoke ( arguments );
+  return this->invoke ( data );
 }
 
 Call::~Call()

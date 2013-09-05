@@ -64,9 +64,7 @@ public:
   /**
    * @fn qualifiedName
    */
-  inline QString qualifiedName() const {
-    return domain() + "." + package();
-  }
+  QString qualifiedName() const;
 
   /**
    * @fn dispatch
@@ -78,9 +76,9 @@ public:
 
   /**
    * @fn invoke
-   * @brief Looks for the named call and invoke with the provided arguments.
+   * @brief Looks for the named call and invoke with the provided data.
    */
-  QVariant invoke ( const QString& name, const QVariantList& arguments );
+  QVariant invoke ( const QString& name, const QVariantList& data );
 
 protected:
   void setDomain ( const QString& value );
@@ -97,6 +95,8 @@ protected:
    * call into the system.
    */
   LambdaCall* mountLambda ( Call::Signature lambda, const QString& name );
+
+  void sendHeartbeat();
 };
 } /*  Procedure */
 } /*  Wintermute */

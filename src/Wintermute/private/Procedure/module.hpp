@@ -83,7 +83,17 @@ public:
 
   QVariant receiveData() {
     QList<QByteArray> bytes = socketIn->receiveFullMessage();
-    return QVariant();
+    QByteArray data;
+    winfo ( q_ptr, QString ( "Found %1 packets from incoming clients." ).arg ( bytes.length() ) );
+    if ( bytes.size() != 0 ) {
+      winfo ( q_ptr, QString ( "Buffering %1 packets into a mega-QByteArray..." ).arg ( bytes.length() ) );
+      data = QByteArray ( bytes.takeFirst() );
+      while ( !bytes.isEmpty() ) {
+        data.append ( bytes.takeFirst() );
+      }
+      winfo ( q_ptr, QString ( "Packed an incoming buffer of about %1 bytes." ).arg ( data.size() ) );
+    }
+    return data;
   }
 
   virtual ~ModulePrivate () {

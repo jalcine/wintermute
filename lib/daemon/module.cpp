@@ -28,6 +28,9 @@ using Wintermute::Daemon::Module;
 
 Module::Module() : Wintermute::Procedure::Module ( wntrApp )
 {
+  setDomain ( "me.jalcine.wintermute" );
+  setPackage ( "daemon" );
+  sendHeartbeat();
 }
 
 Module::~Module()

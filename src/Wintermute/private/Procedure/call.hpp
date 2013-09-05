@@ -22,6 +22,7 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
+#include "Wintermute/Procedure/call.hpp"
 
 namespace Wintermute
 {
@@ -33,10 +34,12 @@ class CallPrivate
 public:
   Call* q_ptr;
   QString recipient;
+  QString name;
   Call::Signature function;
+  Call::Type type;
   QMap<QString, QVariant> data;
 
-  explicit CallPrivate ( Call* q ) : q_ptr ( q ), recipient(), function ( nullptr ), data() {
+  explicit CallPrivate ( Call* q ) : q_ptr ( q ), recipient(), name(), function ( nullptr ), type ( Call::Method ), data() {
   }
 
   virtual ~CallPrivate() {

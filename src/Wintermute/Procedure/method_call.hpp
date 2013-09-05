@@ -30,6 +30,12 @@ namespace Wintermute
 namespace Procedure
 {
 class MethodCallPrivate;
+/***
+ * @class MethodCall
+ *
+ * A step up from the underlying Call class, this provides more concrete logic
+ * for invoking method calls on remote objects.
+ */
 class MethodCall : public Call
 {
   Q_OBJECT;
@@ -39,7 +45,8 @@ class MethodCall : public Call
 public:
   explicit MethodCall ( const QString& module, const QString& method, QVariantList arguments = QVariantList() );
   virtual ~MethodCall();
-  QString name() const;
+  QVariantList arguments() const;
+  void setArguments ( const QVariantList& arguments );
 };
 }
 }

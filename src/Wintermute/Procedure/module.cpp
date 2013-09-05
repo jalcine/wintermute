@@ -35,7 +35,6 @@ Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePriva
   Q_D ( Module );
   winfo ( this, "A new module has entered the guild." );
   d->connectToWire();
-  d->sendHeartbeat();
 }
 
 // TODO: Wait for a response.
@@ -51,7 +50,7 @@ Module::dispatch ( Call* call )
 }
 
 QVariant
-Module::invoke ( const QString& callName, const QVariantList& arguments )
+Module::invoke ( const QString& callName, const QVariantList& data )
 {
   Q_D ( Module );
   if ( !d->calls.contains ( callName ) ) {
@@ -59,7 +58,7 @@ Module::invoke ( const QString& callName, const QVariantList& arguments )
     return QVariant ( -1 );
   }
   CallPointer call = d->calls[callName];
-  return call->invoke ( arguments );
+  return call->invoke ( data );
 }
 
 void
@@ -78,6 +77,13 @@ Module::mountLambda ( Call::Signature lambda, const QString& name )
   return dynamic_cast<LambdaCall*> ( &*call );
 }
 
+void
+Module::sendHeartbeat()
+{
+  Q_D ( Module );
+  d->sendHeartbeat();
+}
+
 QString
 Module::domain() const
 {
@@ -90,6 +96,12 @@ Module::package() const
 {
   Q_D ( const Module );
   return d->package;
+}
+
+QString
+Module::qualifiedName() const
+{
+  return domain() + "." + package();
 }
 
 void
@@ -108,6 +120,7 @@ Module::setPackage ( const QString& value )
 
 Module::~Module()
 {
+  winfo ( this, "A module has left the guild." );
   // TODO: Report to world that you're leaving us.
   // TODO: Disconnect sockets.
 }

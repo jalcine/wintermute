@@ -34,11 +34,11 @@ MethodCall::MethodCall ( const QString& module, const QString& method, const QVa
   d->arguments = arguments;
 }
 
-QString
-MethodCall::name() const
+QVariantList
+MethodCall::arguments() const
 {
   Q_D ( const MethodCall );
-  return d->method;
+  return d->arguments;
 }
 
 MethodCall::~MethodCall()

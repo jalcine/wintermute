@@ -31,7 +31,7 @@ HeartbeatCall::HeartbeatCall ( Module* module ) : Call ( module )
   Q_D ( Call );
   d->data["_heartbeat"] = true;
   d->data["module"] = module->qualifiedName();
-  d->data["time"] = QDateTime::currentDateTimeUtc().toString ( Qt::ISODate );
+  d->data["time"] = QDateTime::currentDateTimeUtc().toTime_t();
   d->recipient = "me.jalcine.wintermute.heartbeat";
 }
 
