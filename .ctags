@@ -4,4 +4,4 @@
 --c++-kinds=+pl
 --extra=+q
 --fields=+iazKS
---file=.git/tags
+-f .git/tags
