@@ -16,12 +16,7 @@ set wildignore+=*/build/*
 set tags+=.git/tags
 
 " Update Syntastic.
-let g:syntastic_cpp_include_dirs+=[
-  "/usr/include/qt4",
-  "$PWD/src",
-  "$PWD/src/Wintermute",
-  "/usr/include"
-]
+let g:syntastic_cpp_include_dirs+=["/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute", "/usr/include" ]
 
 " Set the make program.
 set makeprg=make\ -C\ build
