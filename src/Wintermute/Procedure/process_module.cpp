@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
 #include "Wintermute/Procedure/process_module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
@@ -42,8 +42,9 @@ ProcessModule::reboot()
 
 void
 ProcessModule::quit ( const int exitcode )
-  winfo(this, "Invoking remote exit...");
-  wntrApp->stop(exitcode);
+{
+  winfo ( this, "Invoking remote exit..." );
+  wntrApp->stop ( exitcode );
 }
 
 ProcessModule::~ProcessModule()
