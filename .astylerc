@@ -16,6 +16,4 @@
 --lineend=linux
 --suffix=none
 --preserve-date
-
-# Ignore build env stuff.
---exclude=CMakeLists.txt
+--recursive
