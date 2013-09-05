@@ -19,69 +19,69 @@
 project ( Wintermute )
 include ( WintermuteVersioning )
 
-set ( WINTERMUTE_BINARY_INCLUDE_DIRS $ {WINTERMUTE_INCLUDE_DIRS}
-      $ {CMAKE_CURRENT_SOURCE_DIR} $ {CMAKE_CURRENT_BINARY_DIR} )
-list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS $ {WINTERMUTE_INCLUDE_DIR} )
+set ( WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+      ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
+list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 
 # Grab the sources!
 set ( WINTERMUTE_SOURCES
 ## Procedure Calling binaries
-      Wintermute / Procedure / module.cpp
-      Wintermute / Procedure / process_module.cpp
-      Wintermute / Procedure / call.cpp
-      Wintermute / Procedure / lambda_call.cpp
-      Wintermute / Procedure / method_call.cpp
-      Wintermute / Procedure / heart_beat_call.cpp
+      Wintermute/Procedure/module.cpp
+      Wintermute/Procedure/process_module.cpp
+      Wintermute/Procedure/call.cpp
+      Wintermute/Procedure/lambda_call.cpp
+      Wintermute/Procedure/method_call.cpp
+      Wintermute/Procedure/heart_beat_call.cpp
 
 ## Plugin binaries
-      Wintermute / plugin.cpp
-      Wintermute / factory.cpp
+      Wintermute/plugin.cpp
+      Wintermute/factory.cpp
 
 ## Core binaries
-      Wintermute / logging.cpp
-      Wintermute / arguments.cpp
-      Wintermute / version.cpp
-      Wintermute / application.cpp
+      Wintermute/logging.cpp
+      Wintermute/arguments.cpp
+      Wintermute/version.cpp
+      Wintermute/application.cpp
       main.cpp
     )
 
 set ( WINTERMUTE_HEADERS
 ## Pretty headers
-      Wintermute / Application
-      Wintermute / Arguments
-      Wintermute / Globals
-      Wintermute / Logging
-      Wintermute / Plugin
-      Wintermute / Version
-      Wintermute / Procedure / Module
-      Wintermute / Procedure / ProcessModule
-      Wintermute / Procedure / Call
-      Wintermute / Procedure / LambdaCall
-      Wintermute / Procedure / MethodCall
-      Wintermute / Procedure / HeartbeatCall
+      Wintermute/Application
+      Wintermute/Arguments
+      Wintermute/Globals
+      Wintermute/Logging
+      Wintermute/Plugin
+      Wintermute/Version
+      Wintermute/Procedure/Module
+      Wintermute/Procedure/ProcessModule
+      Wintermute/Procedure/Call
+      Wintermute/Procedure/LambdaCall
+      Wintermute/Procedure/MethodCall
+      Wintermute/Procedure/HeartbeatCall
 
 ## Native headers
-      Wintermute / application.hpp
-      Wintermute / arguments.hpp
-      Wintermute / logging.hpp
-      Wintermute / version.hpp
-      Wintermute / factory.hpp
-      Wintermute / plugin.hpp
-      Wintermute / Procedure / module.hpp
-      Wintermute / Procedure / process_module.hpp
-      Wintermute / Procedure / call.hpp
-      Wintermute / Procedure / lambda_call.hpp
-      Wintermute / Procedure / method_call.hpp
-      Wintermute / Procedure / heart_beat_call.hpp
+      Wintermute/application.hpp
+      Wintermute/arguments.hpp
+      Wintermute/logging.hpp
+      Wintermute/version.hpp
+      Wintermute/factory.hpp
+      Wintermute/plugin.hpp
+      Wintermute/Procedure/module.hpp
+      Wintermute/Procedure/process_module.hpp
+      Wintermute/Procedure/call.hpp
+      Wintermute/Procedure/lambda_call.hpp
+      Wintermute/Procedure/method_call.hpp
+      Wintermute/Procedure/heart_beat_call.hpp
     )
 
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
        "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure" )
-qt4_automoc ( $ {WINTERMUTE_SOURCES} )
+qt4_automoc ( ${WINTERMUTE_SOURCES} )
 
 # Define the executable.
-add_executable ( wintermute $ {WINTERMUTE_SOURCES} )
+add_executable ( wintermute ${WINTERMUTE_SOURCES} )
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
