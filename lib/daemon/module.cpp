@@ -26,7 +26,7 @@
 
 using Wintermute::Daemon::Module;
 
-Module::Module() : Wintermute::Procedure::Module(wntrApp)
+Module::Module() : Wintermute::Procedure::Module ( wntrApp )
 {
 }
 

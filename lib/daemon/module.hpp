@@ -25,14 +25,17 @@
 
 #include <Wintermute/Procedure/Module>
 
-namespace Wintermute {
-  namespace Daemon {
-    class Module : public Wintermute::Procedure::Module {
-      public:
-        explicit Module();
-        virtual ~Module();
-    };
-  }
+namespace Wintermute
+{
+namespace Daemon
+{
+class Module : public Wintermute::Procedure::Module
+{
+public:
+  explicit Module();
+  virtual ~Module();
+};
+}
 }
 
 #endif /* */
