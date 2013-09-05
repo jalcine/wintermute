@@ -29,10 +29,12 @@ namespace Wintermute
 {
 namespace Daemon
 {
+class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
+  Q_OBJECT;
 public:
-  explicit Module();
+  explicit Module ( Daemon::Plugin* plugin );
   virtual ~Module();
 };
 }

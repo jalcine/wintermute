@@ -22,11 +22,13 @@
 
 #include <Wintermute/Application>
 #include "module.hpp"
+#include "plugin.hpp"
 #include "module.moc"
 
 using Wintermute::Daemon::Module;
+using Wintermute::Daemon::Plugin;
 
-Module::Module() : Wintermute::Procedure::Module ( wntrApp )
+Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
 {
   setDomain ( "me.jalcine.wintermute" );
   setPackage ( "daemon" );
