@@ -60,15 +60,16 @@ public:
 
   void connectToWire() {
     socketIn = ModulePrivate::context->createSocket ( Socket::TYP_SUB );
-    socketIn->bindTo ( "ipc:///tmp/wintermute.socket" );
     socketOut = ModulePrivate::context->createSocket ( Socket::TYP_PUB );
+    socketIn->bindTo ( "ipc:///tmp/wintermute.socket" );
     socketOut->connectTo ( "ipc:///tmp/wintermute.socket" );
+    winfo ( q_ptr, "Now listening and sending over 'ipc:///tmp/wintermute.socket' on this local machine." );
   }
 
   void disconnectFromWire() {
     socketIn->deleteLater();
-    delete socketIn;
     socketOut->deleteLater();
+    delete socketIn;
     delete socketOut;
   }
 
