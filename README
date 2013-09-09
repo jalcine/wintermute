@@ -17,7 +17,7 @@ recommended that you build with either `clang` or `gcc >= 4.7`.
 ## Tested Operating Systems
 So far, Wintermute has only been built and tested on a Linux operating system,
 more precisely, running [Kubuntu](http://kubuntu.org) Raring Ringtail 13.04.
-Please build, test and upload your results for comparsion!
+Please build, test and upload your results for comparison!
 
 ## Contributing
 
