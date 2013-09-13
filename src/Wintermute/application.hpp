@@ -1,9 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <me@jalcine.me>
- *
- * This file is part of Wintermute, the extensible AI platform.
- *
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
