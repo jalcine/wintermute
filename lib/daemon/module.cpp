@@ -28,7 +28,6 @@ Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
 {
   setDomain ( "me.jalcine.wintermute" );
   setPackage ( "daemon" );
-  sendHeartbeat();
 }
 
 Module::~Module()
