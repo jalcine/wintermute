@@ -17,7 +17,6 @@
  **/
 
 #include "Wintermute/Procedure/call.hpp"
-#include "Wintermute/Procedure/heart_beat_call.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/logging.hpp"
 #include <QtCore/QMap>
@@ -48,11 +47,6 @@ public:
 
   ModulePrivate ( Module* q ) :
     q_ptr ( q ), package ( "" ), domain ( "" ), calls() {
-  }
-
-  void sendHeartbeat() {
-    Q_Q ( Module );
-    q->dispatch ( new HeartbeatCall ( q ) );
   }
 
   void connectToWire() {

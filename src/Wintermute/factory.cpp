@@ -84,6 +84,7 @@ Factory::loadPlugin ( const QString& id )
   }
   d->active.insert ( id, plugin );
   connect ( wntrApp, SIGNAL ( started() ), plugin, SLOT ( start() ) );
+  log->info ( QString ( "%1 is loaded and ready to go." ).arg ( id ) );
   return true;
 }
 

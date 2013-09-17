@@ -72,8 +72,8 @@ public:
     Factory::instance()->start();
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
     if ( mode == "daemon" || mode == "d" ) {
-      bool heartBeatLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
-      if ( !heartBeatLoaded ) {
+      bool daemonLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
+      if ( !daemonLoaded ) {
         werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
         Application::instance()->stop ( 127 );
       }

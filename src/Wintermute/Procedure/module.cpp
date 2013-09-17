@@ -74,13 +74,6 @@ Module::mountLambda ( Call::Signature lambda, const QString& name )
   return dynamic_cast<LambdaCall*> ( &*call );
 }
 
-void
-Module::sendHeartbeat()
-{
-  Q_D ( Module );
-  d->sendHeartbeat();
-}
-
 QString
 Module::domain() const
 {
