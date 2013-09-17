@@ -65,3 +65,45 @@ means of communication. This'll be decided by the plug-ins listed below.
     environment. This can range from capturing camera information or infrared
     sensors and then later adopting them to run object recognition and
     autonomous image adaption for visual responses.
+
+# Nature of Plug-ins
+
+There's a few types of plug-ins in Wintermute. **Service plug-ins** are meant
+to be light plug-ins that load themselves in every local running instance of
+Wintermute. **Instance plug-ins** are meant to be loaded in a separate process
+of Wintermute whereas **worker plug-ins** are loaded within an instance
+plug-in's process.
+
+## Service Plug-ins
+
+These plug-ins provide auxiliary functionality for the Wintermute platform
+like a hot-fix or a tweak to have Wintermute work in a more interesting
+fashion. A well-known service plug-in is `wintermute-service-heartbeat`.
+It's the plug-in that sends information about processes back to
+`wintermute-daemon`'s `HeartbeatModule` for information about the available
+modules and processes on the local machine. It's a very useful part of
+Wintermute and provides plug-ins with a bit of awareness of their environment.
+See [its README][./lib/heartbeat-service/README.md] for more information.
+
+> At times, these plug-ins are called `slices`.
+
+## Instance Plug-ins
+
+Plug-ins of these sort work to provide or improve a new service in Wintermute.
+These plug-ins are called `shards` at times. An example of a instance plug-in
+that provides a new service would be `wintermute-data` and its providing of
+data management and retrieval into Wintermute. See its README for more info.
+A instance plug-in that improves a service would be `wintermute-tcp-relay`.
+
+It re-routes most messages (all but ones that's blacklisted or selected only
+from a whitelist) on a local machine out of a TCP socket and listens and repeats
+incoming messages from the same socket. Such work allows for remote
+interfacing with Wintermute over local and remote networks.
+
+## Worker Plug-ins
+
+Worker plug-ins are meant to fill in holes that instance plug-ins leave open
+in their implementation. An example of this would be a object relational
+mapping (ORM plug-in) that only provides the specification of what a resource
+mapping would be like, defined in a instance plug-in. A worker plug-in would
+provide the ability to read information from MySQL or MongoDB.
