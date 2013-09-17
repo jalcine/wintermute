@@ -25,23 +25,22 @@ using Wintermute::Procedure::Module;
 using Wintermute::Procedure::LambdaCall;
 using Wintermute::Procedure::ModulePrivate;
 
-QtZeroMQ::Context* Wintermute::Procedure::ModulePrivate::context = 0;
-
 Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
 {
   Q_D ( Module );
   winfo ( this, "A new module has entered the guild." );
   d->connectToWire();
+  d->sendData ( "YO" );
 }
 
 // TODO: Wait for a response.
 // TODO: Format and return the response.
 QVariant
-Module::dispatch ( Call* call )
+Module::dispatch ( Call call )
 {
   Q_D ( Module );
-  const QString callStr = call->toString();
-  winfo ( this, QString ( "Sending %1 over the wire to '%2'..." ).arg ( callStr, call->recipient() ) );
+  const QString callStr = call.toString();
+  winfo ( this, QString ( "Sending %1 over the wire to '%2'..." ).arg ( callStr, call.recipient() ) );
   d->sendData ( callStr );
   return d->receiveData();
 }
@@ -106,6 +105,14 @@ Module::setPackage ( const QString& value )
 {
   Q_D ( Module );
   d->package = value;
+}
+
+void
+Module::caughtSocketConnection()
+{
+  Q_D ( Module );
+  winfo ( this, "Found something." );
+  d->parseSocket ( d->server.nextPendingConnection() );
 }
 
 Module::~Module()
