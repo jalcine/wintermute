@@ -30,7 +30,7 @@ Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePriva
   Q_D ( Module );
   winfo ( this, "A new module has entered the guild." );
   d->connectToWire();
-  d->sendData("YO");
+  d->sendData ( "YO" );
 }
 
 // TODO: Wait for a response.
@@ -49,8 +49,7 @@ QVariant
 Module::invoke ( const QString& callName, const QVariantList& data )
 {
   Q_D ( Module );
-  if ( !d->calls.contains ( callName ) )
-  {
+  if ( !d->calls.contains ( callName ) ) {
     werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." ).arg ( callName, qualifiedName() ) );
     return QVariant ( -1 );
   }
@@ -111,9 +110,9 @@ Module::setPackage ( const QString& value )
 void
 Module::caughtSocketConnection()
 {
-  Q_D( Module);
-  winfo(this, "Found something.");
-  d->parseSocket(d->server.nextPendingConnection());
+  Q_D ( Module );
+  winfo ( this, "Found something." );
+  d->parseSocket ( d->server.nextPendingConnection() );
 }
 
 Module::~Module()
