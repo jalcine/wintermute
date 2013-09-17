@@ -20,11 +20,8 @@
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/logging.hpp"
 #include <QtCore/QMap>
-#include <QtZeroMQ/context.hpp>
-#include <QtZeroMQ/socket.hpp>
-
-using QtZeroMQ::Socket;
-using QtZeroMQ::Context;
+#include <QtNetwork/QLocalSocket>
+#include <QtNetwork/QLocalServer>
 
 namespace Wintermute
 {
@@ -40,51 +37,40 @@ public:
   Module* q_ptr;
   QString package;
   QString domain;
-  Socket* socketIn;
-  Socket* socketOut;
+  QLocalSocket* socket;
+  QLocalServer* server;
   QMap<QString, CallPointer> calls;
-  static Context* context;
 
   ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( "" ), domain ( "" ), calls() {
+    q_ptr ( q ), package ( "" ), domain ( "" ),
+    socket ( new QLocalSocket ( q ) ), server ( new QLocalServer ( q ) ), calls() {
   }
 
   void connectToWire() {
-    socketIn = ModulePrivate::context->createSocket ( Socket::TYP_SUB );
-    socketOut = ModulePrivate::context->createSocket ( Socket::TYP_PUB );
-    socketIn->bindTo ( "ipc:///tmp/wintermute.socket" );
-    socketOut->connectTo ( "ipc:///tmp/wintermute.socket" );
-    winfo ( q_ptr, "Now listening and sending over 'ipc:///tmp/wintermute.socket' on this local machine." );
+    socket->connectToServer ( "/tmp/wintermute.socket" );
+    server->listen ( "/tmp/wintermute.socket" );
+    winfo ( q_ptr, "Listening & speaking at '/tmp/wintermute.socket' on this local machine." );
   }
 
   void disconnectFromWire() {
-    socketIn->deleteLater();
-    socketOut->deleteLater();
-    delete socketIn;
-    delete socketOut;
+    socket->disconnectFromServer();
+    server->close();
   }
 
   void sendData ( const QString& data ) {
-    socketOut->sendMessage ( data.toLocal8Bit() );
+    socket << data.toLocal8Bit();
   }
 
   void recieveDataAsync ( std::function<void ( QVariant ) > callback ) {
     // TODO: Recieve data in async.
+    // TODO: Use a one-shot signal here.
     callback ( QVariant() );
   }
 
   QVariant receiveData() {
-    QList<QByteArray> bytes = socketIn->receiveFullMessage();
     QByteArray data;
-    winfo ( q_ptr, QString ( "Found %1 packets from incoming clients." ).arg ( bytes.length() ) );
-    if ( bytes.size() != 0 ) {
-      winfo ( q_ptr, QString ( "Buffering %1 packets into a mega-QByteArray..." ).arg ( bytes.length() ) );
-      data = QByteArray ( bytes.takeFirst() );
-      while ( !bytes.isEmpty() ) {
-        data.append ( bytes.takeFirst() );
-      }
-      winfo ( q_ptr, QString ( "Packed an incoming buffer of about %1 bytes." ).arg ( data.size() ) );
-    }
+    data.resize ( socket->bytesAvailable() );
+    data = socket->read ( socket->bytesAvailable() );
     return data;
   }
 

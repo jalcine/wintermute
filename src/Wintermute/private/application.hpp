@@ -25,7 +25,6 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
-#include <QtZeroMQ/globals.hpp>
 
 namespace Wintermute
 {
@@ -50,8 +49,6 @@ public:
     // TODO: Add more potential paths for plugins.
     // TODO: Allow paths to be specified over command-line and environment.
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
-    // Define context for platform.
-    Procedure::ModulePrivate::context = QtZeroMQ::createDefaultContext ( Wintermute::Application::instance() );
     // Allocate necessary variables for logging and arguments.
     // TODO: Move factory initialization to separate thread.
     Logging::instance();

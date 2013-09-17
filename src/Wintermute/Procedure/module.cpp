@@ -25,8 +25,6 @@ using Wintermute::Procedure::Module;
 using Wintermute::Procedure::LambdaCall;
 using Wintermute::Procedure::ModulePrivate;
 
-QtZeroMQ::Context* Wintermute::Procedure::ModulePrivate::context = 0;
-
 Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
 {
   Q_D ( Module );
