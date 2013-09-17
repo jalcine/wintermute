@@ -37,28 +37,37 @@ public:
   Module* q_ptr;
   QString package;
   QString domain;
-  QLocalSocket* socket;
-  QLocalServer* server;
+  QLocalSocket socket;
   QMap<QString, CallPointer> calls;
 
   ModulePrivate ( Module* q ) :
     q_ptr ( q ), package ( "" ), domain ( "" ),
-    socket ( new QLocalSocket ( q ) ), server ( new QLocalServer ( q ) ), calls() {
+    socket ( q ), server ( q ), calls() {
   }
 
   void connectToWire() {
-    socket->connectToServer ( "/tmp/wintermute.socket" );
-    server->listen ( "/tmp/wintermute.socket" );
+    server.listen ( "/tmp/wintermute.socket" );
+    socket.connectToServer ( "/tmp/wintermute.socket" );
+    socket.waitForConnected();
     winfo ( q_ptr, "Listening & speaking at '/tmp/wintermute.socket' on this local machine." );
+    q_ptr->connect( &server, SIGNAL(newConnection()), SLOT(caughtSocketConnection()));
+    winfo (q_ptr, socket.errorString());
   }
 
   void disconnectFromWire() {
-    socket->disconnectFromServer();
-    server->close();
+    socket.disconnectFromServer();
+    server.close();
   }
 
   void sendData ( const QString& data ) {
-    socket << data.toLocal8Bit();
+    winfo(q_ptr, QString("Sending out '%1'...").arg(data));
+    socket.write(data.toUtf8());
+    socket.flush();
+  }
+
+  void parseSocket( QLocalSocket* socket ) {
+    QString data = socket->readAll();
+    winfo(q_ptr, QString("Data: ").arg(data));
   }
 
   void recieveDataAsync ( std::function<void ( QVariant ) > callback ) {
@@ -69,8 +78,9 @@ public:
 
   QVariant receiveData() {
     QByteArray data;
-    data.resize ( socket->bytesAvailable() );
-    data = socket->read ( socket->bytesAvailable() );
+    data.resize ( socket.bytesAvailable() );
+    data = socket.read ( socket.bytesAvailable() );
+    winfo(q_ptr, QString(data));
     return data;
   }
 

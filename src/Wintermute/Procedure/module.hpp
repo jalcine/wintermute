@@ -39,6 +39,7 @@ class Module : public QObject
   Q_DISABLE_COPY ( Module );
   Q_PROPERTY ( QString Domain READ domain );
   Q_PROPERTY ( QString Package READ package );
+  Q_SLOT void caughtSocketConnection();
 
 protected:
   Q_DECLARE_PRIVATE ( Module );
@@ -72,7 +73,7 @@ public:
    *
    * Uses the arguments to craft a Call to send over the wire.
    */
-  QVariant dispatch ( Call* call );
+  QVariant dispatch ( Call call );
 
   /**
    * @fn invoke
@@ -95,8 +96,6 @@ protected:
    * call into the system.
    */
   LambdaCall* mountLambda ( Call::Signature lambda, const QString& name );
-
-  void sendHeartbeat();
 };
 } /*  Procedure */
 } /*  Wintermute */

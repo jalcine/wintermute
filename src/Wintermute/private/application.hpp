@@ -19,7 +19,6 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/arguments.hpp"
 #include "Wintermute/factory.hpp"
-#include "Wintermute/private/Procedure/module.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
