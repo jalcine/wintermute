@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
-#include "Wintermute/private/Procedure/module.hpp"
 #include "Wintermute/Procedure/process_module.moc"
 
 using Wintermute::Procedure::ProcessModule;

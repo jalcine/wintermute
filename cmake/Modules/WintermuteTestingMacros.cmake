@@ -31,15 +31,9 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 
-  # Configure dependencies.
-  add_dependencies(unittest unittest_${unittestname})
-
-  # Tweak commands for unit testing.
-  message("${unittest_${unittestname}}")
-  add_custom_command(TARGET test PRE_LINK
-    COMMAND ${unittest_${unittestname}}
-    COMMENT "Executing unit test '${unittestname}'..."
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/unit)
+  # Add to CMake's test suite.
+  add_test(NAME ${unittestname}
+    COMMAND $<TARGET_FILE:unittest_${unittestname}> ${WINTERMUTE_TEST_ARGUMENTS})
 
   # Add coverage and valgrind support.
   gcov_generate(unittest_${unittestname} "test/unit")

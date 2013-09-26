@@ -25,6 +25,7 @@ endif()
 
 # Include necessary modules.
 include(FeatureSummary)
+include(FindQtZeroMQ)
 
 ## Pass options to manipulate Wintermute's dependency.
 option(PROVIDE_GUI_SUPPORT "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
@@ -38,7 +39,6 @@ set(QT_DONT_USE_QTGUI ON)
 if (NOT DEFINED QT_FOUND OR NOT ${WINTERMUTE_QT_VERSION} EQUAL "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
   find_package(Qt4 ${WINTERMUTE_QT_VERSION} COMPONENTS
     QtCore
-    QtNetwork
     REQUIRED)
 endif()
 
@@ -46,10 +46,10 @@ endif()
 
 ## {{{ Packages
 
-find_package(PkgConfig REQUIRED)
+find_package(PkgConfig 0.24 REQUIRED)
 find_package(Log4Qt REQUIRED)
-find_package(QCommandLine REQUIRED)
-find_package(QJSON REQUIRED)
+find_package(QCommandLine 0.4.0 REQUIRED)
+find_package(QJSON 0.7 REQUIRED)
 
 ## }}}
 
@@ -63,6 +63,8 @@ add_feature_info("Command Line" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
 add_feature_info("Logging" Log4Qt_FOUND
   "Incorporates logging support.")
+add_feature_info("Procedure Calling" QT_ZEROMQ_FOUND
+  "Provides procedure calling.")
 
 ## }}}
 

@@ -17,8 +17,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+# Testing. Is. ON.
+enable_testing()
+include(CTest)
+
 ## Grab us some coverage stuff.
-find_program(GCOV_PATH gcov-4.6)
+find_program(GCOV_PATH gcov)
 find_program(LCOV_PATH lcov)
 find_program(VALGRIND_PATH valgrind)
 find_program(GENHTML_PATH genhtml)
@@ -31,16 +35,6 @@ endif(NOT GCOV_PATH)
 # TODO: Add a check for lcov.
 # TODO: Add a check for valgrind.
 # TODO: Add a check for genhtml.
-
-## Define the top-level targets for testing.
-add_custom_target(test
-  COMMENT "Executing test suite..."
-  DEPENDS unittest
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
-
-add_custom_target(unittest
-  COMMENT "Running unit tests..."
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}

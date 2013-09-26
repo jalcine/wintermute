@@ -52,8 +52,9 @@ public:
     socket.connectToServer ( "/tmp/wintermute.socket" );
     socket.waitForConnected();
     winfo ( q_ptr, "Listening & speaking at '/tmp/wintermute.socket' on this local machine." );
-    q_ptr->connect( &server, SIGNAL(newConnection()), SLOT(caughtSocketConnection()));
-    winfo (q_ptr, socket.errorString());
+    q_ptr->connect ( &server, SIGNAL ( newConnection() ), SLOT ( caughtSocketConnection() ) );
+    winfo ( q_ptr, socket.errorString() );
+    socket.waitForReadyRead();
   }
 
   void disconnectFromWire() {
@@ -62,14 +63,14 @@ public:
   }
 
   void sendData ( const QString& data ) {
-    winfo(q_ptr, QString("Sending out '%1'...").arg(data));
-    socket.write(data.toUtf8());
+    winfo ( q_ptr, QString ( "Sending out '%1'..." ).arg ( data ) );
+    socket.write ( data.toUtf8() );
     socket.flush();
   }
 
-  void parseSocket( QLocalSocket* socket ) {
+  void parseSocket ( QLocalSocket* socket ) {
     QString data = socket->readAll();
-    winfo(q_ptr, QString("Data: ").arg(data));
+    winfo ( q_ptr, QString ( "Data: " ).arg ( data ) );
   }
 
   void recieveDataAsync ( std::function<void ( QVariant ) > callback ) {
@@ -82,7 +83,7 @@ public:
     QByteArray data;
     data.resize ( socket.bytesAvailable() );
     data = socket.read ( socket.bytesAvailable() );
-    winfo(q_ptr, QString(data));
+    winfo ( q_ptr, QString ( data ) );
     return data;
   }
 

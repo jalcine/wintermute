@@ -13,13 +13,10 @@ flags = [
 '-std=c++11',
 '-x',
 'c++',
-'/usr/include/qt4',
-'-I',
-'./src',
-'-I',
-'./src/Wintermute',
-'-I',
-'./build/src'
+'-I /usr/include/qt4',
+'-I ./src',
+'-I ./src/Wintermute',
+'-I ./build/src'
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the

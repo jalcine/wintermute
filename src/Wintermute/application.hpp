@@ -98,6 +98,9 @@ public:
   /**
    * @fn version
    * @brief Obtains the current version of Wintermute.
+   *
+   * Extremely direct and to the point, this returns the version of Wintermute
+   * running in this process.
    */
   Version version() const;
 
@@ -152,6 +155,7 @@ public:
    */
   void stop ( int exitcode = 0x0 );
 
+  // TODO: Do documentation.
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
 };

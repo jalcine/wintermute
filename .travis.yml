@@ -22,9 +22,7 @@ before_script:
 
 script:
   - make wintermute
-  - make unittest
-  - make coverage
-  - make memorycheck
+  - make Nightly
 
 after_success:
   - coveralls -r . -e .
