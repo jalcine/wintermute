@@ -16,4 +16,13 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/Procedure/dispatcher.hpp"
+/**
+ * The whole purpose of Dispatcher is allow for quick and simple remote
+ * procedure calling over any means possible. Of course, this can lead to
+ * some issues like duplication of message responses and what not, but it's up
+ * to the dispatcher to resolve this at the moment. Also, dispatchers are
+ * meant only to *send* Call data, nothing more. See Receiver for information
+ * about capturing and handling Call data.
+ */
+
+#include "Wintermute/Procedure/receiver.hpp"
