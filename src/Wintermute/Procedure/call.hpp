@@ -57,12 +57,22 @@ public:
   /**
    * @enum Type
    *
-   * Defines the potential types a Call can take in the procedural system.
+   * Defines the potential types a Call can take in the procedural system. In
+   * order to keep things clean, you can add your own types only if it's over
+   * 9000 (this was intentional)
    */
   enum Type {
-    Method    = 0x001, // This call is for handling and manipulating methods.
-    Signal    = 0x002, // This call is for interacting with signals on the platform.
-    Existance = 0x003 // This call handles the existence of other things.
+    TypeUndefined    = 0x0000,  // Undefined call. Don't bother with.
+
+    TypeResponse     = 0x0001,  // Represents a invoking call being responsed to.
+    TypeDispatch     = 0x0002,  // Represents a invoked call being sent to.
+    TypeSignal       = 0x0003,  // Represents a invoking signal being raised.
+
+    TypeInvocation   = 0x0010,  // Represents a call to be invoked.
+    TypeRemoteNoAuth = 0x0100,  // This call deals with a remote network with no authentication.
+    TypeRemoteAuth   = 0x0200,  // This call deals with a remote network with authentication.
+
+    TypeUser         = 0x9000   // Anything above this is available to the user space.
   };
 
   /**
@@ -101,7 +111,7 @@ public:
    * @fn recipient
    * @brief Obtains the name of the module to recieve this message.
    *
-   * Obtains the qualified string name that this Call is sending a message
+   * Obtains the qualified module name that this Call is sending a message
    * to.
    */
   QString recipient() const;
