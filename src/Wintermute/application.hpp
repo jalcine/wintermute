@@ -25,7 +25,10 @@
 
 namespace Wintermute
 {
-namespace Procedure { class Module; }
+namespace Procedure
+{
+class Module;
+}
 class Version;
 class ApplicationPrivate;
 
@@ -68,7 +71,9 @@ public:
    *
    * @return A shared pointer to the working instance of Wintermute::Application.
    */
-  static inline Application* instance() { return self; }
+  static inline Application* instance() {
+    return self;
+  }
 
   /**
    * @fn run

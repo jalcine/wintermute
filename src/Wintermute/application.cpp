@@ -92,8 +92,9 @@ QString
 Application::processName() const
 {
   Q_D ( const Application );
-  if ( !d->module )
-    { return QString::null; }
+  if ( !d->module ) {
+    return QString::null;
+  }
   return d->module->qualifiedName();
 }
 
@@ -110,8 +111,9 @@ Application::findModule ( const QString& name ) const
   Q_D ( const Application );
   for ( int i = 0; i < d->modules.size(); ++i ) {
     Module* mod = d->modules.at ( i );
-    if ( mod->domain().contains ( name ) )
-      { return mod; }
+    if ( mod->domain().contains ( name ) ) {
+      return mod;
+    }
   }
   return nullptr;
 }
@@ -132,10 +134,11 @@ QVariant
 Application::setting ( const QString& path, const QVariant defaultValue )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-  if ( d->settings->contains ( path ) )
-    { return d->settings->value ( path ); }
-  else
-    { return defaultValue; }
+  if ( d->settings->contains ( path ) ) {
+    return d->settings->value ( path );
+  } else {
+    return defaultValue;
+  }
   return defaultValue;
 }
 

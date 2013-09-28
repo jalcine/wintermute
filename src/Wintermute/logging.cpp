@@ -35,7 +35,8 @@ public:
   Log4Qt::ColorConsoleAppender* stdOutAppender;
   Log4Qt::ColorConsoleAppender* stdErrAppender;
 
-  LoggingPrivate() : primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) {
+  LoggingPrivate() : primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 )
+  {
     Log4Qt::LogManager::startup();
     primaryLayout  = new Log4Qt::SimpleTimeLayout();
     stdOutAppender = new Log4Qt::ColorConsoleAppender ( primaryLayout, Log4Qt::ConsoleAppender::STDOUT_TARGET );
@@ -70,7 +71,9 @@ Logger*
 Logging::obtainLogger ( const QObject* object )
 {
   if ( object == 0 )
-    { return 0; }
+  {
+    return 0;
+  }
   return Logging::obtainLogger ( object->metaObject()->className() );
 }
 
@@ -78,7 +81,9 @@ Logging*
 Logging::instance()
 {
   if ( !self )
-    { self = new Logging; }
+  {
+    self = new Logging;
+  }
   return self;
 }
 
@@ -86,5 +91,3 @@ Logging::~Logging()
 {
   Log4Qt::LogManager::shutdown();
 }
-
-#include "Wintermute/logging.moc"

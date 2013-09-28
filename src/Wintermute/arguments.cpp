@@ -82,8 +82,9 @@ Arguments::Arguments() : QObject ( Application::instance() ), d_ptr ( new Argume
 Arguments*
 Arguments::instance()
 {
-  if ( !self )
-    { self = new Arguments; }
+  if ( !self ) {
+    self = new Arguments;
+  }
   return self;
 }
 
@@ -98,8 +99,9 @@ QVariant
 Arguments::argument ( const QString& argumentName ) const
 {
   Q_D ( const Arguments );
-  if ( d->arguments.contains ( argumentName ) )
-    { return d->arguments.value ( argumentName ); }
+  if ( d->arguments.contains ( argumentName ) ) {
+    return d->arguments.value ( argumentName );
+  }
   return QVariant();
 }
 

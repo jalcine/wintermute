@@ -79,7 +79,9 @@ Call::toString() const
   callMap["recipient"] = recipient();
   callMap["data"] = d->data;
   QByteArray json = serializer.serialize ( callMap, &ok );
-  if ( ok ) { return QString ( json ); }
+  if ( ok ) {
+    return QString ( json );
+  }
   return QString();
 }
 
