@@ -1,22 +1,12 @@
 import os
 import ycm_core
+import vim
 
 flags = [
-'-Wall',
-'-Wextra',
-'-Werror',
-'-Wno-long-long',
-'-Wno-variadic-macros',
-'-fexceptions',
 '-DNDEBUG',
 '-DUSE_CLANG_COMPLETER',
-'-std=c++11',
 '-x',
 'c++',
-'-I /usr/include/qt4',
-'-I ./src',
-'-I ./src/Wintermute',
-'-I ./build/src'
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
@@ -85,6 +75,9 @@ def FlagsForFile( filename ):
   else:
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
+
+  cmake_flags = vim.eval("b:cmake_flags['cpp']")
+  final_flags += cmake_flags
 
   return {
     'flags': final_flags,
