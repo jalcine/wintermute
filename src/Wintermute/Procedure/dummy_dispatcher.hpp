@@ -16,29 +16,22 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QtCore/QString>
-#include <QtCore/QVariantList>
-#include "Wintermute/Procedure/method_call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
+#ifndef WINTERMUTE_PROCEDURE_DUMMYDISPATCHER_HPP
+#define WINTERMUTE_PROCEDURE_DUMMYDISPATCHER_HPP
 
-namespace Wintermute
-{
-namespace Procedure
-{
-class MethodCallPrivate : public CallPrivate
-{
-public:
-  explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
-    type = Call::TypeInvocation;
+#include "Wintermute/Procedure/dispatcher.hpp"
+
+namespace Wintermute {
+  namespace Procedure {
+    class DummyDispatcher : public Dispatcher {
+      public:
+        DummyDispatcher();
+        virtual ~DummyDispatcher();
+
+      protected:
+        virtual void sendMessage(const QString& data);
+    };
   }
-
-  virtual ~MethodCallPrivate() {
-  }
-
-  MethodCall* q;
-  QString module;
-  QString method;
-  QVariantList arguments;
-};
 }
-}
+
+#endif

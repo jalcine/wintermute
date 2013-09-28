@@ -16,29 +16,10 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QtCore/QString>
-#include <QtCore/QVariantList>
-#include "Wintermute/Procedure/method_call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
+/**
+ * Recievers do nothing more besides collecting inbound information and
+ * deserializing it from its obtained format into something that Wintermute
+ * can use to invoke a local call or response to a call.
+ */
 
-namespace Wintermute
-{
-namespace Procedure
-{
-class MethodCallPrivate : public CallPrivate
-{
-public:
-  explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
-    type = Call::TypeInvocation;
-  }
-
-  virtual ~MethodCallPrivate() {
-  }
-
-  MethodCall* q;
-  QString module;
-  QString method;
-  QVariantList arguments;
-};
-}
-}
+#include "Wintermute/Procedure/receiver.hpp"

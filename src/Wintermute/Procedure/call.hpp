@@ -38,6 +38,7 @@ protected:
   Q_DECLARE_PRIVATE ( Call );
   QSharedPointer<CallPrivate> d_ptr;
   Call ( CallPrivate* d );
+  Q_ENUMS(Type);
 
 public:
   /**
@@ -74,6 +75,7 @@ public:
 
     TypeUser         = 0x9000   // Anything above this is available to the user space.
   };
+  Q_FLAGS(Type Types);
 
   /**
    * @ctor

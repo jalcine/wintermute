@@ -36,10 +36,14 @@ public:
   Call::Type type;
   QMap<QString, QVariant> data;
 
-  explicit CallPrivate ( Call* q ) : q_ptr ( q ), recipient(), name(), function ( nullptr ), type ( Call::Method ), data() {
+  explicit CallPrivate ( Call* q ) : q_ptr ( q ),
+    recipient(), name(), function ( nullptr ),
+    type ( Call::TypeUndefined ), data()
+  {
   }
 
-  virtual ~CallPrivate() {
+  virtual ~CallPrivate()
+  {
   }
 };
 }

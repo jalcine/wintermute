@@ -39,7 +39,6 @@ class Module : public QObject
   Q_DISABLE_COPY ( Module );
   Q_PROPERTY ( QString Domain READ domain );
   Q_PROPERTY ( QString Package READ package );
-  Q_SLOT void caughtSocketConnection();
 
 protected:
   Q_DECLARE_PRIVATE ( Module );

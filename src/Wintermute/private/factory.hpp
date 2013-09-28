@@ -16,9 +16,15 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#ifndef WINTERMUTE_PLUGIN_PRIVATE_HPP
+#define WINTERMUTE_PLUGIN_PRIVATE_HPP
+
 #include "plugin.hpp"
+#include "factory.hpp"
+#include "application.hpp"
 #include <Wintermute/Globals>
 #include <QCoreApplication>
+#include <QProcess>
 #include <QDir>
 #include <QFile>
 
@@ -77,25 +83,47 @@ public:
     return 0;
   }
 
-  QPluginLoader* obtainBinary ( const QString& name ) const {
+  QPluginLoader*
+  obtainBinary ( const QString& name ) const
+  {
     QString path;
+    QPluginLoader* loader = nullptr;
     const QString libraryName = "lib" + name + ".so";
-    if ( QLibrary::isLibrary ( libraryName ) ) {
-      wdebug ( Factory::instance(), QString ( "Library not found on operating system: '%1'" ).arg ( name ) );
-      Q_FOREACH ( QString libraryPath, QCoreApplication::libraryPaths() ) {
-        wdebug ( Factory::instance(), QString ( "Trying libpath: %1/%2" ).arg ( libraryPath, libraryName ) );
+
+    if ( QLibrary::isLibrary ( libraryName ) )
+    {
+      wwarn ( Factory::instance(), 
+          QString ( "Library not found on operating system: '%1'" ).arg ( libraryName ) );
+
+      Q_FOREACH ( QString libraryPath, QCoreApplication::libraryPaths() )
+      {
         path = libraryPath + "/" + libraryName;
-        if ( QFile::exists ( path ) ) {
+        wdebug ( Factory::instance(),  QString ( "Trying library path '%1'..." ).arg ( path ) );
+
+        if ( QLibrary::isLibrary ( path ) )
           break;
-        } else {
+        else
           path = QString::null;
-        }
       }
-      if ( path == QString::null ) {
-        return 0;
-      }
+
+      if ( path == QString::null )
+        return nullptr;
+
+      loader = new QPluginLoader(path);
     }
-    return new QPluginLoader ( path );
+
+    if (loader && loader->fileName().isEmpty())
+    {
+      werr( Factory::instance(),
+            QString("Library '%1' not found.").arg(libraryName));
+      winfo( Factory::instance(),
+            QProcess::systemEnvironment().join("\n"));
+      return nullptr;
+    }
+
+    return loader;
   }
 };
 }
+
+#endif

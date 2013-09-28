@@ -26,12 +26,9 @@ using Wintermute::Procedure::Module;
 using Wintermute::Procedure::LambdaCall;
 using Wintermute::Procedure::ModulePrivate;
 
-Module::Module ( QObject* parent ) : QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
+Module::Module ( QObject* parent ) :
+  QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
 {
-  Q_D ( Module );
-  winfo ( this, "A new module has entered the guild." );
-  d->connectToWire();
-  d->sendData ( "YO" );
 }
 
 // TODO: Wait for a response.
@@ -41,9 +38,9 @@ Module::dispatch ( Call call )
 {
   Q_D ( Module );
   const QString callStr = call.toString();
-  winfo ( this, QString ( "Sending %1 over the wire to '%2'..." ).arg ( callStr, call.recipient() ) );
+  winfo ( this, QString ( "Sending '%1' to '%2'..." ).arg ( callStr, call.recipient() ) );
   d->sendData ( callStr );
-  return d->receiveData();
+  return QVariant();
 }
 
 QVariant
@@ -108,17 +105,7 @@ Module::setPackage ( const QString& value )
   d->package = value;
 }
 
-void
-Module::caughtSocketConnection()
-{
-  Q_D ( Module );
-  winfo ( this, "Found something." );
-  d->parseSocket ( d->server.nextPendingConnection() );
-}
-
 Module::~Module()
 {
-  winfo ( this, "A module has left the guild." );
   // TODO: Report to world that you're leaving us.
-  // TODO: Disconnect sockets.
 }

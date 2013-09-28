@@ -16,12 +16,13 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QDebug>
 #include "factory.hpp"
 #include "plugin.hpp"
 #include "logging.hpp"
 #include "application.hpp"
 #include "private/factory.hpp"
-#include <QDebug>
+#include "Wintermute/factory.moc"
 
 using namespace Wintermute;
 using Wintermute::Factory;
@@ -84,7 +85,7 @@ Factory::loadPlugin ( const QString& id )
   }
   d->active.insert ( id, plugin );
   connect ( wntrApp, SIGNAL ( started() ), plugin, SLOT ( start() ) );
-  log->info ( QString ( "%1 is loaded and ready to go." ).arg ( id ) );
+  log->info ( QString ( "%1 is loaded." ).arg ( id ) );
   return true;
 }
 
@@ -157,4 +158,3 @@ Factory::~Factory()
 {
 }
 
-#include "Wintermute/factory.moc"
