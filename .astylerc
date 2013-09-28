@@ -1,19 +1,24 @@
 # vim: ft=conf
 
 --style=kr
---indent=spaces=2
---indent-switches
---indent-cases
---pad-oper
---pad-paren
---pad-header
---delete-empty-lines
---align-pointer=type
---add-brackets
---add-one-line-brackets
---convert-tabs
---verbose
---lineend=linux
---suffix=none
---preserve-date
---recursive
+
+# Spacing and indentation
+indent=spaces=2
+indent-switches
+indent-cases
+pad-oper
+pad-paren
+pad-header
+convert-tabs
+
+# Alignment and positioning
+delete-empty-lines
+align-pointer=type
+add-brackets
+add-one-line-brackets
+lineend=linux
+suffix=none
+preserve-date
+
+# Auxillary options
+recursive
