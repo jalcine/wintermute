@@ -57,13 +57,14 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
 
 def FlagsForFile( filename ):
+  vim.command("call cmake#flags#inject('wintermute')")
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
     # python list, but a "list-like" StringVec object
     compilation_info = database.GetCompilationInfoForFile( filename )
     final_flags = MakeRelativePathsInFlagsAbsolute(
-      compilation_info.compiler_flags_,
-      compilation_info.compiler_working_dir_ )
+        compilation_info.compiler_flags_,
+        compilation_info.compiler_working_dir_ )
 
     # NOTE: This is just for YouCompleteMe; it's highly likely that your project
     # does NOT need to remove the stdlib flag. DO NOT USE THIS IN YOUR
@@ -82,6 +83,6 @@ def FlagsForFile( filename ):
     final_flags += cmake_flags
 
   return {
-    'flags': final_flags,
-    'do_cache': True
-  }
+      'flags': final_flags + vim.eval("b:cmake_flags['cpp']"),
+      'do_cache': True
+      }
