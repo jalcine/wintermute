@@ -1,16 +1,6 @@
 # Quicktask v1.2
 
 CURRENT TASKS:
-  - Implement core plug-ins.
-    @ Added [Sun 2013-09-29]
-    - Implement TCP/IP networking plug-in.
-      @ Added [Sun 2013-09-29]
-    - Implement heartbeat plug-in.
-      @ Added [Sun 2013-09-29]
-    - Implement daemon plug-in.
-      @ Added [Sun 2013-09-29]
-    - Test core plug-ins.
-      @ Added [Sun 2013-09-29]
   - Re-implement test suite.
     @ Added [Sun 2013-09-29]
     - Repair unit testing capabilities.
@@ -40,6 +30,34 @@ CURRENT TASKS:
         @ Added [Sun 2013-09-29]
       - Test `DummyDispatcher`.
         @ Added [Sun 2013-09-29]
+  - Implement core plug-ins.
+    @ Added [Sun 2013-09-29]
+    - Implement TCP/IP networking plug-in.
+      @ Added [Sun 2013-09-29]
+    - Implement heartbeat plug-in.
+      @ Added [Sun 2013-09-29]
+    - Implement daemon plug-in.
+      @ Added [Sun 2013-09-29]
+    - Test core plug-ins.
+      @ Added [Sun 2013-09-29]
+  - Implement language bindings.
+    @ Added [Sun 2013-09-29]
+    - Implement foundational logic to bind Wintermute to a scripting language.
+      @ Added [Sun 2013-09-29]
+      - Implement 'wintermute-scripting' to handle the root scripting functions.
+        @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-javascript' using QtScript (issue #9).
+      @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-python' (issue #10).
+      @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-ruby' (issue #8).
+      @ Added [Sun 2013-09-29]
+  - Add POSIX/UNIX signal handling (issue #12).
+    @ Added [Sun 2013-09-29]
+  - Allow log output to be written to disk (issue #15).
+    @ Added [Sun 2013-09-29]
+  - Incorporate a documenting tool (issue #11).
+    @ Added [Sun 2013-09-29]
 COMPLETED TASKS:
 
 # vim:ft=quicktask
