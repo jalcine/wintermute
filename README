@@ -33,8 +33,9 @@ I *strongly* recommend using tools like
 [`git-hooks`](https://github.com/icefox/git-hooks) to accelerate your
 development process.
 
-Also, if you're adding a new feature, try writing a test
-for it first!
+Also, if you're adding a new feature, try writing a test for it first! 
+Wintermute has a few wrappers over Qt's testing tools. If you get stuck,
+copy one of the existing tests and tweak it to your needs.
 
 ## Support
 
