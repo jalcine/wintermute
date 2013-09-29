@@ -12,11 +12,13 @@
 set expandtab ts=2 sw=2 ai
 set shiftwidth=2
 set tabstop=2
-set wildignore+=*/build/*
 set tags+=.git/tags
 
-" Update Syntastic.
-let g:syntastic_cpp_include_dirs+=["/usr/include/qt4", "$PWD/src", "$PWD/src/Wintermute", "/usr/include" ]
+" {{{1 Options
+" These options would only make sense if the plug-in in question is installed.
+"
+" {{{2 VIM-AUTOFORMAT
+let g:formatprg_cpp="astyle"
+let g:formatprg_args_cs="--options=$PWD/.astyle"
 
-" Set the make program.
-set makeprg=make\ -C\ build
+" {{{2 CMAKE.VIM

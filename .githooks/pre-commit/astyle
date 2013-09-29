@@ -24,17 +24,17 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
+
+ASTYLE_COMMAND="astyle --options=./.astylerc"
 
 case "${1}" in
   --about )
-      cat << EOF
-Formats files with the `astyle` formatting tool.
-EOF
-  ;;
+    echo "Formats the source code using 'astyle'."
+    ;;
   * )
-    astyle \
---options=./.astylerc \
-"src/*.*pp" "lib/*.*pp" "test/*.*hpp"
-  ;;
+    $ASTYLE_COMMAND "src/*pp" && \
+      $ASTYLE_COMMAND "lib/*pp" &&
+      $ASTYLE_COMMAND "test/*pp";
+    echo "[pre-commit/astyle] Formatted sources."
+    ;;
 esac
