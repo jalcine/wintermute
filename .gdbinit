@@ -11,7 +11,7 @@ end
 set print pretty 1
 
 # Load the binary file.
-file build/src/wintermute
+file build/bin/wintermute
 
 # TODO: Define a few critical break-points.
 
