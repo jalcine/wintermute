@@ -16,12 +16,14 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <Wintermute/Application>
+#include "Wintermute/application.hpp"
+
+using Wintermute::Application;
 
 int main ( int argc, char** argv )
 {
   // In light of minimalism, everything is (more or less) handled by
   // `Wintermute::Application`. Best singleton class I ever met!
 
-  return Wintermute::Application::run ( argc, argv );
+  return Application::run ( argc, argv );
 }

@@ -22,10 +22,10 @@ include_directories ( ${CMAKE_CURRENT_BINARY_DIR} )
 
 ## Produce the list of buildable tests.
 set ( WINTERMUTE_TEST_UNITS
-  clean_start
   command_line
-  #plugin_factory
-  )
+)
+
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 ## Add each unit test to the test suite.
 foreach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )

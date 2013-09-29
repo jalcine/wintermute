@@ -38,9 +38,11 @@ include ( WintermuteVariables )
 include ( WintermuteDependencies )
 include ( WintermuteMacros )
 
+## Enable testing.
+enable_testing()
+
 ## Include sub-directories.
 add_subdirectory ( src )
 add_subdirectory ( lib )
-enable_testing()
 add_subdirectory ( test )
-#add_subdirectory(doc)
+#add_subdirectory( doc )

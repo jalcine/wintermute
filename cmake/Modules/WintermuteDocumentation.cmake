@@ -29,5 +29,4 @@ macro(wintermute_generate_documentation)
   # TODO: Configure the Doxygen configuration file.
   # TODO: Define a target for Doxygen to execute.
   # TODO: Make the documentation target dependent on a parent target.
-
 endmacro(wintermute_generate_documentation)

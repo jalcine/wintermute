@@ -33,7 +33,8 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
 
   # Add to CMake's test suite.
   add_test(NAME ${unittestname}
-    COMMAND $<TARGET_FILE:unittest_${unittestname}> ${WINTERMUTE_TEST_ARGUMENTS})
+    COMMAND $<TARGET_FILE:unittest_${unittestname}> ${WINTERMUTE_TEST_ARGUMENTS}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 
   # Add coverage and valgrind support.
   gcov_generate(unittest_${unittestname} "test/unit")

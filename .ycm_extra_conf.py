@@ -77,8 +77,9 @@ def FlagsForFile( filename ):
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
   vim.command("call cmake#util#handle_injection()")
-  cmake_flags = vim.eval("b:cmake_flags['cpp']")
-  final_flags += cmake_flags
+  if vim.command("call exists('b:cmake_flags')"):
+    cmake_flags = vim.eval("b:cmake_flags['cpp']")
+    final_flags += cmake_flags
 
   return {
     'flags': final_flags,

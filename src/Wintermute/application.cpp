@@ -16,13 +16,13 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QSharedPointer>
 #include "application.hpp"
 #include "version.hpp"
 #include "Wintermute/private/application.hpp"
 #include "Wintermute/Procedure/module.hpp"
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QSharedPointer>
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
@@ -82,7 +82,7 @@ void
 Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
-  log->info ( "Qutting application..." );
+  log->info ( "Stopping Wintermute..." );
   QCoreApplication::quit();
   emit this->stopped();
   exit ( exitcode );
@@ -108,9 +108,9 @@ Application::modules() const
 Module*
 Application::findModule ( const QString& name ) const
 {
+  // NOTE: This could be so much more functional.
   Q_D ( const Application );
-  for ( int i = 0; i < d->modules.size(); ++i ) {
-    Module* mod = d->modules.at ( i );
+  Q_FOREACH(Module* mod, d->modules) {
     if ( mod->domain().contains ( name ) ) {
       return mod;
     }
@@ -153,6 +153,7 @@ Application::~Application()
 {
   this->stop();
   this->deleteLater();
+  winfo(this, "Application singleton deleted.");
 }
 
 #include "Wintermute/application.moc"

@@ -16,11 +16,12 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "logging.hpp"
-#include "application.hpp"
 #include <SimpleTimeLayout>
 #include <ColorConsoleAppender>
 #include <LogManager>
+#include "logging.hpp"
+#include "application.hpp"
+#include "Wintermute/logging.moc"
 
 using Wintermute::Application;
 using Wintermute::Logging;

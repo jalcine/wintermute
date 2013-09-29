@@ -20,6 +20,7 @@
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
 #include "Wintermute/Procedure/lambda_call.hpp"
+#include "Wintermute/Procedure/module.moc"
 
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::LambdaCall;
@@ -121,5 +122,3 @@ Module::~Module()
   // TODO: Report to world that you're leaving us.
   // TODO: Disconnect sockets.
 }
-
-#include "Wintermute/Procedure/module.moc"
