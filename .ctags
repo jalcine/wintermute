@@ -4,4 +4,5 @@
 --c++-kinds=+pl
 --extra=+q
 --fields=+iazKS
+--excmd=number
 -f .git/tags
