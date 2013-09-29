@@ -25,7 +25,6 @@ endif()
 
 # Include necessary modules.
 include(FeatureSummary)
-include(FindQtZeroMQ)
 
 ## Pass options to manipulate Wintermute's dependency.
 option(PROVIDE_GUI_SUPPORT "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
@@ -63,8 +62,6 @@ add_feature_info("Command Line" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
 add_feature_info("Logging" Log4Qt_FOUND
   "Incorporates logging support.")
-add_feature_info("Procedure Calling" QT_ZEROMQ_FOUND
-  "Provides procedure calling.")
 
 ## }}}
 
