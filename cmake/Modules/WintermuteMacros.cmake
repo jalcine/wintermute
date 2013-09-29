@@ -1,4 +1,23 @@
+###############################################################################
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+###
+### This file is part of Wintermute, the extensible AI platform.
+###
+### Wintermute is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 3 of the License, or
+### (at your option) any later version.
+###
+### Wintermute is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+###############################################################################
 include(Qt4Macros)
+include(WintermuteDocumentation)
 
 macro(wintermute_add_properties _target)
   set_target_properties(${_target} PROPERTIES
@@ -22,6 +41,10 @@ macro(wintermute_add_properties _target)
   else()
     set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS "${WINTERMUTE_COMPILE_FLAGS}")
   endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+  ## Generate documentation.
+  get_target_property(_sources ${_target} SOURCES)
+  wintermute_generate_documentation(SOURCES ${_sources})
 endmacro(wintermute_add_properties _target)
 
 ## Include plug-in specific macros.
