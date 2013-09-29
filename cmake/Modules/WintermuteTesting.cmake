@@ -17,24 +17,18 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-# Testing. Is. ON.
-enable_testing()
-include(CTest)
+# TODO: Add a check for lcov.
+# TODO: Add a check for valgrind.
+# TODO: Add a check for genhtml.
 
 ## Grab us some coverage stuff.
 find_program(GCOV_PATH gcov)
-find_program(LCOV_PATH lcov)
 find_program(VALGRIND_PATH valgrind)
-find_program(GENHTML_PATH genhtml)
 
 # Check for gcov.
 if (NOT GCOV_PATH)
   message(FATAL_ERROR "We need `gcov` for coverage information.")
 endif(NOT GCOV_PATH)
-
-# TODO: Add a check for lcov.
-# TODO: Add a check for valgrind.
-# TODO: Add a check for genhtml.
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
