@@ -30,6 +30,12 @@ Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
   setPackage ( "daemon" );
 }
 
+void
+Module::start()
+{
+  // TODO: Spawn out a few plug-ins needed for kicking up Wintermute.
+}
+
 Module::~Module()
 {
 }

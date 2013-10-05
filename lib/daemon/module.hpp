@@ -31,6 +31,7 @@ class Module : public Wintermute::Procedure::Module
   Q_OBJECT;
 public:
   explicit Module ( Daemon::Plugin* plugin );
+  Q_SLOT virtual void start();
   virtual ~Module();
 };
 }

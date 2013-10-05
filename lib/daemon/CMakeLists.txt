@@ -46,6 +46,6 @@ wintermute_plugin_configure ( TARGET daemon
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/daemon.html"
   )
+wintermute_plugin_add_include_directories(TARGET daemon DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 wintermute_plugin_target_declare ( TARGET daemon SOURCES ${daemon_SRCS} )
-include_directories ( ${Wintermute_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 wintermute_plugin_install ( TARGET daemon )

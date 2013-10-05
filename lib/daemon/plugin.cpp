@@ -27,6 +27,8 @@ using Wintermute::Version;
 
 Plugin::Plugin()
 {
+  module = new Daemon::Module ( this );
+  module->connect(this, SIGNAL(started()), SLOT(start()));
 }
 
 QString
@@ -43,7 +45,6 @@ Plugin::stop()
 void
 Plugin::start()
 {
-  module = new Daemon::Module ( this );
 }
 
 Version
@@ -70,4 +71,4 @@ Plugin::type() const
   return Module;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute - daemon, Wintermute::Daemon::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute-daemon, Wintermute::Daemon::Plugin );
