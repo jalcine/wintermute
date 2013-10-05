@@ -16,30 +16,28 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_PROCEDURE_RECEIVER_HPP
-#define WINTERMUTE_PROCEDURE_RECEIVER_HPP
+#include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Events/call.hpp"
 
-#include <QtCore/QObject>
-#include <Wintermute/Procedure/Call>
+using Wintermute::Events::CallEvent;
+using Wintermute::Procedure::Call;
 
-namespace Wintermute
+const int CallEvent::TypeReceive  = QEvent::registerEventType();
+const int CallEvent::TypeDispatch = QEvent::registerEventType();
+
+CallEvent::CallEvent(int type, const Call* call) :
+  QEvent((QEvent::Type) type) , m_call(call)
 {
-namespace Procedure
-{
-class Receiver : public QObject
-{
-  Q_OBJECT;
-  friend class ModulePrivate;
 
-public:
-  Q_SLOT QVariant messageReceived(Call* call);
-
-protected:
-  explicit Receiver();
-  virtual ~Receiver();
-  Q_SIGNAL void obtainedMessage(const QVariant data) const;
-};
-}
 }
 
-#endif
+const Call*
+CallEvent::call() const
+{
+  return m_call;
+}
+
+CallEvent::~CallEvent()
+{
+
+}

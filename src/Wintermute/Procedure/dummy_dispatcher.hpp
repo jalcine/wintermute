@@ -19,19 +19,24 @@
 #ifndef WINTERMUTE_PROCEDURE_DUMMYDISPATCHER_HPP
 #define WINTERMUTE_PROCEDURE_DUMMYDISPATCHER_HPP
 
-#include "Wintermute/Procedure/dispatcher.hpp"
+#include <Wintermute/Procedure/Dispatcher>
 
-namespace Wintermute {
-  namespace Procedure {
-    class DummyDispatcher : public Dispatcher {
-      public:
-        DummyDispatcher();
-        virtual ~DummyDispatcher();
+namespace Wintermute
+{
+namespace Procedure
+{
+class DummyDispatcher : public Dispatcher
+{
+  Q_OBJECT;
 
-      protected:
-        virtual void sendMessage(const QString& data);
-    };
-  }
+public:
+  explicit DummyDispatcher();
+  virtual ~DummyDispatcher();
+
+protected:
+  virtual void sendMessage(const Call* call);
+};
+}
 }
 
 #endif

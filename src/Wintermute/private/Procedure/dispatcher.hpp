@@ -16,45 +16,73 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/dispatcher.hpp"
 #include "Wintermute/logging.hpp"
 
-namespace Wintermute {
-  namespace Procedure {
-    class Dispatcher;
-    class DispatcherPrivate {
-      public:
-        static QList<Dispatcher*> dispatchers;
+namespace Wintermute
+{
+namespace Procedure
+{
+class Dispatcher;
+class DispatcherPrivate
+{
+public:
+  static QList<Dispatcher*> dispatchers;
 
-        static bool isDispatcherKnown(Dispatcher* dispatcher)
-        {
-          Q_FOREACH(Dispatcher* aDispatcher, DispatcherPrivate::dispatchers){
-            if (aDispatcher->metaObject()->className() == dispatcher->metaObject()->className())
-              return true;
-          }
+  static bool isDispatcherKnown(Dispatcher* dispatcher)
+  {
+    Q_FOREACH(Dispatcher * aDispatcher, DispatcherPrivate::dispatchers)
+    {
+      if (aDispatcher->metaObject()->className() == dispatcher->metaObject()->className())
+        return true;
+    }
 
-          return false;
-        }
-
-        static bool addDispatcher(Dispatcher* dispatcher)
-        {
-          if (isDispatcherKnown(dispatcher))
-            return false;
-
-          DispatcherPrivate::dispatchers << dispatcher;
-          wdebug(dispatcher, QString("%1 added to dispatcher pool.").arg(dispatcher->metaObject()->className()));
-          return true;
-        }
-
-        static bool removeDispatcher(Dispatcher* dispatcher)
-        {
-          if (!isDispatcherKnown(dispatcher))
-            return false;
-
-          DispatcherPrivate::dispatchers.removeAll(dispatcher);
-          wdebug(dispatcher, QString("%1 removed from dispatcher pool.").arg(dispatcher->metaObject()->className()));
-          return true;
-        }
-    };
+    return false;
   }
+
+  static void dispatch(const QString& data)
+  {
+    if (dispatchers.empty())
+    {
+      wwarn(wntrApp, "Wintermute is running with no dispatchers.");
+    }
+    else
+    {
+      Q_FOREACH(Dispatcher * dispatchClient, dispatchers)
+      {
+        dispatchClient->sendMessage(Call::fromString(data));
+        wdebug(dispatchClient, QString("Sent data to %1 for dispatching.")
+               .arg(dispatchClient->metaObject()->className()));
+      }
+    }
+  }
+
+  static bool addDispatcher(Dispatcher* dispatcher)
+  {
+    if (!dispatcher)
+      return false;
+
+    if (isDispatcherKnown(dispatcher))
+    {
+      wdebug(dispatcher, "Already added into dispatcher index.");
+      return false;
+    }
+
+    DispatcherPrivate::dispatchers << dispatcher;
+    wdebug(dispatcher, QString("%1 added to dispatcher pool.").arg(dispatcher->metaObject()->className()));
+    return true;
+  }
+
+  static bool removeDispatcher(Dispatcher* dispatcher)
+  {
+    if (!isDispatcherKnown(dispatcher))
+      return false;
+
+    DispatcherPrivate::dispatchers.removeAll(dispatcher);
+    wdebug(dispatcher, QString("%1 removed from dispatcher pool.").arg(dispatcher->metaObject()->className()));
+    return true;
+  }
+};
+}
 }

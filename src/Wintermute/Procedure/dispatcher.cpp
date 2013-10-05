@@ -16,12 +16,15 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QCoreApplication>
 #include "Wintermute/private/Procedure/dispatcher.hpp"
+#include "Wintermute/Events/call.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/dispatcher.moc"
 
 using Wintermute::Procedure::Dispatcher;
+using Wintermute::Events::CallEvent;
 
 QList<Dispatcher*> Wintermute::Procedure::DispatcherPrivate::dispatchers = QList<Dispatcher*>();
 
@@ -32,12 +35,10 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::dispatch(const QString& data)
+Dispatcher::postDispatch(const Call* call)
 {
-  Q_FOREACH(Dispatcher* dispatchClient, DispatcherPrivate::dispatchers){
-    dispatchClient->sendMessage(data);
-    wdebug(dispatchClient, QString("Sent information to %1 for dispatching.").arg(dispatchClient->metaObject()->className()));
-  }
+  CallEvent* event = new CallEvent(CallEvent::TypeDispatch, call);
+  QCoreApplication::postEvent(wntrApp, event);
 }
 
 Dispatcher::~Dispatcher()

@@ -16,22 +16,25 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/Procedure/dummy_dispatcher.hpp"
 #include "Wintermute/logging.hpp"
+#include "Wintermute/Procedure/dummy_dispatcher.hpp"
+#include "Wintermute/Procedure/dummy_dispatcher.moc"
 
 using Wintermute::Procedure::DummyDispatcher;
 
 DummyDispatcher::DummyDispatcher() :
   Dispatcher()
 {
+  wdebug(this, "Hey, I'm a dummy.");
 }
 
 void
-DummyDispatcher::sendMessage(const QString& data)
+DummyDispatcher::sendMessage(const Call* call)
 {
-  wdebug(this, QString("Sending out '%1' for dispatching...").arg(data));
+  wdebug(this, QString("Sending out '%1' for dispatching...").arg(call->toString()));
 }
 
 DummyDispatcher::~DummyDispatcher()
 {
+  wdebug(this, "Hey, this dummy is gone!");
 }

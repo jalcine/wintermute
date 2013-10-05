@@ -31,12 +31,10 @@ Module::Module ( QObject* parent ) :
 {
 }
 
-// TODO: Wait for a response.
-// TODO: Format and return the response.
-QVariant
-Module::dispatch ( Call call )
+const QVariant
+Module::dispatch ( const Call& call ) const
 {
-  Q_D ( Module );
+  Q_D ( const Module );
   const QString callStr = call.toString();
   winfo ( this, QString ( "Sending '%1' to '%2'..." ).arg ( callStr, call.recipient() ) );
   d->sendData ( callStr );
@@ -47,8 +45,10 @@ QVariant
 Module::invoke ( const QString& callName, const QVariantList& data )
 {
   Q_D ( Module );
-  if ( !d->calls.contains ( callName ) ) {
-    werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." ).arg ( callName, qualifiedName() ) );
+  if ( !d->calls.contains ( callName ) )
+  {
+    werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." )
+        .arg ( callName, qualifiedName() ) );
     return QVariant ( -1 );
   }
   CallPointer call = d->calls[callName];
@@ -68,7 +68,7 @@ Module::mountLambda ( Call::Signature lambda, const QString& name )
 {
   CallPointer call = CallPointer ( new LambdaCall ( lambda, name ) );
   this->mount ( call );
-  return dynamic_cast<LambdaCall*> ( &*call );
+  return dynamic_cast<LambdaCall*> ( call.data() );
 }
 
 QString
@@ -96,6 +96,7 @@ Module::setDomain ( const QString& value )
 {
   Q_D ( Module );
   d->domain = value;
+  d->checkQualifiedName();
 }
 
 void
@@ -103,6 +104,7 @@ Module::setPackage ( const QString& value )
 {
   Q_D ( Module );
   d->package = value;
+  d->checkQualifiedName();
 }
 
 Module::~Module()

@@ -25,7 +25,11 @@ list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 
 # Grab the sources!
 set ( WINTERMUTE_SOURCES
-  ## Procedure Calling binaries
+  ## Events
+  Wintermute/Events/call.cpp
+  Wintermute/Events/Filters/call.cpp
+
+  ## Procedure Calling
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/call.cpp
@@ -81,7 +85,8 @@ set ( WINTERMUTE_HEADERS
 
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
-  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure" )
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Events/Filters")
 qt4_automoc ( ${WINTERMUTE_SOURCES} )
 
 # Define the executable.

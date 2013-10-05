@@ -22,25 +22,25 @@
 #include <QtCore/QObject>
 #include <Wintermute/Procedure/Module>
 
-namespace Wintermute {
-  namespace Procedure {
-    class Module;
-    class DispatcherPrivate;
-    class Dispatcher : public QObject {
-      Q_OBJECT;
-      Q_DECLARE_PRIVATE(Dispatcher);
-      friend class ModulePrivate;
+namespace Wintermute
+{
+namespace Procedure
+{
+class Module;
+class DispatcherPrivate;
+class Dispatcher : public QObject
+{
+  Q_OBJECT;
+  friend class ModulePrivate;
+  friend class DispatcherPrivate;
 
-      public:
-        Q_SIGNAL void messageDispatched(Module* dispatchingModule, QString& data);
-
-      protected:
-        Dispatcher();
-        virtual ~Dispatcher();
-        virtual void sendMessage(const QString& data) = 0;
-        static void dispatch(const QString& data);
-    };
-  }
+protected:
+  explicit Dispatcher();
+  virtual ~Dispatcher();
+  virtual void sendMessage(const Call* call) = 0;
+  static void postDispatch(const Call* call);
+};
+}
 }
 
 #endif

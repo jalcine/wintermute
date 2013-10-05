@@ -68,21 +68,34 @@ public:
 
   /**
    * @fn dispatch
-   * @brief Collects and crafts a call for sending.
-   *
-   * Uses the arguments to craft a Call to send over the wire.
+   * @fn Sends a method call invocation over the wire.
    */
-  QVariant dispatch ( Call call );
+  const QVariant dispatch ( const Call& call ) const;
 
   /**
+   * @fn start
+   */
+  Q_SLOT virtual void start() = 0;
+
+protected:
+   /**
    * @fn invoke
    * @brief Looks for the named call and invoke with the provided data.
    */
   QVariant invoke ( const QString& name, const QVariantList& data );
-
-protected:
+ 
+  /**
+   * @fn setDomain
+   * @brief Sets the domain of this module.
+   */
   void setDomain ( const QString& value );
+
+  /**
+   * @fn setPackage
+   * @brief Sets the package of this module.
+   */
   void setPackage ( const QString& value );
+
   /**
    * @fn mount
    * @brief Registers the call into the system.

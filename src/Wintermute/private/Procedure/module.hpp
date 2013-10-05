@@ -17,12 +17,13 @@
  **/
 
 #include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/dispatcher.hpp"
 #include "Wintermute/logging.hpp"
+#include "Wintermute/application.hpp"
+#include "Wintermute/private/application.hpp"
 #include <QtCore/QMap>
-#include <QtNetwork/QLocalSocket>
-#include <QtNetwork/QLocalServer>
 
 namespace Wintermute
 {
@@ -41,14 +42,30 @@ public:
   QMap<QString, CallPointer> calls;
 
   ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( "" ), domain ( "" ), calls() {
+    q_ptr ( q ), package ( "" ), domain ( "" ), calls()
+  {
   }
 
-  void sendData ( const QString& data ) {
-    Dispatcher::dispatch(data);
+  void checkQualifiedName()
+  {
+    if (!domain.isEmpty() && !package.isEmpty())
+    {
+      if (!wntrApp->findModule(q_ptr->qualifiedName()))
+      {
+        (new MethodCall("me.jalcine.wintermute.heartbeat",
+                        "greet", QVariantList()))->dispatch(q_ptr);
+        wntrApp->d_ptr->modules << q_ptr;
+      }
+    }
   }
 
-  virtual ~ModulePrivate () {
+  void sendData ( const QString& data ) const
+  {
+    Dispatcher::postDispatch(Call::fromString(data));
+  }
+
+  virtual ~ModulePrivate ()
+  {
     winfo ( q_ptr, "We out!" );
   }
 };

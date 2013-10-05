@@ -16,29 +16,28 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_PROCEDURE_RECEIVER_HPP
-#define WINTERMUTE_PROCEDURE_RECEIVER_HPP
+#ifndef WINTERMUTE_EVENTS_CALL_FILTER_HPP
+#define WINTERMUTE_EVENTS_CALL_FILTER_HPP
 
 #include <QtCore/QObject>
-#include <Wintermute/Procedure/Call>
 
 namespace Wintermute
 {
-namespace Procedure
+namespace Events
 {
-class Receiver : public QObject
+namespace Filters
+{
+class CallFilter : public QObject
 {
   Q_OBJECT;
-  friend class ModulePrivate;
+  Q_DISABLE_COPY(CallFilter);
 
 public:
-  Q_SLOT QVariant messageReceived(Call* call);
-
-protected:
-  explicit Receiver();
-  virtual ~Receiver();
-  Q_SIGNAL void obtainedMessage(const QVariant data) const;
+  explicit CallFilter();
+  virtual ~CallFilter();
+  virtual bool eventFilter(QObject* object, QEvent* event);
 };
+}
 }
 }
 

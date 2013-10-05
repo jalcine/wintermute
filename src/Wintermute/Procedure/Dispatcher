@@ -25,4 +25,4 @@
  * about capturing and handling Call data.
  */
 
-#include "Wintermute/Procedure/receiver.hpp"
+#include "Wintermute/Procedure/dispatcher.hpp"

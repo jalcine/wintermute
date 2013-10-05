@@ -19,10 +19,13 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/arguments.hpp"
 #include "Wintermute/factory.hpp"
+#include "Wintermute/Events/Filters/call.hpp"
+#include "Wintermute/Procedure/dummy_dispatcher.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSettings>
+#include <QtCore/QProcessEnvironment>
 #include <QtCore/QDir>
 
 namespace Wintermute
@@ -36,47 +39,78 @@ public:
   QSharedPointer<Procedure::ProcessModule> module;
   QList<Procedure::Module*> modules;
   QSettings* settings;
+  Wintermute::Application* q_ptr;
 
-  ApplicationPrivate ( int& argc, char** argv ) :
-    app(), module(), modules(), settings ( 0 ) {
+  ApplicationPrivate ( int& argc, char** argv, Wintermute::Application* q ) :
+    app(), module(), modules(), settings ( 0 ), q_ptr( q )
+  {
     app = QSharedPointer<QCoreApplication> ( new QCoreApplication ( argc, argv ) );
     module.clear();
+    modules.clear();
+
+    this->installEventFilters();
   }
 
-  void initialize() {
-    // Add library paths for plug-ins.
-    // TODO: Add more potential paths for plugins.
-    // TODO: Allow paths to be specified over command-line and environment.
+  void installEventFilters()
+  {
+    Events::Filters::CallFilter* callFilter = new Events::Filters::CallFilter();
+    callFilter->setParent(q_ptr);
+
+    app->installEventFilter(callFilter);
+  }
+
+  void addLibraryPaths()
+  {
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
-    // Allocate necessary variables for logging and arguments.
-    // TODO: Move factory initialization to separate thread.
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+    if (env.contains("WINTERMUTE_PLUGIN_LIBRARY_DIR")){
+      QStringList envLibDirs = env.value("WINTERMUTE_PLUGIN_LIBRARY_DIR").split(":", QString::SkipEmptyParts);
+      Q_FOREACH(const QString libDir, envLibDirs)
+      {
+        app->addLibraryPath ( libDir );
+      }
+    }
+  }
+
+  void initialize()
+  {
+    this->addLibraryPaths();
     Logging::instance();
     Arguments::instance();
     Factory::instance();
   }
 
-  int exec() {
+  int exec()
+  {
     return app->exec();
   }
 
-  void loadProcessModule() {
-    Procedure::ProcessModule* modulePtr = new Procedure::ProcessModule;
-    module = QSharedPointer<Procedure::ProcessModule> ( modulePtr );
+  void loadProcessModule()
+  {
+    Procedure::DummyDispatcher* dummyDsptcher = new Procedure::DummyDispatcher;
+    dummyDsptcher->setParent(app.data());
+    module = QSharedPointer<Procedure::ProcessModule> ( new Procedure::ProcessModule );
   }
 
-  void loadCurrentMode() {
-    Factory::instance()->start();
+  void loadCurrentMode()
+  {
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
-    if ( mode == "daemon" || mode == "d" ) {
+    if ( mode == "daemon" || mode == "d" )
+    {
       bool daemonLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
-      if ( !daemonLoaded ) {
+      if ( !daemonLoaded )
+      {
         werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
         Application::instance()->stop ( 127 );
       }
-    } else if ( mode == "plugin" || mode == "p" ) {
+    }
+    else if ( mode == "plugin" || mode == "p" )
+    {
       wdebug ( Application::instance(), "Booting plugin..." );
       const QString pluginName ( Arguments::instance()->argument ( "plugin" ).toString() );
-      if ( pluginName.isNull() ) {
+      if ( pluginName.isNull() )
+      {
         werr ( Application::instance(), "Invalid plugin name provided." );
         Application::instance()->stop ( 127 );
         return;

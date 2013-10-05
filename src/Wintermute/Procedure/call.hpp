@@ -32,9 +32,9 @@ class CallPrivate;
 class Call : public QObject
 {
   Q_OBJECT;
-  Q_DISABLE_COPY ( Call );
 
 protected:
+  Q_DISABLE_COPY ( Call );
   Q_DECLARE_PRIVATE ( Call );
   QSharedPointer<CallPrivate> d_ptr;
   Call ( CallPrivate* d );
@@ -109,6 +109,8 @@ public:
    */
   QString toString() const;
 
+  static Call* fromString(const QString& data);
+
   /**
    * @fn recipient
    * @brief Obtains the name of the module to recieve this message.
@@ -135,6 +137,8 @@ public:
    * @brief Allow for functor-like capabilities for the Call object.
    */
   QVariant operator() ( const QVariantList& arguments );
+
+  static void attemptInvocation( const Call* call );
 };
 
 typedef QSharedPointer<Call> CallPointer;
