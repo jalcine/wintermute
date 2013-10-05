@@ -10,8 +10,6 @@
 ""
 """""""""""""""""""""""""""""""""""""""""""""""""
 set expandtab ts=2 sw=2 ai
-set shiftwidth=2
-set tabstop=2
 set tags+=.git/tags
 
 " {{{1 Options
