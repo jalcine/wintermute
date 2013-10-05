@@ -17,4 +17,5 @@ required for invocation on a remote instance of Wintermute.
 
 Modules are objects that hold a collection of methods under a specific
 name space, i.e: 'me.jalcine.wintermute.process' or
-'me.jalcine.wintermute.daemon'.
+'me.jalcine.wintermute.daemon'. Multiple modules can be 'mounted' or hooked in
+a way that they are discoverable by W
