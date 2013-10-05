@@ -39,6 +39,7 @@ class Module : public QObject
   Q_DISABLE_COPY ( Module );
   Q_PROPERTY ( QString Domain READ domain );
   Q_PROPERTY ( QString Package READ package );
+  friend class Call;
 
 protected:
   Q_DECLARE_PRIVATE ( Module );
@@ -82,7 +83,7 @@ protected:
    * @fn invoke
    * @brief Looks for the named call and invoke with the provided data.
    */
-  QVariant invoke ( const QString& name, const QVariantList& data );
+  QVariant invoke ( const QString name, const QVariantList data = QVariantList() );
  
   /**
    * @fn setDomain

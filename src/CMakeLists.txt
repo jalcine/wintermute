@@ -36,8 +36,9 @@ set ( WINTERMUTE_SOURCES
   Wintermute/Procedure/lambda_call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/dispatcher.cpp
-  Wintermute/Procedure/dummy_dispatcher.cpp
   Wintermute/Procedure/receiver.cpp
+  Wintermute/Procedure/dummy_dispatcher.cpp
+  Wintermute/Procedure/dummy_receiver.cpp
 
   ## Plugin binaries
   Wintermute/plugin.cpp

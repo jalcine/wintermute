@@ -16,26 +16,22 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_PROCEDURE_RECEIVER_HPP
-#define WINTERMUTE_PROCEDURE_RECEIVER_HPP
+#ifndef WINTERMUTE_PROCEDURE_DUMMY_RECEIVER_HPP
+#define WINTERMUTE_PROCEDURE_DUMMY_RECEIVER_HPP
 
-#include <QtCore/QObject>
-#include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Receiver>
 
-namespace Wintermute
-{
-namespace Procedure
-{
-class Receiver : public QObject
-{
-  Q_OBJECT;
+namespace Wintermute {
+  namespace Procedure {
+    class DummyReceiver : public Receiver {
+      Q_OBJECT;
 
-protected:
-  explicit Receiver();
-  virtual ~Receiver();
-  virtual void receiveMessage(const Call* call);
-};
-}
+      public:
+        explicit DummyReceiver();
+        void receiveMessage(const Call* call);
+        virtual ~DummyReceiver();
+    };
+  }
 }
 
 #endif

@@ -16,32 +16,28 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/logging.hpp"
 #include "Wintermute/private/Procedure/receiver.hpp"
-#include "Wintermute/Procedure/receiver.hpp"
 #include "Wintermute/Procedure/dummy_receiver.hpp"
-#include "Wintermute/Procedure/dummy_dispatcher.hpp"
-#include "Wintermute/Procedure/dummy_dispatcher.moc"
+#include "Wintermute/Procedure/dummy_receiver.moc"
 
-using Wintermute::Procedure::DummyDispatcher;
 using Wintermute::Procedure::DummyReceiver;
+using Wintermute::Procedure::Receiver;
 using Wintermute::Procedure::ReceiverPrivate;
 
-DummyDispatcher::DummyDispatcher() :
-  Dispatcher()
+DummyReceiver::DummyReceiver() :
+  Receiver()
 {
-  wdebug(this, "Hey, I'm a dummy.");
+
 }
 
 void
-DummyDispatcher::sendMessage(const Call* call)
+DummyReceiver::receiveMessage(const Call* call)
 {
-  wdebug(this, QString("Sending out '%1' for dispatching...").arg(call->toString()));
-  DummyReceiver* ds = static_cast<DummyReceiver*>(ReceiverPrivate::receivers[0]);
-  ds->receiveMessage(call);
+  wdebug(this, QString("We got %1 from %2").
+      arg(call->toString(), call->recipient()));
+  Receiver::receiveMessage(call);
 }
 
-DummyDispatcher::~DummyDispatcher()
+DummyReceiver::~DummyReceiver()
 {
-  wdebug(this, "Hey, this dummy is gone!");
 }

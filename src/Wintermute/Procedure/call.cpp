@@ -18,6 +18,7 @@
 
 #include <qjson/serializer.h>
 #include <qjson/parser.h>
+#include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
@@ -114,9 +115,15 @@ Call::operator() ( const QVariantList& data )
 void
 Call::attemptInvocation(const Call* call)
 {
-  // TODO: Find the module in question.
-  // TODO: Find the call in question.
-  // TODO: Invoke the discovered call.
+  Procedure::Module* module = wntrApp->findModule(call->recipient());
+
+  if (!module){
+    werr(staticMetaObject.className(), "Can't find module.");
+    return;
+  }
+
+  QVariant result = module->invoke(call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList());
+  winfo(staticMetaObject.className(), result.toString());
 }
 
 Call::~Call()

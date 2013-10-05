@@ -21,6 +21,7 @@
 #include "Wintermute/factory.hpp"
 #include "Wintermute/Events/Filters/call.hpp"
 #include "Wintermute/Procedure/dummy_dispatcher.hpp"
+#include "Wintermute/Procedure/dummy_receiver.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
@@ -89,7 +90,9 @@ public:
   void loadProcessModule()
   {
     Procedure::DummyDispatcher* dummyDsptcher = new Procedure::DummyDispatcher;
+    Procedure::DummyReceiver* dummyRcvr = new Procedure::DummyReceiver;
     dummyDsptcher->setParent(app.data());
+    dummyRcvr->setParent(app.data());
     module = QSharedPointer<Procedure::ProcessModule> ( new Procedure::ProcessModule );
   }
 

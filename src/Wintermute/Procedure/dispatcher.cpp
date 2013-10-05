@@ -37,6 +37,7 @@ Dispatcher::Dispatcher() :
 void
 Dispatcher::postDispatch(const Call* call)
 {
+  winfo(staticMetaObject.className(), "Caught a call; passing into the event loop.");
   CallEvent* event = new CallEvent(CallEvent::TypeDispatch, call);
   QCoreApplication::postEvent(wntrApp, event);
 }

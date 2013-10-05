@@ -42,7 +42,7 @@ Module::dispatch ( const Call& call ) const
 }
 
 QVariant
-Module::invoke ( const QString& callName, const QVariantList& data )
+Module::invoke ( const QString callName, const QVariantList data )
 {
   Q_D ( Module );
   if ( !d->calls.contains ( callName ) )

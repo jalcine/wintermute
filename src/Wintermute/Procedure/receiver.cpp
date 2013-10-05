@@ -17,9 +17,38 @@
  **/
 
 /**
- * Recievers do nothing more besides collecting inbound information and
+ * Receivers do nothing more besides collecting inbound information and
  * deserializing it from its obtained format into something that Wintermute
  * can use to invoke a local call or response to a call.
  */
 
+#include <QtCore/QCoreApplication>
+#include "Wintermute/private/Procedure/receiver.hpp"
+#include "Wintermute/application.hpp"
+#include "Wintermute/Events/call.hpp"
 #include "Wintermute/Procedure/receiver.hpp"
+#include "Wintermute/Procedure/receiver.moc"
+
+using Wintermute::Procedure::Receiver;
+using Wintermute::Events::CallEvent;
+
+QList<Receiver*> Wintermute::Procedure::ReceiverPrivate::receivers = QList<Receiver*>();
+
+Receiver::Receiver() :
+  QObject(wntrApp)
+{
+  ReceiverPrivate::addReceiver(this);
+}
+
+void
+Receiver::receiveMessage(const Call* call)
+{
+  winfo(this, "Caught a call; passing into event loop.");
+  CallEvent* event = new CallEvent(CallEvent::TypeReceive, call);
+  QCoreApplication::postEvent(wntrApp, event);
+}
+
+Receiver::~Receiver()
+{
+  ReceiverPrivate::removeReceiver(this);
+}
