@@ -70,7 +70,7 @@ endfunction(wintermute_plugin_declare)
 function(wintermute_plugin_target_declare)
   set(_oneArgs   TARGET)
   set(_multiArgs SOURCES)
-  cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
+cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
@@ -95,11 +95,17 @@ function(wintermute_plugin_target_declare)
     VERSION       ${${_local}_VERSION})
   set_target_properties(${${_local}_TARGET} PROPERTIES
     SOVERSION     ${${_local}_VERSION})
-  set_target_properties(${${_local}_TARGET} PROPERTIES
-    INCLUDE_DIRECTORIES "${${_local}_INCLUDE_DIRS}")
 
-  # Set up linking.
-  target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES} ${${_local}_LIBRARIES})
+  include_directories(${${_local}_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${WINTERMUTE_INCLUDE_DIR}
+    ${WINTERMUTE_CORE_INCLUDE_DIR})
+  target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES}
+    ${${_local}_LIBRARIES})
+
+  if (TARGET wintermute)
+    include_directories(${CMAKE_SOURCE_DIR}/src)
+  endif(TARGET wintermute)
 
   message(STATUS "Plugin '${${_local}_TARGET}' v. ${${_local}_VERSION} defined.")
 endfunction(wintermute_plugin_target_declare)

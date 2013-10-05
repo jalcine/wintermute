@@ -21,6 +21,9 @@
 include(WintermuteMacros)
 include(GCovMacros)
 
+file(GLOB_RECURSE WINTERMUTE_TEST_CORE_SOURCES
+  "${CMAKE_SOURCE_DIR}/src/Wintermute/*.cpp")
+
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
   SET(unittest_${unittestname}_SRCS ${unittestsrc} ${WINTERMUTE_TEST_CORE_SOURCES})
