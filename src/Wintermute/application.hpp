@@ -28,6 +28,7 @@ namespace Wintermute
 namespace Procedure
 {
 class Module;
+class ModulePrivate;
 }
 class Version;
 class ApplicationPrivate;
@@ -47,6 +48,7 @@ class Application : public QObject
 
   QScopedPointer<ApplicationPrivate> d_ptr;
   static Application* self;
+  friend class Procedure::ModulePrivate;
 
   /**
    * @fn Application
@@ -71,7 +73,8 @@ public:
    *
    * @return A shared pointer to the working instance of Wintermute::Application.
    */
-  static inline Application* instance() {
+  static inline Application* instance()
+  {
     return self;
   }
 

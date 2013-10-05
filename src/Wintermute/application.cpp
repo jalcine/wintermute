@@ -23,6 +23,7 @@
 #include "version.hpp"
 #include "Wintermute/private/application.hpp"
 #include "Wintermute/Procedure/module.hpp"
+#include "Wintermute/application.moc"
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
@@ -33,17 +34,15 @@ using Wintermute::Procedure::Module;
 
 Application* Application::self = 0;
 
-Application::Application ( int& argc, char** argv ) : QObject(), d_ptr ( new ApplicationPrivate ( argc, argv ) )
+Application::Application ( int& argc, char** argv ) :
+  QObject(), d_ptr ( new ApplicationPrivate ( argc, argv, this ) )
 {
   Q_D ( Application );
-  // I am self!
   Application::self = qobject_cast<Application*> ( this );
-  // Define the application in Qt.
   d->app->setApplicationName ( "Wintermute" );
   d->app->setApplicationVersion ( this->version().toString() );
   d->app->setOrganizationName ( "Wintermute" );
   d->app->setOrganizationDomain ( "jalcine.me" );
-  // Grab our settings.
   d->settings = new QSettings;
 }
 
@@ -51,18 +50,19 @@ int
 Application::run ( int& argc, char** argv )
 {
   int returnCode = -1;
-  if ( Application::instance() == 0 ) {
-    // Define the application.
+  if ( Application::instance() == 0 )
+  {
     Application::self = new Application ( argc, argv );
     Logger* log = wlog ( Application::self );
-    // Invoke the initialization code.
     self->d_ptr->initialize();
-    // Start thyself.
+    log->info(QString("Wintermute is starting; PID %1.").
+        arg(QCoreApplication::applicationPid()));
     self->start();
-    // Begin the event loop.
+
     log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
-    log->info ( QString ( "Event loop ended; ended with exit code %1" ).arg ( returnCode ) );
+    log->info ( "Event loop ended; ended with" +
+      QString( "exit code %1" ).arg ( returnCode ) );
   }
   return returnCode;
 }
@@ -72,10 +72,13 @@ Application::start()
 {
   Q_D ( Application );
   Logger* log = wlog ( this );
-  log->info ( "Starting Wintermute..." );
+  log->info ( "Starting Wintermute's process module..." );
   d->loadProcessModule();
+  log->info ( "Starting Wintermute's current mode..." );
   d->loadCurrentMode();
+  log->info ( "Invoking post-start logic..." );
   emit this->started();
+  log->info ( "Started Wintermute." );
 }
 
 void
@@ -85,14 +88,20 @@ Application::stop ( int exitcode )
   log->info ( "Stopping Wintermute..." );
   QCoreApplication::quit();
   emit this->stopped();
-  exit ( exitcode );
+  log->info ( "Wintermute is stopping " + QString("with exit code %1.")
+      .arg(exitcode) );
+
+  if (QCoreApplication::startingUp() || QCoreApplication::closingDown()){
+    exit ( exitcode );
+  }
 }
 
 QString
 Application::processName() const
 {
   Q_D ( const Application );
-  if ( !d->module ) {
+  if ( !d->module )
+  {
     return QString::null;
   }
   return d->module->qualifiedName();
@@ -110,8 +119,10 @@ Application::findModule ( const QString& name ) const
 {
   // NOTE: This could be so much more functional.
   Q_D ( const Application );
-  Q_FOREACH(Module* mod, d->modules) {
-    if ( mod->domain().contains ( name ) ) {
+  Q_FOREACH(Module * mod, d->modules)
+  {
+    if ( mod->domain().contains ( name ) )
+    {
       return mod;
     }
   }
@@ -134,9 +145,12 @@ QVariant
 Application::setting ( const QString& path, const QVariant defaultValue )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-  if ( d->settings->contains ( path ) ) {
+  if ( d->settings->contains ( path ) )
+  {
     return d->settings->value ( path );
-  } else {
+  }
+  else
+  {
     return defaultValue;
   }
   return defaultValue;
@@ -155,5 +169,3 @@ Application::~Application()
   this->deleteLater();
   winfo(this, "Application singleton deleted.");
 }
-
-#include "Wintermute/application.moc"
