@@ -16,12 +16,13 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QDebug>
 #include "factory.hpp"
 #include "plugin.hpp"
 #include "logging.hpp"
 #include "application.hpp"
 #include "private/factory.hpp"
-#include <QDebug>
+#include "Wintermute/factory.moc"
 
 using namespace Wintermute;
 using Wintermute::Factory;
@@ -31,12 +32,15 @@ Factory* Factory::self = 0;
 
 Factory::Factory() : QObject ( Application::instance() ), d_ptr ( new FactoryPrivate )
 {
+  connect(wntrApp, SIGNAL(started()), SLOT(start()));
+  connect(wntrApp, SIGNAL(stopped()), SLOT(stop()));
 }
 
 Factory*
 Factory::instance()
 {
-  if ( !self ) {
+  if ( !self )
+  {
     self = new Factory;
   }
   return self;
@@ -63,28 +67,46 @@ Factory::activePlugins() const
   return d->activePlugins();
 }
 
+bool
+Factory::loadedPlugin(const QString& name)
+{
+  return activePlugins().contains(name);
+}
+
 // TODO: Ensure plug-in loading process.
 bool
 Factory::loadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   Logger* log = wlog ( this );
+
+  if (this->loadedPlugin(id))
+  {
+    log->warn( QString("Already loaded plug-in %1.").arg(id));
+    return true;
+  }
+
   QPluginLoader* loader = d->obtainBinary ( id );
   Plugin* plugin = 0;
-  if ( !loader ) {
+  if ( !loader )
+  {
     log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id ) );
     return false;
   }
   log->debug ( QString ( "Found binary for plugin '%1'." ).arg ( id ) );
   plugin = qobject_cast<Plugin*> ( loader->instance() );
-  if ( !plugin ) {
+  if ( !plugin )
+  {
     log->error ( "Failed to load plugin." );
     log->error ( loader->errorString() );
     return false;
   }
   d->active.insert ( id, plugin );
-  connect ( wntrApp, SIGNAL ( started() ), plugin, SLOT ( start() ) );
-  log->info ( QString ( "%1 is loaded and ready to go." ).arg ( id ) );
+
+  log->info( "Invoking start of " + plugin->name());
+  plugin->start();
+  emit plugin->started();
+  log->info ( QString ( "%1 is loaded." ).arg ( id ) );
   return true;
 }
 
@@ -94,10 +116,12 @@ Factory::unloadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   Plugin* plugin = d->plugin ( id );
-  if ( !plugin->isLoaded() ) {
+  if ( !plugin->isLoaded() )
+  {
     return true;
   }
   plugin->stop();
+  emit plugin->stopped();
   plugin->d_ptr->loader->unload();
   return true;
 }
@@ -107,13 +131,28 @@ bool
 Factory::autoloadPlugins()
 {
   Logger* log = wlog ( this );
-  QVariantList autoloadList = Wintermute::Application::setting ( "Plugins/Autoload", QVariantList() ).toList();
+  QVariant autoload = Wintermute::Application::setting ( "Plugins/Autoload", QStringList());
+  QStringList autoloadList = autoload.value<QStringList>();
   QStringList all = this->availablePlugins();
-  log->info ( QString ( "Loading %1 of %2 plugins..." ).arg ( autoloadList.length() ).arg ( all.length() ) );
-  Q_FOREACH ( QString plugin, all ) {
+  log->info ( QString ( "Loading %1 of %2 plugins..." ).
+              arg ( autoloadList.length() ).arg ( all.length() ) );
+
+  if (autoloadList.empty())
+  {
+    log->warn("No plug-ins were specified for auto-loading.");
+  }
+
+  Q_FOREACH ( QString plugin, autoloadList )
+  {
+    if (!all.contains(plugin))
+    {
+      log->info( QString("The plugin '%1' is not available.").arg(plugin) );
+    }
     bool pluginLoaded = this->loadPlugin ( plugin );
-    if ( !pluginLoaded ) {
-      log->info ( QString ( "Autoload of %1 failed; thus cancelling the auto-loading process." ).arg ( plugin ) );
+    if ( !pluginLoaded )
+    {
+      log->info ( QString ( "Autoload of %1 failed;").arg(plugin) +
+                  " thus cancelling the auto-loading process." );
       this->unloadAllPlugins();
       return false;
     }
@@ -140,7 +179,8 @@ Factory::start()
 {
   Logger* log = wlog ( this );
   log->info ( "Starting.." );
-  //this->autoloadPlugins();
+  this->autoloadPlugins();
+  emit this->started();
   log->info ( "Started." );
 }
 
@@ -149,6 +189,7 @@ Factory::stop()
 {
   Logger* log = wlog ( this );
   log->info ( "Stopping.." );
+  emit this->stopped();
   this->unloadAllPlugins();
   log->info ( "Stopped." );
 }
@@ -157,4 +198,3 @@ Factory::~Factory()
 {
 }
 
-#include "Wintermute/factory.moc"

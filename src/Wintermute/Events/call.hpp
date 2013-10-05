@@ -15,18 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <Wintermute/Testing>
-#include "command_line.hpp"
-#include "command_line.moc"
 
-void
-CommandLineUnitTest::determineModeDaemon()
+#ifndef WINTERMUTE_EVENTS_CALLEVENT_HPP
+#define WINTERMUTE_EVENTS_CALLEVENT_HPP
+
+#include <QtCore/QEvent>
+
+namespace Wintermute
 {
+namespace Procedure
+{
+class Call;
 }
 
-void
-CommandLineUnitTest::determineModePlugin() {
+namespace Events
+{
+class CallEvent : public QEvent
+{
+  const Procedure::Call* m_call;
 
+public:
+  static const int TypeReceive;
+  static const int TypeDispatch;
+  explicit CallEvent(int type, const Procedure::Call* call);
+  virtual ~CallEvent();
+  const Procedure::Call* call() const;
+};
+} /* Events */
 }
 
-QTEST_MAIN ( CommandLineUnitTest )
+#endif

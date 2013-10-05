@@ -17,6 +17,8 @@
  **/
 
 #include <qjson/serializer.h>
+#include <qjson/parser.h>
+#include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
@@ -25,11 +27,13 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 
-Call::Call ( QObject* parent ) : QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
+Call::Call ( QObject* parent ) : 
+  QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
 {
 }
 
-Call::Call ( CallPrivate* d ) : QObject ( Wintermute::Application::instance() ), d_ptr ( d )
+Call::Call ( CallPrivate* d ) : 
+  QObject ( Wintermute::Application::instance() ), d_ptr ( d )
 {
 }
 
@@ -79,16 +83,47 @@ Call::toString() const
   callMap["recipient"] = recipient();
   callMap["data"] = d->data;
   QByteArray json = serializer.serialize ( callMap, &ok );
-  if ( ok ) {
-    return QString ( json );
-  }
-  return QString();
+  if ( !ok )
+    return QString::null;
+
+  return QString ( json );
+}
+
+Call*
+Call::fromString(const QString& data)
+{
+  QJson::Parser parser;
+  bool ok;
+  QVariant callData = parser.parse(data.toLocal8Bit(), &ok);
+  if (!ok)
+    return 0;
+
+  QVariantMap callMap = callData.toMap();
+  Call* aCall = new Call(wntrApp);
+  aCall->d_ptr->type = (Call::Type) callMap["type"].toInt();
+  aCall->d_ptr->recipient = callMap["recipient"].toString();
+  aCall->d_ptr->data = callMap["data"].toMap();
+  return aCall;
 }
 
 QVariant
 Call::operator() ( const QVariantList& data )
 {
   return this->invoke ( data );
+}
+
+void
+Call::attemptInvocation(const Call* call)
+{
+  Procedure::Module* module = wntrApp->findModule(call->recipient());
+
+  if (!module){
+    werr(staticMetaObject.className(), "Can't find module.");
+    return;
+  }
+
+  QVariant result = module->invoke(call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList());
+  winfo(staticMetaObject.className(), result.toString());
 }
 
 Call::~Call()

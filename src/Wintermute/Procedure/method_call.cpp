@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-
+#include <QtCore/QCoreApplication>
+#include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/method_call.hpp"
 
@@ -26,16 +27,29 @@ MethodCall::MethodCall ( const QString& module, const QString& method, const QVa
   Call ( new MethodCallPrivate ( this ) )
 {
   Q_D ( MethodCall );
-  d->module = module;
-  d->method = method;
-  d->arguments = arguments;
+  setRecipient(module);
+  d->type = Call::TypeInvocation;
+  d->data["method"] = method;
+  d->data["arguments"] = arguments;
 }
 
 QVariantList
 MethodCall::arguments() const
 {
   Q_D ( const MethodCall );
-  return d->arguments;
+  return d->data.value("arguments").toList();
+}
+
+void
+MethodCall::dispatch(Module* module)
+{
+  Q_D( MethodCall );
+  QMap<QString, QVariant> appData;
+  appData["pid"]     = QCoreApplication::applicationPid();
+  appData["version"] = QCoreApplication::applicationVersion();
+  appData["module"]  = module->qualifiedName();
+  d->data["sender"]  = appData;
+  module->dispatch(*this);
 }
 
 MethodCall::~MethodCall()

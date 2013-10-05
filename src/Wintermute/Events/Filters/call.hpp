@@ -15,18 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <Wintermute/Testing>
-#include "command_line.hpp"
-#include "command_line.moc"
 
-void
-CommandLineUnitTest::determineModeDaemon()
+#ifndef WINTERMUTE_EVENTS_CALL_FILTER_HPP
+#define WINTERMUTE_EVENTS_CALL_FILTER_HPP
+
+#include <QtCore/QObject>
+
+namespace Wintermute
 {
+namespace Events
+{
+namespace Filters
+{
+class CallFilter : public QObject
+{
+  Q_OBJECT;
+  Q_DISABLE_COPY(CallFilter);
+
+public:
+  explicit CallFilter();
+  virtual ~CallFilter();
+  virtual bool eventFilter(QObject* object, QEvent* event);
+};
+}
+}
 }
 
-void
-CommandLineUnitTest::determineModePlugin() {
-
-}
-
-QTEST_MAIN ( CommandLineUnitTest )
+#endif

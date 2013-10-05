@@ -29,15 +29,13 @@ class MethodCallPrivate : public CallPrivate
 {
 public:
   explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
+    type = Call::TypeInvocation;
   }
 
   virtual ~MethodCallPrivate() {
   }
 
   MethodCall* q;
-  QString module;
-  QString method;
-  QVariantList arguments;
 };
 }
 }

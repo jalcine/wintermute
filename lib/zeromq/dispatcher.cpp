@@ -17,10 +17,12 @@
  **/
 
 #include <Wintermute/Logging>
+#include <Wintermute/Procedure/Call>
 #include "dispatcher.hpp"
 #include "dispatcher.moc"
 
 using Wintermute::ZeroMQ::Dispatcher;
+using Wintermute::Procedure::Call;
 
 Dispatcher::Dispatcher() :
   Wintermute::Procedure::Dispatcher::Dispatcher() {
@@ -33,7 +35,7 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage(const QString& data)
+Dispatcher::sendMessage(const Call* call)
 {
   winfo(this, "Well, I should send some info, but eh.");
 }

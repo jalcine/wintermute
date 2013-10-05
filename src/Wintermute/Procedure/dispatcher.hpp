@@ -15,18 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <Wintermute/Testing>
-#include "command_line.hpp"
-#include "command_line.moc"
 
-void
-CommandLineUnitTest::determineModeDaemon()
+#ifndef WINTERMUTE_PROCEDURE_DISPATCHER_HPP
+#define WINTERMUTE_PROCEDURE_DISPATCHER_HPP
+
+#include <QtCore/QObject>
+#include <Wintermute/Procedure/Module>
+
+namespace Wintermute
 {
+namespace Procedure
+{
+class Module;
+class DispatcherPrivate;
+class Dispatcher : public QObject
+{
+  Q_OBJECT;
+  friend class ModulePrivate;
+  friend class DispatcherPrivate;
+
+protected:
+  explicit Dispatcher();
+  virtual ~Dispatcher();
+  virtual void sendMessage(const Call* call) = 0;
+  static void postDispatch(const Call* call);
+};
+}
 }
 
-void
-CommandLineUnitTest::determineModePlugin() {
-
-}
-
-QTEST_MAIN ( CommandLineUnitTest )
+#endif

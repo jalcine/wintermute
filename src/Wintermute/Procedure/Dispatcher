@@ -15,18 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <Wintermute/Testing>
-#include "command_line.hpp"
-#include "command_line.moc"
 
-void
-CommandLineUnitTest::determineModeDaemon()
-{
-}
+/**
+ * The whole purpose of Dispatcher is allow for quick and simple remote
+ * procedure calling over any means possible. Of course, this can lead to
+ * some issues like duplication of message responses and what not, but it's up
+ * to the dispatcher to resolve this at the moment. Also, dispatchers are
+ * meant only to *send* Call data, nothing more. See Receiver for information
+ * about capturing and handling Call data.
+ */
 
-void
-CommandLineUnitTest::determineModePlugin() {
-
-}
-
-QTEST_MAIN ( CommandLineUnitTest )
+#include "Wintermute/Procedure/dispatcher.hpp"

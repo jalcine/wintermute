@@ -15,18 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <Wintermute/Testing>
-#include "command_line.hpp"
-#include "command_line.moc"
+
+#include "Wintermute/private/Procedure/receiver.hpp"
+#include "Wintermute/Procedure/dummy_receiver.hpp"
+#include "Wintermute/Procedure/dummy_receiver.moc"
+
+using Wintermute::Procedure::DummyReceiver;
+using Wintermute::Procedure::Receiver;
+using Wintermute::Procedure::ReceiverPrivate;
+
+DummyReceiver::DummyReceiver() :
+  Receiver()
+{
+
+}
 
 void
-CommandLineUnitTest::determineModeDaemon()
+DummyReceiver::receiveMessage(const Call* call)
+{
+  wdebug(this, QString("We got %1 from %2").
+      arg(call->toString(), call->recipient()));
+  Receiver::receiveMessage(call);
+}
+
+DummyReceiver::~DummyReceiver()
 {
 }
-
-void
-CommandLineUnitTest::determineModePlugin() {
-
-}
-
-QTEST_MAIN ( CommandLineUnitTest )

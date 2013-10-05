@@ -25,12 +25,20 @@ list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 
 # Grab the sources!
 set ( WINTERMUTE_SOURCES
-  ## Procedure Calling binaries
+  ## Events
+  Wintermute/Events/call.cpp
+  Wintermute/Events/Filters/call.cpp
+
+  ## Procedure Calling
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/call.cpp
   Wintermute/Procedure/lambda_call.cpp
   Wintermute/Procedure/method_call.cpp
+  Wintermute/Procedure/dispatcher.cpp
+  Wintermute/Procedure/receiver.cpp
+  Wintermute/Procedure/dummy_dispatcher.cpp
+  Wintermute/Procedure/dummy_receiver.cpp
 
   ## Plugin binaries
   Wintermute/plugin.cpp
@@ -42,7 +50,7 @@ set ( WINTERMUTE_SOURCES
   Wintermute/version.cpp
   Wintermute/application.cpp
   main.cpp
-  )
+)
 
 set ( WINTERMUTE_HEADERS
   ## Pretty headers
@@ -57,6 +65,8 @@ set ( WINTERMUTE_HEADERS
   Wintermute/Procedure/Call
   Wintermute/Procedure/LambdaCall
   Wintermute/Procedure/MethodCall
+  Wintermute/Procedure/Dispatcher
+  Wintermute/Procedure/Receiver
 
   ## Native headers
   Wintermute/application.hpp
@@ -70,11 +80,14 @@ set ( WINTERMUTE_HEADERS
   Wintermute/Procedure/call.hpp
   Wintermute/Procedure/lambda_call.hpp
   Wintermute/Procedure/method_call.hpp
-  )
+  Wintermute/Procedure/dispatcher.hpp
+  Wintermute/Procedure/receiver.hpp
+)
 
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
-  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure" )
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Events/Filters")
 qt4_automoc ( ${WINTERMUTE_SOURCES} )
 
 # Define the executable.
