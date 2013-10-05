@@ -30,7 +30,7 @@ namespace Wintermute {
       public:
         explicit Dispatcher();
         virtual ~Dispatcher();
-        virtual void sendMessage(const QString& data);
+        virtual void sendMessage(const Procedure::Call* call);
     };
   }
 }
