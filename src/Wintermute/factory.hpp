@@ -61,9 +61,11 @@ class Factory : public QObject
   explicit Factory();
 
 private:
-  void start();
-  void stop();
+  Q_SLOT void start();
+  Q_SLOT void stop();
   Q_SLOT void pluginStateChange ( const QString& name, const Plugin::State& state );
+  Q_SIGNAL void started();
+  Q_SIGNAL void stopped();
 
 public:
   /**
@@ -116,6 +118,7 @@ public:
    */
   bool unloadPlugin ( const QString& name );
 
+  bool loadedPlugin( const QString& name );
   /**
    * @fn autoloadPlugins
    *

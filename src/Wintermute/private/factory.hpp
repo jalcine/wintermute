@@ -24,7 +24,6 @@
 #include "application.hpp"
 #include <Wintermute/Globals>
 #include <QCoreApplication>
-#include <QProcess>
 #include <QDir>
 #include <QFile>
 
@@ -46,35 +45,40 @@ public:
    *
    * TODO: Incorporate a means of collecting a remote list of plug-ins?
    */
-  QStringList availablePlugins() const {
+  QStringList availablePlugins() const
+  {
     // Grab a list of plug-ins in the definition folder.
     QDir pluginDefDir ( WINTERMUTE_PLUGIN_DEFINITION_DIR );
     QStringList files = pluginDefDir.entryList ( QStringList() << "*.spec", QDir::Files );
     QStringList plugins;
-    wdebug ( Factory::instance(), QString ( "Plugins: %1" ).arg ( files.join ( "," ) ) );
-    wdebug ( Factory::instance(), WINTERMUTE_PLUGIN_DEFINITION_DIR );
-    Q_FOREACH ( QString pluginFile, files ) {
+    Q_FOREACH ( QString pluginFile, files )
+    {
       QString name = pluginFile.remove ( ".spec" );
-      wdebug ( Wintermute::Application::instance(), QString ( "Found plugin file '%1'." ).arg ( name ) );
+      wdebug ( wntrFactory, QString ( "Found plugin file '%1'." ).arg ( name ) );
       plugins << name;
     }
     return plugins;
   }
 
-  QStringList activePlugins() const {
+  QStringList activePlugins() const
+  {
     return active.keys();
   }
 
-  Plugin* plugin ( const QString& name ) const {
-    if ( active.contains ( name ) ) {
+  Plugin* plugin ( const QString& name ) const
+  {
+    if ( active.contains ( name ) )
+    {
       return active[name];
     }
     return 0;
   }
 
-  QSettings* obtainConfiguration ( const QString& name ) const {
+  QSettings* obtainConfiguration ( const QString& name ) const
+  {
     const QString settingsPath = QString ( WINTERMUTE_PLUGIN_DEFINITION_DIR "/" + name + ".spec" );
-    if ( QFile::exists ( settingsPath ) ) {
+    if ( QFile::exists ( settingsPath ) )
+    {
       QSettings* settings = new QSettings ( settingsPath, QSettings::IniFormat, Factory::instance() );
       winfo ( Factory::instance(), QString ( "Found configuraton for plug-in '%1' at '%2'." ).arg ( name ).arg ( settingsPath ) );
       return settings;
@@ -92,8 +96,8 @@ public:
 
     if ( QLibrary::isLibrary ( libraryName ) )
     {
-      wwarn ( Factory::instance(), 
-          QString ( "Library not found on operating system: '%1'" ).arg ( libraryName ) );
+      wwarn ( Factory::instance(),
+              QString ( "Library not found on operating system: '%1'" ).arg ( libraryName ) );
 
       Q_FOREACH ( QString libraryPath, QCoreApplication::libraryPaths() )
       {
@@ -107,17 +111,15 @@ public:
       }
 
       if ( path == QString::null )
-        return nullptr;
-
-      loader = new QPluginLoader(path);
+        loader = nullptr;
+      else
+        loader = new QPluginLoader(path);
     }
 
     if (loader && loader->fileName().isEmpty())
     {
-      werr( Factory::instance(),
-            QString("Library '%1' not found.").arg(libraryName));
-      winfo( Factory::instance(),
-            QProcess::systemEnvironment().join("\n"));
+      werr( Factory::instance(), QString("Library '%1' not found.")
+            .arg(libraryName));
       return nullptr;
     }
 
