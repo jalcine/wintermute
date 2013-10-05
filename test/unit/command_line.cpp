@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-=======
-
 #include <Wintermute/Testing>
 #include "command_line.hpp"
 #include "command_line.moc"
