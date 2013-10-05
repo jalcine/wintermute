@@ -1,63 +1,33 @@
-#include "command_line.hpp"
+/**
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ *
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #include <Wintermute/Testing>
-#include <QtTest/QTest>
-#include <QtCore/QString>
-#include <iostream>
-#include <QDebug>
-
-using Wintermute::Testing::spawnProcess;
-
-void
-CommandLineUnitTest::cleanup(){
-  if (process->state() != QProcess::NotRunning){
-    process->close();
-  }
-
-  process->deleteLater();
-}
-
-void
-CommandLineUnitTest::showHelp() {
-  process = spawnProcess(QStringList() << "--help");
-
-  // Check if the apps runs.
-  QVERIFY(process->waitForStarted());
-  QVERIFY(process->waitForFinished());
-
-  // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardError();
-  QCOMPARE(!output.isEmpty(), true);
-  QCOMPARE(!output.isNull(),  true);
-}
-
-void
-CommandLineUnitTest::showVersion() {
-  process = Wintermute::Testing::spawnProcess(QStringList() << "--version");
-
-  // Check if the apps runs.
-  QVERIFY(process->waitForStarted());
-  QVERIFY(process->waitForFinished());
-
-  // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardError();
-  QCOMPARE(!output.isEmpty(), true);
-  QCOMPARE(!output.isNull(),  true);
-}
-
-void
-CommandLineUnitTest::showInvalidArgument() {
-  process = spawnProcess(QStringList() << "--january");
-
-  // Check if the apps runs.
-  QVERIFY(process->waitForStarted());
-  QVERIFY(process->waitForFinished());
-
-  // Capture output from stderr, as promised.
-  QByteArray output = process->readAllStandardError();
-  QCOMPARE(!output.isEmpty(), true);
-  QCOMPARE(!output.isNull(), true);
-}
-
-QTEST_MAIN(CommandLineUnitTest)
-
+#include "command_line.hpp"
 #include "command_line.moc"
+
+void
+CommandLineUnitTest::determineModeDaemon()
+{
+}
+
+void
+CommandLineUnitTest::determineModePlugin()
+{
+
+}
+
