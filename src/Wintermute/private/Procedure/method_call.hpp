@@ -36,9 +36,6 @@ public:
   }
 
   MethodCall* q;
-  QString module;
-  QString method;
-  QVariantList arguments;
 };
 }
 }

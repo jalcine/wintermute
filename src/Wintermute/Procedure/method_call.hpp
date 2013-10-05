@@ -21,6 +21,7 @@
 
 #include <QtCore/QObject>
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Application>
 
 namespace Wintermute
 {
@@ -40,10 +41,37 @@ class MethodCall : public Call
   Q_DECLARE_PRIVATE ( MethodCall );
 
 public:
-  explicit MethodCall ( const QString& module, const QString& method, QVariantList arguments = QVariantList() );
+  /**
+   * @ctor
+   *
+   * Crafts a call that can be used to invoke a remote method over the
+   * network.
+   */
+  explicit MethodCall ( const QString& module, const QString& method,
+      const QVariantList arguments = QVariantList() );
+
+  /**
+   * @dtor
+   */
   virtual ~MethodCall();
+
+  /**
+   * @fn arguments
+   * @brief The arguments to pass over the wire.
+   */
   QVariantList arguments() const;
+
+  /**
+   * @fn setArguments
+   * @brief Sets the arguments to use for this call.
+   */
   void setArguments ( const QVariantList& arguments );
+
+  /**
+   * @fn dispatch
+   * @brief A helper method to dispatch calls to a remote module.
+   */
+  void dispatch(Module* module = wntrApp->module());
 };
 }
 }
