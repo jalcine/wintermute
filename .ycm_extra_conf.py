@@ -6,7 +6,7 @@ flags = [
 '-DNDEBUG',
 '-DUSE_CLANG_COMPLETER',
 '-x',
-'c++',
+'c++'
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
@@ -57,7 +57,6 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
 
 def FlagsForFile( filename ):
-  vim.command("call cmake#flags#inject('wintermute')")
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
     # python list, but a "list-like" StringVec object
@@ -77,12 +76,13 @@ def FlagsForFile( filename ):
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
+  import vim
   vim.command("call cmake#util#handle_injection()")
   if vim.command("call exists('b:cmake_flags')"):
     cmake_flags = vim.eval("b:cmake_flags['cpp']")
     final_flags += cmake_flags
 
   return {
-      'flags': final_flags + vim.eval("b:cmake_flags['cpp']"),
+      'flags': final_flags,
       'do_cache': True
       }
