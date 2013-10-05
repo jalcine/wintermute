@@ -26,8 +26,14 @@ ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
 {
   setDomain ( "me.jalcine.wintermute" );
   setPackage ( "process" );
-  // TODO: Add 'listModules' method via lambda.
-  // TODO: Add 'reboot' method via lambda.
+  connect(wntrApp, SIGNAL(started()), SLOT(start()));
+}
+
+void
+ProcessModule::start()
+{
+  // TODO: What?
+  winfo(this, QString("Currently %1 modules loaded so far.").arg(wntrApp->modules().length()));
 }
 
 void

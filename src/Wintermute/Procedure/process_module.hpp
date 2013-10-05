@@ -43,6 +43,7 @@ class ProcessModule : public Module
 
 public:
   virtual ~ProcessModule();
+  Q_SLOT virtual void start();
 
 protected:
   void reboot();
