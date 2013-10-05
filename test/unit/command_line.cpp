@@ -26,8 +26,4 @@ CommandLineUnitTest::determineModeDaemon()
 }
 
 void
-CommandLineUnitTest::determineModePlugin()
-{
-
-}
-
+CommandLineUnitTest::determineModePlugin() {}
