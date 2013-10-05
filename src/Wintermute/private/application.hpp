@@ -65,7 +65,8 @@ public:
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
-    if (env.contains("WINTERMUTE_PLUGIN_LIBRARY_DIR")){
+    if (env.contains("WINTERMUTE_PLUGIN_LIBRARY_DIR"))
+    {
       QStringList envLibDirs = env.value("WINTERMUTE_PLUGIN_LIBRARY_DIR").split(":", QString::SkipEmptyParts);
       Q_FOREACH(const QString libDir, envLibDirs)
       {
@@ -112,12 +113,6 @@ public:
     {
       wdebug ( Application::instance(), "Booting plugin..." );
       const QString pluginName ( Arguments::instance()->argument ( "plugin" ).toString() );
-      if ( pluginName.isNull() )
-      {
-        werr ( Application::instance(), "Invalid plugin name provided." );
-        Application::instance()->stop ( 127 );
-        return;
-      }
       Factory::instance()->loadPlugin ( pluginName );
     }
   }

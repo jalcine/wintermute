@@ -18,6 +18,7 @@
 
 #include <TTCCLayout>
 #include <ColorConsoleAppender>
+#include <SignalAppender>
 #include <LogManager>
 
 using Log4Qt::LogManager;
@@ -40,6 +41,12 @@ public:
     primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 )
   {
     LogManager::startup();
+    LogManager::handleQtMessages();
+#ifdef DEBUG
+    LogManager::setThreshold( Log4Qt::Level::TRACE_INT );
+#else
+    LogManager::setThreshold ( Log4Qt::Level::ERROR_INT );
+#endif
     primaryLayout  = new TTCCLayout();
     primaryLayout->setName ( "root" );
     primaryLayout->activateOptions();
