@@ -99,6 +99,9 @@ configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in ${CMAKE_SOURCE_DIR}/src/Wi
 install(TARGETS wintermute
   RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})
 
-# Install the headers.
-install(FILES ${WINTERMUTE_HEADERS}
-  DESTINATION ${WINTERMUTE_CORE_INCLUDE_DIR}/Wintermute)
+foreach(_HDR ${WINTERMUTE_HEADERS})
+  string(FIND ${_HDR} / _dir_pos REVERSE)
+  string(SUBSTRING "${_HDR}" 0 ${_dir_pos} _DIR)
+  install(FILES ${_HDR}
+    DESTINATION ${WINTERMUTE_INCLUDE_DIR}/${_DIR})
+endforeach()
