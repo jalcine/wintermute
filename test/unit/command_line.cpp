@@ -15,28 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
+=======
 
-#include "Wintermute/application.hpp"
+#include <Wintermute/Testing>
 #include "command_line.hpp"
 #include "command_line.moc"
 
-Wintermute::Application* aApp = 0;
-
 void
-CommandLineUnitTest::cleanup() {
-  delete aApp;
+CommandLineUnitTest::determineModeDaemon()
+{
 }
 
 void
-CommandLineUnitTest::init() {
-  int count = 0;
-  Wintermute::Application::run(count, 0);
+CommandLineUnitTest::determineModePlugin() {
+
 }
-
-void
-CommandLineUnitTest::determineModeDaemon() {}
-
-void
-CommandLineUnitTest::determineModePlugin() {}
 
 QTEST_MAIN ( CommandLineUnitTest )

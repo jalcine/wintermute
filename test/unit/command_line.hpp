@@ -26,8 +26,6 @@ class CommandLineUnitTest : public QObject
   Q_OBJECT;
 
 private slots:
-  void cleanup();
-  void init();
   void determineModeDaemon();
   void determineModePlugin();
 };
