@@ -60,6 +60,9 @@ public:
 
   virtual ~Plugin();
 
+  Q_SIGNAL void started();
+  Q_SIGNAL void stopped();
+
   /**
    * Flags used to represent the different states that a plug-in can exist
    * in.
