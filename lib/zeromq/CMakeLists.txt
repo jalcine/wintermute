@@ -17,7 +17,7 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 project ( WintermuteZeroMQ )
-find_package(QtZeroMQ REQUIRED)
+find_package(QtZeroMQ)
 set ( zeromq_SRCS
   plugin.cpp
   dispatcher.cpp

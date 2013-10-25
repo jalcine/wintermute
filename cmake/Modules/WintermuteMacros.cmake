@@ -16,7 +16,6 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-include(Qt4Macros)
 include(WintermuteDocumentation)
 
 macro(wintermute_add_properties _target)
