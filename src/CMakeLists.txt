@@ -88,7 +88,6 @@ set ( WINTERMUTE_HEADERS
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Events/Filters")
-qt4_automoc ( ${WINTERMUTE_SOURCES} )
 
 # Define the executable.
 add_executable ( wintermute ${WINTERMUTE_SOURCES} )
