@@ -169,6 +169,7 @@ public:
 };
 }
 
+// TODO: Do documentation.
 #define wntrApp Wintermute::Application::instance()
 
 #endif /* WINTERMUTE_CORE_APPLICATION_HPP */
