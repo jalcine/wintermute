@@ -145,14 +145,7 @@ QVariant
 Application::setting ( const QString& path, const QVariant defaultValue )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-  if ( d->settings->contains ( path ) )
-  {
-    return d->settings->value ( path );
-  }
-  else
-  {
-    return defaultValue;
-  }
+  d->settings->contains ( path ) ? d->settings->value ( path ) : defaultValue
   return defaultValue;
 }
 
