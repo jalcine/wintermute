@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 ### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
@@ -15,7 +15,7 @@
 ###
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
+#############################################################################
 cmake_minimum_required (VERSION 2.8)
 cmake_policy(SET CMP0017 NEW)
 
