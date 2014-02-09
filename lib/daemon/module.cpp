@@ -26,7 +26,7 @@ using Wintermute::Daemon::Plugin;
 
 Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
 {
-  setDomain ( "me.jalcine.wintermute" );
+  setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "daemon" );
 }
 

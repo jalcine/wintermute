@@ -40,7 +40,12 @@ Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
 void
 Module::start()
 {
-  // TODO: Spawn out a few plug-ins needed for kicking up Wintermute.
+  // TODO: Start up the listening instance to the local UNIX socket.
+  // The path of it for global comms would be '/var/tmp/wintermute.socket'.
+  // TODO: Fix permissions on the socket if necessary.
+  m_context = new QtZeroMQ::PollingContext(this);
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish));
+  m_context->start();
 }
 
 Module::~Module()

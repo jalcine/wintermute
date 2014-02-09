@@ -15,3 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
+
+#ifndef WINTERMUTE_HEARTBEAT_PLUGIN_MODULE_HPP
+#define WINTERMUTE_HEARTBEAT_PLUGIN_MODULE_HPP
+
+#include <Wintermute/Procedure/Module>
+
+namespace Wintermute
+{
+namespace Heartbeat
+{
+class Plugin;
+class Module : public Wintermute::Procedure::Module
+{
+  Q_OBJECT;
+public:
+  explicit Module ( Heartbeat::Plugin* plugin );
+  Q_SLOT virtual void start();
+  virtual ~Module();
+};
+}
+}
+
+#endif /* */

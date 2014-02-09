@@ -16,5 +16,27 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <Wintermute/Application>
+#include "plugin.hpp"
 #include "module.hpp"
 #include "module.moc"
+
+using Wintermute::Heartbeat::Module;
+using Wintermute::Heartbeat::Plugin;
+
+Module::Module ( Heartbeat::Plugin* plugin ) : 
+	Wintermute::Procedure::Module ( plugin )
+{
+	setDomain ( WINTERMUTE_DOMAIN );
+	setPackage ( "heartbeat" );
+}
+
+void
+Module::start()
+{
+
+}
+
+Module::~Module()
+{
+}

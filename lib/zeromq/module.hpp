@@ -20,6 +20,8 @@
 #define WINTERMUTE_ZEROMQ_PLUGIN_MODULE_HPP
 
 #include <Wintermute/Procedure/Module>
+#include <QtZeroMQ/PollingSocket>
+#include <QtZeroMQ/PollingContext>
 
 namespace Wintermute
 {
@@ -29,6 +31,9 @@ class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
   Q_OBJECT;
+  friend class Dispatcher;
+  QtZeroMQ::PollingContext* m_context;
+  QtZeroMQ::PollingSocket* m_socket;
 public:
   explicit Module ( ZeroMQ::Plugin* plugin );
   Q_SLOT virtual void start();
