@@ -29,7 +29,7 @@ macro(wintermute_add_properties _target)
     LIBRARY_OUTPUT_DIRECTORY    "${CMAKE_BINARY_DIR}/lib"
     RUNTIME_OUTPUT_DIRECTORY    "${CMAKE_BINARY_DIR}/bin"
   )
-  
+
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS 
       "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
