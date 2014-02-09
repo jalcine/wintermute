@@ -1,5 +1,4 @@
-# Wintermute [![Stories in Ready][waffles_img]][waffles] [![Coverage Status][coveralls_img]](https://coveralls.io/r/jalcine/wintermute?branch=develop) [![Build Status](https://travis-ci.org/jalcine/wintermute.png)](https://travis-ci.org/jalcine/wintermute)
-
+# Wintermute [![Stories in Ready](https://badge.waffle.io/wintermuteapp/wintermute.png)](http://waffle.io/wintermuteapp/wintermute) [![Coverage Status](https://coveralls.io/repos/wintermuteapp/wintermute/badge.png?branch=develop)](https://coveralls.io/r/wintermuteapp/wintermute?branch=develop) [![Build Status](https://travis-ci.org/wintermuteapp/wintermute.png)](https://travis-ci.org/wintermuteapp/wintermute)
 **Wintermute** is meant to be an application platform that aims to:
   + extend by means of plug-ins and RPC
   + embrace the mannerisms of parallel computing
@@ -23,7 +22,6 @@ more precisely, running [Kubuntu][] Raring Ringtail 13.04.
 Please build, test and upload your results for comparison!
 
 **Update**: Also builds fine on [Kubuntu][] Saucy Salamander 13.10.
-
 ## Contributing
 
  - Fork, make a topic branch and propose your changes! **Bonus points for using Waffle**
