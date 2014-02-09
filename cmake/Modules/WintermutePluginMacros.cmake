@@ -69,8 +69,8 @@ endfunction(wintermute_plugin_declare)
 ##
 function(wintermute_plugin_target_declare)
   set(_oneArgs   TARGET)
-  set(_multiArgs SOURCES)
-cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
+  set(_multiArgs "")
+  cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
@@ -78,10 +78,10 @@ cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
   set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
 
   # Ensure that we handle the automagically moc-ing of files.
-  qt4_automoc(${wptd_SOURCES})
+  qt4_automoc(${${_local}_SOURCES})
 
   # Define the library.
-  add_library("${${_local}_TARGET}" SHARED ${wptd_SOURCES})
+  add_library("${${_local}_TARGET}" SHARED ${${_local}_SOURCES})
 
   # Coat the target with Wintermute's build options.
   wintermute_add_properties(${${_local}_TARGET})
@@ -100,6 +100,7 @@ cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
     ${CMAKE_CURRENT_BINARY_DIR}
     ${WINTERMUTE_INCLUDE_DIR}
     ${WINTERMUTE_CORE_INCLUDE_DIR})
+  message("Include dirs for ${_local}: ${${_local}_INCLUDE_DIRS}!")
   target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES}
     ${${_local}_LIBRARIES})
 
@@ -112,9 +113,9 @@ endfunction(wintermute_plugin_target_declare)
 
 ## TODO: Document this method.
 ## TODO: Implement this method.
-#function(wintermute_plugin_generate_documentation)
-#message(WARNING "[cmake] Documentation function not yet built.")
-#endfunction(wintermute_plugin_generate_documentation)
+function(wintermute_plugin_generate_documentation)
+  message(WARNING "[cmake] Documentation function not yet built.")
+endfunction(wintermute_plugin_generate_documentation)
 
 ##
 ## @fn wintermute_plugin_add_include_directories
@@ -125,7 +126,9 @@ function(wintermute_plugin_add_include_directories)
   cmake_parse_arguments(wpad "" "TARGET" "DIRECTORIES" ${ARGN})
 
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpad_TARGET}" _local)
-  list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES} ${WINTERMUTE_INCLUDE_DIRS})
+  list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES}
+    ${WINTERMUTE_INCLUDE_DIRS})
+  message(${${_local}_INCLUDE_DIRECTORIES})
 endfunction(wintermute_plugin_add_include_directories)
 
 ##

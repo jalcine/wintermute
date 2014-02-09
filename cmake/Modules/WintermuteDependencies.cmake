@@ -1,4 +1,4 @@
-###############################################################################
+#############################################################################
 ### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
@@ -15,7 +15,7 @@
 ###
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
+#############################################################################
 
 if(_wntr_deps)
   return()
@@ -27,14 +27,16 @@ endif()
 include(FeatureSummary)
 
 ## Pass options to manipulate Wintermute's dependency.
-option(PROVIDE_GUI_SUPPORT "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
+option(PROVIDE_GUI_SUPPORT 
+  "Compile Wintermute with QtGui libraries linked and used as run-time." ON)
 
 ## {{{ Packages
 find_package(PkgConfig 0.24 REQUIRED)
 find_package(Log4Qt REQUIRED)
 find_package(QCommandLine 0.4.0 REQUIRED)
 find_package(QJSON 0.7 REQUIRED)
-find_package(Qt4 4.7 COMPONENTS 
+find_package(QtZeroMQ REQUIRED)
+find_package(Qt4 4.8 COMPONENTS 
   QtCore REQUIRED)
 ## }}}
 

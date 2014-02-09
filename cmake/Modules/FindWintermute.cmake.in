@@ -3,7 +3,7 @@
 # CMake modules files for Wintermute. By using find_package(Wintermute), 
 # everything necessary for Wintermute plug-in building is included.
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
