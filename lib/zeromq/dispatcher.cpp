@@ -18,24 +18,31 @@
 
 #include <Wintermute/Logging>
 #include <Wintermute/Procedure/Call>
+#include <QtZeroMQ/Message>
 #include "dispatcher.hpp"
+#include "module.hpp"
 #include "dispatcher.moc"
 
 using Wintermute::ZeroMQ::Dispatcher;
+using Wintermute::ZeroMQ::Module;
 using Wintermute::Procedure::Call;
 
 Dispatcher::Dispatcher() :
   Wintermute::Procedure::Dispatcher::Dispatcher() {
+  winfo(this, "Yo, waddup?");
 }
 
 Dispatcher::~Dispatcher()
 {
-
+  winfo(this, "Buh-bye ZeroMQ!");
 }
 
 void
 Dispatcher::sendMessage(const Call* message)
 {
-  winfo(this, QString("Sending a call '%1' to process '%2'.").arg(message->name(), message->recipient()));
-  winfo(this, "Well, I should send some info, but eh.");
+  const QByteArray data = message->toString().toUtf8();
+  winfo(this, QString("Sending %1 over Pieter's wire...").arg(QString(data)));
+  Module* module = qobject_cast<Module*>(parent());
+  QtZeroMQ::Socket* socket = module->m_socket;
+  socket->sendMessage(data);
 }

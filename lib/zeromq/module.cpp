@@ -17,6 +17,7 @@
  **/
 
 #include <Wintermute/Application>
+#include <Wintermute/Globals>
 #include <Wintermute/Logging>
 #include "module.hpp"
 #include "plugin.hpp"
@@ -29,7 +30,7 @@ using Wintermute::ZeroMQ::Dispatcher;
 
 Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
 {
-  setDomain ( "me.jalcine.wintermute" );
+  setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
   winfo(this, "Pumping in ZeroMQ goodness to Wintermute...");
   Dispatcher* dispatcher = new Dispatcher;
@@ -44,7 +45,6 @@ Module::start()
   // The path of it for global comms would be '/var/tmp/wintermute.socket'.
   // TODO: Fix permissions on the socket if necessary.
   m_context = new QtZeroMQ::PollingContext(this);
-  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish));
   m_context->start();
 }
 

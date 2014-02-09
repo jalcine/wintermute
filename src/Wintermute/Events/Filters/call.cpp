@@ -31,6 +31,7 @@ using Wintermute::Procedure::Call;
 CallFilter::CallFilter() :
   QObject(wntrApp)
 {
+  winfo(this, "Call filter installled into process.");
 }
 
 bool
@@ -51,8 +52,8 @@ CallFilter::eventFilter(QObject* object, QEvent* event)
     winfo(this, "Handling a remote call for local invocation.");
     CallEvent* callEvent = static_cast<CallEvent*>(event);
     const Procedure::Call* call = callEvent->call();
-    Procedure::Call::attemptInvocation(call);
-    winfo(this, "Call invoked.");
+    const bool invocated = Procedure::Call::attemptInvocation(call);
+    invocated ? winfo(this, "Call invoked.") : wwarn(this, "Call failed to invoke.");
     return true;
   }
   // TODO: Filter out receive events.
@@ -61,4 +62,5 @@ CallFilter::eventFilter(QObject* object, QEvent* event)
 
 CallFilter::~CallFilter()
 {
+  winfo(this, "Call filter removed from process.");
 }

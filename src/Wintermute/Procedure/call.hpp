@@ -138,7 +138,7 @@ namespace Wintermute
        */
       QVariant operator() ( const QVariantList& arguments );
 
-      static void attemptInvocation( const Call* call );
+      static bool attemptInvocation( const Call* call );
     };
 
     typedef QSharedPointer<Call> CallPointer;

@@ -112,18 +112,19 @@ Call::operator() ( const QVariantList& data )
   return this->invoke ( data );
 }
 
-void
+bool
 Call::attemptInvocation(const Call* call)
 {
   Procedure::Module* module = wntrApp->findModule(call->recipient());
 
   if (!module){
-    werr(staticMetaObject.className(), "Can't find module.");
-    return;
+    werr(staticMetaObject.className(), QString("Can't find module '%1' in this process.").arg(call->recipient()));
+    return false;
   }
 
   QVariant result = module->invoke(call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList());
   winfo(staticMetaObject.className(), result.toString());
+  return true;
 }
 
 Call::~Call()
