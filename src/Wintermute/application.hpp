@@ -25,151 +25,156 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class Module;
-class ModulePrivate;
+  namespace Procedure
+  {
+    class Module;
+    class ModulePrivate;
+  }
+  class Version;
+  class ApplicationPrivate;
+
+  /**
+   * @class Application
+   *
+   * The `Application` class in Wintermute serves as an object hierarchy
+   * anchor. It's the first object to be created and fights to the death to be
+   * the last one destroyed.
+   */
+  class Application : public QObject
+  {
+    Q_OBJECT;
+    Q_DECLARE_PRIVATE ( Application );
+    Q_DISABLE_COPY ( Application );
+
+    QScopedPointer<ApplicationPrivate> d_ptr;
+    static Application* self;
+    friend class Procedure::ModulePrivate;
+
+    /**
+     * @fn Application
+     * @brief Private initialization of application.
+     * @constructor
+     *
+     * @param argc Argument count (native-value)
+     * @param argv Arguemnt array (native-value)
+     */
+    Application ( int& argc, char** argv );
+
+    public:
+    virtual ~Application();
+    /**
+     * @fn instance
+     * @brief Provides a pointer to an instance of Wintermute::Application.
+     *
+     * In order to keep Wintermute's instance running smoothly,
+     * a shared pointer to the instance of the application that's running
+     * and handling Wintermute's lower-level work. It's strongly recommended
+     * that you use this method if desired.
+     *
+     * @return A shared pointer to the working instance of Wintermute::Application.
+     */
+    static inline Application* instance()
+    {
+      return self;
+    }
+
+    /**
+     * @fn run
+     * @brief Starts Wintermute.
+     *
+     * This once-invokable method begins the low-level initialization of
+     * Wintermute. It's invoked from Wintermute's `main()` method and cannot
+     * be run a second time.
+     */
+    static int run ( int& argc, char** argv );
+
+    /**
+     * @fn setting
+     * @brief Obtains a setting from Wintermute's local configuration.
+     *
+     * @note These options are global to the Wintermute application.
+     */
+    static QVariant setting ( const QString& path, const QVariant defaultValue = QVariant() );
+
+    /** @fn setSetting
+     * @brief Changes a value of the setting for Wintermute
+     *
+     * @note These options are global to the Wintermute application.
+     */
+    static void setSetting ( const QString& path, const QVariant value );
+
+    /**
+     * @fn version
+     * @brief Obtains the current version of Wintermute.
+     *
+     * Extremely direct and to the point, this returns the version of Wintermute
+     * running in this process.
+     */
+    Version version() const;
+
+    /**
+     * @fn processName
+     * @brief Obtains the stringifed process name used by Wintermute.
+     *
+     * Obtains the process name of this running instance of Wintermute. This
+     * is typically in the form of `domain.application:$PID`, a bit similar
+     * to package paths in Java. The :$PID portion is added to help increase
+     * the precision of finding specific processes. Process names are formed
+     * from the formulated name of the 'root module'.
+     *
+     * @see setModule()
+     * @see module()
+     */
+    QString processName() const;
+
+    /**
+     * @fn module()
+     * @brief Defines the root module of the process.
+     */
+    Procedure::Module* module() const;
+
+    /**
+     * @fn findModule
+     * @brief Finds a method by its specified module.
+     */
+    Procedure::Module* findModule ( const QString& name ) const;
+
+    /**
+     * @fn modules
+     * @brief Obtains a list of the modules registered locally.
+     */
+    QList<Procedure::Module*> modules() const;
+
+    /**
+     * @fn start
+     * @brief
+     *
+     * Starts the initial processing required for execution in Wintermute
+     * and begins the event loop.
+     */
+    void start();
+
+    /**
+     * @fn stop
+     * @brief
+     *
+     * Stops the started processes in `start()` and begins the clean up for
+     * the event loop.
+     */
+    void stop ( int exitcode = 0x0 );
+
+    // TODO: Do documentation.
+    Q_SIGNAL void started();
+    Q_SIGNAL void stopped();
+  };
 }
-class Version;
-class ApplicationPrivate;
 
 /**
- * @class Application
+ * @constant wntrApp
+ * @brief Shorthand for Wintermute::Application.
  *
- * The `Application` class in Wintermute serves as an object hierarchy
- * anchor. It's the first object to be created and fights to the death to be
- * the last one destroyed.
+ * Allows for quick access to the singleton instance of Wintermute.
  */
-class Application : public QObject
-{
-  Q_OBJECT;
-  Q_DECLARE_PRIVATE ( Application );
-  Q_DISABLE_COPY ( Application );
-
-  QScopedPointer<ApplicationPrivate> d_ptr;
-  static Application* self;
-  friend class Procedure::ModulePrivate;
-
-  /**
-   * @fn Application
-   * @brief Private initialization of application.
-   * @constructor
-   *
-   * @param argc Argument count (native-value)
-   * @param argv Arguemnt array (native-value)
-   */
-  Application ( int& argc, char** argv );
-
-public:
-  virtual ~Application();
-  /**
-   * @fn instance
-   * @brief Provides a pointer to an instance of Wintermute::Application.
-   *
-   * In order to keep Wintermute's instance running smoothly,
-   * a shared pointer to the instance of the application that's running
-   * and handling Wintermute's lower-level work. It's strongly recommended
-   * that you use this method if desired.
-   *
-   * @return A shared pointer to the working instance of Wintermute::Application.
-   */
-  static inline Application* instance()
-  {
-    return self;
-  }
-
-  /**
-   * @fn run
-   * @brief Starts Wintermute.
-   *
-   * This once-invokable method begins the low-level initialization of
-   * Wintermute. It's invoked from Wintermute's `main()` method and cannot
-   * be run a second time.
-   */
-  static int run ( int& argc, char** argv );
-
-  /**
-   * @fn setting
-   * @brief Obtains a setting from Wintermute's local configuration.
-   *
-   * @note These options are global to the Wintermute application.
-   */
-  static QVariant setting ( const QString& path, const QVariant defaultValue = QVariant() );
-
-  /** @fn setSetting
-   * @brief Changes a value of the setting for Wintermute
-   *
-   * @note These options are global to the Wintermute application.
-   */
-  static void setSetting ( const QString& path, const QVariant value );
-
-  /**
-   * @fn version
-   * @brief Obtains the current version of Wintermute.
-   *
-   * Extremely direct and to the point, this returns the version of Wintermute
-   * running in this process.
-   */
-  Version version() const;
-
-  /**
-   * @fn processName
-   * @brief Obtains the stringifed process name used by Wintermute.
-   *
-   * Obtains the process name of this running instance of Wintermute. This
-   * is typically in the form of `domain.application:$PID`, a bit similar
-   * to package paths in Java. The :$PID portion is added to help increase
-   * the precision of finding specific processes. Process names are formed
-   * from the formulated name of the 'root module'.
-   *
-   * @see setModule()
-   * @see module()
-   */
-  QString processName() const;
-
-  /**
-   * @fn module()
-   * @brief Defines the root module of the process.
-   */
-  Procedure::Module* module() const;
-
-  /**
-   * @fn findModule
-   * @brief Finds a method by its specified module.
-   */
-  Procedure::Module* findModule ( const QString& name ) const;
-
-  /**
-   * @fn modules
-   * @brief Obtains a list of the modules registered locally.
-   */
-  QList<Procedure::Module*> modules() const;
-
-  /**
-   * @fn start
-   * @brief
-   *
-   * Starts the initial processing required for execution in Wintermute
-   * and begins the event loop.
-   */
-  void start();
-
-  /**
-   * @fn stop
-   * @brief
-   *
-   * Stops the started processes in `start()` and begins the clean up for
-   * the event loop.
-   */
-  void stop ( int exitcode = 0x0 );
-
-  // TODO: Do documentation.
-  Q_SIGNAL void started();
-  Q_SIGNAL void stopped();
-};
-}
-
-// TODO: Do documentation.
 #define wntrApp Wintermute::Application::instance()
 
 #endif /* WINTERMUTE_CORE_APPLICATION_HPP */

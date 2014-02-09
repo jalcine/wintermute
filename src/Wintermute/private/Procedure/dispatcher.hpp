@@ -70,7 +70,8 @@ public:
     }
 
     DispatcherPrivate::dispatchers << dispatcher;
-    wdebug(dispatcher, QString("%1 added to dispatcher pool.").arg(dispatcher->metaObject()->className()));
+    wdebug(dispatcher, QString("%1 added to dispatcher pool.").
+        arg(dispatcher->metaObject()->className()));
     return true;
   }
 
@@ -80,7 +81,8 @@ public:
       return false;
 
     DispatcherPrivate::dispatchers.removeAll(dispatcher);
-    wdebug(dispatcher, QString("%1 removed from dispatcher pool.").arg(dispatcher->metaObject()->className()));
+    wdebug(dispatcher, QString("%1 removed from dispatcher pool.").
+        arg(dispatcher->metaObject()->className()));
     return true;
   }
 };

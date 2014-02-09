@@ -39,10 +39,10 @@ Application::Application ( int& argc, char** argv ) :
 {
   Q_D ( Application );
   Application::self = qobject_cast<Application*> ( this );
-  d->app->setApplicationName ( "Wintermute" );
+  d->app->setApplicationName ( WINTERMUTE_NAME );
   d->app->setApplicationVersion ( this->version().toString() );
-  d->app->setOrganizationName ( "Wintermute" );
-  d->app->setOrganizationDomain ( "jalcine.me" );
+  d->app->setOrganizationName ( WINTERMUTE_NAME );
+  d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
   d->settings = new QSettings;
 }
 
@@ -62,7 +62,7 @@ Application::run ( int& argc, char** argv )
     log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
     log->info ( "Event loop ended; ended with" +
-      QString( "exit code %1" ).arg ( returnCode ) );
+        QString( "exit code %1" ).arg ( returnCode ) );
   }
   return returnCode;
 }

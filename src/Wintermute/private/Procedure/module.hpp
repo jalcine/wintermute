@@ -52,7 +52,7 @@ public:
     {
       if (!wntrApp->findModule(q_ptr->qualifiedName()))
       {
-        (new MethodCall("me.jalcine.wintermute.heartbeat",
+        (new MethodCall(WINTERMUTE_DOMAIN ".heartbeat",
                         "greet", QVariantList()))->dispatch(q_ptr);
         wntrApp->d_ptr->modules << q_ptr;
       }

@@ -29,7 +29,7 @@ class FactoryPrivate;
 
 /**
  * @class Factory
- * @brief Handles the loading and manufactoring of plug-ins.
+ * @brief Handles the loading and manufacturing of plug-ins.
  *
  * In the core module state, plug-ins are loaded in the following fashion:
  *
@@ -54,7 +54,7 @@ class Factory : public QObject
   static Factory* self;
 
   /**
-   * @fn Factory
+   * @function Factory
    * @constructor
    *
    */
@@ -69,33 +69,33 @@ private:
 
 public:
   /**
-   * @fn ~Factory
+   * @function ~Factory
    * @destructor
    */
   virtual ~Factory();
 
   /**
-   * @fn instance
+   * @function instance
    * @static
    */
   static Factory* instance();
 
   /**
-   * @fn availablePlugins
+   * @function availablePlugins
    *
    * A list of all of the plugins that Wintermute can load.
    */
   QStringList availablePlugins() const;
 
   /**
-   * @fn activePlugins
+   * @function activePlugins
    *
    * Obtains a list of actively loaded plugins in this process.
    */
   QStringList activePlugins() const;
 
   /**
-   * @fn plugin
+   * @function plugin
    * @param name
    *
    * Obtains the specified plugin.
@@ -103,7 +103,7 @@ public:
   Plugin* plugin ( const QString& name ) const;
 
   /**
-   * @fn loadPlugin
+   * @function loadPlugin
    * @param name The name of the plug-in.
    *
    * Loads the specified plugin into this Wintermute process.
@@ -111,7 +111,7 @@ public:
   bool loadPlugin ( const QString& name );
 
   /**
-   * @fn unloadPlugin
+   * @function unloadPlugin
    * @param name The name of the plug-in.
    *
    * Unloads the specified plugin from this Wintermute process.
@@ -120,9 +120,9 @@ public:
 
   bool loadedPlugin( const QString& name );
   /**
-   * @fn autoloadPlugins
+   * @function autoloadPlugins
    *
-   * Automatically loads the approriate plugins for this process. This
+   * Automatically loads the appropriate plugins for this process. This
    * operation changes on the following cases:
    *
    *  + --mode=daemon (loads the daemon plugin)
@@ -131,17 +131,17 @@ public:
   bool autoloadPlugins();
 
   /**
-   * @fn unloadAllPlugins
+   * @function unloadAllPlugins
    *
    * Unloads all of the plugins that are currently running in this process.
    */
   bool unloadAllPlugins();
 
   /**
-   * @fn pluginStateChanged
+   * @function pluginStateChanged
    *
    * Raised when a plugin state has changed. This is risen for every plugin so
-   * it's recommended that you listen specificially for the plug-in in
+   * it's recommended that you listen specifically for the plug-in in
    * question by the 'name' parameter.
    */
   Q_SIGNAL void pluginStateChanged ( const QString& name, const Plugin::State& state );

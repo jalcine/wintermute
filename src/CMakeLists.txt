@@ -84,6 +84,9 @@ set ( WINTERMUTE_HEADERS
   Wintermute/Procedure/receiver.hpp
 )
 
+# Moc the files.
+qt4_automoc( ${WINTERMUTE_SOURCES} )
+
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
@@ -95,7 +98,7 @@ add_executable ( wintermute ${WINTERMUTE_SOURCES} )
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
   FOLDER        "Wintermute/Core"
-  #VERSION       "${WINTERMUTE_VERSION}"
+  VERSION       "${WINTERMUTE_VERSION}"
   PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.

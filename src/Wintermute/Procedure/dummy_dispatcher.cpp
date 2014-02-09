@@ -36,8 +36,11 @@ DummyDispatcher::DummyDispatcher() :
 void
 DummyDispatcher::sendMessage(const Call* call)
 {
-  wdebug(this, QString("Sending out '%1' for dispatching...").arg(call->toString()));
-  DummyReceiver* ds = static_cast<DummyReceiver*>(ReceiverPrivate::receivers[0]);
+  wdebug(this, 
+    QString("Sending out %1 bytes for dispatching...").arg(call->toString().length()));
+  DummyReceiver* ds = 
+    (static_cast<DummyReceiver*>(ReceiverPrivate::receivers[0]));
+
   ds->receiveMessage(call);
 }
 

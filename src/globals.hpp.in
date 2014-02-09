@@ -1,5 +1,5 @@
 /**
- * vim: ft=cpp tw=78
+ * vim: ft=cpp tw=78 fdm=marker
  * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
@@ -33,6 +33,8 @@
 
 /// {{{ Constants
 
+#define WINTERMUTE_NAME                       "Wintermute"
+#define WINTERMUTE_DOMAIN                     "wintermute.in"
 #define WINTERMUTE_VERSION_MAJOR              @WINTERMUTE_VERSION_MAJOR@
 #define WINTERMUTE_VERSION_MINOR              @WINTERMUTE_VERSION_MINOR@
 #define WINTERMUTE_VERSION_PATCH              @WINTERMUTE_VERSION_PATCH@

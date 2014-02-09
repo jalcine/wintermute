@@ -16,6 +16,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "Wintermute/Globals"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include "Wintermute/Procedure/process_module.moc"
@@ -24,7 +25,7 @@ using Wintermute::Procedure::ProcessModule;
 
 ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
 {
-  setDomain ( "me.jalcine.wintermute" );
+  setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
   connect(wntrApp, SIGNAL(started()), SLOT(start()));
 }

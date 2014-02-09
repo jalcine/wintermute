@@ -19,6 +19,7 @@
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/method_call.hpp"
+#include "Wintermute/Procedure/method_call.moc"
 
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
@@ -55,5 +56,3 @@ MethodCall::dispatch(Module* module)
 MethodCall::~MethodCall()
 {
 }
-
-#include "Wintermute/Procedure/method_call.moc"
