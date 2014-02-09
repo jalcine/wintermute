@@ -55,7 +55,7 @@ Application::run ( int& argc, char** argv )
     Application::self = new Application ( argc, argv );
     Logger* log = wlog ( Application::self );
     self->d_ptr->initialize();
-    log->info(QString("Wintermute is starting; PID %1.").
+    log->info(QString("Wintermute is starting; PID %1. Let's play.").
         arg(QCoreApplication::applicationPid()));
     self->start();
 
