@@ -42,7 +42,7 @@ wintermute_plugin_set_version ( TARGET daemon
 
 wintermute_plugin_configure ( TARGET daemon
   AUTHOR_NAME "Jacky Alcine"
-  NAME_RPC "me.jalcine.wintermute.daemon"
+  NAME_RPC "wintermute.in.daemon"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/daemon.html"
   )

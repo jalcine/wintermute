@@ -42,7 +42,7 @@ wintermute_plugin_set_version ( TARGET heartbeat
 
 wintermute_plugin_configure ( TARGET heartbeat
   AUTHOR_NAME "Jacky Alcine"
-  NAME_RPC "me.jalcine.wintermute.heartbeat"
+  NAME_RPC "wintermute.in.heartbeat"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/heartbeart.html"
   )

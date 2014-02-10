@@ -18,4 +18,5 @@
 ###############################################################################
 add_subdirectory ( heartbeat )
 add_subdirectory ( daemon )
+add_subdirectory ( dbus )
 add_subdirectory ( zeromq )
