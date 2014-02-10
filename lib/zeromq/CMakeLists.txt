@@ -44,7 +44,7 @@ wintermute_plugin_set_version ( TARGET zeromq
   SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE} )
 wintermute_plugin_configure ( TARGET zeromq
   AUTHOR_NAME "Jacky Alcine"
-  NAME_RPC "me.jalcine.wintermute.zeromq"
+  NAME_RPC "wintermute.in.zeromq"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/zeromq.html"
   )

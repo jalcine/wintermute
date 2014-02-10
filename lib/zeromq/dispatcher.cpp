@@ -43,6 +43,6 @@ Dispatcher::sendMessage(const Call* message)
   const QByteArray data = message->toString().toUtf8();
   winfo(this, QString("Sending %1 over Pieter's wire...").arg(QString(data)));
   Module* module = qobject_cast<Module*>(parent());
-  QtZeroMQ::Socket* socket = module->m_socket;
-  socket->sendMessage(data);
+  Q_ASSERT(module != NULL);
+  module->m_socket->sendMessage(data);
 }
