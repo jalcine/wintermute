@@ -28,21 +28,28 @@ using Wintermute::ZeroMQ::Module;
 using Wintermute::Procedure::Call;
 
 Dispatcher::Dispatcher() :
-  Wintermute::Procedure::Dispatcher::Dispatcher() {
-  winfo(this, "Yo, waddup?");
+  Wintermute::Procedure::Dispatcher::Dispatcher()
+{
 }
 
 Dispatcher::~Dispatcher()
 {
-  winfo(this, "Buh-bye ZeroMQ!");
 }
 
 void
-Dispatcher::sendMessage(const Call* message)
+Dispatcher::sendMessage(const Call* message) throw (zmq::error_t)
 {
   const QByteArray data = message->toString().toUtf8();
   winfo(this, QString("Sending %1 over Pieter's wire...").arg(QString(data)));
   Module* module = qobject_cast<Module*>(parent());
   Q_ASSERT(module != NULL);
-  module->m_socket->sendMessage(data);
+
+  try
+  {
+    module->m_socket->sendMessage(data);
+  } 
+  catch (zmq::error_t e)
+  {
+    wwarn(this, "Had a bit of an hiccup.");
+  }
 }

@@ -20,6 +20,7 @@
 #define WINTERMUTE_ZEROMQ_DISPATCHER_HPP
 
 #include <Wintermute/Procedure/Dispatcher>
+#include <zmq.hpp>
 
 namespace Wintermute {
   namespace ZeroMQ {
@@ -30,7 +31,7 @@ namespace Wintermute {
       public:
         explicit Dispatcher();
         virtual ~Dispatcher();
-        virtual void sendMessage(const Procedure::Call* call);
+        virtual void sendMessage(const Procedure::Call* call) throw (zmq::error_t);
     };
   }
 }
