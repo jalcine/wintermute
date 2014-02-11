@@ -40,7 +40,7 @@ copy one of the existing tests and tweak it to your needs.
 I (the project maintainer, Jacky Alciné) do my best to answer any and all
 questions pertaining to Wintermute. You can e-mail me at me@jalcine.me or 
 find me on IRC on Freenode, OFTC or the Perl servers with the nick
-`jalcine` or `Jacky`.
+`jalcine` or `Jacky`. You can also use [Gitter][] to chat about the project.
 
 ## Licensing
 
@@ -50,9 +50,4 @@ Wintermute is licensed under the GPLv3 license. See `LICENSE` for more details.
 [git_flow]: https://github.com/nvie/gitflow
 [git_hooks]: https://github.com/icefox/git-hooks
 [qt4_framework]: http://qt-project.org
-[waffles]: http://waffle.io/jalcine/wintermute
-[waffles_img]: http://badge.waffle.io/jalcine/wintermute.png
-[coveralls_img]: https://coveralls.io/repos/jalcine/wintermute/badge.png?branch=develop
-[coveralls]:
-[travis]:
-[travis_img]:
+[gitter]: https://gitter.im/wintermuteapp/wintermute
