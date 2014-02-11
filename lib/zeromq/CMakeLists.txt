@@ -48,9 +48,7 @@ wintermute_plugin_configure ( TARGET zeromq
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/zeromq.html"
   )
-wintermute_plugin_add_libraries ( TARGET zeromq LIBRARIES
-  ${QTZEROMQ_LIBRARIES})
-message(${QTZEROMQ_INCLUDE_DIRS})
-wintermute_plugin_add_include_directories ( TARGET zeromq DIRECTORIES "${QTZEROMQ_INCLUDE_DIRS}" )
+wintermute_plugin_add_libraries ( TARGET zeromq LIBRARIES ${QTZEROMQ_LIBRARIES})
+wintermute_plugin_add_include_directories ( TARGET zeromq DIRECTORIES ${QTZEROMQ_INCLUDE_DIRS} )
 wintermute_plugin_target_declare ( TARGET zeromq SOURCES ${zeromq_SRCS} )
 wintermute_plugin_install ( TARGET zeromq )

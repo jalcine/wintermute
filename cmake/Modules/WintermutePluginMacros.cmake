@@ -20,7 +20,7 @@
 if (EXISTS wntrpluginmacros)
   return()
 else()
-  set(wntrpluginmacros ON CACHE STRING "FOO")
+  set(wntrpluginmacros ON CACHE BOOLEAN TRUE)
 endif()
 
 include(CMakeParseArguments)
@@ -50,7 +50,7 @@ function(wintermute_plugin_declare)
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER ${wdp_TARGET} _minLocal)
-  string(TOUPPER ${wdp_TARGET}   ${_local}_EXPORT_SYMBOL)
+  string(TOUPPER ${wdp_TARGET} ${_local}_EXPORT_SYMBOL)
 
   # Define the plugin's CMake properties.
   set(${_local}_SOURCES         ${wdp_SOURCES}                 CACHE STRING "Sources.")
@@ -81,7 +81,7 @@ function(wintermute_plugin_target_declare)
   qt4_automoc(${${_local}_SOURCES})
 
   # Define the library.
-  add_library("${${_local}_TARGET}" SHARED ${${_local}_SOURCES})
+  add_library(${${_local}_TARGET} SHARED ${${_local}_SOURCES})
 
   # Coat the target with Wintermute's build options.
   wintermute_add_properties(${${_local}_TARGET})
@@ -96,13 +96,13 @@ function(wintermute_plugin_target_declare)
   set_target_properties(${${_local}_TARGET} PROPERTIES
     SOVERSION     ${${_local}_VERSION})
 
+  target_link_libraries(${${_local}_TARGET} ${${_local}_LIBRARIES})
+
   include_directories(${${_local}_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${WINTERMUTE_INCLUDE_DIR}
-    ${WINTERMUTE_CORE_INCLUDE_DIR})
-  message("Include dirs for ${_local}: ${${_local}_INCLUDE_DIRS}!")
-  target_link_libraries(${${_local}_TARGET} ${WINTERMUTE_LIBRARIES}
-    ${${_local}_LIBRARIES})
+    ${WINTERMUTE_CORE_INCLUDE_DIR}
+  )
 
   if (TARGET wintermute)
     include_directories(${CMAKE_SOURCE_DIR}/src)
@@ -128,7 +128,6 @@ function(wintermute_plugin_add_include_directories)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpad_TARGET}" _local)
   list(APPEND ${_local}_INCLUDE_DIRECTORIES ${wpad_DIRECTORIES}
     ${WINTERMUTE_INCLUDE_DIRS})
-  message(${${_local}_INCLUDE_DIRECTORIES})
 endfunction(wintermute_plugin_add_include_directories)
 
 ##
@@ -142,7 +141,8 @@ function(wintermute_plugin_add_libraries)
   cmake_parse_arguments(wpal "" "TARGET" "LIBRARIES" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpal_TARGET}" _local)
 
-  list(APPEND ${_local}_LIBRARIES ${wpal_LIBRARIES} ${WINTERMUTE_LIBRARIES})
+  set(${_local}_LIBRARIES ${WINTERMUTE_LIBRARIES} ${wpal_LIBRARIES} CACHE
+    STRING INTERNAL FORCE)
   list(REMOVE_DUPLICATES ${_local}_LIBRARIES)
 endfunction(wintermute_plugin_add_libraries)
 
@@ -169,7 +169,7 @@ function(wintermute_plugin_configure)
   set(_singleVals ${_validProperties} TARGET)
   cmake_parse_arguments(wpc "${_options}" "${_singleVals}" "" ${ARGN})
 
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}_" _local)
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}" _local)
 
   foreach(_validProperty ${_validProperties})
     set("${_local}${_validProperty}" "${wpc_${_validProperty}}" CACHE STRING "Configuration property.")
@@ -196,7 +196,7 @@ function(wintermute_plugin_set_version)
 
   set(_singleVals ${_pluginVersions} ${_systemVersions} TARGET)
   cmake_parse_arguments(wpsv "" "${_singleVals}" "" ${ARGN})
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wpsv_TARGET}_" _local)
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpsv_TARGET}" _local)
 
   foreach(_pluginVersionVariable ${_pluginVersions})
     set("${_local}${_pluginVersionVariable}" "${wpsv_${_pluginVersionVariable}}" CACHE STRING "Versioning.")
@@ -215,14 +215,14 @@ endfunction(wintermute_plugin_set_version)
 ##
 function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}_" _local)
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}" _local)
 
   # DONE: Define the plug-in's definition file.
-  set(${_local}DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}TARGET}.spec")
-  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}DEFINITION_FILE})
+  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}_TARGET}.spec")
+  configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}_DEFINITION_FILE})
 
   # DONE: Install the library itself.
-  install(TARGETS        ${${_local}TARGET}
+  install(TARGETS        ${${_local}_TARGET}
     LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
     )
 
@@ -232,6 +232,6 @@ function(wintermute_plugin_install)
 
   # DONE: Generate the definition file.
   # DONE: Install the definition file.
-  install(FILES ${${_local}DEFINITION_FILE}
+  install(FILES ${${_local}_DEFINITION_FILE}
     DESTINATION ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
 endfunction(wintermute_plugin_install)

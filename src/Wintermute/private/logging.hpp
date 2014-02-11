@@ -43,7 +43,7 @@ public:
     LogManager::startup();
     LogManager::handleQtMessages();
 #ifdef DEBUG
-    LogManager::setThreshold( Log4Qt::Level::TRACE_INT );
+    LogManager::setThreshold ( Log4Qt::Level::ALL_INT );
 #else
     LogManager::setThreshold ( Log4Qt::Level::ERROR_INT );
 #endif

@@ -16,6 +16,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtDBus/QDBusConnection>
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
@@ -24,28 +25,22 @@
 #include "dispatcher.hpp"
 #include "module.moc"
 
-using Wintermute::ZeroMQ::Module;
-using Wintermute::ZeroMQ::Plugin;
-using Wintermute::ZeroMQ::Dispatcher;
+using Wintermute::DBus::Module;
+using Wintermute::DBus::Plugin;
+using Wintermute::DBus::Dispatcher;
 
-Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
+Module::Module ( DBus::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
 {
   setDomain ( WINTERMUTE_DOMAIN );
-  setPackage ( "zeromq" );
-  winfo(this, "Pumping in ZeroMQ goodness to Wintermute...");
+  setPackage ( "dbus" );
   Dispatcher* dispatcher = new Dispatcher;
   dispatcher->setParent(this);
-  winfo(this, "Thanks Pete, Wintermute's on-line.");
 }
 
 void
 Module::start()
 {
-  // TODO: Start up the listening instance to the local UNIX socket.
-  // The path of it for global comms would be '/var/tmp/wintermute.socket'.
-  // TODO: Fix permissions on the socket if necessary.
-  m_context = new QtZeroMQ::PollingContext(this);
-  m_context->start();
+  // TODO: Create the interface to listen for replies.
 }
 
 Module::~Module()

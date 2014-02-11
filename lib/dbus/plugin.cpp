@@ -21,8 +21,8 @@
 #include "module.hpp"
 #include "plugin.moc"
 
-using Wintermute::ZeroMQ::Plugin;
-using Wintermute::ZeroMQ::Module;
+using Wintermute::DBus::Plugin;
+using Wintermute::DBus::Module;
 using Wintermute::Version;
 
 Plugin::Plugin()
@@ -32,7 +32,7 @@ Plugin::Plugin()
 QString
 Plugin::name() const
 {
-  return "wintermute-zeromq";
+  return "wintermute-dbus";
 }
 
 void
@@ -43,7 +43,7 @@ Plugin::stop()
 void
 Plugin::start()
 {
-  module = new ZeroMQ::Module ( this );
+  module = new DBus::Module ( this );
 }
 
 Version
@@ -70,4 +70,4 @@ Plugin::type() const
   return Module;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute-zeromq, Wintermute::ZeroMQ::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute-dbus, Wintermute::DBus::Plugin );

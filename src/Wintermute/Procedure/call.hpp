@@ -73,7 +73,7 @@ namespace Wintermute
         TypeRemoteNoAuth = 0x0100,  // This call deals with a remote network with no authentication.
         TypeRemoteAuth   = 0x0200,  // This call deals with a remote network with authentication.
 
-        TypeUser         = 0x9000   // Anything above this is available to the user space.
+        TypeUser         = 0x1000   // Anything above this is available to the user space.
       };
       Q_FLAGS(Type Types);
 

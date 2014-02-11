@@ -18,6 +18,8 @@
 
 #include <Wintermute/Logging>
 #include <Wintermute/Procedure/Call>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
 #include "dispatcher.hpp"
 #include "module.hpp"
 #include "dispatcher.moc"
@@ -28,17 +30,21 @@ using Wintermute::Procedure::Call;
 
 Dispatcher::Dispatcher() :
   Wintermute::Procedure::Dispatcher::Dispatcher() {
-  winfo(this, "Yo, waddup?");
 }
 
 Dispatcher::~Dispatcher()
 {
-  winfo(this, "Buh-bye DBus!");
 }
 
 void
 Dispatcher::sendMessage(const Call* message)
 {
   const QByteArray data = message->toString().toUtf8();
-  winfo(this, QString("Sending %1").arg(QString(data)));
+  winfo(this, message->recipient());
+  QDBusConnection sessionBus = QDBusConnection::sessionBus();
+  QDBusMessage methodCall = QDBusMessage::createMethodCall(WINTERMUTE_DOMAIN,
+      "/Receiver", message->recipient(), "handleCall");
+  methodCall << data;
+  QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall(methodCall);
+  methodCallState.waitForFinished();
 }

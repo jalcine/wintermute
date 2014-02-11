@@ -37,7 +37,7 @@ find_package(QCommandLine 0.4.0 REQUIRED)
 find_package(QJSON 0.7 REQUIRED)
 find_package(QtZeroMQ REQUIRED)
 find_package(Qt4 4.8 COMPONENTS 
-  QtCore REQUIRED)
+  QtCore QtDBus REQUIRED)
 ## }}}
 
 ## {{{ Determine which features and dependencies are flipped on/off.
