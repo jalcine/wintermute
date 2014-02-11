@@ -40,11 +40,11 @@ void
 Dispatcher::sendMessage(const Call* message)
 {
   const QByteArray data = message->toString().toUtf8();
-  winfo(this, message->recipient());
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
   QDBusMessage methodCall = QDBusMessage::createMethodCall(WINTERMUTE_DOMAIN,
       "/Receiver", message->recipient(), "handleCall");
   methodCall << data;
   QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall(methodCall);
   methodCallState.waitForFinished();
+  winfo(this, "Invoked call over D-Bus; though the pending call isn't being caught.");
 }
