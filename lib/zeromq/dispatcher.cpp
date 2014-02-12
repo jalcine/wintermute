@@ -51,5 +51,12 @@ Dispatcher::sendMessage(const Call* message) throw (zmq::error_t)
   catch (zmq::error_t e)
   {
     wwarn(this, "Had a bit of an hiccup.");
+    return;
   }
+  catch (...)
+  {
+    wwarn(this, "Unknown error. It beats me.");
+    return;
+  }
+  winfo(this, "Message sent.");
 }

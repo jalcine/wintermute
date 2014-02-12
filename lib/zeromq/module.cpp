@@ -19,6 +19,8 @@
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
+#include <QtZeroMQ/Socket>
+#include <QtZeroMQ/PollingSocket>
 #include "module.hpp"
 #include "plugin.hpp"
 #include "dispatcher.hpp"
@@ -45,6 +47,9 @@ Module::start()
   m_context = new QtZeroMQ::PollingContext(this);
   winfo(this, "Starting ZeroMQ polling context...");
   m_context->start();
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish, this));
+  m_socket->connectTo("ipc:///tmp/wintermute.socket");
+  m_socket->setIdentity("wintermute");
   winfo(this, "Started ZeroMQ polling context.");
 }
 
