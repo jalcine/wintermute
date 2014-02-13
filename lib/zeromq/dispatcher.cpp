@@ -40,13 +40,13 @@ void
 Dispatcher::sendMessage(const Call* message) throw (zmq::error_t)
 {
   const QByteArray data = message->toString().toUtf8();
-  winfo(this, QString("Sending %1 over Pieter's wire...").arg(QString(data)));
+  winfo(this, QString("Sending %1 ...").arg(QString(data)));
   Module* module = qobject_cast<Module*>(parent());
   Q_ASSERT(module != NULL);
 
   try
   {
-    module->m_socket->sendMessage(data);
+    module->m_outgoingSocket->sendMessage(data);
   } 
   catch (zmq::error_t e)
   {

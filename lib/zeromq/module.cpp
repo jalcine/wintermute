@@ -47,10 +47,22 @@ Module::start()
   m_context = new QtZeroMQ::PollingContext(this);
   winfo(this, "Starting ZeroMQ polling context...");
   m_context->start();
-  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish, this));
-  m_socket->connectTo("ipc:///tmp/wintermute.socket");
-  m_socket->setIdentity("wintermute");
+  m_incomingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
+  m_outgoingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish, this));
+  connect(m_incomingSocket, SIGNAL(messageReceived(const QList<QByteArray>&)), this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+  m_incomingSocket->connectTo("ipc:///tmp/wintermute.socket");
+  m_incomingSocket->setIdentity("wintermute:in");
+
+  m_outgoingSocket->connectTo("ipc:///tmp/wintermute.socket");
+  m_outgoingSocket->setIdentity("wintermute:out");
   winfo(this, "Started ZeroMQ polling context.");
+  m_context->run();
+}
+
+void
+Module::onMessageReceived(const QList<QByteArray>& message)
+{
+  winfo(this, "Going");
 }
 
 void

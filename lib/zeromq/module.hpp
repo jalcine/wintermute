@@ -33,12 +33,15 @@ class Module : public Wintermute::Procedure::Module
   Q_OBJECT;
   friend class Dispatcher;
   QtZeroMQ::PollingContext* m_context;
-  QtZeroMQ::PollingSocket* m_socket;
+  QtZeroMQ::PollingSocket* m_outgoingSocket;
+  QtZeroMQ::PollingSocket* m_incomingSocket;
 public:
   explicit Module ( ZeroMQ::Plugin* plugin );
   Q_SLOT virtual void start();
   Q_SLOT virtual void stop();
   virtual ~Module();
+private:
+  Q_SLOT void onMessageReceived(const QList<QByteArray>& message);
 };
 }
 }
