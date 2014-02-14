@@ -19,4 +19,6 @@
 #ifndef WINTERMUTE_PLUGIN_ZEROMQ_GLOBALS_HPP
 #define WINTERMUTE_PLUGIN_ZEROMQ_GLOBALS_HPP
 
+#define WINTERMUTE_SOCKET_IPC "ipc:///var/tmp/wintermute.socket"
+
 #endif /* */

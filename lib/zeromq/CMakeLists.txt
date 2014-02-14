@@ -20,13 +20,17 @@ project ( WintermuteZeroMQ )
 find_package(QtZeroMQ)
 set ( zeromq_SRCS
   plugin.cpp
+  module.cpp
   dispatcher.cpp
-  module.cpp )
+  receiver.cpp
+)
 
 set ( zeromq_HDRS
   plugin.hpp
+  module.hpp
   dispatcher.hpp
-  module.hpp )
+  receiver.hpp
+)
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/zeromq/globals.hpp
   @ONLY )

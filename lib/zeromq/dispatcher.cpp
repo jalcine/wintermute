@@ -43,20 +43,6 @@ Dispatcher::sendMessage(const Call* message) throw (zmq::error_t)
   winfo(this, QString("Sending %1 ...").arg(QString(data)));
   Module* module = qobject_cast<Module*>(parent());
   Q_ASSERT(module != NULL);
-
-  try
-  {
-    module->m_outgoingSocket->sendMessage(data);
-  } 
-  catch (zmq::error_t e)
-  {
-    wwarn(this, "Had a bit of an hiccup.");
-    return;
-  }
-  catch (...)
-  {
-    wwarn(this, "Unknown error. It beats me.");
-    return;
-  }
+  module->m_outgoingSocket->sendMessage(data);
   winfo(this, "Message sent.");
 }

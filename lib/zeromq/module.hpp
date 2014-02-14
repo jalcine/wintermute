@@ -42,6 +42,8 @@ public:
   virtual ~Module();
 private:
   Q_SLOT void onMessageReceived(const QList<QByteArray>& message);
+  void bindIncomingSocket();
+  void bindOutgoingSocket();
 };
 }
 }
