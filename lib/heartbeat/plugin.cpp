@@ -17,13 +17,60 @@
  **/
 
 #include "plugin.hpp"
+#include "module.hpp"
 #include "globals.hpp"
 #include "plugin.moc"
 
 using Wintermute::Heartbeat::Plugin;
+using Wintermute::Heartbeat::Module;
+using Wintermute::Version;
+
+Plugin::Plugin() :
+  Wintermute::Plugin(),
+  module(new Wintermute::Heartbeat::Module(this))
+{
+}
 
 QString
 Plugin::name() const
 {
   return "wintermute-heartbeat";
 }
+
+void
+Plugin::stop()
+{
+  //module->stop();
+}
+
+void
+Plugin::start()
+{
+  module->start();
+}
+
+Version
+Plugin::version() const
+{
+  return Version::fromString ( configuration()->value ( "Version/Plugin" ).toString() );
+}
+
+Version
+Plugin::systemVersion() const
+{
+  return Version::fromString ( configuration()->value ( "Version/System" ).toString() );
+}
+
+Plugin::State
+Plugin::state() const
+{
+  return Loaded;
+}
+
+Plugin::Type
+Plugin::type() const
+{
+  return Support;
+}
+
+Q_EXPORT_PLUGIN2 ( wintermute-heartbeat, Wintermute::Heartbeat::Plugin );

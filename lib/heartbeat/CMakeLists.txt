@@ -19,16 +19,20 @@
 project ( WintermuteHeartbeat )
 set ( heartbeat_SRCS
   plugin.cpp
-  module.cpp )
+  module.cpp
+  calls/greet.cpp
+)
 
 set ( heartbeat_HDRS
   plugin.hpp
-  module.hpp )
+  module.hpp
+  calls/greet.hpp
+)
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/heartbeat/globals.hpp
   @ONLY )
 
-wintermute_plugin_declare ( TARGET heartbeat UUID ${heartbeat_UUID} SOURCES ${heartbeat_SRCS} )
+wintermute_plugin_declare ( TARGET heartbeat SOURCES ${heartbeat_SRCS} )
 wintermute_plugin_set_version ( TARGET heartbeat
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1
@@ -41,7 +45,7 @@ wintermute_plugin_set_version ( TARGET heartbeat
   SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE} )
 
 wintermute_plugin_configure ( TARGET heartbeat
-  AUTHOR_NAME "Jacky Alcine"
+  AUTHOR_NAME "Jacky Alciné"
   NAME_RPC "wintermute.in.heartbeat"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/heartbeart.html"

@@ -34,69 +34,49 @@ using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Receiver;
 
-Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
+Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin ),
+  m_context(new QtZeroMQ::PollingContext(this)), m_dispatcher(0), m_receiver(0)
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
-  winfo(this, "Pumping in ZeroMQ goodness to Wintermute...");
-  Dispatcher* dispatcher = new Dispatcher;
-  dispatcher->setParent(this);
-  Receiver* receiver = new Receiver;
-  receiver->setParent(this);
-  winfo(this, "Thanks Pete, Wintermute's on-line.");
+  m_dispatcher = new Dispatcher(this);
+  m_receiver = new Receiver(this);
 }
 
 void
 Module::start()
 {
-  winfo(this, "Building ZeroMQ polling context...");
-  m_context = new QtZeroMQ::PollingContext(this);
-  winfo(this, "Starting ZeroMQ polling context...");
   m_context->start();
-  bindIncomingSocket();
-  bindOutgoingSocket();
-
-  m_context->run();
-  m_context->poll(300);
 }
 
 void
 Module::bindIncomingSocket(){
-  m_incomingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
-  connect(m_incomingSocket, SIGNAL(messageReceived(const QList<QByteArray>&)), this, SLOT(onMessageReceived(const QList<QByteArray>&)));
-  m_incomingSocket->setIdentity("wintermute:in");
-  m_incomingSocket->connectTo(WINTERMUTE_SOCKET_IPC);
-  m_incomingSocket->subscribeTo("wintermute:global");
+  //m_incomingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
+  //m_incomingSocket->setIdentity("wintermute:in");
+  //m_incomingSocket->connectTo(WINTERMUTE_SOCKET_IPC);
+  //m_incomingSocket->subscribeTo("wintermute:global");
 }
 
-void
-Module::bindOutgoingSocket(){
-  m_outgoingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypePublish, this));
-  m_outgoingSocket->setIdentity("wintermute:out");
-  m_outgoingSocket->bindTo(WINTERMUTE_SOCKET_IPC);
-}
+//void
+//Module::onMessageReceived(const QList<QByteArray>& message)
+//{
+  //winfo(this, "Got some messages...");
+  //QByteArray data;
+  //foreach(const QByteArray& part, message){
+    //data += part;
+  //}
 
-void
-Module::onMessageReceived(const QList<QByteArray>& message)
-{
-  winfo(this, "Got some messages...");
-  QByteArray data;
-  foreach(const QByteArray& part, message){
-    data += part;
-  }
-
-  QtZeroMQ::Message msg(data);
-  winfo(this, QString(msg.toByteArray()));
-}
+  //QtZeroMQ::Message msg(data);
+  //winfo(this, QString(msg.toByteArray()));
+//}
 
 void
 Module::stop()
 {
-  winfo(this, "Stopping ZeroMQ polling context...");
   m_context->stop();
-  winfo(this, "Stopped ZeroMQ polling context.");
 }
 
 Module::~Module()
 {
+  stop();
 }

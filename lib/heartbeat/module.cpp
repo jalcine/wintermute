@@ -17,6 +17,8 @@
  **/
 
 #include <Wintermute/Application>
+#include <Wintermute/Globals>
+#include <Wintermute/Logging>
 #include "plugin.hpp"
 #include "module.hpp"
 #include "module.moc"
@@ -25,10 +27,11 @@ using Wintermute::Heartbeat::Module;
 using Wintermute::Heartbeat::Plugin;
 
 Module::Module ( Heartbeat::Plugin* plugin ) : 
-	Wintermute::Procedure::Module ( plugin )
+  Wintermute::Procedure::Module ( plugin )
 {
-	setDomain ( WINTERMUTE_DOMAIN );
-	setPackage ( "heartbeat" );
+  setDomain ( WINTERMUTE_DOMAIN );
+  setPackage ( "heartbeat" );
+  winfo(this, "Heartbeat ready to pulse.");
 }
 
 void

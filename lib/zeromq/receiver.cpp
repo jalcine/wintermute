@@ -16,14 +16,28 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtZeroMQ/Message>
+#include <QtZeroMQ/PollingSocket>
+#include <Wintermute/Logging>
+#include <Wintermute/Procedure/Call>
+#include "globals.hpp"
+#include "module.hpp"
 #include "receiver.hpp"
 #include "receiver.moc"
 
 using Wintermute::ZeroMQ::Receiver;
+using Wintermute::ZeroMQ::Module;
+using Wintermute::Procedure::Call;
 
-Receiver::Receiver() :
-  Wintermute::Procedure::Receiver()
+Receiver::Receiver(Module* a_module) :
+  Wintermute::Procedure::Receiver(), m_socket(0)
 {
+  setParent(a_module);
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(
+    a_module->m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
+  m_socket->subscribeTo(QString::null);
+  m_socket->connectTo(WINTERMUTE_SOCKET_IPC);
+  winfo(this, "Hey, listening on ZeroMQ.");
 }
 
 Receiver::~Receiver()
@@ -33,4 +47,11 @@ Receiver::~Receiver()
 void
 Receiver::onMessageReceived(const QList<QByteArray>& data)
 {
+  QByteArray chunks;
+  foreach (QByteArray chunk, data){
+    chunks += chunk;
+  }
+  winfo(this, QString("Obtained incoming call of %1 bytes.").arg(chunks.size()));
+  Call* receivedCall = Call::fromString(chunks);
+  receivedCall->invoke();
 }

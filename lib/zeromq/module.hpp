@@ -22,6 +22,8 @@
 #include <Wintermute/Procedure/Module>
 #include <QtZeroMQ/PollingSocket>
 #include <QtZeroMQ/PollingContext>
+#include "dispatcher.hpp"
+#include "receiver.hpp"
 
 namespace Wintermute
 {
@@ -31,9 +33,8 @@ class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
   Q_OBJECT;
-  friend class Dispatcher;
-  QtZeroMQ::PollingContext* m_context;
-  QtZeroMQ::PollingSocket* m_outgoingSocket;
+  friend class Wintermute::ZeroMQ::Receiver;
+  friend class Wintermute::ZeroMQ::Dispatcher;
   QtZeroMQ::PollingSocket* m_incomingSocket;
 public:
   explicit Module ( ZeroMQ::Plugin* plugin );
@@ -41,9 +42,10 @@ public:
   Q_SLOT virtual void stop();
   virtual ~Module();
 private:
-  Q_SLOT void onMessageReceived(const QList<QByteArray>& message);
   void bindIncomingSocket();
-  void bindOutgoingSocket();
+  QtZeroMQ::PollingContext* m_context;
+  Dispatcher* m_dispatcher;
+  Receiver* m_receiver;
 };
 }
 }

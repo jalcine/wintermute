@@ -42,7 +42,7 @@ Dispatcher::sendMessage(const Call* message)
   const QByteArray data = message->toString().toUtf8();
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
   QDBusMessage methodCall = QDBusMessage::createMethodCall(WINTERMUTE_DOMAIN,
-      "/Receiver", message->recipient(), "handleCall");
+    "/Receiver", message->recipient(), "handleCall");
   methodCall << data;
   QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall(methodCall);
   methodCallState.waitForFinished();
