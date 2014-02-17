@@ -93,17 +93,16 @@ Factory::loadPlugin ( const QString& id )
     log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id ) );
     return false;
   }
-  log->debug ( QString ( "Found binary for plugin '%1'." ).arg ( id ) );
+  log->debug ( QString ( "Found binary for plugin '%1', loading symbols..." ).arg ( id ) );
   plugin = qobject_cast<Plugin*> ( loader->instance() );
   if ( !plugin )
   {
-    log->error ( "Failed to load plugin." );
-    log->error ( loader->errorString() );
+    log->error ( QString( "Failed to load plugin; %1" ).arg( loader->errorString() ) );
     return false;
   }
   d->active.insert ( id, plugin );
 
-  log->info( "Invoking start of " + plugin->name());
+  log->info( QString( "Invoking start of %1..." ).arg( plugin->name() ) );
   plugin->start();
   emit plugin->started();
   log->info ( QString ( "%1 is loaded." ).arg ( id ) );

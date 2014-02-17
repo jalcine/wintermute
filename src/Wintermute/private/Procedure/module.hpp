@@ -44,6 +44,7 @@ public:
   ModulePrivate ( Module* q ) :
     q_ptr ( q ), package ( "" ), domain ( "" ), calls()
   {
+    winfo ( q_ptr, "Module setting up..." );
   }
 
   void checkQualifiedName()

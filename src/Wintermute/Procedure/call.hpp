@@ -130,13 +130,13 @@ namespace Wintermute
        * @fn invoke
        * @param data A list of QVariant variables.
        */
-      QVariant invoke ( const QVariantList& data );
+      QVariant invoke ( const QVariantList& data = QVariantList() );
 
       /**
        * @operator operator()
        * @brief Allow for functor-like capabilities for the Call object.
        */
-      QVariant operator() ( const QVariantList& arguments );
+      QVariant operator() ( const QVariantList& arguments = QVariantList() );
 
       static bool attemptInvocation( const Call* call );
     };
