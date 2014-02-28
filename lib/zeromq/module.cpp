@@ -42,12 +42,19 @@ Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
   m_receiver = new Receiver(this);
   m_dispatcher = new Dispatcher(this);
   connect(m_context, SIGNAL(polled()), this, SLOT(pollInvoked()));
+  connect(m_context, SIGNAL(pollError()), this, SLOT(pollError()));
 }
 
 void
 Module::pollInvoked()
 {
-  winfo(this, "Checking for new messages...");
+  // TODO Query context for more messages.
+}
+
+void
+Module::pollError()
+{
+  // TODO Handle errors with polling.
 }
 
 void
