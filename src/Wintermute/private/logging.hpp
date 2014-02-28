@@ -38,8 +38,7 @@ public:
   ColorConsoleAppender* stdErrAppender;
 
   LoggingPrivate() :
-    primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 )
-  {
+    primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) {
     LogManager::startup();
     LogManager::handleQtMessages();
 #ifdef DEBUG
@@ -50,15 +49,13 @@ public:
     primaryLayout  = new TTCCLayout();
     primaryLayout->setName ( "root" );
     primaryLayout->activateOptions();
-
-    stdOutAppender = new ColorConsoleAppender ( primaryLayout, ConsoleAppender::STDOUT_TARGET);
+    stdOutAppender = new ColorConsoleAppender ( primaryLayout, ConsoleAppender::STDOUT_TARGET );
     stdOutAppender->setName ( "stdout" );
     stdOutAppender->activateOptions();
     Logger::rootLogger()->addAppender ( stdOutAppender );
   }
 
-  virtual ~LoggingPrivate()
-  {
+  virtual ~LoggingPrivate() {
     LogManager::shutdown();
   }
 };

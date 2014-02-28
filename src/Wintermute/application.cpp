@@ -50,19 +50,17 @@ int
 Application::run ( int& argc, char** argv )
 {
   int returnCode = -1;
-  if ( Application::instance() == 0 )
-  {
+  if ( Application::instance() == 0 ) {
     Application::self = new Application ( argc, argv );
     Logger* log = wlog ( Application::self );
     self->d_ptr->initialize();
-    log->info(QString("Wintermute is starting; PID %1. Let's play.").
-        arg(QCoreApplication::applicationPid()));
+    log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
+                arg ( QCoreApplication::applicationPid() ) );
     self->start();
-
     log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
     log->info ( "Event loop ended; ended with" +
-        QString( "exit code %1" ).arg ( returnCode ) );
+                QString ( "exit code %1" ).arg ( returnCode ) );
   }
   return returnCode;
 }
@@ -88,10 +86,9 @@ Application::stop ( int exitcode )
   log->info ( "Stopping Wintermute..." );
   QCoreApplication::quit();
   emit this->stopped();
-  log->info ( "Wintermute is stopping " + QString("with exit code %1.")
-      .arg(exitcode) );
-
-  if (QCoreApplication::startingUp() || QCoreApplication::closingDown()){
+  log->info ( "Wintermute is stopping " + QString ( "with exit code %1." )
+              .arg ( exitcode ) );
+  if ( QCoreApplication::startingUp() || QCoreApplication::closingDown() ) {
     exit ( exitcode );
   }
 }
@@ -100,8 +97,7 @@ QString
 Application::processName() const
 {
   Q_D ( const Application );
-  if ( !d->module )
-  {
+  if ( !d->module ) {
     return QString::null;
   }
   return d->module->qualifiedName();
@@ -119,10 +115,8 @@ Application::findModule ( const QString& name ) const
 {
   // NOTE: This could be so much more functional.
   Q_D ( const Application );
-  Q_FOREACH(Module * mod, d->modules)
-  {
-    if ( mod->domain().contains ( name ) )
-    {
+  Q_FOREACH ( Module * mod, d->modules ) {
+    if ( mod->domain().contains ( name ) ) {
       return mod;
     }
   }
@@ -160,5 +154,5 @@ Application::~Application()
 {
   this->stop();
   this->deleteLater();
-  winfo(this, "Application singleton deleted.");
+  winfo ( this, "Application singleton deleted." );
 }

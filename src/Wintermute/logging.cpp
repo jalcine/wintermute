@@ -28,7 +28,7 @@ using Log4Qt::Logger;
 
 Logging* Logging::self = nullptr;
 
-Logging::Logging() : 
+Logging::Logging() :
   QObject ( Application::instance() ), d_ptr ( new LoggingPrivate )
 {
 }
@@ -45,8 +45,7 @@ Logger*
 Logging::obtainLogger ( const QObject* object )
 {
   if ( object == 0 )
-    return Logging::obtainLogger(wntrApp);
-
+  { return Logging::obtainLogger ( wntrApp ); }
   return Logging::obtainLogger ( object->metaObject()->className() );
 }
 
@@ -54,8 +53,7 @@ Logging*
 Logging::instance()
 {
   if ( !self )
-    self = new Logging();
-
+  { self = new Logging(); }
   return self;
 }
 

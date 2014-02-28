@@ -29,15 +29,15 @@ using Wintermute::ZeroMQ::Receiver;
 using Wintermute::ZeroMQ::Module;
 using Wintermute::Procedure::Call;
 
-Receiver::Receiver(Module* a_module) :
-  Wintermute::Procedure::Receiver(), m_socket(0)
+Receiver::Receiver ( Module* a_module ) :
+  Wintermute::Procedure::Receiver(), m_socket ( 0 )
 {
-  setParent(a_module);
-  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(
-    a_module->m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
-  m_socket->subscribeTo(QString(""));
-  m_socket->connectTo(WINTERMUTE_SOCKET_IPC);
-  winfo(this, "Hey, listening on ZeroMQ.");
+  setParent ( a_module );
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*> (
+               a_module->m_context->createSocket ( QtZeroMQ::Socket::TypeSubscribe, this ) );
+  m_socket->subscribeTo ( QString ( "" ) );
+  m_socket->connectTo ( WINTERMUTE_SOCKET_IPC );
+  winfo ( this, "Hey, listening on ZeroMQ." );
 }
 
 Receiver::~Receiver()
@@ -45,13 +45,13 @@ Receiver::~Receiver()
 }
 
 void
-Receiver::onMessageReceived(const QList<QByteArray>& data)
+Receiver::onMessageReceived ( const QList<QByteArray>& data )
 {
   QByteArray chunks;
-  foreach (QByteArray chunk, data){
+  foreach ( QByteArray chunk, data ) {
     chunks += chunk;
   }
-  winfo(this, QString("Obtained incoming call of %1 bytes.").arg(chunks.size()));
-  Call* receivedCall = Call::fromString(chunks);
+  winfo ( this, QString ( "Obtained incoming call of %1 bytes." ).arg ( chunks.size() ) );
+  Call* receivedCall = Call::fromString ( chunks );
   receivedCall->invoke();
 }

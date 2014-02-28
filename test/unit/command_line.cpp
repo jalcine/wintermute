@@ -25,8 +25,8 @@ CommandLineUnitTest::determineModeDaemon()
 }
 
 void
-CommandLineUnitTest::determineModePlugin() {
-
+CommandLineUnitTest::determineModePlugin()
+{
 }
 
 QTEST_MAIN ( CommandLineUnitTest )

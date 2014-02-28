@@ -26,18 +26,17 @@
 using Wintermute::Heartbeat::Module;
 using Wintermute::Heartbeat::Plugin;
 
-Module::Module ( Heartbeat::Plugin* plugin ) : 
+Module::Module ( Heartbeat::Plugin* plugin ) :
   Wintermute::Procedure::Module ( plugin )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "heartbeat" );
-  winfo(this, "Heartbeat ready to pulse.");
+  winfo ( this, "Heartbeat ready to pulse." );
 }
 
 void
 Module::start()
 {
-
 }
 
 Module::~Module()

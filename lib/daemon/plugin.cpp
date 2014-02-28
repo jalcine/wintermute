@@ -28,7 +28,7 @@ using Wintermute::Version;
 Plugin::Plugin()
 {
   module = new Daemon::Module ( this );
-  module->connect(this, SIGNAL(started()), SLOT(start()));
+  module->connect ( this, SIGNAL ( started() ), SLOT ( start() ) );
 }
 
 QString

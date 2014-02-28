@@ -27,7 +27,7 @@ using Wintermute::Version;
 
 Plugin::Plugin() :
   Wintermute::Plugin(),
-  module(new Wintermute::Heartbeat::Module(this))
+  module ( new Wintermute::Heartbeat::Module ( this ) )
 {
 }
 
@@ -73,4 +73,4 @@ Plugin::type() const
   return Support;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute-heartbeat, Wintermute::Heartbeat::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute - heartbeat, Wintermute::Heartbeat::Plugin );

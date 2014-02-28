@@ -29,20 +29,20 @@ using Wintermute::Events::CallEvent;
 QList<Dispatcher*> Wintermute::Procedure::DispatcherPrivate::dispatchers = QList<Dispatcher*>();
 
 Dispatcher::Dispatcher() :
-  QObject(wntrApp)
+  QObject ( wntrApp )
 {
-  DispatcherPrivate::addDispatcher(this);
+  DispatcherPrivate::addDispatcher ( this );
 }
 
 void
-Dispatcher::postDispatch(const Call* call)
+Dispatcher::postDispatch ( const Call* call )
 {
-  winfo(staticMetaObject.className(), "Caught a call; passing into the event loop.");
-  CallEvent* event = new CallEvent(CallEvent::TypeDispatch, call);
-  QCoreApplication::postEvent(wntrApp, event);
+  winfo ( staticMetaObject.className(), "Caught a call; passing into the event loop." );
+  CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, call );
+  QCoreApplication::postEvent ( wntrApp, event );
 }
 
 Dispatcher::~Dispatcher()
 {
-  DispatcherPrivate::removeDispatcher(this);
+  DispatcherPrivate::removeDispatcher ( this );
 }

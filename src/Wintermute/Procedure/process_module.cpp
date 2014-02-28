@@ -27,14 +27,14 @@ ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
-  connect(wntrApp, SIGNAL(started()), SLOT(start()));
+  connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
 }
 
 void
 ProcessModule::start()
 {
   // TODO: What?
-  winfo(this, QString("Currently %1 modules loaded so far.").arg(wntrApp->modules().length()));
+  winfo ( this, QString ( "Currently %1 modules loaded so far." ).arg ( wntrApp->modules().length() ) );
 }
 
 void

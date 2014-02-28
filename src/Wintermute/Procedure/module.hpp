@@ -79,12 +79,12 @@ public:
   Q_SLOT virtual void start() = 0;
 
 protected:
-   /**
-   * @fn invoke
-   * @brief Looks for the named call and invoke with the provided data.
-   */
+  /**
+  * @fn invoke
+  * @brief Looks for the named call and invoke with the provided data.
+  */
   QVariant invoke ( const QString name, const QVariantList data = QVariantList() );
- 
+
   /**
    * @fn setDomain
    * @brief Sets the domain of this module.

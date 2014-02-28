@@ -23,11 +23,13 @@
 
 namespace Wintermute
 {
-  namespace Heartbeat {
-    class GreetCall : public Wintermute::Procedure::Call {
-      Q_OBJECT;
-    };
-  }
+namespace Heartbeat
+{
+class GreetCall : public Wintermute::Procedure::Call
+{
+  Q_OBJECT;
+};
+}
 }
 
 #endif /** WINTERMUTE_HEARTBEAT_CALLS_GREET */

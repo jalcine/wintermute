@@ -38,12 +38,10 @@ public:
 
   explicit CallPrivate ( Call* q ) : q_ptr ( q ),
     recipient(), name(), function ( nullptr ),
-    type ( Call::TypeUndefined ), data()
-  {
+    type ( Call::TypeUndefined ), data() {
   }
 
-  virtual ~CallPrivate()
-  {
+  virtual ~CallPrivate() {
   }
 };
 }

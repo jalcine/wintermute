@@ -34,7 +34,7 @@ public:
   virtual ~DummyDispatcher();
 
 protected:
-  virtual void sendMessage(const Call* call);
+  virtual void sendMessage ( const Call* call );
 };
 }
 }

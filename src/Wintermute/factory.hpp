@@ -118,7 +118,7 @@ public:
    */
   bool unloadPlugin ( const QString& name );
 
-  bool loadedPlugin( const QString& name );
+  bool loadedPlugin ( const QString& name );
   /**
    * @function autoloadPlugins
    *

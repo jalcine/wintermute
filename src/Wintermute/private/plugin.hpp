@@ -35,23 +35,19 @@ public:
 
   ~PluginPrivate() { }
 
-  bool loadBinary()
-  {
+  bool loadBinary() {
     loader->setLoadHints ( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
     return loader->load();
   }
 
-  bool unloadBinary()
-  {
+  bool unloadBinary() {
     return loader->unload();
   }
 
-  bool tryLoad ( QPluginLoader* pluginLoader )
-  {
+  bool tryLoad ( QPluginLoader* pluginLoader ) {
     Q_Q ( Plugin );
     this->loader = pluginLoader;
-    if ( !this->loadBinary() )
-    {
+    if ( !this->loadBinary() ) {
       werr ( q_ptr, QString ( "Can't load binary!" ).arg ( pluginLoader->errorString() ) );
       this->loader = 0;
       return false;

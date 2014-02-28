@@ -21,22 +21,25 @@
 
 #include <Wintermute/Procedure/Receiver>
 
-namespace Wintermute {
-  namespace ZeroMQ {
-    class Module;
-    class Receiver : public Wintermute::Procedure::Receiver {
-      Q_OBJECT;
-      Q_DISABLE_COPY(Receiver);
-      QtZeroMQ::PollingSocket* m_socket;
+namespace Wintermute
+{
+namespace ZeroMQ
+{
+class Module;
+class Receiver : public Wintermute::Procedure::Receiver
+{
+  Q_OBJECT;
+  Q_DISABLE_COPY ( Receiver );
+  QtZeroMQ::PollingSocket* m_socket;
 
-      public:
-        explicit Receiver(Wintermute::ZeroMQ::Module* module);
-        virtual ~Receiver();
+public:
+  explicit Receiver ( Wintermute::ZeroMQ::Module* module );
+  virtual ~Receiver();
 
-      private:
-        Q_SLOT void onMessageReceived(const QList<QByteArray>& data);
-    };
-  }
+private:
+  Q_SLOT void onMessageReceived ( const QList<QByteArray>& data );
+};
+}
 }
 
 #endif

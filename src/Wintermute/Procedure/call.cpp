@@ -27,12 +27,12 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 
-Call::Call ( QObject* parent ) : 
+Call::Call ( QObject* parent ) :
   QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
 {
 }
 
-Call::Call ( CallPrivate* d ) : 
+Call::Call ( CallPrivate* d ) :
   QObject ( Wintermute::Application::instance() ), d_ptr ( d )
 {
 }
@@ -84,23 +84,21 @@ Call::toString() const
   callMap["data"] = d->data;
   QByteArray json = serializer.serialize ( callMap, &ok );
   if ( !ok )
-    return QString::null;
-
+  { return QString::null; }
   return QString ( json );
 }
 
 Call*
-Call::fromString(const QString& data)
+Call::fromString ( const QString& data )
 {
   QJson::Parser parser;
   bool ok;
-  QVariant callData = parser.parse(data.toLocal8Bit(), &ok);
-  if (!ok)
-    return 0;
-
+  QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
+  if ( !ok )
+  { return 0; }
   QVariantMap callMap = callData.toMap();
-  Call* aCall = new Call(wntrApp);
-  aCall->d_ptr->type = (Call::Type) callMap["type"].toInt();
+  Call* aCall = new Call ( wntrApp );
+  aCall->d_ptr->type = ( Call::Type ) callMap["type"].toInt();
   aCall->d_ptr->recipient = callMap["recipient"].toString();
   aCall->d_ptr->data = callMap["data"].toMap();
   return aCall;
@@ -113,17 +111,15 @@ Call::operator() ( const QVariantList& data )
 }
 
 bool
-Call::attemptInvocation(const Call* call)
+Call::attemptInvocation ( const Call* call )
 {
-  Procedure::Module* module = wntrApp->findModule(call->recipient());
-
-  if (!module){
-    werr(staticMetaObject.className(), QString("Can't find module '%1' in this process.").arg(call->recipient()));
+  Procedure::Module* module = wntrApp->findModule ( call->recipient() );
+  if ( !module ) {
+    werr ( staticMetaObject.className(), QString ( "Can't find module '%1' in this process." ).arg ( call->recipient() ) );
     return false;
   }
-
-  QVariant result = module->invoke(call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList());
-  winfo(staticMetaObject.className(), result.toString());
+  QVariant result = module->invoke ( call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList() );
+  winfo ( staticMetaObject.className(), result.toString() );
   return true;
 }
 

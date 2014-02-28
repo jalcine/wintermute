@@ -34,7 +34,7 @@ Module::Module ( DBus::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "dbus" );
   Dispatcher* dispatcher = new Dispatcher;
-  dispatcher->setParent(this);
+  dispatcher->setParent ( this );
 }
 
 void

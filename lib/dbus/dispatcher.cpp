@@ -29,7 +29,8 @@ using Wintermute::DBus::Module;
 using Wintermute::Procedure::Call;
 
 Dispatcher::Dispatcher() :
-  Wintermute::Procedure::Dispatcher::Dispatcher() {
+  Wintermute::Procedure::Dispatcher::Dispatcher()
+{
 }
 
 Dispatcher::~Dispatcher()
@@ -37,14 +38,14 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage(const Call* message)
+Dispatcher::sendMessage ( const Call* message )
 {
   const QByteArray data = message->toString().toUtf8();
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
-  QDBusMessage methodCall = QDBusMessage::createMethodCall(WINTERMUTE_DOMAIN,
-    "/Receiver", message->recipient(), "handleCall");
+  QDBusMessage methodCall = QDBusMessage::createMethodCall ( WINTERMUTE_DOMAIN,
+                            "/Receiver", message->recipient(), "handleCall" );
   methodCall << data;
-  QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall(methodCall);
+  QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall ( methodCall );
   methodCallState.waitForFinished();
-  winfo(this, "Invoked call over D-Bus; though the pending call isn't being caught.");
+  winfo ( this, "Invoked call over D-Bus; though the pending call isn't being caught." );
 }

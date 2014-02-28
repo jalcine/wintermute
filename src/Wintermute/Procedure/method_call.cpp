@@ -28,7 +28,7 @@ MethodCall::MethodCall ( const QString& module, const QString& method, const QVa
   Call ( new MethodCallPrivate ( this ) )
 {
   Q_D ( MethodCall );
-  setRecipient(module);
+  setRecipient ( module );
   d->type = Call::TypeInvocation;
   d->data["method"] = method;
   d->data["arguments"] = arguments;
@@ -38,19 +38,19 @@ QVariantList
 MethodCall::arguments() const
 {
   Q_D ( const MethodCall );
-  return d->data.value("arguments").toList();
+  return d->data.value ( "arguments" ).toList();
 }
 
 void
-MethodCall::dispatch(Module* module)
+MethodCall::dispatch ( Module* module )
 {
-  Q_D( MethodCall );
+  Q_D ( MethodCall );
   QMap<QString, QVariant> appData;
   appData["pid"]     = QCoreApplication::applicationPid();
   appData["version"] = QCoreApplication::applicationVersion();
   appData["module"]  = module->qualifiedName();
   d->data["sender"]  = appData;
-  module->dispatch(*this);
+  module->dispatch ( *this );
 }
 
 MethodCall::~MethodCall()

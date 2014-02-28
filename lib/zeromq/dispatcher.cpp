@@ -28,14 +28,14 @@ using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Module;
 using Wintermute::Procedure::Call;
 
-Dispatcher::Dispatcher(Module* a_module) :
+Dispatcher::Dispatcher ( Module* a_module ) :
   Wintermute::Procedure::Dispatcher::Dispatcher(),
-  m_socket(0)
+  m_socket ( 0 )
 {
-  setParent(a_module);
-  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(
-    a_module->m_context->createSocket(QtZeroMQ::Socket::TypePublish, this));
-  m_socket->bindTo(WINTERMUTE_SOCKET_IPC);
+  setParent ( a_module );
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*> (
+               a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
+  m_socket->bindTo ( WINTERMUTE_SOCKET_IPC );
 }
 
 Dispatcher::~Dispatcher()
@@ -43,12 +43,12 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage(const Call* message) throw (zmq::error_t)
+Dispatcher::sendMessage ( const Call* message ) throw ( zmq::error_t )
 {
   const QByteArray data = message->toString().toUtf8();
-  Module* module = qobject_cast<Module*>(parent());
-  winfo(this, QString("Sending %1 ...").arg(QString(data)));
-  Q_ASSERT(module != NULL);
-  m_socket->sendMessage(data);
-  winfo(this, "Message sent.");
+  Module* module = qobject_cast<Module*> ( parent() );
+  winfo ( this, QString ( "Sending %1 ..." ).arg ( QString ( data ) ) );
+  Q_ASSERT ( module != NULL );
+  m_socket->sendMessage ( data );
+  winfo ( this, "Message sent." );
 }

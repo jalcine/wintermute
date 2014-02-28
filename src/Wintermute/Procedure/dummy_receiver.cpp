@@ -27,15 +27,14 @@ using Wintermute::Procedure::ReceiverPrivate;
 DummyReceiver::DummyReceiver() :
   Receiver()
 {
-
 }
 
 void
-DummyReceiver::receiveMessage(const Call* call)
+DummyReceiver::receiveMessage ( const Call* call )
 {
-  wdebug(this, QString("We got %1 from %2").
-      arg(call->toString(), call->recipient()));
-  Receiver::receiveMessage(call);
+  wdebug ( this, QString ( "We got %1 from %2" ).
+           arg ( call->toString(), call->recipient() ) );
+  Receiver::receiveMessage ( call );
 }
 
 DummyReceiver::~DummyReceiver()

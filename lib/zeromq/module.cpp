@@ -35,14 +35,14 @@ using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Receiver;
 
 Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin ),
-  m_context(new QtZeroMQ::PollingContext(this)), m_dispatcher(0), m_receiver(0)
+  m_context ( new QtZeroMQ::PollingContext ( this ) ), m_dispatcher ( 0 ), m_receiver ( 0 )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
-  m_receiver = new Receiver(this);
-  m_dispatcher = new Dispatcher(this);
-  connect(m_context, SIGNAL(polled()), this, SLOT(pollInvoked()));
-  connect(m_context, SIGNAL(pollError()), this, SLOT(pollError()));
+  m_receiver = new Receiver ( this );
+  m_dispatcher = new Dispatcher ( this );
+  connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
+  connect ( m_context, SIGNAL ( pollError() ), this, SLOT ( pollError() ) );
 }
 
 void

@@ -48,7 +48,7 @@ public:
    * network.
    */
   explicit MethodCall ( const QString& module, const QString& method,
-      const QVariantList arguments = QVariantList() );
+                        const QVariantList arguments = QVariantList() );
 
   /**
    * @dtor
@@ -71,7 +71,7 @@ public:
    * @fn dispatch
    * @brief A helper method to dispatch calls to a remote module.
    */
-  void dispatch(Module* module = wntrApp->module());
+  void dispatch ( Module* module = wntrApp->module() );
 };
 }
 }

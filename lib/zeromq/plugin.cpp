@@ -25,7 +25,7 @@ using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Module;
 using Wintermute::Version;
 
-Plugin::Plugin() : module(new ZeroMQ::Module(this))
+Plugin::Plugin() : module ( new ZeroMQ::Module ( this ) )
 {
 }
 

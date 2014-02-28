@@ -45,10 +45,9 @@ QVariant
 Module::invoke ( const QString callName, const QVariantList data )
 {
   Q_D ( Module );
-  if ( !d->calls.contains ( callName ) )
-  {
+  if ( !d->calls.contains ( callName ) ) {
     werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." )
-        .arg ( callName, qualifiedName() ) );
+           .arg ( callName, qualifiedName() ) );
     return QVariant ( -1 );
   }
   CallPointer call = d->calls[callName];

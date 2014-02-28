@@ -30,12 +30,12 @@ namespace Filters
 class CallFilter : public QObject
 {
   Q_OBJECT;
-  Q_DISABLE_COPY(CallFilter);
+  Q_DISABLE_COPY ( CallFilter );
 
 public:
   explicit CallFilter();
   virtual ~CallFilter();
-  virtual bool eventFilter(QObject* object, QEvent* event);
+  virtual bool eventFilter ( QObject* object, QEvent* event );
 };
 }
 }

@@ -29,38 +29,35 @@ using Wintermute::Events::Filters::CallFilter;
 using Wintermute::Procedure::Call;
 
 CallFilter::CallFilter() :
-  QObject(wntrApp)
+  QObject ( wntrApp )
 {
-  winfo(this, "Call filter installled into process.");
+  winfo ( this, "Call filter installled into process." );
 }
 
 bool
-CallFilter::eventFilter(QObject* object, QEvent* event)
+CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
-  if (event->type() == CallEvent::TypeDispatch)
-  {
-    winfo(this, "Handling a local call for dispatching aboard.");
-    CallEvent* callEvent = static_cast<CallEvent*>(event);
+  if ( event->type() == CallEvent::TypeDispatch ) {
+    winfo ( this, "Handling a local call for dispatching aboard." );
+    CallEvent* callEvent = static_cast<CallEvent*> ( event );
     const Procedure::Call* call = callEvent->call();
-    winfo(this, QString("Call heading to %1.").arg(call->recipient()));
-    Procedure::DispatcherPrivate::dispatch(call->toString());
-    winfo(this, "Call dispatched.");
+    winfo ( this, QString ( "Call heading to %1." ).arg ( call->recipient() ) );
+    Procedure::DispatcherPrivate::dispatch ( call->toString() );
+    winfo ( this, "Call dispatched." );
     return true;
-  }
-  else if (event->type() == CallEvent::TypeReceive)
-  {
-    winfo(this, "Handling a remote call for local invocation.");
-    CallEvent* callEvent = static_cast<CallEvent*>(event);
+  } else if ( event->type() == CallEvent::TypeReceive ) {
+    winfo ( this, "Handling a remote call for local invocation." );
+    CallEvent* callEvent = static_cast<CallEvent*> ( event );
     const Procedure::Call* call = callEvent->call();
-    const bool invocated = Procedure::Call::attemptInvocation(call);
-    invocated ? winfo(this, "Call invoked.") : wwarn(this, "Call failed to invoke.");
+    const bool invocated = Procedure::Call::attemptInvocation ( call );
+    invocated ? winfo ( this, "Call invoked." ) : wwarn ( this, "Call failed to invoke." );
     return true;
   }
   // TODO: Filter out receive events.
-  return QObject::eventFilter(object, event);
+  return QObject::eventFilter ( object, event );
 }
 
 CallFilter::~CallFilter()
 {
-  winfo(this, "Call filter removed from process.");
+  winfo ( this, "Call filter removed from process." );
 }
