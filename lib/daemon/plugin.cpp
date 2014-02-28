@@ -45,6 +45,7 @@ Plugin::stop()
 void
 Plugin::start()
 {
+  // TODO Ask for the loading of a messaging plug-in.
 }
 
 Version

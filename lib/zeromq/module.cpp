@@ -39,8 +39,15 @@ Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
-  m_dispatcher = new Dispatcher(this);
   m_receiver = new Receiver(this);
+  m_dispatcher = new Dispatcher(this);
+  connect(m_context, SIGNAL(polled()), this, SLOT(pollInvoked()));
+}
+
+void
+Module::pollInvoked()
+{
+  winfo(this, "Checking for new messages...");
 }
 
 void
@@ -48,27 +55,6 @@ Module::start()
 {
   m_context->start();
 }
-
-void
-Module::bindIncomingSocket(){
-  //m_incomingSocket = dynamic_cast<QtZeroMQ::PollingSocket*>(m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
-  //m_incomingSocket->setIdentity("wintermute:in");
-  //m_incomingSocket->connectTo(WINTERMUTE_SOCKET_IPC);
-  //m_incomingSocket->subscribeTo("wintermute:global");
-}
-
-//void
-//Module::onMessageReceived(const QList<QByteArray>& message)
-//{
-  //winfo(this, "Got some messages...");
-  //QByteArray data;
-  //foreach(const QByteArray& part, message){
-    //data += part;
-  //}
-
-  //QtZeroMQ::Message msg(data);
-  //winfo(this, QString(msg.toByteArray()));
-//}
 
 void
 Module::stop()

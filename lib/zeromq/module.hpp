@@ -36,13 +36,16 @@ class Module : public Wintermute::Procedure::Module
   friend class Wintermute::ZeroMQ::Receiver;
   friend class Wintermute::ZeroMQ::Dispatcher;
   QtZeroMQ::PollingSocket* m_incomingSocket;
+
 public:
   explicit Module ( ZeroMQ::Plugin* plugin );
   Q_SLOT virtual void start();
   Q_SLOT virtual void stop();
   virtual ~Module();
+
 private:
   void bindIncomingSocket();
+  Q_SLOT void pollInvoked();
   QtZeroMQ::PollingContext* m_context;
   Dispatcher* m_dispatcher;
   Receiver* m_receiver;

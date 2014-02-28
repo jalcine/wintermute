@@ -35,7 +35,7 @@ Receiver::Receiver(Module* a_module) :
   setParent(a_module);
   m_socket = dynamic_cast<QtZeroMQ::PollingSocket*>(
     a_module->m_context->createSocket(QtZeroMQ::Socket::TypeSubscribe, this));
-  m_socket->subscribeTo(QString::null);
+  m_socket->subscribeTo(QString(""));
   m_socket->connectTo(WINTERMUTE_SOCKET_IPC);
   winfo(this, "Hey, listening on ZeroMQ.");
 }
