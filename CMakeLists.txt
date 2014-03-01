@@ -1,5 +1,5 @@
 #############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###

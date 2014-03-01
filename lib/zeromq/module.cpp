@@ -34,8 +34,11 @@ using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Receiver;
 
-Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin ),
-  m_context ( new QtZeroMQ::PollingContext ( this ) ), m_dispatcher ( 0 ), m_receiver ( 0 )
+Module::Module ( ZeroMQ::Plugin* plugin ) : 
+  Wintermute::Procedure::Module ( plugin ),
+  m_context ( new QtZeroMQ::PollingContext ( this ) ), 
+  m_dispatcher ( 0 ),
+  m_receiver ( 0 )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
