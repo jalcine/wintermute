@@ -17,4 +17,29 @@
  **/
 
 #include <Wintermute/Logging>
+#include "adaptor.hpp"
+#include "receiver.hpp"
+#include "receiver.moc"
 
+using Wintermute::DBus::Receiver;
+using Wintermute::DBus::Adaptor;
+using Wintermute::Procedure::Call;
+
+Receiver::Receiver() :
+  Wintermute::Procedure::Receiver(), m_adaptor( 0 )
+{
+  m_adaptor = new Adaptor;
+  m_adaptor->setParent(this);
+  m_adaptor->registerOnDBus();
+  winfo (this, "Activated D-Bus adaptor." );
+}
+
+void
+Receiver::receiveMessage ( const Call* call )
+{
+  Wintermute::Procedure::Receiver::receiveMessage(call);
+}
+
+Receiver::~Receiver()
+{
+}

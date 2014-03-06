@@ -19,15 +19,17 @@
 project ( WintermuteDBus )
 set ( dbus_SRCS 
   plugin.cpp
+  module.cpp
   dispatcher.cpp
   receiver.cpp
-  module.cpp )
+)
 
 set ( dbus_HDRS
   plugin.hpp
   dispatcher.hpp
   receiver.hpp
-  module.hpp )
+  module.hpp
+)
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/dbus/globals.hpp
   @ONLY )

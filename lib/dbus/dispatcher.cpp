@@ -38,14 +38,13 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage ( const Call* message )
+Dispatcher::sendMessage ( const Call* call )
 {
-  const QByteArray data = message->toString().toUtf8();
+  const QByteArray data = call->toString().toUtf8();
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
   QDBusMessage methodCall = QDBusMessage::createMethodCall ( WINTERMUTE_DOMAIN,
-                            "/Receiver", message->recipient(), "handleCall" );
+      "/Receiver", call->recipient(), "handleCall" );
   methodCall << data;
   QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall ( methodCall );
   methodCallState.waitForFinished();
-  winfo ( this, "Invoked call over D-Bus; though the pending call isn't being caught." );
 }

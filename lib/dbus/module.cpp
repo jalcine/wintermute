@@ -23,18 +23,23 @@
 #include "module.hpp"
 #include "plugin.hpp"
 #include "dispatcher.hpp"
+#include "receiver.hpp"
 #include "module.moc"
 
 using Wintermute::DBus::Module;
 using Wintermute::DBus::Plugin;
 using Wintermute::DBus::Dispatcher;
 
-Module::Module ( DBus::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
+Module::Module ( DBus::Plugin* plugin ) : 
+  Wintermute::Procedure::Module ( plugin ),
+  m_dispatcher ( 0 ), m_receiver ( 0 )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "dbus" );
-  Dispatcher* dispatcher = new Dispatcher;
-  dispatcher->setParent ( this );
+  m_dispatcher = new Dispatcher;
+  m_receiver = new Receiver;
+  m_dispatcher->setParent(this);
+  m_receiver->setParent(this);
 }
 
 void

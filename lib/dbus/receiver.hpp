@@ -15,3 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
+
+#ifndef WINTERMUTE_DBUS_RECEIVER_HPP
+#define WINTERMUTE_DBUS_RECEIVER_HPP
+
+#include <Wintermute/Procedure/Receiver>
+#include <Wintermute/Procedure/Call>
+
+namespace Wintermute
+{
+namespace DBus
+{
+class Adaptor;
+class Receiver : public Wintermute::Procedure::Receiver
+{
+  Q_OBJECT;
+  Adaptor* m_adaptor;
+  public:
+  explicit Receiver();
+  virtual ~Receiver();
+  Q_SLOT virtual void receiveMessage(const Procedure::Call* call);
+};
+}
+}
+
+#endif
