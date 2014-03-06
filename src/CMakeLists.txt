@@ -43,6 +43,7 @@ set ( WINTERMUTE_SOURCES
   ## Plugin binaries
   Wintermute/factory.cpp
   Wintermute/plugin.cpp
+  Wintermute/plugin_process.cpp
 
   ## Core binaries
   Wintermute/logging.cpp

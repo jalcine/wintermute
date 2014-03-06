@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ Module::Module ( DBus::Plugin* plugin ) :
   setPackage ( "dbus" );
   m_dispatcher = new Dispatcher;
   m_receiver = new Receiver;
-  m_dispatcher->setParent(this);
-  m_receiver->setParent(this);
+  m_dispatcher->setParent ( this );
+  m_receiver->setParent ( this );
 }
 
 void
