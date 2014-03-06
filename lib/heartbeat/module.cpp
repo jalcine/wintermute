@@ -19,12 +19,15 @@
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
+#include <Wintermute/Procedure/Call>
 #include "plugin.hpp"
 #include "module.hpp"
 #include "module.moc"
 
 using Wintermute::Heartbeat::Module;
 using Wintermute::Heartbeat::Plugin;
+using Wintermute::Procedure::Call;
+using Wintermute::Procedure::CallPointer;
 
 Module::Module ( Heartbeat::Plugin* plugin ) :
   Wintermute::Procedure::Module ( plugin )
@@ -34,9 +37,21 @@ Module::Module ( Heartbeat::Plugin* plugin ) :
   winfo ( this, "Heartbeat ready to pulse." );
 }
 
+// TODO Figure out how to use a bound reference to a method of an object in
+//      std::function.
 void
 Module::start()
 {
+  winfo ( this, "Started heartbeat module." );
+  Call::Signature greet;
+  mountLambda ( greet, "greet" );
+  winfo ( this, "Mounted calls for heartbeat." );
+}
+
+QVariant
+Module::callGreet( QVariantList arguments )
+{
+  winfo ( this, "Hey, look; you're here!" );
 }
 
 Module::~Module()

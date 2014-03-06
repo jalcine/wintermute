@@ -20,13 +20,11 @@ project ( WintermuteHeartbeat )
 set ( heartbeat_SRCS
   plugin.cpp
   module.cpp
-  calls/greet.cpp
 )
 
 set ( heartbeat_HDRS
   plugin.hpp
   module.hpp
-  calls/greet.hpp
 )
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/heartbeat/globals.hpp

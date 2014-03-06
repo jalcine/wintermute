@@ -29,6 +29,7 @@ class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
   Q_OBJECT;
+  QVariant callGreet(QVariantList arguments);
 public:
   explicit Module ( Heartbeat::Plugin* plugin );
   Q_SLOT virtual void start();
