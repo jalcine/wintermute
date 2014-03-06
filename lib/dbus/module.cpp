@@ -20,8 +20,10 @@
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
+#include <Wintermute/Procedure/Call>
 #include "module.hpp"
 #include "plugin.hpp"
+#include "adaptor.hpp"
 #include "dispatcher.hpp"
 #include "receiver.hpp"
 #include "module.moc"
@@ -29,6 +31,7 @@
 using Wintermute::DBus::Module;
 using Wintermute::DBus::Plugin;
 using Wintermute::DBus::Dispatcher;
+using Wintermute::Procedure::Call;
 
 Module::Module ( DBus::Plugin* plugin ) : 
   Wintermute::Procedure::Module ( plugin ),
@@ -36,6 +39,7 @@ Module::Module ( DBus::Plugin* plugin ) :
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "dbus" );
+  m_adaptor = new Adaptor ( this );
   m_dispatcher = new Dispatcher;
   m_receiver = new Receiver;
   m_dispatcher->setParent ( this );
@@ -46,6 +50,7 @@ void
 Module::start()
 {
   // TODO: Create the interface to listen for replies.
+  m_adaptor->registerOnDBus();
 }
 
 Module::~Module()

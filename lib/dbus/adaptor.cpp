@@ -19,15 +19,17 @@
 #include <QtDBus/QDBusConnection>
 #include <QtCore/QCoreApplication>
 #include <Wintermute/Logging>
+#include "module.hpp"
 #include "receiver.hpp"
 #include "adaptor.hpp"
 #include "adaptor.moc"
 
 using Wintermute::DBus::Adaptor;
 using Wintermute::DBus::Receiver;
+using Wintermute::Procedure::Call;
 
-Adaptor::Adaptor( Receiver* receiver ) :
-    QDBusAbstractAdaptor( receiver)
+Adaptor::Adaptor( Module* module ) :
+    QDBusAbstractAdaptor( module )
 {
   winfo (this, "Adaptor created.");
 }
@@ -36,10 +38,40 @@ void
 Adaptor::registerOnDBus()
 {
   QDBusConnection bus = QDBusConnection::sessionBus();
-  bus.registerObject( "/Process" +
-    QString::number ( QCoreApplication::applicationPid() ), parent() 
+  const bool serviceRegistered = bus.registerService ( QString ( 
+      "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
+
+  if ( !serviceRegistered )
+  {
+    werr (this, "Failed to register service with D-Bus.");
+    return;
+  }
+
+  const bool objectRegistered = bus.registerObject( "/Process", parent(),
+    QDBusConnection::ExportChildObjects | QDBusConnection::ExportAllSlots 
+      | QDBusConnection::ExportAllInvokables | QDBusConnection::ExportAdaptors
+      | QDBusConnection::ExportChildObjects
   );
-  winfo ( this, "Registered this process into D-Bus." );
+
+  if ( objectRegistered )
+  {
+    winfo ( this, QString( "Registered this process into D-Bus service %1." )
+        .arg ( bus.baseService() ) );
+  }
+}
+
+void
+Adaptor::handleIncomingCall ( const QString& arguments, const 
+    QDBusMessage& message )
+{
+  const Call* incomingCall = Call::fromString ( arguments );
+  ((Module*) parent())->m_receiver->receiveMessage(incomingCall);
+}
+
+bool
+Adaptor::hasModule ( const QString& name )
+{
+  return false;
 }
 
 Adaptor::~Adaptor()

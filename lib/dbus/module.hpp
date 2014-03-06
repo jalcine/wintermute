@@ -28,12 +28,14 @@ namespace DBus
 class Plugin;
 class Dispatcher;
 class Receiver;
-class Adapter;
+class Adaptor;
 class Module : public Wintermute::Procedure::Module
 {
   Q_OBJECT;
   Dispatcher* m_dispatcher;
   Receiver* m_receiver;
+  Adaptor* m_adaptor;
+  friend class Adaptor;
 public:
   explicit Module ( DBus::Plugin* plugin );
   Q_SLOT virtual void start();

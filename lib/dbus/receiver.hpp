@@ -30,7 +30,6 @@ class Adaptor;
 class Receiver : public Wintermute::Procedure::Receiver
 {
   Q_OBJECT;
-  Adaptor* m_adaptor;
   public:
   explicit Receiver();
   virtual ~Receiver();

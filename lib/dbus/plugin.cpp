@@ -44,6 +44,7 @@ void
 Plugin::start()
 {
   module = new DBus::Module ( this );
+  module->start();
 }
 
 Version

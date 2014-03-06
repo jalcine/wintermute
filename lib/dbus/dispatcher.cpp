@@ -19,6 +19,7 @@
 #include <Wintermute/Logging>
 #include <Wintermute/Procedure/Call>
 #include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusReply>
 #include "dispatcher.hpp"
 #include "module.hpp"
@@ -40,11 +41,26 @@ Dispatcher::~Dispatcher()
 void
 Dispatcher::sendMessage ( const Call* call )
 {
-  const QByteArray data = call->toString().toUtf8();
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
-  QDBusMessage methodCall = QDBusMessage::createMethodCall ( WINTERMUTE_DOMAIN ".dbus",
-      "/Receiver", call->recipient(), "handleCall" );
-  methodCall << data;
-  QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall ( methodCall );
-  methodCallState.waitForFinished();
+  QDBusConnectionInterface* interface = sessionBus.interface();
+  QStringList remoteServices = interface->registeredServiceNames();
+  QStringList friendlyServices = remoteServices.filter ( WINTERMUTE_DOMAIN );
+  friendlyServices.removeAll ( sessionBus.name() );
+  if ( friendlyServices.empty() )
+  {
+    winfo (this, "No services found that are friendly to Wintermute " +
+        QString("of the known %1 services.").arg(remoteServices.length()));
+    return;
+  }
+  else
+  {
+    Q_FOREACH(const QString remoteService, friendlyServices)
+    {
+      winfo (this, QString("Sending call to %1").arg ( remoteService ));
+      QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
+          "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
+      methodCall << call->toString();
+      QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall ( methodCall );
+    }
+  }
 }

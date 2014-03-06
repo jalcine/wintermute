@@ -26,11 +26,8 @@ using Wintermute::DBus::Adaptor;
 using Wintermute::Procedure::Call;
 
 Receiver::Receiver() :
-  Wintermute::Procedure::Receiver(), m_adaptor( 0 )
+  Wintermute::Procedure::Receiver()
 {
-  m_adaptor = new Adaptor( this );
-  m_adaptor->registerOnDBus();
-  winfo (this, "Activated D-Bus adaptor." );
 }
 
 void

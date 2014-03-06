@@ -20,23 +20,41 @@
 #define WINTERMUTE_DBUS_ADADPTOR_HPP
 
 #include <QtDBus/QDBusAbstractAdaptor>
+#include <QtDBus/QDBusMessage>
 #include <Wintermute/Globals>
+#include <Wintermute/Procedure/Call>
 #include "globals.hpp"
 
 namespace Wintermute
 {
 namespace DBus
 {
-class Receiver;
+class Module;
 class Adaptor : public QDBusAbstractAdaptor
 {
   Q_OBJECT;
   Q_CLASSINFO ( "D-Bus Interface", "in.wintermute.dbus" );
-
+   Q_CLASSINFO("D-Bus Introspection", ""
+"  <interface name=\"in.wintermute.dbus\">\n"
+"    <method name=\"handleIncomingCall\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"arguments\"/>\n"
+"      <annotation value=\"true\" name=\"org.freedesktop.DBus.Method.NoReply\"/>\n"
+"    </method>\n"
+"    <method name=\"hasModule\">\n"
+"      <arg direction=\"out\" type=\"b\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
+"    </method>\n"
+"  </interface>\n"
+        "")
   public:
-    explicit Adaptor( Receiver* receiver );
+    explicit Adaptor( Module* module );
     void registerOnDBus();
     virtual ~Adaptor();
+
+  public slots:
+    Q_NOREPLY void handleIncomingCall ( const QString& arguments,
+        const QDBusMessage& message );
+    bool hasModule ( const QString& name );
 };
 }
 }
