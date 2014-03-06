@@ -33,8 +33,11 @@ public:
   explicit Module ( Daemon::Plugin* plugin );
   Q_SLOT virtual void start();
   virtual ~Module();
+
+private:
+  void startUpPlugins(const QStringList& plugins);
 };
 }
 }
 
-#endif /* */
+#endif /* WINTERMUTE_DAEMON_PLUGIN_MODULE_HPP */

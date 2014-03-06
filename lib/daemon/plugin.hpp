@@ -31,6 +31,7 @@ class Plugin : public Wintermute::Plugin
   Q_OBJECT;
   Q_DISABLE_COPY ( Plugin );
   Wintermute::Daemon::Module* module;
+  friend class Wintermute::Daemon::Module;
 
 public:
   explicit Plugin();

@@ -45,7 +45,7 @@ Plugin::stop()
 void
 Plugin::start()
 {
-  // TODO Ask for the loading of a messaging plug-in.
+  // TODO
 }
 
 Version
@@ -72,4 +72,4 @@ Plugin::type() const
   return Module;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute-daemon, Wintermute::Daemon::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute - daemon, Wintermute::Daemon::Plugin );

@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,17 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QSettings>
+#include <QtCore/QDateTime>
+#include <QtCore/QVariant>
+#include <QtCore/QStringList>
 #include <Wintermute/Application>
+#include <Wintermute/Logging>
+#include <Wintermute/Factory>
+#include <Wintermute/PluginProcess>
 #include "module.hpp"
 #include "plugin.hpp"
+#include "globals.hpp"
 #include "module.moc"
 
 using Wintermute::Daemon::Module;
@@ -33,7 +41,23 @@ Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plug
 void
 Module::start()
 {
-  // TODO: Spawn out a few plug-ins needed for kicking up Wintermute.
+  QStringList values = QString(WINTERMUTE_DAEMON_STARTUP_LIST).split(';');
+  winfo(this, QString("Plugins to start up: %1.")
+    .arg(WINTERMUTE_DAEMON_STARTUP_LIST));
+  startUpPlugins(values);
+}
+
+void
+Module::startUpPlugins(const QStringList& plugins)
+{
+  Q_FOREACH(const QString & plugin, plugins)
+  {
+    winfo(wntrFactory,
+      QString("Invoking %1 for daemon startup...").arg(plugin));
+    const PluginProcess* process = wntrFactory->spawnPlugin(plugin);
+    winfo(wntrFactory,
+      QString("Started daemon plugin '%1'.").arg(plugin));
+  }
 }
 
 Module::~Module()

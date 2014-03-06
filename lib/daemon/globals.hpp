@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,5 +18,7 @@
 
 #ifndef WINTERMUTE_PLUGIN_DAEMON_GLOBALS_HPP
 #define WINTERMUTE_PLUGIN_DAEMON_GLOBALS_HPP
+
+#define WINTERMUTE_DAEMON_STARTUP_LIST "wintermute-heartbeat"
 
 #endif /* */
