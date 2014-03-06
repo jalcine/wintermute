@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,23 +17,29 @@
  **/
 
 #include <QtDBus/QDBusConnection>
+#include <QtCore/QCoreApplication>
 #include <Wintermute/Logging>
+#include "receiver.hpp"
 #include "adaptor.hpp"
 #include "adaptor.moc"
 
-Adaptor::Adaptor() :
-    QDBusAbstractAdaptor()
+using Wintermute::DBus::Adaptor;
+using Wintermute::DBus::Receiver;
+
+Adaptor::Adaptor( Receiver* receiver ) :
+    QDBusAbstractAdaptor( receiver)
 {
+  winfo (this, "Adaptor created.");
 }
 
 void
 Adaptor::registerOnDBus()
 {
-  QDBusConnection bus = QDBusConnection::sessionBus()
+  QDBusConnection bus = QDBusConnection::sessionBus();
   bus.registerObject( "/Process" +
     QString::number ( QCoreApplication::applicationPid() ), parent() 
   );
-  winfo ( this, "Registered this process into D-Bus." )
+  winfo ( this, "Registered this process into D-Bus." );
 }
 
 Adaptor::~Adaptor()

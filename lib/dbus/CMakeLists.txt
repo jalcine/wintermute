@@ -20,6 +20,7 @@ project ( WintermuteDBus )
 set ( dbus_SRCS 
   plugin.cpp
   module.cpp
+  adaptor.cpp
   dispatcher.cpp
   receiver.cpp
 )
@@ -27,6 +28,7 @@ set ( dbus_SRCS
 set ( dbus_HDRS
   plugin.hpp
   dispatcher.hpp
+  adaptor.hpp
   receiver.hpp
   module.hpp
 )

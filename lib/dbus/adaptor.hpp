@@ -16,22 +16,29 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#ifndef WINTERMUTE_DBUS_ADADPTOR_HPP
+#define WINTERMUTE_DBUS_ADADPTOR_HPP
+
 #include <QtDBus/QDBusAbstractAdaptor>
 #include <Wintermute/Globals>
+#include "globals.hpp"
 
 namespace Wintermute
 {
 namespace DBus
 {
+class Receiver;
 class Adaptor : public QDBusAbstractAdaptor
 {
   Q_OBJECT;
-  Q_CLASSINFO ( "D-Bus Interface", WINTERMUTE_DOMAIN ".dbus" );
+  Q_CLASSINFO ( "D-Bus Interface", "in.wintermute.dbus" );
 
   public:
-    explicit Adaptor();
+    explicit Adaptor( Receiver* receiver );
     void registerOnDBus();
     virtual ~Adaptor();
 };
 }
 }
+
+#endif
