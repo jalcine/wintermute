@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,9 @@ Dispatcher::Dispatcher ( Module* a_module ) :
 {
   setParent ( a_module );
   m_socket = dynamic_cast<QtZeroMQ::PollingSocket*> (
-               a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
+     a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
   m_socket->bindTo ( WINTERMUTE_SOCKET_IPC );
+  winfo ( this, "Hey, sending over ZeroMQ." );
 }
 
 Dispatcher::~Dispatcher()

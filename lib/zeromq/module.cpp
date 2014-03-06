@@ -34,18 +34,17 @@ using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Receiver;
 
-Module::Module ( ZeroMQ::Plugin* plugin ) : 
+Module::Module ( ZeroMQ::Plugin* plugin ) :
   Wintermute::Procedure::Module ( plugin ),
-  m_context ( new QtZeroMQ::PollingContext ( this ) ), 
-  m_dispatcher ( 0 ),
-  m_receiver ( 0 )
+  m_context ( new QtZeroMQ::PollingContext ( this ) )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
-  m_receiver = new Receiver ( this );
-  m_dispatcher = new Dispatcher ( this );
+  Receiver receiver ( this );
+  Dispatcher dispatcher ( this );
   connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
-  connect ( m_context, SIGNAL ( pollError() ), this, SLOT ( pollError() ) );
+  connect ( m_context, SIGNAL ( pollError(int, const QString&) ), 
+      this, SLOT ( pollError(int, const QString&) ) );
 }
 
 void
@@ -55,9 +54,10 @@ Module::pollInvoked()
 }
 
 void
-Module::pollError()
+Module::pollError(int errorNumber, const QString& errorMessage)
 {
-  // TODO Handle errors with polling.
+  werr(this, QString("ZeroMQ error %1: %2").
+    arg(QString::number(errorNumber), errorMessage));
 }
 
 void

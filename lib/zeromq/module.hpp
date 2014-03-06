@@ -46,10 +46,8 @@ public:
 private:
   void bindIncomingSocket();
   Q_SLOT void pollInvoked();
-  Q_SLOT void pollError();
+  Q_SLOT void pollError(int errorNumber, const QString& errorMessage);
   QtZeroMQ::PollingContext* m_context;
-  Dispatcher* m_dispatcher;
-  Receiver* m_receiver;
 };
 }
 }

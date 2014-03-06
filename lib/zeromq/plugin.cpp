@@ -71,4 +71,4 @@ Plugin::type() const
   return Addon;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute-zeromq, Wintermute::ZeroMQ::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute - zeromq, Wintermute::ZeroMQ::Plugin );
