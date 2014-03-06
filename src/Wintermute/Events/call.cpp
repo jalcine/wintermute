@@ -25,7 +25,7 @@ using Wintermute::Procedure::Call;
 const int CallEvent::TypeReceive  = QEvent::registerEventType();
 const int CallEvent::TypeDispatch = QEvent::registerEventType();
 
-CallEvent::CallEvent ( int type, const Call* call ) :
+CallEvent::CallEvent ( const int type, const Call* call ) :
   QEvent ( ( QEvent::Type ) type ) , m_call ( call )
 {
 }

@@ -22,8 +22,9 @@
 #include "factory.hpp"
 #include "application.hpp"
 #include "private/plugin.hpp"
-#include <QtCore/QUuid>
+#include <QtCore/QSettings>
 #include <QtCore/QPluginLoader>
+#include "Wintermute/plugin.moc"
 
 using Wintermute::Version;
 using Wintermute::Plugin;
@@ -38,11 +39,14 @@ QSettings*
 Plugin::configuration() const
 {
   Q_D ( const Plugin );
+  if ( d->settings == 0 && isLoaded() ) {
+    d->settings = new QSettings( "Wintermute", name(), parent() );
+    winfo( this, QString( "%1's settings are at %2." ).arg( name(),
+           d->settings->fileName() ) );
+  }
   return d->settings;
 }
 
 Plugin::~Plugin()
 {
 }
-
-#include "Wintermute/plugin.moc"

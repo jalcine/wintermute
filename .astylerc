@@ -6,8 +6,6 @@
 indent=spaces=2
 indent-switches
 indent-cases
-pad-oper
-pad-paren
 pad-header
 convert-tabs
 

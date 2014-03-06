@@ -57,39 +57,51 @@ protected:
   QSettings* configuration() const;
 
 public:
-
   virtual ~Plugin();
 
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
 
   /**
+   * @enum State
    * Flags used to represent the different states that a plug-in can exist
    * in.
    */
-  enum State {
-    Undefined = 0x0,  // Reserved for a lack of a state (typically null) plugin.
-    Loading   = 0x1,  // The plugin is currently undergoing the act of loading its prerequisties into Wintermute.
-    Loaded    = 0x2,  // The plugin has been successfully loaded into Wintermute.
-    Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
-    Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
-    Crashed   = 0x5   // The plugin has encountered an undefined error.
+  enum State
+  {
+    // Reserved for a lack of a state (typically null) plugin.
+    Undefined = 0x00,
+    //
+    Loading   = 0x01,
+    //
+    Loaded    = 0x02,
+    // The plugin is currently underdoing the work of removing itself from Wintermute.
+    Unloading = 0x03,
+    //
+    Unloaded  = 0x04,
+    //
+    Crashed   = 0x05
   };
 
   /**
    * Defines the kind of plugin that this is.
    */
-  enum Type {
-    Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
-    Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
-    Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
+  enum Type
+  {
+    // Defined as a module-based plugin, it'll run in a separate process.
+    Module  = 0x001,
+    // Defined as an add-on plugin, it'll load in its specified parent process.
+    Addon   = 0x002,
+    // Defined as a support plugin, it'll load in every running Wintermute process.
+    Support = 0x003
   };
 
   /**
    * @fn isLoaded
    * Determines if the plugin has been loaded.
    */
-  inline bool isLoaded() const {
+  inline bool isLoaded() const
+  {
     return state() == Loaded;
   }
 

@@ -26,14 +26,15 @@ LambdaCall::LambdaCall ( Call::Signature lambda, QString name ) :
   Call ( Wintermute::Application::instance() )
 {
   Q_D ( Call );
-  this->setProperty ( "name", name );
+  d->name = name;
   d->function = lambda;
 }
 
 QString
 LambdaCall::name() const
 {
-  return this->property ( "name" ).toString();
+  Q_D ( const Call );
+  return d->name;
 }
 
 LambdaCall::~LambdaCall()

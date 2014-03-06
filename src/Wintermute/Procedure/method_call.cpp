@@ -24,7 +24,8 @@
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
 
-MethodCall::MethodCall ( const QString& module, const QString& method, const QVariantList arguments ) :
+MethodCall::MethodCall ( const QString& module, const QString& method,
+                         const QVariantList arguments ) :
   Call ( new MethodCallPrivate ( this ) )
 {
   Q_D ( MethodCall );
@@ -45,11 +46,7 @@ void
 MethodCall::dispatch ( Module* module )
 {
   Q_D ( MethodCall );
-  QMap<QString, QVariant> appData;
-  appData["pid"]     = QCoreApplication::applicationPid();
-  appData["version"] = QCoreApplication::applicationVersion();
-  appData["module"]  = module->qualifiedName();
-  d->data["sender"]  = appData;
+  d->composeMethodData( module );
   module->dispatch ( *this );
 }
 

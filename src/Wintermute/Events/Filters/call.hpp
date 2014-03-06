@@ -36,6 +36,10 @@ public:
   explicit CallFilter();
   virtual ~CallFilter();
   virtual bool eventFilter ( QObject* object, QEvent* event );
+
+private:
+  bool handleDispatch ( QObject* object, QEvent* event );
+  bool handleReceive ( QObject* object, QEvent* event );
 };
 }
 }

@@ -32,7 +32,8 @@ public:
 
   static bool isDispatcherKnown ( Dispatcher* dispatcher ) {
     Q_FOREACH ( Dispatcher * aDispatcher, DispatcherPrivate::dispatchers ) {
-      if ( aDispatcher->metaObject()->className() == dispatcher->metaObject()->className() )
+      if ( aDispatcher->metaObject()->className()
+           == dispatcher->metaObject()->className() )
       { return true; }
     }
     return false;
@@ -43,9 +44,19 @@ public:
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );
     } else {
       Q_FOREACH ( Dispatcher * dispatchClient, dispatchers ) {
+        //Dispatcher::DispatchResult result = dispatchClient->
+        //sendMessage ( Call::fromString ( data ) );
         dispatchClient->sendMessage ( Call::fromString ( data ) );
-        wdebug ( dispatchClient, QString ( "Sent data to %1 for dispatching." )
+        wdebug ( wntrApp , QString ( "Sent data to %1 for dispatching." )
                  .arg ( dispatchClient->metaObject()->className() ) );
+        //if ( result == Dispatcher::DispatchBreakOff )
+        {
+          // At this point; we can do two things. Either stop dispatching
+          // altogerther since we know that this message is sent reliably.
+          // Or we can continue dispatching, but only to dispatchers that can
+          // report that they have a reliable dispatching ability. The second
+          // strategy implies the ability of the first, notably.
+        }
       }
     }
   }

@@ -26,6 +26,7 @@
 namespace Wintermute
 {
 class FactoryPrivate;
+class PluginProcess;
 
 /**
  * @class Factory
@@ -109,6 +110,14 @@ public:
    * Loads the specified plugin into this Wintermute process.
    */
   bool loadPlugin ( const QString& name );
+
+  /**
+   * @function spawnPlugin
+   * @param name The name of the plug-in.
+   *
+   * Loads the specified plugin in a separate process.
+   */
+  PluginProcess* spawnPlugin ( const QString& name );
 
   /**
    * @function unloadPlugin

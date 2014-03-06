@@ -37,7 +37,7 @@ class CallEvent : public QEvent
 public:
   static const int TypeReceive;
   static const int TypeDispatch;
-  explicit CallEvent ( int type, const Procedure::Call* call );
+  explicit CallEvent ( const int type, const Procedure::Call* call );
   virtual ~CallEvent();
   const Procedure::Call* call() const;
 };

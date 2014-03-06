@@ -43,15 +43,13 @@ protected:
 public:
   /**
    * @typedef Signature
-   *
-   * Provides the short-hand signature for Call methods.
+   * @brief   Provides the short-hand signature for Call methods.
    */
   typedef std::function<QVariant ( QVariantList ) > Signature;
 
   /**
    * @typedef Callback
-   *
-   * Provides the callback necessary for async calling.
+   * @brief   Provides the callback necessary for async calling.
    */
   typedef std::function<void ( QVariant ) > Callback;
 

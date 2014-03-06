@@ -20,7 +20,7 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/Events/Filters/call.hpp"
-#include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/dispatcher.hpp"
 #include "Wintermute/Events/Filters/call.moc"
 
@@ -35,25 +35,50 @@ CallFilter::CallFilter() :
 }
 
 bool
+CallFilter::handleDispatch ( QObject* object, QEvent* event )
+{
+  winfo ( this, "Handling a local call for dispatching aboard." );
+
+  CallEvent* callEvent = static_cast<CallEvent*> ( event );
+  const Procedure::Call* call = callEvent->call();
+
+  winfo ( this, QString ( "Dispatching %1 to '%2'." )
+    .arg ( call->toString(), call->recipient() ) );
+
+  Procedure::DispatcherPrivate::dispatch ( call->toString() );
+
+  winfo ( this, "Call dispatched." );
+
+  return true;
+}
+
+bool
+CallFilter::handleReceive ( QObject* object, QEvent* event )
+{
+  winfo ( this, "Handling a remote call for local invocation." );
+
+  CallEvent* callEvent = static_cast<CallEvent*> ( event );
+  const Procedure::Call* call = callEvent->call();
+  const bool invocated = Procedure::Call::attemptInvocation ( call );
+
+  invocated ? winfo ( this, "Call invoked." ) :
+    wwarn ( this, "Call failed to invoke." );
+
+  return true;
+}
+
+bool
 CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
-  if ( event->type() == CallEvent::TypeDispatch ) {
-    winfo ( this, "Handling a local call for dispatching aboard." );
-    CallEvent* callEvent = static_cast<CallEvent*> ( event );
-    const Procedure::Call* call = callEvent->call();
-    winfo ( this, QString ( "Call heading to %1." ).arg ( call->recipient() ) );
-    Procedure::DispatcherPrivate::dispatch ( call->toString() );
-    winfo ( this, "Call dispatched." );
-    return true;
-  } else if ( event->type() == CallEvent::TypeReceive ) {
-    winfo ( this, "Handling a remote call for local invocation." );
-    CallEvent* callEvent = static_cast<CallEvent*> ( event );
-    const Procedure::Call* call = callEvent->call();
-    const bool invocated = Procedure::Call::attemptInvocation ( call );
-    invocated ? winfo ( this, "Call invoked." ) : wwarn ( this, "Call failed to invoke." );
-    return true;
+  if ( event->type() == CallEvent::TypeDispatch )
+  {
+    return handleDispatch( object, event );
   }
-  // TODO: Filter out receive events.
+  else if ( event->type() == CallEvent::TypeReceive )
+  { 
+    return handleReceive( object, event );
+  }
+
   return QObject::eventFilter ( object, event );
 }
 

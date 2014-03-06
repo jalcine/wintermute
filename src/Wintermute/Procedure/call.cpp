@@ -94,8 +94,7 @@ Call::fromString ( const QString& data )
   QJson::Parser parser;
   bool ok;
   QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
-  if ( !ok )
-  { return 0; }
+  if ( !ok ) { return 0; }
   QVariantMap callMap = callData.toMap();
   Call* aCall = new Call ( wntrApp );
   aCall->d_ptr->type = ( Call::Type ) callMap["type"].toInt();
@@ -107,19 +106,37 @@ Call::fromString ( const QString& data )
 QVariant
 Call::operator() ( const QVariantList& data )
 {
-  return this->invoke ( data );
+  return invoke ( data );
 }
 
 bool
 Call::attemptInvocation ( const Call* call )
 {
   Procedure::Module* module = wntrApp->findModule ( call->recipient() );
-  if ( !module ) {
-    werr ( staticMetaObject.className(), QString ( "Can't find module '%1' in this process." ).arg ( call->recipient() ) );
+  if ( !module )
+  {
+    werr ( staticMetaObject.className(), 
+      QString ( "Can't find module '%1' in this process." )
+        .arg ( call->recipient() ) );
     return false;
   }
-  QVariant result = module->invoke ( call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList() );
-  winfo ( staticMetaObject.className(), result.toString() );
+
+  winfo ( staticMetaObject.className(), 
+      QString ( "Found module %1 for invocation.")
+        .arg ( module->domain() + "." + module->package() ) );
+
+  const QString methodName     = call->d_ptr->data[ "method" ].toString();
+  const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
+
+  winfo ( staticMetaObject.className(), 
+    QString( "Invoking %1 on %2..." )
+      .arg ( methodName, module->domain() + "." + module->package() ) );
+
+  QVariant result = module->invoke ( methodName, arguments );
+
+  winfo ( staticMetaObject.className(),
+    QString ( "Invocation result of %1: '%2'")
+      .arg ( methodName, result.toString() ) );
   return true;
 }
 

@@ -23,6 +23,14 @@
 #include <QtCore/QList>
 #include <Wintermute/Globals>
 
+/**
+ * @constant wntrApp
+ * @brief Shorthand for Wintermute::Application.
+ *
+ * Allows for quick access to the singleton instance of Wintermute.
+ */
+#define wntrApp Wintermute::Application::instance()
+
 namespace Wintermute
 {
 namespace Procedure
@@ -167,13 +175,5 @@ public:
   Q_SIGNAL void stopped();
 };
 }
-
-/**
- * @constant wntrApp
- * @brief Shorthand for Wintermute::Application.
- *
- * Allows for quick access to the singleton instance of Wintermute.
- */
-#define wntrApp Wintermute::Application::instance()
 
 #endif /* WINTERMUTE_CORE_APPLICATION_HPP */

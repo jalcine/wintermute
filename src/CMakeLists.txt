@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -41,8 +41,8 @@ set ( WINTERMUTE_SOURCES
   Wintermute/Procedure/dummy_receiver.cpp
 
   ## Plugin binaries
-  Wintermute/plugin.cpp
   Wintermute/factory.cpp
+  Wintermute/plugin.cpp
 
   ## Core binaries
   Wintermute/logging.cpp

@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013 - 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -59,7 +59,9 @@ function(wintermute_plugin_declare)
   set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
                                 ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING INTERNAL FORCE)
   set(${_local}_HEADERS_PATH    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
-  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_TARGET}.spec" CACHE STRING "Def.")
+  set(${_local}_DEFINITION_FILE
+    "${CMAKE_BINARY_DIR}/plugin-${wdp_TARGET}.spec" CACHE STRING "Definitions
+    file.")
 
 endfunction(wintermute_plugin_declare)
 
@@ -199,11 +201,15 @@ function(wintermute_plugin_set_version)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpsv_TARGET}" _local)
 
   foreach(_pluginVersionVariable ${_pluginVersions})
-    set("${_local}${_pluginVersionVariable}" "${wpsv_${_pluginVersionVariable}}" CACHE STRING "Versioning.")
+    set("${_local}${_pluginVersionVariable}" 
+      "${wpsv_${_pluginVersionVariable}}" 
+      CACHE STRING "Versioning.")
   endforeach(_pluginVersionVariable ${_pluginVersions})
 
   foreach(_systemVersionVariable ${_systemVersions})
-    set("${_local}${_systemVersionVariable}" "${wpsv_${_systemVersionVariable}}" CACHE STRING "System versioning.")
+    set("${_local}${_systemVersionVariable}" 
+      "${wpsv_${_systemVersionVariable}}"
+      CACHE STRING "System versioning.")
   endforeach(_systemVersionVariable ${_systemVersions})
 
 endfunction(wintermute_plugin_set_version)
