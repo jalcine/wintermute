@@ -31,12 +31,17 @@ set ( dbus_HDRS
   adaptor.hpp
   receiver.hpp
   module.hpp
+  globals.hpp
 )
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/dbus/globals.hpp
   @ONLY )
 
-wintermute_plugin_declare ( TARGET dbus SOURCES ${dbus_SRCS} )
+wintermute_plugin_declare (
+  TARGET dbus
+  HEADERS ${dbus_HDRS}
+  SOURCES ${dbus_SRCS}
+)
 wintermute_plugin_set_version ( TARGET dbus
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1

@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_DBUS_ADADPTOR_HPP
-#define WINTERMUTE_DBUS_ADADPTOR_HPP
+#ifndef WINTERMUTE_DBUS_ADAPTOR_HPP
+#define WINTERMUTE_DBUS_ADAPTOR_HPP
 
 #include <QtDBus/QDBusAbstractAdaptor>
 #include <QtDBus/QDBusMessage>
@@ -48,7 +48,8 @@ class Adaptor : public QDBusAbstractAdaptor
         "")
   public:
     explicit Adaptor( Module* module );
-    void registerOnDBus();
+    Q_SLOT void registerOnDBus();
+    Q_SLOT void deregisterFromDBus(); 
     virtual ~Adaptor();
 
   public slots:

@@ -39,6 +39,7 @@ class Module : public Wintermute::Procedure::Module
 public:
   explicit Module ( DBus::Plugin* plugin );
   Q_SLOT virtual void start();
+  Q_SLOT virtual void stop();
   virtual ~Module();
 };
 }
