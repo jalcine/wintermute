@@ -99,8 +99,8 @@ public:
     module = QSharedPointer<Procedure::ProcessModule> ( new 
       Procedure::ProcessModule );
 #if DEBUG
-    auto dummyDispatcher = new Procedure::DummyDispatcher;
-    auto dummyReceiver   = new Procedure::DummyReceiver;
+    //auto dummyDispatcher = new Procedure::DummyDispatcher;
+    //auto dummyReceiver   = new Procedure::DummyReceiver;
 #endif
   }
 

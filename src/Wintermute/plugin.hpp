@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PLUGIN_HPP
-#define WINTERMUTE_CORE_PLUGIN_HPP
+#ifndef WINTERMUTE_PLUGIN_HPP
+#define WINTERMUTE_PLUGIN_HPP
 
 #include <Wintermute/Globals>
 #include <Wintermute/Version>
@@ -156,4 +156,4 @@ typedef QList<Plugin*> PluginList;
 typedef QMap<QString, Plugin*> PluginMap;
 }
 
-#endif /* WINTERMUTE_CORE_PLUGIN_HPP */
+#endif /* WINTERMUTE_PLUGIN_HPP */

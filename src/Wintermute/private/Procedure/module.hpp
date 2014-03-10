@@ -42,16 +42,19 @@ public:
   QMap<QString, CallPointer> calls;
 
   ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( "" ), domain ( "" ), calls() {
+    q_ptr ( q ), package ( "" ), domain ( "" ), calls()
+  {
     winfo ( q_ptr, "Module setting up..." );
   }
 
-  void checkQualifiedName() {
-    if ( !domain.isEmpty() && !package.isEmpty() ) {
-      if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) ) {
-        ( new MethodCall ( WINTERMUTE_DOMAIN ".heartbeat",
-                           "greet", QVariantList() ) )->dispatch ( q_ptr );
-        wntrApp->d_ptr->modules << q_ptr;
+  void checkQualifiedName()
+  {
+    if ( !domain.isEmpty() && !package.isEmpty() )
+    {
+      if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) )
+      {
+         wntrApp->d_ptr->modules << q_ptr;
+         // TODO: Emit an signal about 'moduleAdded' here.
       }
     }
   }
