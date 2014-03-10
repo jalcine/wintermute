@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,30 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_HEARTBEAT_PLUGIN_HPP
-#define WINTERMUTE_HEARTBEAT_PLUGIN_HPP
-
-#include <Wintermute/Plugin>
-#include <Wintermute/Procedure/Module>
+#include <QtCore/QObject>
+#include "Wintermute/private/Procedure/module.hpp"
 
 namespace Wintermute
 {
 namespace Heartbeat
 {
-class Plugin : public Wintermute::Plugin
-{
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Plugin );
-  Procedure::Module* module;
+  class Process;
+  class MonitorModulePrivate
+  {
+    public:
+      QMap<qint64, Process*> processes;
+      MonitorModule* q_ptr;
+      Q_DECLARE_PUBLIC ( MonitorModule );
 
-public:
-  explicit Plugin();
-  virtual QString name() const;
-  virtual Q_SLOT void start();
-  virtual Q_SLOT void stop();
-  virtual Version version() const;
-  virtual Version systemVersion() const;
-  virtual State state() const;
-  virtual Type type() const;
+      MonitorModulePrivate ( MonitorModule* q ) :
+        processes (), q_ptr ( q )
+      {
+        processes.clear();
+      }
 
-};
+      QVariant record ( const QVariantList& arguments )
+      {
+      }
+  };
 }
 }
-
-#endif /* */

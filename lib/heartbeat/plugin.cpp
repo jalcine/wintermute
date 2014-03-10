@@ -16,19 +16,25 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <Wintermute/Application>
 #include "plugin.hpp"
-#include "module.hpp"
 #include "globals.hpp"
+#include "modules/pulse.hpp"
+#include "modules/monitor.hpp"
 #include "plugin.moc"
 
 using Wintermute::Heartbeat::Plugin;
-using Wintermute::Heartbeat::Module;
 using Wintermute::Version;
 
 Plugin::Plugin() :
   Wintermute::Plugin(),
-  module ( new Wintermute::Heartbeat::Module ( this ) )
+  module ( 0 )
 {
+  // TODO There has to be a better way to do this.
+  if (wntrApp->modules().length() == 1)
+    module = new Heartbeat::MonitorModule(this);
+  else
+    module = new Heartbeat::PulseModule(this);
 }
 
 QString
@@ -40,12 +46,14 @@ Plugin::name() const
 void
 Plugin::stop()
 {
-  //module->stop();
+  Q_ASSERT (module != 0);
+  module->stop();
 }
 
 void
 Plugin::start()
 {
+  Q_ASSERT (module != 0);
   module->start();
 }
 
@@ -73,4 +81,4 @@ Plugin::type() const
   return Support;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute - heartbeat, Wintermute::Heartbeat::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute-heartbeat, Wintermute::Heartbeat::Plugin );

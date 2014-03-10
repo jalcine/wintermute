@@ -16,7 +16,22 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_PLUGIN_HEARTBEAT_GLOBALS_HPP
-#define WINTERMUTE_PLUGIN_HEARTBEAT_GLOBALS_HPP
+#ifndef WINTERMUTE_HEARTBEAT_GLOBALS_HPP
+#define WINTERMUTE_HEARTBEAT_GLOBALS_HPP
+
+#include <Wintermute/Globals>
+
+/**
+ * @def    WINTERMUTE_HEARTBEAT_DOMAIN
+ * @brief  Root domain representing the heartbeat system.
+ */
+#define WINTERMUTE_HEARTBEAT_DOMAIN   WINTERMUTE_DOMAIN".heartbeat"
+
+/**
+ * @def    WINTERMUTE_HEARTBEAT_INTERVAL
+ * @brief  How often (in milliseconds) the pulse module attempts to send out a
+ *         pulse call in between calls.
+ */
+#define WINTERMUTE_HEARTBEAT_INTERVAL 2000
 
 #endif /* */
