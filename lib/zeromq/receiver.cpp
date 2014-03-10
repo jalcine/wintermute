@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,5 +53,5 @@ Receiver::onMessageReceived ( const QList<QByteArray>& data )
   }
   winfo ( this, QString ( "Obtained incoming call of %1 bytes." ).arg ( chunks.size() ) );
   Call* receivedCall = Call::fromString ( chunks );
-  receivedCall->invoke();
+  receivedCall->operator()();
 }

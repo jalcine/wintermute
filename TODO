@@ -59,6 +59,8 @@ CURRENT TASKS:
     @ Added [Sun 2013-09-29]
   - Incorporate a documenting tool (issue #11).
     @ Added [Sun 2013-09-29]
+  - Implement the use of a state machine.
+    
 COMPLETED TASKS:
 
 # vim:ft=quicktask
