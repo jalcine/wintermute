@@ -37,17 +37,17 @@ CallFilter::CallFilter() :
 bool
 CallFilter::handleDispatch ( QObject* object, QEvent* event )
 {
-  winfo ( this, "Handling a local call for dispatching aboard." );
+  winfo ( object, "Handling a local call for dispatching aboard." );
 
   CallEvent* callEvent = static_cast<CallEvent*> ( event );
   const Procedure::Call* call = callEvent->call();
 
-  winfo ( this, QString ( "Dispatching %1 to '%2'." )
+  winfo ( object, QString ( "Dispatching %1 to '%2'." )
     .arg ( call->toString(), call->recipient() ) );
 
   Procedure::DispatcherPrivate::dispatch ( call->toString() );
 
-  winfo ( this, "Call dispatched." );
+  winfo ( object, "Call dispatched." );
 
   return true;
 }
@@ -55,14 +55,14 @@ CallFilter::handleDispatch ( QObject* object, QEvent* event )
 bool
 CallFilter::handleReceive ( QObject* object, QEvent* event )
 {
-  winfo ( this, "Handling a remote call for local invocation." );
+  winfo ( object, "Handling a remote call for local invocation." );
 
   CallEvent* callEvent = static_cast<CallEvent*> ( event );
   const Procedure::Call* call = callEvent->call();
   const bool invocated = Procedure::Call::attemptInvocation ( call );
 
-  invocated ? winfo ( this, "Call invoked." ) :
-    wwarn ( this, "Call failed to invoke." );
+  invocated ? winfo ( object, "Call invoked." ) :
+    wwarn ( object, "Call failed to invoke." );
 
   return true;
 }

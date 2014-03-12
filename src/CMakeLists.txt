@@ -113,11 +113,13 @@ configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in ${CMAKE_SOURCE_DIR}/src/Wi
 
 # Install the binary.
 install(TARGETS wintermute
+  COMPONENT Runtime
   RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})
 
 foreach(_HDR ${WINTERMUTE_HEADERS})
   string(FIND ${_HDR} / _dir_pos REVERSE)
   string(SUBSTRING "${_HDR}" 0 ${_dir_pos} _DIR)
   install(FILES ${_HDR}
+    COMPONENT Development
     DESTINATION ${WINTERMUTE_INCLUDE_DIR}/${_DIR})
 endforeach()

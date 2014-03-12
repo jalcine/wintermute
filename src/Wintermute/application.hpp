@@ -121,13 +121,14 @@ public:
 
   /**
    * @fn processName
-   * @brief Obtains the stringifed process name used by Wintermute.
+   * @brief Obtains the process name used by Wintermute.
    *
-   * Obtains the process name of this running instance of Wintermute. This
-   * is typically in the form of `domain.application:$PID`, a bit similar
-   * to package paths in Java. The :$PID portion is added to help increase
-   * the precision of finding specific processes. Process names are formed
-   * from the formulated name of the 'root module'.
+   * Obtains the process name of this running instance of 
+   * Wintermute. This is typically in the form of 
+   * `domain.application:$PID`, a bit similar to package paths
+   * in Java. The :$PID portion is added to help increase the 
+   * precision of finding specific processes. Process names 
+   * are formed from the formulated name of the 'root module'.
    *
    * @see setModule()
    * @see module()

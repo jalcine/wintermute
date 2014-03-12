@@ -43,7 +43,8 @@ Module::dispatch ( const Call& call ) const
 }
 
 QVariant
-Module::invoke ( const QString callName, const QVariantList data )
+Module::invoke ( const QString callName, 
+    const QVariantList data )
 {
   Q_D ( Module );
   QVariant result;
@@ -54,24 +55,17 @@ Module::invoke ( const QString callName, const QVariantList data )
     return result;
   }
 
-  CallPointer call = d->calls[callName];
-  if ( call.isNull() )
+  CallPointer callPtr = d->calls[callName];
+  Call* call = nullptr;
+  if ( callPtr.isNull() )
   {
     werr ( this, QString ("Attempted to invoke a null call '%1'.")
       .arg( callName ) );
     return result;
   }
 
-  try
-  {
-    result = call->invoke ( data );
-  }
-  catch ( std::bad_function_call e )
-  {
-    werr ( this, QString ("Lack of a function reference for call '%1'.")
-      .arg( callName ) );
-  }
-
+  call = callPtr.data();
+  result = call->operator()( data );
   return result;
 }
 
@@ -79,25 +73,23 @@ void
 Module::mount ( CallPointer call )
 {
   Q_D ( Module );
-  winfo ( this, QString( "Adding call %1 to %2..." )
-    .arg( call->name(), domain() + "." + package() ) );
-
   if ( d->calls.contains( call->name() ) )
   {
-    winfo ( this, QString( "Updating call of %1 to %2..." )
+    winfo ( this, QString( "Updating call %1 to %2..." )
       .arg( call->name(), domain() + "." + package() ) );
-    d->calls[ call->name() ].clear();
+    d->calls.remove ( call->name() );
   }
 
-  winfo ( this, QString( "Adding call of %1 to %2..." )
+  winfo ( this, QString( "Adding call %1 to %2..." )
     .arg( call->name(), domain() + "." + package() ) );
   d->calls.insert ( call->name(), call );
 }
 
 LambdaCall*
-Module::mountLambda ( Call::Signature lambda, const QString& name )
+Module::mountLambda ( const QString& name,
+    LambdaCall::Signature lambda )
 {
-  CallPointer call ( new LambdaCall ( lambda, name ) );
+  CallPointer call ( new LambdaCall ( name, lambda ) );
   mount ( call );
   return dynamic_cast<LambdaCall*> ( call.data() );
 }

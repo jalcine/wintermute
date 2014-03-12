@@ -26,11 +26,13 @@ file(GLOB_RECURSE WINTERMUTE_TEST_CORE_SOURCES
 
 macro(wintermute_add_unit_test unittestname unittestsrc)
   # Define sources and moc them up.
-  SET(unittest_${unittestname}_SRCS ${unittestsrc} ${WINTERMUTE_TEST_CORE_SOURCES})
+  SET(unittest_${unittestname}_SRCS ${unittestsrc}
+    ${WINTERMUTE_TEST_CORE_SOURCES})
   qt4_automoc(${unittest_${unittestname}_SRCS})
 
   # Set up the test as if it was Wintermute.
-  add_executable(unittest_${unittestname} ${unittest_${unittestname}_SRCS})
+  add_executable(unittest_${unittestname} EXCLUDE_FROM_ALL
+    ${unittest_${unittestname}_SRCS})
   wintermute_add_properties(unittest_${unittestname})
   target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
 

@@ -32,16 +32,16 @@ Call::Call ( QObject* parent ) :
 {
 }
 
-Call::Call ( CallPrivate* d ) :
-  QObject ( Wintermute::Application::instance() ), d_ptr ( d )
+Call::Call ( CallPrivate* old_d ) :
+  QObject ( Wintermute::Application::instance() ), d_ptr ( old_d )
 {
+  Q_D ( Call );
+  d->q_ptr = this;
 }
 
 QVariant
 Call::invoke ( const QVariantList& data )
 {
-  Q_D ( Call );
-  return d->function ( data );
 }
 
 void
@@ -96,11 +96,11 @@ Call::fromString ( const QString& data )
   QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
   if ( !ok ) { return 0; }
   QVariantMap callMap = callData.toMap();
-  Call* aCall = new Call ( wntrApp );
-  aCall->d_ptr->type = ( Call::Type ) callMap["type"].toInt();
-  aCall->d_ptr->recipient = callMap["recipient"].toString();
-  aCall->d_ptr->data = callMap["data"].toMap();
-  return aCall;
+  CallPrivate* d_ptr = new CallPrivate(nullptr);
+  d_ptr->type = ( Call::Type ) callMap["type"].toInt();
+  d_ptr->recipient = callMap["recipient"].toString();
+  d_ptr->data = callMap["data"].toMap();
+  return new Call(d_ptr);
 }
 
 QVariant

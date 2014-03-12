@@ -30,12 +30,18 @@ set ( zeromq_HDRS
   module.hpp
   dispatcher.hpp
   receiver.hpp
+  globals.hpp
 )
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/zeromq/globals.hpp
   @ONLY )
 
-wintermute_plugin_declare ( TARGET zeromq SOURCES ${zeromq_SRCS} )
+wintermute_plugin_declare ( 
+  TARGET zeromq
+  HEADERS ${zeromq_HDRS}
+  SOURCES ${zeromq_SRCS}
+)
+
 wintermute_plugin_set_version ( TARGET zeromq
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1

@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PROCEDURE_METHOD_CALL_HPP
-#define WINTERMUTE_CORE_PROCEDURE_METHOD_CALL_HPP
+#ifndef WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
+#define WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 
 #include <QtCore/QObject>
 #include <Wintermute/Procedure/Call>
@@ -39,6 +39,9 @@ class MethodCall : public Call
   Q_OBJECT;
   Q_DISABLE_COPY ( MethodCall );
   Q_DECLARE_PRIVATE ( MethodCall );
+  Q_PROPERTY(QVariantList Arguments READ arguments WRITE setArguments);
+  Q_PROPERTY(QString Method READ method WRITE setMethod);
+  Q_PROPERTY(QString Module READ module WRITE setModule);
 
 public:
   /**
@@ -47,8 +50,10 @@ public:
    * Crafts a call that can be used to invoke a remote method over the
    * network.
    */
-  explicit MethodCall ( const QString& module, const QString& method,
-                        const QVariantList arguments = QVariantList() );
+  explicit MethodCall ( 
+    const QString& module = QString::null,
+    const QString& method = QString::null, 
+    const QVariantList arguments = QVariantList() );
 
   /**
    * @dtor
@@ -60,12 +65,16 @@ public:
    * @brief The arguments to pass over the wire.
    */
   QVariantList arguments() const;
+  QString module() const;
+  QString method() const;
 
   /**
    * @fn setArguments
    * @brief Sets the arguments to use for this call.
    */
   void setArguments ( const QVariantList& arguments );
+  void setModule ( const QString& module );
+  void setMethod ( const QString& method );
 
   /**
    * @fn dispatch

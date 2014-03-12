@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_FACTORY_HPP
-#define WINTERMUTE_CORE_FACTORY_HPP
+#ifndef WINTERMUTE_FACTORY_HPP
+#define WINTERMUTE_FACTORY_HPP
 
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
@@ -112,20 +112,20 @@ public:
   bool loadPlugin ( const QString& name );
 
   /**
-   * @function spawnPlugin
-   * @param name The name of the plug-in.
-   *
-   * Loads the specified plugin in a separate process.
-   */
-  PluginProcess* spawnPlugin ( const QString& name );
-
-  /**
    * @function unloadPlugin
    * @param name The name of the plug-in.
    *
    * Unloads the specified plugin from this Wintermute process.
    */
   bool unloadPlugin ( const QString& name );
+
+  /**
+   * @function spawnPlugin
+   * @param name The name of the plug-in.
+   *
+   * Loads the specified plugin in a separate process.
+   */
+  PluginProcess* spawnPlugin ( const QString& name );
 
   bool loadedPlugin ( const QString& name );
   /**
@@ -159,4 +159,4 @@ public:
 
 #define wntrFactory Wintermute::Factory::instance()
 
-#endif /* WINTERMUTE_CORE_FACTORY_HPP */
+#endif /* WINTERMUTE_FACTORY_HPP */

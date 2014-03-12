@@ -43,30 +43,40 @@ set(WINTERMUTE_CMAKE_MODULES_DIR
   "${WINTERMUTE_BUILD_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
 
 # Define the defintions to use.
-set(WINTERMUTE_COMPILE_DEFINITIONS          WINTERMUTE)
-set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG    WINTERMUTE_DEBUG DEBUG)
-set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE  WINTERMUTE_RELEASE RELEASE NDEBUG)
+set(WINTERMUTE_COMPILE_DEFINITIONS
+  WINTERMUTE)
+set(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG
+  WINTERMUTE_DEBUG DEBUG)
+set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE
+  WINTERMUTE_RELEASE RELEASE NDEBUG)
 
 # Define the flags for linking and compiling.
-set(WINTERMUTE_COMPILE_FLAGS         "-std=c++0x -Wall")
-set(WINTERMUTE_COMPILE_FLAGS_RELEASE "-Ofast -frtti")
-set(WINTERMUTE_COMPILE_FLAGS_DEBUG   "-g -O0 -Wextra -Wall -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Woverflow -fprofile-arcs -ftest-coverage")
+set(WINTERMUTE_COMPILE_FLAGS
+  "-std=c++0x -Wall")
+set(WINTERMUTE_COMPILE_FLAGS_RELEASE
+  "-Ofast -frtti")
+set(WINTERMUTE_COMPILE_FLAGS_DEBUG
+  "-g -O0 -Wextra -Wall -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Woverflow -fprofile-arcs -ftest-coverage")
 set(WINTERMUTE_LINK_FLAGS )
-set(WINTERMUTE_LINK_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage -lgcov")
+set(WINTERMUTE_LINK_FLAGS_DEBUG
+  "-fprofile-arcs -ftest-coverage -lgcov")
 set(WINTERMUTE_LINK_FLAGS_RELEASE )
 
 set(WINTERMUTE_LIBRARIES
   Log4Qt
   ${QJSON_LIBRARIES}
   ${QCOMMANDLINE_LIBRARIES}
+  ${QT_QTCORE_LIBRARY}
 )
 set(WINTERMUTE_INCLUDE_DIRS
   ${LOG4QT_INCLUDE_DIRS}
   ${QJSON_INCLUDE_DIRS}
   ${QCOMMANDLINE_INCLUDE_DIR}
+  ${QT_QTCORE_INCLUDE_DIR}
 )
 
 set(WINTERMUTE_PLUGIN_LIBRARY_DIR    "${WINTERMUTE_LIBRARY_DIR}")
+set(WINTERMUTE_PLUGIN_INCLUDE_DIR    "${WINTERMUTE_CORE_INCLUDE_DIR}/Plugins")
 set(WINTERMUTE_PLUGIN_DEFINITION_DIR "${WINTERMUTE_DATA_DIR}/plugindefs")
 
 ## Some CMake things we'd need.
