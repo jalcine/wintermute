@@ -20,13 +20,37 @@
 
 find_package(Doxygen REQUIRED)
 
+include(CMakeParseArguments)
+include(WintermuteVariables)
+
+if (NOT TARGET wintermute)
+  set(WINTERMUTE_DOXYFILE_TEMPLATE 
+    "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/Doxyfile.in")
+else()
+  set(WINTERMUTE_DOXYFILE_TEMPLATE 
+    "${WINTERMUTE_CMAKE_TEMPLATES_INSTALL_DIR}/Doxyfile.in")
+endif()
+
 macro(wintermute_generate_documentation)
-  set(_singleArgs TARGETS)
+  set(_singleArgs TARGET NAME VERSION BRIEF OUTPUT_DIRECTORY)
   set(_multiArgs SOURCES)
 
-  cmake_parse_arguments(wgd "" "" "${_multiArgs}" ${ARGN})
+  cmake_parse_arguments(wgd "" "${_singleArgs}" "${_multiArgs}" ${ARGN})
 
-  # TODO: Configure the Doxygen configuration file.
-  # TODO: Define a target for Doxygen to execute.
-  # TODO: Make the documentation target dependent on a parent target.
+  set(_local_target ${wgd_TARGET}-doc)
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wgd_TARGET}" _local)
+
+  # DONE: Configure the Doxygen configuration file.
+  set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${${_local}_TARGET}")
+  configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
+
+  # DONE: Define a target for Doxygen to execute.
+  # DONE: Make the documentation target dependent on a parent target.
+  add_custom_command(TARGET ${_local_target} PRE_BUILD
+    DEPENDS           ${wgd_TARGET}
+    COMMAND           ${DOXYGEN_EXECUTABLE}
+    ARGS              ${${_local}_DOXYFILE}
+    DEPENDS           ${${_local}_TARGET}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
 endmacro(wintermute_generate_documentation)
