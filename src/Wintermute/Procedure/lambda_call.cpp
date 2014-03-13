@@ -28,6 +28,7 @@ LambdaCall::LambdaCall ( const QString& name, Signature lambda ) :
 {
   Q_D ( Call );
   d->name = name;
+  setFunction ( lambda );
 }
 
 LambdaCall::Signature
@@ -45,15 +46,7 @@ LambdaCall::setFunction(Signature newFunction)
 QVariant
 LambdaCall::invoke ( const QVariantList& data )
 {
-  if ( m_function != nullptr )
-  {
-    return m_function ( data );
-  }
-  else
-  {
-    winfo ( this, "Null function reference." );
-    return QVariant ();
-  }
+  return ( m_function ? m_function ( data ) : QVariant() );
 }
 
 LambdaCall::~LambdaCall()

@@ -42,6 +42,8 @@ Call::Call ( CallPrivate* old_d ) :
 QVariant
 Call::invoke ( const QVariantList& data )
 {
+  winfo(this, "This is an error.");
+  return QVariant();
 }
 
 void
@@ -130,7 +132,7 @@ Call::attemptInvocation ( const Call* call )
 
   winfo ( staticMetaObject.className(), 
     QString( "Invoking %1 on %2..." )
-      .arg ( methodName, module->domain() + "." + module->package() ) );
+      .arg ( methodName, module->qualifiedName() ) );
 
   QVariant result = module->invoke ( methodName, arguments );
 

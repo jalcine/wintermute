@@ -30,17 +30,10 @@ Plugin::Plugin() :
   Wintermute::Plugin(),
   module ( 0 )
 {
-  // TODO There has to be a better way to do this.
   if (wntrApp->modules().length() == 1)
     module = new Heartbeat::MonitorModule(this);
-  else
-    module = new Heartbeat::PulseModule(this);
-}
 
-QString
-Plugin::name() const
-{
-  return "wintermute-heartbeat";
+  module = new Heartbeat::PulseModule(this);
 }
 
 void
@@ -57,28 +50,5 @@ Plugin::start()
   module->start();
 }
 
-Version
-Plugin::version() const
-{
-  return Version::fromString ( configuration()->value ( "Version/Plugin" ).toString() );
-}
-
-Version
-Plugin::systemVersion() const
-{
-  return Version::fromString ( configuration()->value ( "Version/System" ).toString() );
-}
-
-Plugin::State
-Plugin::state() const
-{
-  return Loaded;
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  return Support;
-}
 
 Q_EXPORT_PLUGIN2 ( wintermute-heartbeat, Wintermute::Heartbeat::Plugin );

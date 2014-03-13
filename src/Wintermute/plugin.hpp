@@ -63,49 +63,6 @@ public:
   Q_SIGNAL void stopped();
 
   /**
-   * @enum State
-   * Flags used to represent the different states that a plug-in can exist
-   * in.
-   */
-  enum State
-  {
-    // Reserved for a lack of a state (typically null) plugin.
-    Undefined = 0x00,
-    //
-    Loading   = 0x01,
-    //
-    Loaded    = 0x02,
-    // The plugin is currently underdoing the work of removing itself from Wintermute.
-    Unloading = 0x03,
-    //
-    Unloaded  = 0x04,
-    //
-    Crashed   = 0x05
-  };
-
-  /**
-   * Defines the kind of plugin that this is.
-   */
-  enum Type
-  {
-    // Defined as a module-based plugin, it'll run in a separate process.
-    Module  = 0x001,
-    // Defined as an add-on plugin, it'll load in its specified parent process.
-    Addon   = 0x002,
-    // Defined as a support plugin, it'll load in every running Wintermute process.
-    Support = 0x003
-  };
-
-  /**
-   * @fn isLoaded
-   * Determines if the plugin has been loaded.
-   */
-  inline bool isLoaded() const
-  {
-    return state() == Loaded;
-  }
-
-  /**
    * @fn name
    * Obtains the unique name of the plugin.
    */
@@ -124,16 +81,10 @@ public:
   virtual Version systemVersion() const = 0;
 
   /**
-   * @fn state
-   * Obtains the current state of the plugin.
+   * @fn isLoaded
+   * Determines if the plugin has been loaded.
    */
-  virtual State state() const = 0;
-
-  /**
-   * @fn type
-   * Obtains the type of plugin.
-   */
-  virtual Type type() const = 0;
+  bool isLoaded() const;
 
   /**
    * @fn start

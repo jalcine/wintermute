@@ -48,13 +48,18 @@ Module::start()
 }
 
 void
+Module::stop()
+{
+}
+
+void
 Module::startUpPlugins(const QStringList& plugins)
 {
-  Q_FOREACH(const QString & plugin, plugins)
+  for (const QString& plugin: plugins)
   {
     winfo(wntrFactory,
       QString("Invoking %1 for daemon startup...").arg(plugin));
-    const PluginProcess* process = wntrFactory->spawnPlugin(plugin);
+    wntrFactory->spawnPlugin(plugin);
     winfo(wntrFactory,
       QString("Started daemon plugin '%1'.").arg(plugin));
   }

@@ -62,11 +62,9 @@ void
 PulseModule::pulse(PulseType type)
 {
   Q_D ( PulseModule );
-  // TODO: Keep count of the number of times I send out a call.
-  d->count ++;
   MethodCall theCall (WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
-  QVariantMap fields;
-  theCall.setArguments(QVariantList() << d->count << type );
+  quint64 pid = QCoreApplication::applicationPid();
+  theCall.setArguments(QVariantList() << d->count++ << type << pid );
   dispatch ( theCall );
 }
 

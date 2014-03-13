@@ -17,6 +17,7 @@
  **/
 
 #include <QtCore/QObject>
+#include <QtCore/QVariant>
 #include "Wintermute/private/Procedure/module.hpp"
 
 namespace Wintermute
@@ -35,10 +36,31 @@ namespace Heartbeat
         processes (), q_ptr ( q )
       {
         processes.clear();
+        winfo(q, "Prepped to monitor this system.");
       }
 
+      QVariant greet ( const QVariantList& arguments )
+      {
+        for (const QVariant i: arguments)
+        {
+          winfo(wntrApp, i.toString());
+        }
+        return 10;
+      }
+
+      /**
+       * @fn record
+       * @param QVariantList arguments
+       *        - count: A count of the number of total pings sent.
+       *        - type:  The type of ping this is.
+       *        - pid:   PID of process that's pinging.
+       */
       QVariant record ( const QVariantList& arguments )
       {
+        // TODO: Check if said process exists.
+        // TODO: Update process information.
+        quint64 pid = arguments[2].toUInt();
+        return true;
       }
   };
 }

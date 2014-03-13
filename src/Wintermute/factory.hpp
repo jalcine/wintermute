@@ -56,15 +56,13 @@ class Factory : public QObject
 
   /**
    * @function Factory
-   * @constructor
-   *
+   * @ctor
    */
   explicit Factory();
 
 private:
   Q_SLOT void start();
   Q_SLOT void stop();
-  Q_SLOT void pluginStateChange ( const QString& name, const Plugin::State& state );
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
 

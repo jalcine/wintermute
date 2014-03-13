@@ -31,7 +31,9 @@ using Wintermute::Plugin;
 using Wintermute::Logging;
 using Wintermute::Logger;
 
-Plugin::Plugin ( ) : QObject ( Factory::instance() ), d_ptr ( new PluginPrivate ( this ) )
+Plugin::Plugin ( ) : 
+  QObject ( Factory::instance() ), 
+  d_ptr ( new PluginPrivate ( this ) )
 {
 }
 
@@ -41,10 +43,45 @@ Plugin::configuration() const
   Q_D ( const Plugin );
   if ( d->settings == 0 && isLoaded() ) {
     d->settings = new QSettings( "Wintermute", name(), parent() );
-    winfo( this, QString( "%1's settings are at %2." ).arg( name(),
+    winfo( this, QString( "%1's settings are now found at %2." ).arg( name(),
            d->settings->fileName() ) );
   }
   return d->settings;
+}
+
+Version
+Plugin::version() const
+{
+  QVariant value = configuration()->value ( "Version/Plugin" );
+  return value.isNull() ? Version() : Version::fromString ( value.toString() );
+}
+
+Version
+Plugin::systemVersion() const
+{
+  QVariant value = configuration()->value ( "Version/System" );
+  return value.isNull() ? Version() : Version::fromString ( value.toString() );
+}
+
+QString
+Plugin::name() const
+{
+  QVariant value = configuration()->value("Plugin/Name");
+  return value.isNull() ? "Unnamed Plugin" : value.toString();
+}
+
+bool
+Plugin::isLoaded() const
+{
+  Q_D ( const Plugin );
+  return d->pluginLoader != 0 && d->pluginLoader->isLoaded();
+}
+
+Plugin::Type
+Plugin::type() const
+{
+  QVariant value = configuration()->value("Plugin/Type");
+  return value.isNull() ? Plugin::TypeUndefined : (Plugin::Type) value.toInt();
 }
 
 Plugin::~Plugin()

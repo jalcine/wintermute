@@ -58,7 +58,7 @@ public:
       this->loader = 0;
       return false;
     }
-    winfo ( q_ptr, QString ( "Plugin interface loaded for %1." ).
+    winfo ( q_ptr, QString ( "Plugin interface loaded for %1; " ).
             arg ( q->name() ) + QString ( "Welcome to Wintermute." ) );
     return true;
   }

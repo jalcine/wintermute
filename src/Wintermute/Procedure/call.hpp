@@ -43,7 +43,7 @@ protected:
    * @fn invoke
    * @param data A list of QVariant variables.
    */
-  QVariant invoke ( const QVariantList& data = QVariantList() );
+  virtual QVariant invoke ( const QVariantList& data = QVariantList() );
 
   friend class Module;
 
@@ -54,7 +54,7 @@ public:
    *
    * Defines the potential types a Call can take in the procedural system. In
    * order to keep things clean, you can add your own types only if it's over
-   * 9000 (this was intentional)
+   * 0x9000 (this was intentional).
    */
   enum Type {
     TypeUndefined    = 0x0000,  // Undefined call. Don't bother with.
@@ -67,7 +67,7 @@ public:
     TypeRemoteNoAuth = 0x0021,  // This call deals with a remote network with no authentication.
     TypeRemoteAuth   = 0x0022,  // This call deals with a remote network with authentication.
 
-    TypeUser         = 0x1000   // Anything above this is available to the user space.
+    TypeUser         = 0x9000   // Anything above this is available to the user.
   };
   Q_FLAGS ( Type Types );
 

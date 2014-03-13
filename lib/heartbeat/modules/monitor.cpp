@@ -34,6 +34,16 @@ MonitorModule::MonitorModule( Heartbeat::Plugin* plugin ) :
       "Getting ready to listen to the heartbeat pulse.");
   setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
   setPackage ( "monitor" );
+
+  mountLambda ( "greet", [&] (QVariantList args) -> QVariant { 
+    wdebug(this, "We got someone saying hello.");
+    return d->greet(args);
+  } );
+
+  mountLambda ( "record", [&] (QVariantList args) -> QVariant { 
+    wdebug(this, "Entering a new beating record.");
+    return d->record(args);
+  } );
 }
 
 void
