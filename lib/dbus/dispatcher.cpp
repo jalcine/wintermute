@@ -54,9 +54,10 @@ Dispatcher::sendMessage ( const Call* call )
   }
   else
   {
+    winfo(this, QString("Reaching out to %1 processess...").arg(friendlyServices.length()));
     Q_FOREACH(const QString remoteService, friendlyServices)
     {
-      winfo (this, QString("Sending call to %1").arg ( remoteService ));
+      winfo (this, QString("Sending method call to %1...").arg ( remoteService ));
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
           "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
       methodCall << call->toString();

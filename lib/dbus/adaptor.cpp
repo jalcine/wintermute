@@ -61,6 +61,18 @@ Adaptor::registerOnDBus()
 }
 
 void
+Adaptor::deregisterFromDBus()
+{
+  QDBusConnection bus = QDBusConnection::sessionBus();
+  const bool serviceRegistered = bus.registerService ( QString ( 
+      "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
+
+  bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg( 
+        QCoreApplication::applicationPid() ) );
+  bus.unregisterObject ( "/Process" );
+}
+
+void
 Adaptor::handleIncomingCall ( const QString& arguments, const 
     QDBusMessage& message )
 {

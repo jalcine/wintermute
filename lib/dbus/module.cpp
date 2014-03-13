@@ -49,8 +49,13 @@ Module::Module ( DBus::Plugin* plugin ) :
 void
 Module::start()
 {
-  // TODO: Create the interface to listen for replies.
   m_adaptor->registerOnDBus();
+}
+
+void
+Module::stop()
+{
+  m_adaptor->deregisterFromDBus();
 }
 
 Module::~Module()
