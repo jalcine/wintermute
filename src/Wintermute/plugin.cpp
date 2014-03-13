@@ -74,14 +74,7 @@ bool
 Plugin::isLoaded() const
 {
   Q_D ( const Plugin );
-  return d->pluginLoader != 0 && d->pluginLoader->isLoaded();
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  QVariant value = configuration()->value("Plugin/Type");
-  return value.isNull() ? Plugin::TypeUndefined : (Plugin::Type) value.toInt();
+  return d->loader != 0 && d->loader->isLoaded();
 }
 
 Plugin::~Plugin()

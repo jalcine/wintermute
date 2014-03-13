@@ -105,7 +105,8 @@ set_target_properties(wintermute PROPERTIES
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
 
-include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS})
+include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
+  ${WINTERMUTE_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.

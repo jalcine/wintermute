@@ -125,7 +125,12 @@ public:
    */
   PluginProcess* spawnPlugin ( const QString& name );
 
-  bool loadedPlugin ( const QString& name );
+  /**
+   * @function loadedPlugin
+   * @param plugin The name of the plugin in question.
+   */
+  bool loadedPlugin ( const QString& plugin );
+
   /**
    * @function autoloadPlugins
    *
@@ -139,19 +144,9 @@ public:
 
   /**
    * @function unloadAllPlugins
-   *
-   * Unloads all of the plugins that are currently running in this process.
+   * @brief    Unloads all of the active plugins in the process.
    */
   bool unloadAllPlugins();
-
-  /**
-   * @function pluginStateChanged
-   *
-   * Raised when a plugin state has changed. This is risen for every plugin so
-   * it's recommended that you listen specifically for the plug-in in
-   * question by the 'name' parameter.
-   */
-  Q_SIGNAL void pluginStateChanged ( const QString& name, const Plugin::State& state );
 };
 }
 

@@ -59,5 +59,4 @@ wintermute_plugin_configure ( TARGET heartbeat
   URI "http://wintermute.jalcine.me/plugins/heartbeart.html"
   )
 wintermute_plugin_target_declare ( TARGET heartbeat SOURCES ${heartbeat_SRCS} )
-include_directories ( ${Wintermute_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 wintermute_plugin_install ( TARGET heartbeat )

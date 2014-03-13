@@ -31,12 +31,6 @@ PluginProcess::PluginProcess(const QString& pluginName) :
   d->pluginName = pluginName;
 }
 
-Plugin::State
-PluginProcess::state() const
-{
-  return Plugin::Loaded;
-}
-
 void
 PluginProcess::start()
 {

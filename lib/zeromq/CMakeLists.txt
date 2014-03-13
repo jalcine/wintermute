@@ -52,13 +52,21 @@ wintermute_plugin_set_version ( TARGET zeromq
   SYSTEM_VERSION_MINOR ${WINTERMUTE_VERSION_MINOR}
   SYSTEM_VERSION_PATCH ${WINTERMUTE_VERSION_PATCH}
   SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE} )
+
 wintermute_plugin_configure ( TARGET zeromq
   AUTHOR_NAME "Jacky Alcine"
   NAME_RPC "wintermute.in.zeromq"
   EMAIL "me@jalcine.me"
   URI "http://wintermute.jalcine.me/plugins/zeromq.html"
   )
-wintermute_plugin_add_libraries ( TARGET zeromq LIBRARIES ${QTZEROMQ_LIBRARIES})
-wintermute_plugin_add_include_directories ( TARGET zeromq DIRECTORIES ${QTZEROMQ_INCLUDE_DIRS} )
-wintermute_plugin_target_declare ( TARGET zeromq SOURCES ${zeromq_SRCS} )
+
+wintermute_plugin_add_libraries ( TARGET zeromq 
+  LIBRARIES ${QTZEROMQ_LIBRARIES}
+)
+
+wintermute_plugin_add_include_directories ( TARGET zeromq 
+  DIRECTORIES ${QTZEROMQ_INCLUDE_DIRS} )
+
+wintermute_plugin_target_declare ( TARGET zeromq )
+
 wintermute_plugin_install ( TARGET zeromq )

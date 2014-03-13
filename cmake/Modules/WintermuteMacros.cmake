@@ -42,8 +42,8 @@ macro(wintermute_add_properties _target)
   endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
   ## Generate documentation.
-  get_target_property(_sources ${_target} SOURCES)
-  wintermute_generate_documentation(SOURCES ${_sources})
+  #get_target_property(_sources ${_target} SOURCES)
+  #wintermute_generate_documentation(SOURCES ${_sources})
 endmacro(wintermute_add_properties _target)
 
 ## Include plug-in specific macros.

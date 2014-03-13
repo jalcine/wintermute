@@ -21,7 +21,7 @@
 #include "globals.hpp"
 #include "modules/pulse.hpp"
 #include "modules/monitor.hpp"
-#include "plugin.moc"
+#include "heartbeat/plugin.moc"
 
 using Wintermute::Heartbeat::Plugin;
 using Wintermute::Version;
