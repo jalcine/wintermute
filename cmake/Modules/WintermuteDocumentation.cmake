@@ -42,7 +42,7 @@ macro(wintermute_generate_documentation)
 
   # DONE: Configure the Doxygen configuration file.
   set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${${_local}_TARGET}")
-  configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
+  #configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
 
   # DONE: Define a target for Doxygen to execute.
   # DONE: Make the documentation target dependent on a parent target.
