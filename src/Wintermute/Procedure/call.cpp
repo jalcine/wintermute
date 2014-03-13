@@ -27,21 +27,23 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 
-Call::Call ( QObject* parent ) : 
+Call::Call ( QObject* parent ) :
   QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
 {
 }
 
-Call::Call ( CallPrivate* d ) : 
-  QObject ( Wintermute::Application::instance() ), d_ptr ( d )
+Call::Call ( CallPrivate* old_d ) :
+  QObject ( Wintermute::Application::instance() ), d_ptr ( old_d )
 {
+  Q_D ( Call );
+  d->q_ptr = this;
 }
 
 QVariant
 Call::invoke ( const QVariantList& data )
 {
-  Q_D ( Call );
-  return d->function ( data );
+  winfo(this, "This is an error.");
+  return QVariant();
 }
 
 void
@@ -84,46 +86,59 @@ Call::toString() const
   callMap["data"] = d->data;
   QByteArray json = serializer.serialize ( callMap, &ok );
   if ( !ok )
-    return QString::null;
-
+  { return QString::null; }
   return QString ( json );
 }
 
 Call*
-Call::fromString(const QString& data)
+Call::fromString ( const QString& data )
 {
   QJson::Parser parser;
   bool ok;
-  QVariant callData = parser.parse(data.toLocal8Bit(), &ok);
-  if (!ok)
-    return 0;
-
+  QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
+  if ( !ok ) { return 0; }
   QVariantMap callMap = callData.toMap();
-  Call* aCall = new Call(wntrApp);
-  aCall->d_ptr->type = (Call::Type) callMap["type"].toInt();
-  aCall->d_ptr->recipient = callMap["recipient"].toString();
-  aCall->d_ptr->data = callMap["data"].toMap();
-  return aCall;
+  CallPrivate* d_ptr = new CallPrivate(nullptr);
+  d_ptr->type = ( Call::Type ) callMap["type"].toInt();
+  d_ptr->recipient = callMap["recipient"].toString();
+  d_ptr->data = callMap["data"].toMap();
+  return new Call(d_ptr);
 }
 
 QVariant
 Call::operator() ( const QVariantList& data )
 {
-  return this->invoke ( data );
+  return invoke ( data );
 }
 
 bool
-Call::attemptInvocation(const Call* call)
+Call::attemptInvocation ( const Call* call )
 {
-  Procedure::Module* module = wntrApp->findModule(call->recipient());
-
-  if (!module){
-    werr(staticMetaObject.className(), QString("Can't find module '%1' in this process.").arg(call->recipient()));
+  Procedure::Module* module = wntrApp->findModule ( call->recipient() );
+  if ( !module )
+  {
+    werr ( staticMetaObject.className(), 
+      QString ( "Can't find module '%1' in this process." )
+        .arg ( call->recipient() ) );
     return false;
   }
 
-  QVariant result = module->invoke(call->d_ptr->data["method"].toString(), call->d_ptr->data["arguments"].toList());
-  winfo(staticMetaObject.className(), result.toString());
+  winfo ( staticMetaObject.className(), 
+      QString ( "Found module %1 for invocation.")
+        .arg ( module->domain() + "." + module->package() ) );
+
+  const QString methodName     = call->d_ptr->data[ "method" ].toString();
+  const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
+
+  winfo ( staticMetaObject.className(), 
+    QString( "Invoking %1 on %2..." )
+      .arg ( methodName, module->qualifiedName() ) );
+
+  QVariant result = module->invoke ( methodName, arguments );
+
+  winfo ( staticMetaObject.className(),
+    QString ( "Invocation result of %1: '%2'")
+      .arg ( methodName, result.toString() ) );
   return true;
 }
 

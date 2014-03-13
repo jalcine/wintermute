@@ -30,21 +30,20 @@ using Wintermute::Procedure::ReceiverPrivate;
 DummyDispatcher::DummyDispatcher() :
   Dispatcher()
 {
-  wdebug(this, "Hey, I'm a dummy.");
+  setParent(wntrApp);
 }
 
 void
-DummyDispatcher::sendMessage(const Call* call)
+DummyDispatcher::sendMessage ( const Call* call )
 {
-  wdebug(this, 
-    QString("Sending out %1 bytes for dispatching...").arg(call->toString().length()));
-  DummyReceiver* ds = 
-    (static_cast<DummyReceiver*>(ReceiverPrivate::receivers[0]));
-
-  ds->receiveMessage(call);
+  wdebug ( this,
+           QString ( "Sending out %1 bytes for dispatching..." ).
+           arg ( call->toString().length() ) );
+  DummyReceiver* ds =
+    ( static_cast<DummyReceiver*> ( ReceiverPrivate::receivers[0] ) );
+  ds->receiveMessage ( call );
 }
 
 DummyDispatcher::~DummyDispatcher()
 {
-  wdebug(this, "Hey, this dummy is gone!");
 }

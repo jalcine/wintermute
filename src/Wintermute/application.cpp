@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QDateTime>
 #include <QtCore/QSharedPointer>
 #include "application.hpp"
 #include "version.hpp"
@@ -39,30 +40,35 @@ Application::Application ( int& argc, char** argv ) :
 {
   Q_D ( Application );
   Application::self = qobject_cast<Application*> ( this );
-  d->app->setApplicationName ( WINTERMUTE_NAME );
+  d->app->setApplicationName    ( WINTERMUTE_NAME );
   d->app->setApplicationVersion ( this->version().toString() );
-  d->app->setOrganizationName ( WINTERMUTE_NAME );
+  d->app->setOrganizationName   ( WINTERMUTE_NAME );
   d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
   d->settings = new QSettings;
+  d->settings->setValue( "Timing/StartupTime" ,
+    QDateTime::currentDateTimeUtc().toString() );
+
+  winfo(this, QString( "Wintermute recorded startup at %1." )
+    .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
 }
 
 int
 Application::run ( int& argc, char** argv )
 {
   int returnCode = -1;
+
   if ( Application::instance() == 0 )
   {
     Application::self = new Application ( argc, argv );
     Logger* log = wlog ( Application::self );
     self->d_ptr->initialize();
-    log->info(QString("Wintermute is starting; PID %1. Let's play.").
-        arg(QCoreApplication::applicationPid()));
+    log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
+        arg ( QCoreApplication::applicationPid() ) );
     self->start();
-
     log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
     log->info ( "Event loop ended; ended with" +
-        QString( "exit code %1" ).arg ( returnCode ) );
+        QString ( "exit code %1" ).arg ( returnCode ) );
   }
   return returnCode;
 }
@@ -88,10 +94,10 @@ Application::stop ( int exitcode )
   log->info ( "Stopping Wintermute..." );
   QCoreApplication::quit();
   emit this->stopped();
-  log->info ( "Wintermute is stopping " + QString("with exit code %1.")
-      .arg(exitcode) );
-
-  if (QCoreApplication::startingUp() || QCoreApplication::closingDown()){
+  log->info ( "Wintermute is stopping " + QString ( "with exit code %1." )
+    .arg ( exitcode ) );
+  if ( QCoreApplication::startingUp() || QCoreApplication::closingDown() )
+  {
     exit ( exitcode );
   }
 }
@@ -117,14 +123,12 @@ Application::modules() const
 Module*
 Application::findModule ( const QString& name ) const
 {
-  // NOTE: This could be so much more functional.
   Q_D ( const Application );
-  Q_FOREACH(Module * mod, d->modules)
+  winfo(this, QString("Searching for %1 in this instance...").arg(name));
+  Q_FOREACH ( Module * mod, d->modules )
   {
-    if ( mod->domain().contains ( name ) )
-    {
-      return mod;
-    }
+    QString fullPath = mod->domain() + "." + mod->package();
+    if ( fullPath == name ) { return mod; }
   }
   return nullptr;
 }
@@ -136,17 +140,18 @@ Application::version() const
   ver.major = WINTERMUTE_VERSION_MAJOR;
   ver.minor = WINTERMUTE_VERSION_MINOR;
   ver.patch = WINTERMUTE_VERSION_PATCH;
-  ver.state = ( Wintermute::Version::DevelopmentStage ) WINTERMUTE_VERSION_STAGE;
-  ver.stage = QString ( "%1:%2" ).arg ( WINTERMUTE_VERSION_STAGE_REF, WINTERMUTE_VERSION_STAGE_BRANCH );
+  ver.state = ( Wintermute::Version::DevelopmentStage )
+              WINTERMUTE_VERSION_STAGE;
+  ver.stage = QString ( "%1-%2" ).arg ( WINTERMUTE_VERSION_STAGE_REF,
+                                        WINTERMUTE_VERSION_STAGE_BRANCH );
   return ver;
 }
 
 QVariant
-Application::setting ( const QString& path, const QVariant defaultValue )
+Application::setting ( const QString& path, const QVariant value )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-  d->settings->contains ( path ) ? d->settings->value ( path ) : defaultValue;
-  return defaultValue;
+  return d->settings->contains ( path ) ? d->settings->value ( path ) : value;
 }
 
 void
@@ -154,11 +159,12 @@ Application::setSetting ( const QString& path, const QVariant value )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
   d->settings->setValue ( path, value );
+  d->settings->sync();
 }
 
 Application::~Application()
 {
   this->stop();
   this->deleteLater();
-  winfo(this, "Application singleton deleted.");
+  winfo ( this, "Application singleton deleted." );
 }

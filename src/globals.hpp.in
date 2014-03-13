@@ -1,6 +1,6 @@
 /**
- * vim: ft=cpp tw=78 fdm=marker
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,29 @@
 
 /// {{{ Constants
 
-#define WINTERMUTE_NAME                       "Wintermute"
-#define WINTERMUTE_DOMAIN                     "in.wintermute"
-#define WINTERMUTE_VERSION_MAJOR              @WINTERMUTE_VERSION_MAJOR@
-#define WINTERMUTE_VERSION_MINOR              @WINTERMUTE_VERSION_MINOR@
-#define WINTERMUTE_VERSION_PATCH              @WINTERMUTE_VERSION_PATCH@
-#define WINTERMUTE_VERSION_STAGE              @WINTERMUTE_VERSION_STAGE@
-#define WINTERMUTE_VERSION_STAGE_BRANCH       "@WINTERMUTE_VERSION_STAGE_BRANCH@"
-#define WINTERMUTE_VERSION_STAGE_REF          "@WINTERMUTE_VERSION_STAGE_REF@"
-#define WINTERMUTE_PLUGIN_LIBRARY_DIR         "@WINTERMUTE_PLUGIN_LIBRARY_DIR@"
-#define WINTERMUTE_PLUGIN_DEFINITION_DIR      "@WINTERMUTE_PLUGIN_DEFINITION_DIR@"
+/***
+ * @def WINTERMUTE_NAME
+ * @brief The alias Wintermute will use for internal purposes.
+ */
+#define WINTERMUTE_NAME                    "Wintermute"
+
+/***
+ * @def WINTERMUTE_DOMAIN
+ * @brief The domain that Wintermute's processes reference to.
+ */
+#define WINTERMUTE_DOMAIN                  "in.wintermute"
+
+// TODO: Document the following.
+#define WINTERMUTE_VERSION_MAJOR           @WINTERMUTE_VERSION_MAJOR@
+#define WINTERMUTE_VERSION_MINOR           @WINTERMUTE_VERSION_MINOR@
+#define WINTERMUTE_VERSION_PATCH           @WINTERMUTE_VERSION_PATCH@
+#define WINTERMUTE_VERSION_STAGE           @WINTERMUTE_VERSION_STAGE@
+#define WINTERMUTE_VERSION_STAGE_BRANCH    "@WINTERMUTE_VERSION_STAGE_BRANCH@"
+#define WINTERMUTE_VERSION_STAGE_REF       "@WINTERMUTE_VERSION_STAGE_REF@"
+#define WINTERMUTE_PLUGIN_LIBRARY_DIR      "@WINTERMUTE_PLUGIN_LIBRARY_DIR@"
+#define WINTERMUTE_PLUGIN_DEFINITION_DIR   "@WINTERMUTE_PLUGIN_DEFINITION_DIR@"
+
+#define WINTERMUTE_ERROR_MODE_FAILED          0x00101
 
 /// }}} Constants
 

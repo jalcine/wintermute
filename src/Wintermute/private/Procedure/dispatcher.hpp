@@ -30,59 +30,56 @@ class DispatcherPrivate
 public:
   static QList<Dispatcher*> dispatchers;
 
-  static bool isDispatcherKnown(Dispatcher* dispatcher)
-  {
-    Q_FOREACH(Dispatcher * aDispatcher, DispatcherPrivate::dispatchers)
-    {
-      if (aDispatcher->metaObject()->className() == dispatcher->metaObject()->className())
-        return true;
+  static bool isDispatcherKnown ( Dispatcher* dispatcher ) {
+    Q_FOREACH ( Dispatcher * aDispatcher, DispatcherPrivate::dispatchers ) {
+      if ( aDispatcher->metaObject()->className()
+           == dispatcher->metaObject()->className() )
+      { return true; }
     }
-
     return false;
   }
 
-  static void dispatch(const QString& data)
-  {
-    if (dispatchers.empty())
-    {
-      wwarn(wntrApp, "Wintermute is running with no dispatchers.");
-    }
-    else
-    {
-      Q_FOREACH(Dispatcher * dispatchClient, dispatchers)
-      {
-        dispatchClient->sendMessage(Call::fromString(data));
-        wdebug(dispatchClient, QString("Sent data to %1 for dispatching.")
-               .arg(dispatchClient->metaObject()->className()));
+  static void dispatch ( const QString& data ) {
+    if ( dispatchers.empty() ) {
+      wwarn ( wntrApp, "Wintermute is running with no dispatchers." );
+    } else {
+      Q_FOREACH ( Dispatcher * dispatchClient, dispatchers ) {
+        //Dispatcher::DispatchResult result = dispatchClient->
+        //sendMessage ( Call::fromString ( data ) );
+        dispatchClient->sendMessage ( Call::fromString ( data ) );
+        wdebug ( wntrApp , QString ( "Sent data to %1 for dispatching." )
+                 .arg ( dispatchClient->metaObject()->className() ) );
+        //if ( result == Dispatcher::DispatchBreakOff )
+        {
+          // At this point; we can do two things. Either stop dispatching
+          // altogerther since we know that this message is sent reliably.
+          // Or we can continue dispatching, but only to dispatchers that can
+          // report that they have a reliable dispatching ability. The second
+          // strategy implies the ability of the first, notably.
+        }
       }
     }
   }
 
-  static bool addDispatcher(Dispatcher* dispatcher)
-  {
-    if (!dispatcher)
-      return false;
-
-    if (isDispatcherKnown(dispatcher))
-    {
-      wdebug(dispatcher, "Already added into dispatcher index.");
+  static bool addDispatcher ( Dispatcher* dispatcher ) {
+    if ( !dispatcher )
+    { return false; }
+    if ( isDispatcherKnown ( dispatcher ) ) {
+      wdebug ( dispatcher, "Already added into dispatcher index." );
       return false;
     }
-
     DispatcherPrivate::dispatchers << dispatcher;
-    wdebug(dispatcher, QString("%1 added to dispatcher pool.").
-        arg(dispatcher->metaObject()->className()));
+    wdebug ( dispatcher, QString ( "%1 added to dispatcher pool." ).
+             arg ( dispatcher->metaObject()->className() ) );
     return true;
   }
 
-  static bool removeDispatcher(Dispatcher* dispatcher)
-  {
-    if (!isDispatcherKnown(dispatcher))
-      return false;
-
-    DispatcherPrivate::dispatchers.removeAll(dispatcher);
-    wdebug(dispatcher, QString("%1 removed from dispatcher pool.").
-        arg(dispatcher->metaObject()->className()));
+  static bool removeDispatcher ( Dispatcher* dispatcher ) {
+    if ( !isDispatcherKnown ( dispatcher ) )
+    { return false; }
+    DispatcherPrivate::dispatchers.removeAll ( dispatcher );
+    wdebug ( dispatcher, QString ( "%1 removed from dispatcher pool." ).
+             arg ( dispatcher->metaObject()->className() ) );
     return true;
   }
 };

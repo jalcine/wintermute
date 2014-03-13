@@ -67,29 +67,35 @@ public:
  *
  * Obtains a logger for the specific QObject and then prints out a
  * line of text for debubgging view.
- *
- * TODO: Make this conditionally visible if WINTERMUTE_DEBUG isn't set.
  */
+#ifdef WINTERMUTE_DEBUG
 #define wdebug(qobj, text) wlog(qobj)->debug(text)
+#endif
 
 /**
  * @fn wwarn
- * @param qobj An object based on QObject
+ * @param qobj An object based on QObject.
  * @param text The text to be displayed as a warning.
- *
- * TODO: Make this conditionally visibile if WINTERMUTE_WARNINGS isn't set.
  */
 #define wwarn(qobj, text) wlog(qobj)->warn(text)
 
 /**
  * @fn winfo
- * TODO: Documentation.
+ * @param qobj An object based on QObject.
+ * @param text The text to be shown informatively.
+ *
+ * Obtains a logger for the specific QObject and the prints out a line of text
+ * for informative help. Typically used for informing the user of an action.
  */
 #define winfo(qobj, text) wlog(qobj)->info(text)
 
 /**
  * @fn werr
- * TODO: Documentation.
+ * @param qobj An object based on QObject.
+ * @param text The text to be shown as an error message.
+ *
+ * Obtains a logger for the specific QObject and then prints out a line of
+ * text for error reporting.
  */
 #define werr(qobj, text) wlog(qobj)->error(text)
 

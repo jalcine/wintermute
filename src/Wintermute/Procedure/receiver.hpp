@@ -33,7 +33,7 @@ class Receiver : public QObject
 protected:
   explicit Receiver();
   virtual ~Receiver();
-  virtual void receiveMessage(const Call* call);
+  Q_SLOT virtual void receiveMessage ( const Call* call );
 };
 }
 }

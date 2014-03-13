@@ -21,17 +21,20 @@
 
 #include <Wintermute/Procedure/Receiver>
 
-namespace Wintermute {
-  namespace Procedure {
-    class DummyReceiver : public Receiver {
-      Q_OBJECT;
+namespace Wintermute
+{
+namespace Procedure
+{
+class DummyReceiver : public Receiver
+{
+  Q_OBJECT;
 
-      public:
-        explicit DummyReceiver();
-        void receiveMessage(const Call* call);
-        virtual ~DummyReceiver();
-    };
-  }
+public:
+  explicit DummyReceiver();
+  void receiveMessage ( const Call* call );
+  virtual ~DummyReceiver();
+};
+}
 }
 
 #endif

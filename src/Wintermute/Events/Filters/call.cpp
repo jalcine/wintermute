@@ -20,7 +20,7 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/Events/Filters/call.hpp"
-#include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/dispatcher.hpp"
 #include "Wintermute/Events/Filters/call.moc"
 
@@ -29,38 +29,60 @@ using Wintermute::Events::Filters::CallFilter;
 using Wintermute::Procedure::Call;
 
 CallFilter::CallFilter() :
-  QObject(wntrApp)
+  QObject ( wntrApp )
 {
-  winfo(this, "Call filter installled into process.");
+  winfo ( this, "Call filter installled into process." );
 }
 
 bool
-CallFilter::eventFilter(QObject* object, QEvent* event)
+CallFilter::handleDispatch ( QObject* object, QEvent* event )
 {
-  if (event->type() == CallEvent::TypeDispatch)
+  winfo ( object, "Handling a local call for dispatching aboard." );
+
+  CallEvent* callEvent = static_cast<CallEvent*> ( event );
+  const Procedure::Call* call = callEvent->call();
+
+  winfo ( object, QString ( "Dispatching %1 to '%2'." )
+    .arg ( call->toString(), call->recipient() ) );
+
+  Procedure::DispatcherPrivate::dispatch ( call->toString() );
+
+  winfo ( object, "Call dispatched." );
+
+  return true;
+}
+
+bool
+CallFilter::handleReceive ( QObject* object, QEvent* event )
+{
+  winfo ( object, "Handling a remote call for local invocation." );
+
+  CallEvent* callEvent = static_cast<CallEvent*> ( event );
+  const Procedure::Call* call = callEvent->call();
+  const bool invocated = Procedure::Call::attemptInvocation ( call );
+
+  invocated ? winfo ( object, "Call invoked." ) :
+    wwarn ( object, "Call failed to invoke." );
+
+  return true;
+}
+
+bool
+CallFilter::eventFilter ( QObject* object, QEvent* event )
+{
+  if ( event->type() == CallEvent::TypeDispatch )
   {
-    winfo(this, "Handling a local call for dispatching aboard.");
-    CallEvent* callEvent = static_cast<CallEvent*>(event);
-    const Procedure::Call* call = callEvent->call();
-    winfo(this, QString("Call heading to %1.").arg(call->recipient()));
-    Procedure::DispatcherPrivate::dispatch(call->toString());
-    winfo(this, "Call dispatched.");
-    return true;
+    return handleDispatch( object, event );
   }
-  else if (event->type() == CallEvent::TypeReceive)
-  {
-    winfo(this, "Handling a remote call for local invocation.");
-    CallEvent* callEvent = static_cast<CallEvent*>(event);
-    const Procedure::Call* call = callEvent->call();
-    const bool invocated = Procedure::Call::attemptInvocation(call);
-    invocated ? winfo(this, "Call invoked.") : wwarn(this, "Call failed to invoke.");
-    return true;
+  else if ( event->type() == CallEvent::TypeReceive )
+  { 
+    return handleReceive( object, event );
   }
-  // TODO: Filter out receive events.
-  return QObject::eventFilter(object, event);
+
+  return QObject::eventFilter ( object, event );
 }
 
 CallFilter::~CallFilter()
 {
-  winfo(this, "Call filter removed from process.");
+  winfo ( this, "Call filter removed from process." );
 }

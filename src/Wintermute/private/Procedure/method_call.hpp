@@ -28,8 +28,18 @@ namespace Procedure
 class MethodCallPrivate : public CallPrivate
 {
 public:
-  explicit MethodCallPrivate ( MethodCall* q ) : CallPrivate ( q ) {
+  explicit MethodCallPrivate ( MethodCall* q ) :
+    CallPrivate ( q ) {
     type = Call::TypeInvocation;
+  }
+
+  void
+  composeMethodData(Procedure::Module* module) {
+    QMap<QString, QVariant> appData;
+    appData["pid"]     = QCoreApplication::applicationPid();
+    appData["version"] = QCoreApplication::applicationVersion();
+    appData["module"]  = module->qualifiedName();
+    data["sender"]     = appData;
   }
 
   virtual ~MethodCallPrivate() {

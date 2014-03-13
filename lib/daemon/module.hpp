@@ -32,9 +32,13 @@ class Module : public Wintermute::Procedure::Module
 public:
   explicit Module ( Daemon::Plugin* plugin );
   Q_SLOT virtual void start();
+  Q_SLOT virtual void stop();
   virtual ~Module();
+
+private:
+  void startUpPlugins(const QStringList& plugins);
 };
 }
 }
 
-#endif /* */
+#endif /* WINTERMUTE_DAEMON_PLUGIN_MODULE_HPP */

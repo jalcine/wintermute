@@ -19,6 +19,7 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
+#include <QtCore/QDateTime>
 #include "Wintermute/Procedure/call.hpp"
 
 namespace Wintermute
@@ -32,14 +33,13 @@ public:
   Call* q_ptr;
   QString recipient;
   QString name;
-  Call::Signature function;
   Call::Type type;
   QMap<QString, QVariant> data;
 
   explicit CallPrivate ( Call* q ) : q_ptr ( q ),
-    recipient(), name(), function ( nullptr ),
-    type ( Call::TypeUndefined ), data()
+    recipient(), name(), type ( Call::TypeUndefined ), data()
   {
+    data["timestamp"] = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
   }
 
   virtual ~CallPrivate()

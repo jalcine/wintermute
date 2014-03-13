@@ -16,9 +16,10 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PROCEDURE_LAMBDA_CALL_HPP
-#define WINTERMUTE_CORE_PROCEDURE_LAMBDA_CALL_HPP
+#ifndef WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
+#define WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 
+#include <functional>
 #include <Wintermute/Procedure/Call>
 
 namespace Wintermute
@@ -28,9 +29,19 @@ namespace Procedure
 class LambdaCall : public Call
 {
 public:
-  explicit LambdaCall ( Call::Signature lambda, QString name );
+  /**
+   * @typedef Signature
+   * @brief   Provides the short-hand signature for Call methods.
+   */
+  typedef std::function<QVariant ( QVariantList ) > Signature;
+
+  explicit LambdaCall ( const QString& name, Signature lambda );
   virtual ~LambdaCall();
-  virtual QString name() const;
+  Signature function() const;
+  void setFunction ( Signature newFunction );
+  QVariant invoke ( const QVariantList& data = QVariantList() );
+private:
+  Signature m_function;
 };
 }
 }

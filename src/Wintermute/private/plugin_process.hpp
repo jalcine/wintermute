@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,31 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <Wintermute/Application>
-#include "plugin.hpp"
-#include "module.hpp"
-#include "module.moc"
+#include <QtCore/QProcess>
+#include <QtCore/QCoreApplication>
 
-using Wintermute::Heartbeat::Module;
-using Wintermute::Heartbeat::Plugin;
-
-Module::Module ( Heartbeat::Plugin* plugin ) : 
-	Wintermute::Procedure::Module ( plugin )
+namespace Wintermute
 {
-	setDomain ( WINTERMUTE_DOMAIN );
-	setPackage ( "heartbeat" );
-}
-
-void
-Module::start()
+class PluginProcess;
+class PluginProcessPrivate
 {
+  Q_DECLARE_PUBLIC ( PluginProcess );
+  PluginProcess* q_ptr;
+  QString pluginName;
 
-}
+  PluginProcessPrivate ( PluginProcess* q ) :
+    q_ptr ( q ), pluginName ( QString::null )
+  {
+  }
 
-Module::~Module()
-{
+  void buildProcess()
+  {
+    QStringList args;
+    args << "--mode" << "plugin" << "--plugin" << pluginName;
+    const bool started = QProcess::startDetached ( 
+        QCoreApplication::applicationFilePath(), args );
+    // This process is created detached. Should we worry about this?
+  }
+
+};
 }

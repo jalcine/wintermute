@@ -1,5 +1,5 @@
 #############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -23,6 +23,8 @@ cmake_policy(SET CMP0017 NEW)
 ## system's logic.
 set(CMAKE_MODULE_PATH
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME
+  Runtime)
 set(WINTERMUTE_BUILD_PREFIX
   ${CMAKE_INSTALL_PREFIX})
 set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE

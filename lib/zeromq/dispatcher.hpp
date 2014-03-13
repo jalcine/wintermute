@@ -20,19 +20,25 @@
 #define WINTERMUTE_ZEROMQ_DISPATCHER_HPP
 
 #include <Wintermute/Procedure/Dispatcher>
+#include <QtZeroMQ/PollingSocket>
 
-namespace Wintermute {
-  namespace ZeroMQ {
-    class Dispatcher : public Wintermute::Procedure::Dispatcher {
-      Q_OBJECT;
-      Q_DISABLE_COPY(Dispatcher);
+namespace Wintermute
+{
+namespace ZeroMQ
+{
+class Module;
+class Dispatcher : public Wintermute::Procedure::Dispatcher
+{
+  Q_OBJECT;
+  Q_DISABLE_COPY ( Dispatcher );
+  QtZeroMQ::PollingSocket* m_socket;
 
-      public:
-        explicit Dispatcher();
-        virtual ~Dispatcher();
-        virtual void sendMessage(const Procedure::Call* call);
-    };
-  }
+public:
+  explicit Dispatcher ( Wintermute::ZeroMQ::Module* module );
+  virtual ~Dispatcher();
+  virtual void sendMessage ( const Procedure::Call* call ) throw ( zmq::error_t );
+};
+}
 }
 
 #endif

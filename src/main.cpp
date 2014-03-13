@@ -24,6 +24,5 @@ int main ( int argc, char** argv )
 {
   // In light of minimalism, everything is (more or less) handled by
   // `Wintermute::Application`. Best singleton class I ever met!
-
   return Application::run ( argc, argv );
 }

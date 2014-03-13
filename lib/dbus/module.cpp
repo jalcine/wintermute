@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,27 +20,42 @@
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
+#include <Wintermute/Procedure/Call>
 #include "module.hpp"
 #include "plugin.hpp"
+#include "adaptor.hpp"
 #include "dispatcher.hpp"
+#include "receiver.hpp"
 #include "module.moc"
 
 using Wintermute::DBus::Module;
 using Wintermute::DBus::Plugin;
 using Wintermute::DBus::Dispatcher;
+using Wintermute::Procedure::Call;
 
-Module::Module ( DBus::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
+Module::Module ( DBus::Plugin* plugin ) : 
+  Wintermute::Procedure::Module ( plugin ),
+  m_dispatcher ( 0 ), m_receiver ( 0 )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "dbus" );
-  Dispatcher* dispatcher = new Dispatcher;
-  dispatcher->setParent(this);
+  m_adaptor = new Adaptor ( this );
+  m_dispatcher = new Dispatcher;
+  m_receiver = new Receiver;
+  m_dispatcher->setParent ( this );
+  m_receiver->setParent ( this );
 }
 
 void
 Module::start()
 {
-  // TODO: Create the interface to listen for replies.
+  m_adaptor->registerOnDBus();
+}
+
+void
+Module::stop()
+{
+  m_adaptor->deregisterFromDBus();
 }
 
 Module::~Module()

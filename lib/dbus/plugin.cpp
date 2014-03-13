@@ -44,18 +44,21 @@ void
 Plugin::start()
 {
   module = new DBus::Module ( this );
+  module->start();
 }
 
 Version
 Plugin::version() const
 {
-  return Version::fromString ( configuration()->value ( "Version/Plugin" ).toString() );
+  return Version::fromString ( configuration()->value ( 
+        "Version/Plugin" ).toString() );
 }
 
 Version
 Plugin::systemVersion() const
 {
-  return Version::fromString ( configuration()->value ( "Version/System" ).toString() );
+  return Version::fromString ( configuration()->value ( 
+        "Version/System" ).toString() );
 }
 
 Plugin::State

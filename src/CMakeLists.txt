@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -41,8 +41,9 @@ set ( WINTERMUTE_SOURCES
   Wintermute/Procedure/dummy_receiver.cpp
 
   ## Plugin binaries
-  Wintermute/plugin.cpp
   Wintermute/factory.cpp
+  Wintermute/plugin.cpp
+  Wintermute/plugin_process.cpp
 
   ## Core binaries
   Wintermute/logging.cpp
@@ -112,11 +113,13 @@ configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in ${CMAKE_SOURCE_DIR}/src/Wi
 
 # Install the binary.
 install(TARGETS wintermute
+  COMPONENT Runtime
   RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})
 
 foreach(_HDR ${WINTERMUTE_HEADERS})
   string(FIND ${_HDR} / _dir_pos REVERSE)
   string(SUBSTRING "${_HDR}" 0 ${_dir_pos} _DIR)
   install(FILES ${_HDR}
+    COMPONENT Development
     DESTINATION ${WINTERMUTE_INCLUDE_DIR}/${_DIR})
 endforeach()

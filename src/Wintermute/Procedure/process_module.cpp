@@ -16,7 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/Globals"
+#include <QtCore/QCoreApplication>
+#include <Wintermute/Globals>
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include "Wintermute/Procedure/process_module.moc"
@@ -25,23 +26,30 @@ using Wintermute::Procedure::ProcessModule;
 
 ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
 {
-  setDomain ( WINTERMUTE_DOMAIN );
+  setDomain  ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
-  connect(wntrApp, SIGNAL(started()), SLOT(start()));
 }
 
 void
 ProcessModule::start()
 {
-  // TODO: What?
-  winfo(this, QString("Currently %1 modules loaded so far.").arg(wntrApp->modules().length()));
+  connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
+  winfo ( this, QString ( "Currently %1 modules loaded so far." )
+      .arg ( wntrApp->modules().length() ) );
+  // TODO: Move the mode handling logic here?
 }
 
 void
 ProcessModule::reboot()
 {
-  // TODO: Add forking logic or recycle some.
   Wintermute::Application::instance()->stop();
+}
+
+void
+ProcessModule::stop()
+{
+  winfo ( this, QString ("Stopping Wintermute...") );
+  quit ();
 }
 
 void
@@ -53,4 +61,6 @@ ProcessModule::quit ( const int exitcode )
 
 ProcessModule::~ProcessModule()
 {
+  if ( !QCoreApplication::closingDown() )
+    stop();
 }

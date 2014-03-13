@@ -29,6 +29,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 ## Add each unit test to the test suite.
 foreach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
-  wintermute_add_unit_test ( ${WINTERMUTE_TEST_UNIT} "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp" )
+  set ( _src "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp" )
+  wintermute_add_unit_test ( ${WINTERMUTE_TEST_UNIT} ${_src} )
 endforeach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
 

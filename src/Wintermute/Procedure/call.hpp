@@ -16,133 +16,121 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PROCEDURE_CALL_HPP
-#define WINTERMUTE_CORE_PROCEDURE_CALL_HPP
+#ifndef WINTERMUTE_PROCEDURE_CALL_HPP
+#define WINTERMUTE_PROCEDURE_CALL_HPP
 
-#include <functional>
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QSharedPointer>
 
 namespace Wintermute
 {
-  namespace Procedure
-  {
-    class CallPrivate;
-    class Call : public QObject
-    {
-      Q_OBJECT;
+namespace Procedure
+{
+class CallPrivate;
+class Call : public QObject
+{
+  Q_OBJECT;
 
-      protected:
-      Q_DISABLE_COPY ( Call );
-      Q_DECLARE_PRIVATE ( Call );
-      QSharedPointer<CallPrivate> d_ptr;
-      Call ( CallPrivate* d );
-      Q_ENUMS(Type);
+protected:
+  Q_DISABLE_COPY ( Call );
+  Q_DECLARE_PRIVATE ( Call );
+  QSharedPointer<CallPrivate> d_ptr;
+  Call ( CallPrivate* d );
+  Q_ENUMS ( Type );
 
-      public:
-      /**
-       * @typedef Signature
-       *
-       * Provides the short-hand signature for Call methods.
-       */
-      typedef std::function<QVariant ( QVariantList ) > Signature;
+  /**
+   * @fn invoke
+   * @param data A list of QVariant variables.
+   */
+  virtual QVariant invoke ( const QVariantList& data = QVariantList() );
 
-      /**
-       * @typedef Callback
-       *
-       * Provides the callback necessary for async calling.
-       */
-      typedef std::function<void ( QVariant ) > Callback;
+  friend class Module;
 
-      /**
-       * @enum Type
-       *
-       * Defines the potential types a Call can take in the procedural system. In
-       * order to keep things clean, you can add your own types only if it's over
-       * 9000 (this was intentional)
-       */
-      enum Type {
-        TypeUndefined    = 0x0000,  // Undefined call. Don't bother with.
+public:
 
-        TypeResponse     = 0x0001,  // Represents a invoking call being responsed to.
-        TypeDispatch     = 0x0002,  // Represents a invoked call being sent to.
-        TypeSignal       = 0x0003,  // Represents a invoking signal being raised.
+  /**
+   * @enum Type
+   *
+   * Defines the potential types a Call can take in the procedural system. In
+   * order to keep things clean, you can add your own types only if it's over
+   * 0x9000 (this was intentional).
+   */
+  enum Type {
+    TypeUndefined    = 0x0000,  // Undefined call. Don't bother with.
 
-        TypeInvocation   = 0x0010,  // Represents a call to be invoked.
-        TypeRemoteNoAuth = 0x0100,  // This call deals with a remote network with no authentication.
-        TypeRemoteAuth   = 0x0200,  // This call deals with a remote network with authentication.
+    TypeResponse     = 0x0010,  // Represents a invoking call being responsed to.
+    TypeDispatch     = 0x0011,  // Represents a invoked call being sent to.
+    TypeSignal       = 0x0012,  // Represents a invoking signal being raised.
 
-        TypeUser         = 0x1000   // Anything above this is available to the user space.
-      };
-      Q_FLAGS(Type Types);
+    TypeInvocation   = 0x0020,  // Represents a call to be invoked.
+    TypeRemoteNoAuth = 0x0021,  // This call deals with a remote network with no authentication.
+    TypeRemoteAuth   = 0x0022,  // This call deals with a remote network with authentication.
 
-      /**
-       * @ctor
-       * @fn Call
-       */
-      explicit Call ( QObject* parent );
+    TypeUser         = 0x9000   // Anything above this is available to the user.
+  };
+  Q_FLAGS ( Type Types );
 
-      /**
-       * @dtor
-       * @fn ~Call
-       */
-      virtual ~Call ();
+  /**
+   * @ctor
+   * @fn Call
+   */
+  explicit Call ( QObject* parent );
 
-      /**
-       * @fn name
-       * @brief Obtains the name of the call.
-       */
-      QString name() const;
+  /**
+   * @dtor
+   * @fn ~Call
+   */
+  virtual ~Call ();
 
-      /**
-       * @fn type
-       * @brief Obtains the type of call this is.
-       *
-       * Obtains the type of message that this exposes.
-       */
-      Type type() const;
+  /**
+   * @fn name
+   * @brief Obtains the name of the call.
+   */
+  QString name() const;
 
-      /**
-       * @fn toString
-       * @brief Generates a string representation of this call.
-       */
-      QString toString() const;
+  /**
+   * @fn type
+   * @brief Obtains the type of call this is.
+   *
+   * Obtains the type of message that this exposes.
+   */
+  Type type() const;
 
-      static Call* fromString(const QString& data);
+  /**
+   * @fn toString
+   * @brief Generates a string representation of this call.
+   */
+  QString toString() const;
 
-      /**
-       * @fn recipient
-       * @brief Obtains the name of the module to recieve this message.
-       *
-       * Obtains the qualified module name that this Call is sending a message
-       * to.
-       */
-      QString recipient() const;
+  static Call* fromString ( const QString& data );
 
-      /**
-       * @fn setRecipient
-       * @brief Changes the recipient of this Call.
-       */
-      void setRecipient ( const QString moduleName );
+  /**
+   * @fn recipient
+   * @brief Obtains the name of the module to recieve this message.
+   *
+   * Obtains the qualified module name that this Call is sending a message
+   * to.
+   */
+  QString recipient() const;
 
-      /**
-       * @fn invoke
-       * @param data A list of QVariant variables.
-       */
-      QVariant invoke ( const QVariantList& data );
+  /**
+   * @fn setRecipient
+   * @brief Changes the recipient of this Call.
+   */
+  void setRecipient ( const QString moduleName );
 
-      /**
-       * @operator operator()
-       * @brief Allow for functor-like capabilities for the Call object.
-       */
-      QVariant operator() ( const QVariantList& arguments );
+  /**
+   * @operator operator()
+   * @brief Allow for functor-like capabilities for the Call object.
+   */
+  QVariant operator() ( const QVariantList& arguments = QVariantList() );
 
-      static bool attemptInvocation( const Call* call );
-    };
+  static bool attemptInvocation ( const Call* call );
+};
 
-    typedef QSharedPointer<Call> CallPointer;
-  } /* Procedure */
+typedef QSharedPointer<Call> CallPointer;
+} /* Procedure */
 } /* Wintermute */
 
-#endif /* WINTERMUTE_CORE_PROCEDURE_CALL_HPP */
+#endif /* WINTERMUTE_PROCEDURE_CALL_HPP */

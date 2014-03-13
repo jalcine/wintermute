@@ -19,35 +19,60 @@
 #include <Wintermute/Application>
 #include <Wintermute/Globals>
 #include <Wintermute/Logging>
+#include <QtZeroMQ/Socket>
+#include <QtZeroMQ/Message>
+#include <QtZeroMQ/PollingSocket>
 #include "module.hpp"
 #include "plugin.hpp"
+#include "globals.hpp"
 #include "dispatcher.hpp"
+#include "receiver.hpp"
 #include "module.moc"
 
 using Wintermute::ZeroMQ::Module;
 using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Dispatcher;
+using Wintermute::ZeroMQ::Receiver;
 
-Module::Module ( ZeroMQ::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
+Module::Module ( ZeroMQ::Plugin* plugin ) :
+  Wintermute::Procedure::Module ( plugin ),
+  m_context ( new QtZeroMQ::PollingContext ( this ) )
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "zeromq" );
-  winfo(this, "Pumping in ZeroMQ goodness to Wintermute...");
-  Dispatcher* dispatcher = new Dispatcher;
-  dispatcher->setParent(this);
-  winfo(this, "Thanks Pete, Wintermute's on-line.");
+  Receiver receiver ( this );
+  Dispatcher dispatcher ( this );
+  connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
+  connect ( m_context, SIGNAL ( pollError(int, const QString&) ), 
+      this, SLOT ( pollError(int, const QString&) ) );
+}
+
+void
+Module::pollInvoked()
+{
+  // TODO Query context for more messages.
+}
+
+void
+Module::pollError(int errorNumber, const QString& errorMessage)
+{
+  werr(this, QString("ZeroMQ error %1: %2").
+    arg(QString::number(errorNumber), errorMessage));
 }
 
 void
 Module::start()
 {
-  // TODO: Start up the listening instance to the local UNIX socket.
-  // The path of it for global comms would be '/var/tmp/wintermute.socket'.
-  // TODO: Fix permissions on the socket if necessary.
-  m_context = new QtZeroMQ::PollingContext(this);
   m_context->start();
+}
+
+void
+Module::stop()
+{
+  m_context->stop();
 }
 
 Module::~Module()
 {
+  stop();
 }

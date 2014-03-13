@@ -1,5 +1,5 @@
 ##############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -19,18 +19,29 @@
 project ( WintermuteDBus )
 set ( dbus_SRCS 
   plugin.cpp
+  module.cpp
+  adaptor.cpp
   dispatcher.cpp
-  module.cpp )
+  receiver.cpp
+)
 
 set ( dbus_HDRS
   plugin.hpp
   dispatcher.hpp
-  module.hpp )
+  adaptor.hpp
+  receiver.hpp
+  module.hpp
+  globals.hpp
+)
 
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/dbus/globals.hpp
   @ONLY )
 
-wintermute_plugin_declare ( TARGET dbus SOURCES ${dbus_SRCS} )
+wintermute_plugin_declare (
+  TARGET dbus
+  HEADERS ${dbus_HDRS}
+  SOURCES ${dbus_SRCS}
+)
 wintermute_plugin_set_version ( TARGET dbus
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1

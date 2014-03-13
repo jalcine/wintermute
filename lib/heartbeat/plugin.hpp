@@ -20,6 +20,7 @@
 #define WINTERMUTE_HEARTBEAT_PLUGIN_HPP
 
 #include <Wintermute/Plugin>
+#include <Wintermute/Procedure/Module>
 
 namespace Wintermute
 {
@@ -29,9 +30,18 @@ class Plugin : public Wintermute::Plugin
 {
   Q_OBJECT;
   Q_DISABLE_COPY ( Plugin );
+  Procedure::Module* module;
 
 public:
+  explicit Plugin();
   virtual QString name() const;
+  virtual Q_SLOT void start();
+  virtual Q_SLOT void stop();
+  virtual Version version() const;
+  virtual Version systemVersion() const;
+  virtual State state() const;
+  virtual Type type() const;
+
 };
 }
 }

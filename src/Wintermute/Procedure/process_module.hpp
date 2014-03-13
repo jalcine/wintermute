@@ -16,11 +16,12 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PROCEDURE_PROCESS_MODULE_HPP
-#define WINTERMUTE_CORE_PROCEDURE_PROCESS_MODULE_HPP
+#ifndef WINTERMUTE_PROCEDURE_PROCESS_MODULE_HPP
+#define WINTERMUTE_PROCEDURE_PROCESS_MODULE_HPP
 
 #include <Wintermute/Application>
 #include <Wintermute/Procedure/Module>
+#include "module.hpp"
 
 namespace Wintermute
 {
@@ -37,6 +38,7 @@ class ProcessModule : public Module
 {
   Q_OBJECT;
   Q_DISABLE_COPY ( ProcessModule );
+  Q_INTERFACES (Wintermute::Procedure::Module);
 
   friend class Wintermute::ApplicationPrivate;
   explicit ProcessModule();
@@ -44,6 +46,7 @@ class ProcessModule : public Module
 public:
   virtual ~ProcessModule();
   Q_SLOT virtual void start();
+  Q_SLOT virtual void stop();
 
 protected:
   void reboot();

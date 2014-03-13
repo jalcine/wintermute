@@ -24,33 +24,66 @@
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
 
-MethodCall::MethodCall ( const QString& module, const QString& method, const QVariantList arguments ) :
+MethodCall::MethodCall ( const QString& module, 
+    const QString& method,
+    const QVariantList arguments ) :
   Call ( new MethodCallPrivate ( this ) )
 {
   Q_D ( MethodCall );
-  setRecipient(module);
+  setRecipient ( module );
   d->type = Call::TypeInvocation;
   d->data["method"] = method;
   d->data["arguments"] = arguments;
+}
+
+void
+MethodCall::setArguments ( const QVariantList& arguments)
+{
+  Q_D ( MethodCall );
+  d->data.insert ( "arguments", arguments );
+}
+
+void
+MethodCall::setMethod ( const QString& method )
+{
+  Q_D ( MethodCall );
+  d->data.insert ( "method", method );
+}
+
+void
+MethodCall::setModule ( const QString& module )
+{
+  Q_D ( MethodCall );
+  d->data.insert ( "module", module );
 }
 
 QVariantList
 MethodCall::arguments() const
 {
   Q_D ( const MethodCall );
-  return d->data.value("arguments").toList();
+  return d->data.value ( "arguments" ).toList();
+}
+
+QString
+MethodCall::method() const
+{
+  Q_D ( const MethodCall );
+  return d->data.value ( "method" ).toString();
+}
+
+QString
+MethodCall::module() const
+{
+  Q_D ( const MethodCall );
+  return d->data.value ( "module" ).toString();
 }
 
 void
-MethodCall::dispatch(Module* module)
+MethodCall::dispatch ( Module* module )
 {
-  Q_D( MethodCall );
-  QMap<QString, QVariant> appData;
-  appData["pid"]     = QCoreApplication::applicationPid();
-  appData["version"] = QCoreApplication::applicationVersion();
-  appData["module"]  = module->qualifiedName();
-  d->data["sender"]  = appData;
-  module->dispatch(*this);
+  Q_D ( MethodCall );
+  d->composeMethodData( module );
+  module->dispatch ( *this );
 }
 
 MethodCall::~MethodCall()

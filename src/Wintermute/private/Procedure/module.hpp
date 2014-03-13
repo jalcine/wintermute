@@ -44,28 +44,26 @@ public:
   ModulePrivate ( Module* q ) :
     q_ptr ( q ), package ( "" ), domain ( "" ), calls()
   {
+    winfo ( q_ptr, "Module setting up..." );
   }
 
   void checkQualifiedName()
   {
-    if (!domain.isEmpty() && !package.isEmpty())
+    if ( !domain.isEmpty() && !package.isEmpty() )
     {
-      if (!wntrApp->findModule(q_ptr->qualifiedName()))
+      if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) )
       {
-        (new MethodCall(WINTERMUTE_DOMAIN ".heartbeat",
-                        "greet", QVariantList()))->dispatch(q_ptr);
-        wntrApp->d_ptr->modules << q_ptr;
+         wntrApp->d_ptr->modules << q_ptr;
+         // TODO: Emit an signal about 'moduleAdded' here.
       }
     }
   }
 
-  void sendData ( const QString& data ) const
-  {
-    Dispatcher::postDispatch(Call::fromString(data));
+  void sendData ( const QString& data ) const {
+    Dispatcher::postDispatch ( Call::fromString ( data ) );
   }
 
-  virtual ~ModulePrivate ()
-  {
+  virtual ~ModulePrivate () {
     winfo ( q_ptr, "We out!" );
   }
 };

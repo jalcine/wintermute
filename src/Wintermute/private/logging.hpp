@@ -19,13 +19,18 @@
 #include <TTCCLayout>
 #include <ColorConsoleAppender>
 #include <SignalAppender>
+#include <FileAppender>
+#include <MainthreadAppender>
 #include <LogManager>
+#include <QtCore/QCoreApplication>
 
 using Log4Qt::LogManager;
 using Log4Qt::Logger;
 using Log4Qt::Layout;
 using Log4Qt::TTCCLayout;
 using Log4Qt::ConsoleAppender;
+using Log4Qt::FileAppender;
+using Log4Qt::MainThreadAppender;
 using Log4Qt::ColorConsoleAppender;
 
 namespace Wintermute
@@ -36,29 +41,52 @@ public:
   Layout* primaryLayout;
   ColorConsoleAppender* stdOutAppender;
   ColorConsoleAppender* stdErrAppender;
+  FileAppender* fileAppender;
+  MainThreadAppender* mainThreadAppender;
 
   LoggingPrivate() :
-    primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 )
+    primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) ,
+    fileAppender ( 0 )
   {
     LogManager::startup();
     LogManager::handleQtMessages();
-#ifdef DEBUG
+#ifdef WINTERMUTE_DEBUG 
     LogManager::setThreshold ( Log4Qt::Level::ALL_INT );
 #else
-    LogManager::setThreshold ( Log4Qt::Level::ERROR_INT );
+    LogManager::setThreshold ( Log4Qt::Level::WARN_INT );
 #endif
     primaryLayout  = new TTCCLayout();
     primaryLayout->setName ( "root" );
+    ((TTCCLayout*) primaryLayout)->setContextPrinting ( false );
     primaryLayout->activateOptions();
-
-    stdOutAppender = new ColorConsoleAppender ( primaryLayout, ConsoleAppender::STDOUT_TARGET);
-    stdOutAppender->setName ( "stdout" );
-    stdOutAppender->activateOptions();
-    Logger::rootLogger()->addAppender ( stdOutAppender );
+    addAppenders();
   }
 
-  virtual ~LoggingPrivate()
+  void
+  addAppenders()
   {
+    stdOutAppender = new ColorConsoleAppender ( primaryLayout,
+        ConsoleAppender::STDOUT_TARGET );
+    stdOutAppender->setName ( "stdout" );
+    stdOutAppender->activateOptions();
+
+    stdErrAppender = new ColorConsoleAppender ( primaryLayout,
+        ConsoleAppender::STDERR_TARGET );
+    stdErrAppender->setName ( "stderr" );
+    stdErrAppender->activateOptions();
+
+    fileAppender = new FileAppender ( primaryLayout, "wintermute.log",
+        true, true, QCoreApplication::instance() );
+    fileAppender->setName( "file" );
+    fileAppender->activateOptions();
+
+    mainThreadAppender = new MainThreadAppender ( );
+
+    Logger::rootLogger()->addAppender ( stdOutAppender );
+    Logger::rootLogger()->addAppender ( fileAppender );
+  }
+
+  virtual ~LoggingPrivate() {
     LogManager::shutdown();
   }
 };

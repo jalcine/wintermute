@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_FACTORY_HPP
-#define WINTERMUTE_CORE_FACTORY_HPP
+#ifndef WINTERMUTE_FACTORY_HPP
+#define WINTERMUTE_FACTORY_HPP
 
 #include <Wintermute/Globals>
 #include <Wintermute/Plugin>
@@ -26,6 +26,7 @@
 namespace Wintermute
 {
 class FactoryPrivate;
+class PluginProcess;
 
 /**
  * @class Factory
@@ -55,15 +56,13 @@ class Factory : public QObject
 
   /**
    * @function Factory
-   * @constructor
-   *
+   * @ctor
    */
   explicit Factory();
 
 private:
   Q_SLOT void start();
   Q_SLOT void stop();
-  Q_SLOT void pluginStateChange ( const QString& name, const Plugin::State& state );
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
 
@@ -118,7 +117,15 @@ public:
    */
   bool unloadPlugin ( const QString& name );
 
-  bool loadedPlugin( const QString& name );
+  /**
+   * @function spawnPlugin
+   * @param name The name of the plug-in.
+   *
+   * Loads the specified plugin in a separate process.
+   */
+  PluginProcess* spawnPlugin ( const QString& name );
+
+  bool loadedPlugin ( const QString& name );
   /**
    * @function autoloadPlugins
    *
@@ -150,4 +157,4 @@ public:
 
 #define wntrFactory Wintermute::Factory::instance()
 
-#endif /* WINTERMUTE_CORE_FACTORY_HPP */
+#endif /* WINTERMUTE_FACTORY_HPP */

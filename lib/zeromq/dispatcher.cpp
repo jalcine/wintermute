@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include <Wintermute/Logging>
 #include <Wintermute/Procedure/Call>
 #include <QtZeroMQ/Message>
+#include "globals.hpp"
 #include "dispatcher.hpp"
 #include "module.hpp"
 #include "dispatcher.moc"
@@ -27,22 +28,28 @@ using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Module;
 using Wintermute::Procedure::Call;
 
-Dispatcher::Dispatcher() :
-  Wintermute::Procedure::Dispatcher::Dispatcher() {
-  winfo(this, "Yo, waddup?");
+Dispatcher::Dispatcher ( Module* a_module ) :
+  Wintermute::Procedure::Dispatcher::Dispatcher(),
+  m_socket ( 0 )
+{
+  setParent ( a_module );
+  m_socket = dynamic_cast<QtZeroMQ::PollingSocket*> (
+     a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
+  m_socket->bindTo ( WINTERMUTE_SOCKET_IPC );
+  winfo ( this, "Hey, sending over ZeroMQ." );
 }
 
 Dispatcher::~Dispatcher()
 {
-  winfo(this, "Buh-bye ZeroMQ!");
 }
 
 void
-Dispatcher::sendMessage(const Call* message)
+Dispatcher::sendMessage ( const Call* message ) throw ( zmq::error_t )
 {
   const QByteArray data = message->toString().toUtf8();
-  winfo(this, QString("Sending %1 over Pieter's wire...").arg(QString(data)));
-  Module* module = qobject_cast<Module*>(parent());
-  Q_ASSERT(module != NULL);
-  module->m_socket->sendMessage(data);
+  Module* module = qobject_cast<Module*> ( parent() );
+  winfo ( this, QString ( "Sending %1 ..." ).arg ( QString ( data ) ) );
+  Q_ASSERT ( module != NULL );
+  m_socket->sendMessage ( data );
+  winfo ( this, "Message sent." );
 }

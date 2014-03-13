@@ -36,38 +36,61 @@ Module::dispatch ( const Call& call ) const
 {
   Q_D ( const Module );
   const QString callStr = call.toString();
-  winfo ( this, QString ( "Sending '%1' to '%2'..." ).arg ( callStr, call.recipient() ) );
+  winfo ( this, QString ( "Sending '%1' to '%2'..." )
+    .arg ( callStr, call.recipient() ) );
   d->sendData ( callStr );
   return QVariant();
 }
 
 QVariant
-Module::invoke ( const QString callName, const QVariantList data )
+Module::invoke ( const QString callName, 
+    const QVariantList data )
 {
   Q_D ( Module );
+  QVariant result;
   if ( !d->calls.contains ( callName ) )
   {
     werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." )
-        .arg ( callName, qualifiedName() ) );
-    return QVariant ( -1 );
+       .arg ( callName, qualifiedName() ) );
+    return result;
   }
-  CallPointer call = d->calls[callName];
-  return call->invoke ( data );
+
+  CallPointer callPtr = d->calls[callName];
+  Call* call = nullptr;
+  if ( callPtr.isNull() )
+  {
+    werr ( this, QString ("Attempted to invoke a null call '%1'.")
+      .arg( callName ) );
+    return result;
+  }
+
+  call = callPtr.data();
+  result = call->operator()( data );
+  return result;
 }
 
 void
 Module::mount ( CallPointer call )
 {
   Q_D ( Module );
-  // TODO: Use a shared pointer to prevent a segfault.
-  d->calls[call->name()].swap ( call );
+  if ( d->calls.contains( call->name() ) )
+  {
+    winfo ( this, QString( "Updating call %1 to %2..." )
+      .arg( call->name(), domain() + "." + package() ) );
+    d->calls.remove ( call->name() );
+  }
+
+  winfo ( this, QString( "Adding call %1 to %2..." )
+    .arg( call->name(), domain() + "." + package() ) );
+  d->calls.insert ( call->name(), call );
 }
 
 LambdaCall*
-Module::mountLambda ( Call::Signature lambda, const QString& name )
+Module::mountLambda ( const QString& name,
+    LambdaCall::Signature lambda )
 {
-  CallPointer call = CallPointer ( new LambdaCall ( lambda, name ) );
-  this->mount ( call );
+  CallPointer call ( new LambdaCall ( name, lambda ) );
+  mount ( call );
   return dynamic_cast<LambdaCall*> ( call.data() );
 }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013 - 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -30,7 +30,8 @@ include(WintermuteVariables)
 ## plugin.
 
 if (NOT DEFINED WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE)
-  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
+  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE
+    "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
 endif()
 
 ##
@@ -44,7 +45,7 @@ endif()
 ##
 function(wintermute_plugin_declare)
   set(_oneArgs   TARGET)
-  set(_multiArgs SOURCES)
+  set(_multiArgs SOURCES HEADERS)
   cmake_parse_arguments(wdp "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
 
   # Define the plugin's CMake prefix.
@@ -53,13 +54,21 @@ function(wintermute_plugin_declare)
   string(TOUPPER ${wdp_TARGET} ${_local}_EXPORT_SYMBOL)
 
   # Define the plugin's CMake properties.
-  set(${_local}_SOURCES         ${wdp_SOURCES}                 CACHE STRING "Sources.")
-  set(${_local}_TARGET          "wintermute-${wdp_TARGET}"     CACHE STRING "Target.")
-  set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}        CACHE STRING "Libraries.")
+  set(${_local}_SOURCES         ${wdp_SOURCES}
+    CACHE STRING "Sources.")
+  set(${_local}_HEADERS         ${wdp_HEADERS}
+    CACHE STRING "Headers.")
+  set(${_local}_TARGET          "wintermute-${wdp_TARGET}"
+    CACHE STRING "Target.")
+  set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}
+    CACHE STRING "Libraries.")
   set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
-                                ${WINTERMUTE_INCLUDE_DIR}      CACHE STRING INTERNAL FORCE)
-  set(${_local}_HEADERS_PATH    "${WINTERMUTE_INCLUDE_DIR}/plugins/${_minLocal}" CACHE STRING "Headers install.")
-  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_TARGET}.spec" CACHE STRING "Def.")
+                                ${WINTERMUTE_INCLUDE_DIR}
+    CACHE STRING INTERNAL FORCE)
+  set(${_local}_HEADERS_PATH    "${WINTERMUTE_PLUGIN_INCLUDE_DIR}/${_minLocal}"
+    CACHE STRING "Headers install.")
+  set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/plugin-${wdp_TARGET}.spec"
+    CACHE STRING "Definitions file.")
 
 endfunction(wintermute_plugin_declare)
 
@@ -172,7 +181,8 @@ function(wintermute_plugin_configure)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}" _local)
 
   foreach(_validProperty ${_validProperties})
-    set("${_local}${_validProperty}" "${wpc_${_validProperty}}" CACHE STRING "Configuration property.")
+    set("${_local}${_validProperty}" "${wpc_${_validProperty}}" 
+      CACHE STRING "Configuration property.")
   endforeach(_validProperty ${_validProperties})
 endfunction(wintermute_plugin_configure)
 
@@ -199,11 +209,15 @@ function(wintermute_plugin_set_version)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpsv_TARGET}" _local)
 
   foreach(_pluginVersionVariable ${_pluginVersions})
-    set("${_local}${_pluginVersionVariable}" "${wpsv_${_pluginVersionVariable}}" CACHE STRING "Versioning.")
+    set("${_local}_${_pluginVersionVariable}" 
+      "${wpsv_${_pluginVersionVariable}}" 
+      CACHE STRING "Versioning.")
   endforeach(_pluginVersionVariable ${_pluginVersions})
 
   foreach(_systemVersionVariable ${_systemVersions})
-    set("${_local}${_systemVersionVariable}" "${wpsv_${_systemVersionVariable}}" CACHE STRING "System versioning.")
+    set("${_local}${_systemVersionVariable}" 
+      "${wpsv_${_systemVersionVariable}}"
+      CACHE STRING "System versioning.")
   endforeach(_systemVersionVariable ${_systemVersions})
 
 endfunction(wintermute_plugin_set_version)
@@ -217,21 +231,30 @@ function(wintermute_plugin_install)
   cmake_parse_arguments(wpi "" "TARGET" "" ${ARGN})
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpi_TARGET}" _local)
 
-  # DONE: Define the plug-in's definition file.
   set(${_local}_DEFINITION_FILE "${CMAKE_BINARY_DIR}/${${_local}_TARGET}.spec")
   configure_file(${WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE} ${${_local}_DEFINITION_FILE})
 
-  # DONE: Install the library itself.
   install(TARGETS        ${${_local}_TARGET}
-    LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}  
-    )
+    EXPORT               ${${_local}_TARGET}
+    COMPONENT            Runtime
+    LIBRARY DESTINATION  ${WINTERMUTE_PLUGIN_LIBRARY_DIR}
+  )
 
-  # TODO: Install exported information.
-  # TODO: Install build-time headers.
+  install(EXPORT         ${${_local}_TARGET}
+    COMPONENT            Development
+    CONFIGURATIONS       Debug
+    DESTINATION          ${WINTERMUTE_CMAKE_MODULES_DIR}
+  )
+
+  install(FILES         ${${_local}_HEADERS}
+    COMPONENT           Development
+    CONFIGURATIONS      Debug
+    DESTINATION         ${${_local}_HEADERS_PATH}
+  )
   # TODO: Install documentation.
 
-  # DONE: Generate the definition file.
-  # DONE: Install the definition file.
   install(FILES ${${_local}_DEFINITION_FILE}
-    DESTINATION ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
+    COMPONENT           Runtime
+    CONFIGURATIONS      Release
+    DESTINATION         ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
 endfunction(wintermute_plugin_install)

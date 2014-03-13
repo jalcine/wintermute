@@ -36,29 +36,26 @@ using Wintermute::Events::CallEvent;
 QList<Receiver*> Wintermute::Procedure::ReceiverPrivate::receivers = QList<Receiver*>();
 
 Receiver::Receiver() :
-  QObject(wntrApp)
+  QObject ( wntrApp )
 {
-  ReceiverPrivate::addReceiver(this);
+  ReceiverPrivate::addReceiver ( this );
 }
 
 void
-Receiver::receiveMessage(const Call* call)
+Receiver::receiveMessage ( const Call* call )
 {
-  winfo(this, QString("Caught a call for '%1'; passing it into event loop.").arg(call->recipient()));
-  Procedure::Module* module = wntrApp->findModule(call->recipient());
-  if (module != nullptr)
-  {
-    winfo(this, QString("Raising the call for '%1' throughout the event loop...").arg(module->qualifiedName()));
-    CallEvent* event = new CallEvent(CallEvent::TypeReceive, call);
-    QCoreApplication::postEvent(wntrApp, event);
-  }
-  else
-  {
-    wwarn(this, QString("Couldn't find the module '%1' to invoke this call with.").arg(call->recipient()));
+  winfo ( this, QString ( "Caught a call for '%1'; passing it into event loop." ).arg ( call->recipient() ) );
+  Procedure::Module* module = wntrApp->findModule ( call->recipient() );
+  if ( module != nullptr ) {
+    winfo ( this, QString ( "Raising the call for '%1' throughout the event loop..." ).arg ( module->qualifiedName() ) );
+    CallEvent* event = new CallEvent ( CallEvent::TypeReceive, call );
+    QCoreApplication::postEvent ( wntrApp, event );
+  } else {
+    wwarn ( this, QString ( "Couldn't find the module '%1' to invoke this call with." ).arg ( call->recipient() ) );
   }
 }
 
 Receiver::~Receiver()
 {
-  ReceiverPrivate::removeReceiver(this);
+  ReceiverPrivate::removeReceiver ( this );
 }

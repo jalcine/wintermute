@@ -25,7 +25,7 @@ using Wintermute::ZeroMQ::Plugin;
 using Wintermute::ZeroMQ::Module;
 using Wintermute::Version;
 
-Plugin::Plugin()
+Plugin::Plugin() : module ( new ZeroMQ::Module ( this ) )
 {
 }
 
@@ -38,12 +38,13 @@ Plugin::name() const
 void
 Plugin::stop()
 {
+  module->stop();
 }
 
 void
 Plugin::start()
 {
-  module = new ZeroMQ::Module ( this );
+  module->start();
 }
 
 Version
@@ -67,7 +68,7 @@ Plugin::state() const
 Plugin::Type
 Plugin::type() const
 {
-  return Module;
+  return Addon;
 }
 
-Q_EXPORT_PLUGIN2 ( wintermute-zeromq, Wintermute::ZeroMQ::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute - zeromq, Wintermute::ZeroMQ::Plugin );

@@ -25,6 +25,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
+#include <Wintermute/Globals>
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/LambdaCall>
 
@@ -64,6 +65,9 @@ public:
 
   /**
    * @fn qualifiedName
+   *
+   * The fully formed version of the Module's name (typically a joining of the
+   * domain and package).
    */
   QString qualifiedName() const;
 
@@ -75,16 +79,35 @@ public:
 
   /**
    * @fn start
+   * @brief Starts the worker logic for this module.
+   *
+   * Use this method to invoke the starting up processes of this Module and
+   * start its chugging.
    */
   Q_SLOT virtual void start() = 0;
 
-protected:
-   /**
-   * @fn invoke
-   * @brief Looks for the named call and invoke with the provided data.
+  /**
+   * @fn stop
+   * @brief Halts the worker logic for this module.
+   *
+   * Use this method to cancel pending tasks and bring the purpose of this
+   * Module to a full stop.
    */
+  Q_SLOT virtual void stop()  = 0;
+
+protected:
+  /**
+  * @fn invoke
+  * @brief Looks for the named call and invoke with the provided data.
+  *
+  * Handles the act of invocation of the named call and provides it with the
+  * necessary work to invoke it.
+  *
+  * @note This currently doesn't consider spawning a new thread to handle this
+  * working process. A separate method will consider this.
+  */
   QVariant invoke ( const QString name, const QVariantList data = QVariantList() );
- 
+
   /**
    * @fn setDomain
    * @brief Sets the domain of this module.
@@ -108,9 +131,12 @@ protected:
    * @brief Crafts a LambdaCall out of a function pointer and adds the
    * call into the system.
    */
-  LambdaCall* mountLambda ( Call::Signature lambda, const QString& name );
+  LambdaCall* mountLambda ( const QString& name, 
+      LambdaCall::Signature lambdaFunction );
 };
 } /*  Procedure */
 } /*  Wintermute */
+
+Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, "in.wintermute.procedure.module/0.1.0");
 
 #endif /* WINTERMUTE_CORE_PROCEDURE_MODULE_HPP */

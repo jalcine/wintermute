@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PLUGIN_HPP
-#define WINTERMUTE_CORE_PLUGIN_HPP
+#ifndef WINTERMUTE_PLUGIN_HPP
+#define WINTERMUTE_PLUGIN_HPP
 
 #include <Wintermute/Globals>
 #include <Wintermute/Version>
@@ -57,41 +57,10 @@ protected:
   QSettings* configuration() const;
 
 public:
-
   virtual ~Plugin();
 
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
-
-  /**
-   * Flags used to represent the different states that a plug-in can exist
-   * in.
-   */
-  enum State {
-    Undefined = 0x0,  // Reserved for a lack of a state (typically null) plugin.
-    Loading   = 0x1,  // The plugin is currently undergoing the act of loading its prerequisties into Wintermute.
-    Loaded    = 0x2,  // The plugin has been successfully loaded into Wintermute.
-    Unloading = 0x3,  // The plugin is currently underdoing the work of removing itself from Wintermute.
-    Unloaded  = 0x4,  // The plugin has been successfully removed from Wintermute.
-    Crashed   = 0x5   // The plugin has encountered an undefined error.
-  };
-
-  /**
-   * Defines the kind of plugin that this is.
-   */
-  enum Type {
-    Module    = 0x0, // Defined as a module-based plugin, it'll run in a separate process.
-    Addon     = 0x1, // Defined as an add-on plugin, it'll load in its specified parent process.
-    Support   = 0x2 // Defined as a support plugin, it'll load in every running Wintermute process.
-  };
-
-  /**
-   * @fn isLoaded
-   * Determines if the plugin has been loaded.
-   */
-  inline bool isLoaded() const {
-    return state() == Loaded;
-  }
 
   /**
    * @fn name
@@ -112,16 +81,10 @@ public:
   virtual Version systemVersion() const = 0;
 
   /**
-   * @fn state
-   * Obtains the current state of the plugin.
+   * @fn isLoaded
+   * Determines if the plugin has been loaded.
    */
-  virtual State state() const = 0;
-
-  /**
-   * @fn type
-   * Obtains the type of plugin.
-   */
-  virtual Type type() const = 0;
+  bool isLoaded() const;
 
   /**
    * @fn start
@@ -144,4 +107,4 @@ typedef QList<Plugin*> PluginList;
 typedef QMap<QString, Plugin*> PluginMap;
 }
 
-#endif /* WINTERMUTE_CORE_PLUGIN_HPP */
+#endif /* WINTERMUTE_PLUGIN_HPP */

@@ -16,24 +16,37 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/lambda_call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Procedure::LambdaCall;
 
-LambdaCall::LambdaCall ( Call::Signature lambda, QString name ) :
+LambdaCall::LambdaCall ( const QString& name, Signature lambda ) :
   Call ( Wintermute::Application::instance() )
 {
   Q_D ( Call );
-  this->setProperty ( "name", name );
-  d->function = lambda;
+  d->name = name;
+  setFunction ( lambda );
 }
 
-QString
-LambdaCall::name() const
+LambdaCall::Signature
+LambdaCall::function() const
 {
-  return this->property ( "name" ).toString();
+  return m_function;
+}
+
+void
+LambdaCall::setFunction(Signature newFunction)
+{
+  m_function = newFunction;
+}
+
+QVariant
+LambdaCall::invoke ( const QVariantList& data )
+{
+  return ( m_function ? m_function ( data ) : QVariant() );
 }
 
 LambdaCall::~LambdaCall()
