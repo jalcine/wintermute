@@ -28,7 +28,6 @@
 #include "Wintermute/application.hpp"
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/Procedure/receiver.hpp"
-#include "Wintermute/Procedure/receiver.moc"
 
 using Wintermute::Procedure::Receiver;
 using Wintermute::Events::CallEvent;

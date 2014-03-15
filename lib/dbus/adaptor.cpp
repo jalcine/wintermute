@@ -18,11 +18,11 @@
 
 #include <QtDBus/QDBusConnection>
 #include <QtCore/QCoreApplication>
+#include <Wintermute/Application>
 #include <Wintermute/Logging>
 #include "module.hpp"
 #include "receiver.hpp"
 #include "adaptor.hpp"
-#include "adaptor.moc"
 
 using Wintermute::DBus::Adaptor;
 using Wintermute::DBus::Receiver;
@@ -47,17 +47,7 @@ Adaptor::registerOnDBus()
     return;
   }
 
-  const bool objectRegistered = bus.registerObject( "/Process", parent(),
-    QDBusConnection::ExportChildObjects | QDBusConnection::ExportAllSlots 
-      | QDBusConnection::ExportAllInvokables | QDBusConnection::ExportAdaptors
-      | QDBusConnection::ExportChildObjects
-  );
-
-  if ( objectRegistered )
-  {
-    winfo ( this, QString( "Registered this process into D-Bus service %1." )
-        .arg ( bus.baseService() ) );
-  }
+  bus.registerObject( "/Process", this, QDBusConnection::ExportAllInvokables );
 }
 
 void
@@ -68,8 +58,13 @@ Adaptor::deregisterFromDBus()
       "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
 
   bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg( 
-        QCoreApplication::applicationPid() ) );
-  bus.unregisterObject ( "/Process" );
+    QCoreApplication::applicationPid() ) );
+
+  for (Procedure::Module* module: wntrApp->modules() )
+  {
+    const QString objectName = "/" + module->package();
+    bus.unregisterObject ( objectName );
+  }
 }
 
 void
@@ -83,7 +78,7 @@ Adaptor::handleIncomingCall ( const QString& arguments, const
 bool
 Adaptor::hasModule ( const QString& name )
 {
-  return false;
+  return wntrApp->findModule ( name ) != nullptr;
 }
 
 Adaptor::~Adaptor()

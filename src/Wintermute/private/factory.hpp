@@ -23,9 +23,9 @@
 #include "factory.hpp"
 #include "application.hpp"
 #include <Wintermute/Globals>
-#include <QCoreApplication>
-#include <QDir>
-#include <QFile>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 
 namespace Wintermute
 {
@@ -50,10 +50,12 @@ namespace Wintermute
     {
       // Grab a list of plug-ins in the definition folder.
       QDir pluginDefDir ( WINTERMUTE_PLUGIN_DEFINITION_DIR );
-      QStringList files = pluginDefDir.entryList ( QStringList() << "*.spec",
+      QStringList files = pluginDefDir.entryList ( QStringList() << "*.spec", 
           QDir::Files );
       QStringList plugins;
-      Q_FOREACH ( QString pluginFile, files )
+      wdebug ( wntrFactory, QString ( "Scanning %1" ).
+          arg(WINTERMUTE_PLUGIN_DEFINITION_DIR));
+      for ( QString pluginFile: files )
       {
         QString name = pluginFile.remove ( ".spec" );
         wdebug ( wntrFactory, 

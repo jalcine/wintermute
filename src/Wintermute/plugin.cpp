@@ -16,15 +16,15 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QSettings>
+#include <QtCore/QPluginLoader>
+#include <QtCore/QMetaClassInfo>
 #include "plugin.hpp"
 #include "version.hpp"
 #include "logging.hpp"
 #include "factory.hpp"
 #include "application.hpp"
 #include "private/plugin.hpp"
-#include <QtCore/QSettings>
-#include <QtCore/QPluginLoader>
-#include "Wintermute/plugin.moc"
 
 using Wintermute::Version;
 using Wintermute::Plugin;
@@ -41,9 +41,12 @@ QSettings*
 Plugin::configuration() const
 {
   Q_D ( const Plugin );
-  if ( d->settings == 0 && isLoaded() ) {
-    d->settings = new QSettings( "Wintermute", name(), parent() );
-    winfo( this, QString( "%1's settings are now found at %2." ).arg( name(),
+  if ( d->settings == 0 ) {
+    QMetaClassInfo nameClass = metaObject()->classInfo ( 
+        metaObject()->indexOfClassInfo ( "Name" ) );
+    const QString name = nameClass.value();
+    d->settings = new QSettings( "Wintermute", name, parent() );
+    winfo( this, QString( "%1's settings are now found at %2." ).arg( name,
            d->settings->fileName() ) );
   }
   return d->settings;
@@ -66,22 +69,17 @@ Plugin::systemVersion() const
 QString
 Plugin::name() const
 {
+  QMetaClassInfo nameClass = metaObject()->classInfo ( 
+    metaObject()->indexOfClassInfo ( "Name" ) );
   QVariant value = configuration()->value("Plugin/Name");
-  return value.isNull() ? "Unnamed Plugin" : value.toString();
+  return value.isNull() ? nameClass.value() : value.toString();
 }
 
 bool
 Plugin::isLoaded() const
 {
   Q_D ( const Plugin );
-  return d->pluginLoader != 0 && d->pluginLoader->isLoaded();
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  QVariant value = configuration()->value("Plugin/Type");
-  return value.isNull() ? Plugin::TypeUndefined : (Plugin::Type) value.toInt();
+  return d->loader != 0 && d->loader->isLoaded();
 }
 
 Plugin::~Plugin()

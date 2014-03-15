@@ -21,7 +21,6 @@
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
-#include "Wintermute/Procedure/dispatcher.moc"
 
 using Wintermute::Procedure::Dispatcher;
 using Wintermute::Events::CallEvent;

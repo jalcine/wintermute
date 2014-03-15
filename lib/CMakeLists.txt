@@ -16,7 +16,15 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
+option(WITH_ZEROMQ "Include ZeroMQ plug-in." OFF)
+option(WITH_DBUS   "Include D-Bus plug-in."  OFF)
 add_subdirectory ( heartbeat )
 add_subdirectory ( daemon )
-add_subdirectory ( dbus )
-add_subdirectory ( zeromq )
+
+if (WITH_DBUS)
+  add_subdirectory ( dbus )
+endif()
+
+if (WITH_ZEROMQ)
+  add_subdirectory ( zeromq )
+endif()

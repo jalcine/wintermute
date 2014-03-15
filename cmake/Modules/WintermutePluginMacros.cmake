@@ -51,7 +51,7 @@ function(wintermute_plugin_declare)
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER ${wdp_TARGET} _minLocal)
-  string(TOUPPER ${wdp_TARGET} ${_local}_EXPORT_SYMBOL)
+  string(TOUPPER ${wdp_TARGET}_EXPORTS _sym)
 
   # Define the plugin's CMake properties.
   set(${_local}_SOURCES         ${wdp_SOURCES}
@@ -60,6 +60,8 @@ function(wintermute_plugin_declare)
     CACHE STRING "Headers.")
   set(${_local}_TARGET          "wintermute-${wdp_TARGET}"
     CACHE STRING "Target.")
+  set(${_local}_EXPORT_SYMBOL   ${_sym}
+    CACHE STRING "Export symbol.")
   set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}
     CACHE STRING "Libraries.")
   set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
@@ -78,16 +80,13 @@ endfunction(wintermute_plugin_declare)
 ##
 function(wintermute_plugin_target_declare)
   set(_oneArgs   TARGET)
-  set(_multiArgs "")
-  cmake_parse_arguments(wptd "" "${_oneArgs}" "${_multiArgs}" ${ARGN})
+  cmake_parse_arguments(wdp "" "${_oneArgs}" "" ${ARGN})
 
   # Define the plugin's CMake prefix.
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wptd_TARGET}" _local)
-  string(TOLOWER ${wptd_TARGET} _minLocal)
-  set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
+  string(TOLOWER "${wdp_TARGET}" _minLocal)
 
-  # Ensure that we handle the automagically moc-ing of files.
-  qt4_automoc(${${_local}_SOURCES})
+  set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
 
   # Define the library.
   add_library(${${_local}_TARGET} SHARED ${${_local}_SOURCES})
@@ -97,24 +96,20 @@ function(wintermute_plugin_target_declare)
 
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
-    FOLDER        "Wintermute/${${_local}_TARGET}")
-  set_target_properties(${${_local}_TARGET} PROPERTIES
-    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}")
-  set_target_properties(${${_local}_TARGET} PROPERTIES
-    VERSION       ${${_local}_VERSION})
-  set_target_properties(${${_local}_TARGET} PROPERTIES
+    FOLDER        "Wintermute/${${_local}_TARGET}"
+    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
+    VERSION       ${${_local}_VERSION}
     SOVERSION     ${${_local}_VERSION})
 
   target_link_libraries(${${_local}_TARGET} ${${_local}_LIBRARIES})
 
-  include_directories(${${_local}_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${WINTERMUTE_INCLUDE_DIR}
-    ${WINTERMUTE_CORE_INCLUDE_DIR}
-  )
+  include_directories(${${_local}_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
   if (TARGET wintermute)
     include_directories(${CMAKE_SOURCE_DIR}/src)
+  else()
+    include_directories(${WINTERMUTE_INCLUDE_DIR}
+      ${WINTERMUTE_CORE_INCLUDE_DIR})
   endif(TARGET wintermute)
 
   message(STATUS "Plugin '${${_local}_TARGET}' v. ${${_local}_VERSION} defined.")
@@ -181,7 +176,7 @@ function(wintermute_plugin_configure)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wpc_TARGET}" _local)
 
   foreach(_validProperty ${_validProperties})
-    set("${_local}${_validProperty}" "${wpc_${_validProperty}}" 
+    set("${_local}_${_validProperty}" "${wpc_${_validProperty}}" 
       CACHE STRING "Configuration property.")
   endforeach(_validProperty ${_validProperties})
 endfunction(wintermute_plugin_configure)
@@ -215,7 +210,7 @@ function(wintermute_plugin_set_version)
   endforeach(_pluginVersionVariable ${_pluginVersions})
 
   foreach(_systemVersionVariable ${_systemVersions})
-    set("${_local}${_systemVersionVariable}" 
+    set("${_local}_${_systemVersionVariable}" 
       "${wpsv_${_systemVersionVariable}}"
       CACHE STRING "System versioning.")
   endforeach(_systemVersionVariable ${_systemVersions})
@@ -251,10 +246,8 @@ function(wintermute_plugin_install)
     CONFIGURATIONS      Debug
     DESTINATION         ${${_local}_HEADERS_PATH}
   )
-  # TODO: Install documentation.
 
   install(FILES ${${_local}_DEFINITION_FILE}
     COMPONENT           Runtime
-    CONFIGURATIONS      Release
     DESTINATION         ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
 endfunction(wintermute_plugin_install)

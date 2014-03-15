@@ -26,16 +26,13 @@
 using Wintermute::Arguments;
 using Wintermute::ArgumentsPrivate;
 
-
 Arguments* Arguments::self = 0;
 
 // TODO: Add a means of registering new arguments to the command line?
-Arguments::Arguments() : QObject ( Application::instance() ), d_ptr ( new ArgumentsPrivate ( this ) )
+Arguments::Arguments() : QObject ( Application::instance() ), 
+  d_ptr ( new ArgumentsPrivate ( this ) )
 {
   Q_D ( Arguments );
-  // Wipe the object, just to be safe.
-  // TODO: Determine if this is even necessary.
-  d->arguments.clear();
   // Make this the object of concern.
   d->args->setParent ( this );
   // Connect necessary slots.
@@ -138,5 +135,3 @@ Arguments::addParameter ( const QString& parameterName, const QString& descripti
 Arguments::~Arguments()
 {
 }
-
-#include "Wintermute/arguments.moc"

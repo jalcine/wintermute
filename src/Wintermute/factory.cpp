@@ -24,7 +24,6 @@
 #include "application.hpp"
 #include "private/factory.hpp"
 #include "plugin_process.hpp"
-#include "Wintermute/factory.moc"
 
 using namespace Wintermute;
 using Wintermute::Factory;
@@ -155,7 +154,7 @@ Factory::autoloadPlugins()
     return true;
   }
 
-  Q_FOREACH ( QString plugin, autoloadList )
+  for ( QString plugin: autoloadList )
   {
     if ( !all.contains ( plugin ) )
     {
@@ -180,15 +179,10 @@ Factory::autoloadPlugins()
 bool
 Factory::unloadAllPlugins()
 {
-  return false;
-}
-
-void
-Factory::pluginStateChange ( const QString& name, const Plugin::State& state )
-{
-  Logger* log = wlog ( this );
-  log->info ( "Passing signal." );
-  emit pluginStateChanged ( name, state );
+  for (QString plugin: activePlugins())
+  {
+    unloadPlugin ( plugin );
+  }
 }
 
 void

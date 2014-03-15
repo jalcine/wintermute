@@ -25,27 +25,31 @@ set ( daemon_HDRS
   plugin.hpp
   module.hpp )
 
-configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/daemon/globals.hpp
+configure_file ( globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp
   @ONLY )
 
-wintermute_plugin_declare ( TARGET daemon UUID ${daemon_UUID} SOURCES ${daemon_SRCS} )
+wintermute_plugin_declare ( TARGET daemon 
+  SOURCES ${daemon_SRCS}
+  HEADERS ${daemon_HDRS}
+)
+
 wintermute_plugin_set_version ( TARGET daemon
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1
   PLUGIN_VERSION_PATCH 0
   PLUGIN_VERSION_STAGE dev
-
   SYSTEM_VERSION_MAJOR ${WINTERMUTE_VERSION_MAJOR}
   SYSTEM_VERSION_MINOR ${WINTERMUTE_VERSION_MINOR}
   SYSTEM_VERSION_PATCH ${WINTERMUTE_VERSION_PATCH}
-  SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE} )
+  SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE}
+)
 
 wintermute_plugin_configure ( TARGET daemon
   AUTHOR_NAME "Jacky Alcine"
-  NAME_RPC "wintermute.in.daemon"
-  EMAIL "me@jalcine.me"
-  URI "http://wintermute.jalcine.me/plugins/daemon.html"
-  )
-wintermute_plugin_add_include_directories(TARGET daemon DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
-wintermute_plugin_target_declare ( TARGET daemon SOURCES ${daemon_SRCS} )
+  NAME_RPC    "wintermute.in.daemon"
+  EMAIL       "me@jalcine.me"
+  URI         "http://wintermute.jalcine.me/plugins/daemon.html"
+)
+
+wintermute_plugin_target_declare ( TARGET daemon )
 wintermute_plugin_install ( TARGET daemon )

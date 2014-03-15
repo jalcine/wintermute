@@ -19,7 +19,6 @@
 #include "Wintermute/private/plugin_process.hpp"
 #include "plugin.hpp"
 #include "plugin_process.hpp"
-#include "Wintermute/plugin_process.moc"
 
 using Wintermute::Plugin;
 using Wintermute::PluginProcess;
@@ -29,12 +28,6 @@ PluginProcess::PluginProcess(const QString& pluginName) :
 {
   Q_D ( PluginProcess );
   d->pluginName = pluginName;
-}
-
-Plugin::State
-PluginProcess::state() const
-{
-  return Plugin::Loaded;
 }
 
 void

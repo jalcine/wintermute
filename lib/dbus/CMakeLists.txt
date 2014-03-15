@@ -59,6 +59,7 @@ wintermute_plugin_configure ( TARGET dbus
   URI "http://wintermute.jalcine.me/plugins/dbus.html"
   )
 wintermute_plugin_add_libraries ( TARGET dbus LIBRARIES ${QT_QTDBUS_LIBRARY})
-wintermute_plugin_add_include_directories ( TARGET dbus DIRECTORIES ${QT_QTDBUS_INCLUDE_DIR} )
-wintermute_plugin_target_declare ( TARGET dbus SOURCES ${dbus_SRCS} )
+wintermute_plugin_add_include_directories ( TARGET dbus DIRECTORIES
+  ${QT_QTDBUS_INCLUDE_DIR} )
+wintermute_plugin_target_declare ( TARGET dbus )
 wintermute_plugin_install ( TARGET dbus )

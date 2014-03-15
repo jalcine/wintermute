@@ -37,20 +37,20 @@ find_package(QCommandLine 0.4.0 REQUIRED)
 find_package(QJSON 0.7 REQUIRED)
 find_package(QtZeroMQ REQUIRED)
 find_package(Qt4 4.8 COMPONENTS 
-  QtCore QtDBus REQUIRED)
+  QtCore REQUIRED)
 ## }}}
 
 ## {{{ Determine which features and dependencies are flipped on/off.
 
-add_feature_info("C++ Framework" QT_FOUND
+add_feature_info("Qt4 Framework" QT_FOUND
   "The awesomest C++ framework on the planet.")
-add_feature_info("Package Discovery" PKGCONFIG_FOUND
+add_feature_info("PkgConfig" PKGCONFIG_FOUND
   "Allows for rapid package discovery.")
-add_feature_info("JSON parsing" QJSON_FOUND
+add_feature_info("QtJson" QJSON_FOUND
   "Allows for the use of JSON.")
-add_feature_info("Command Line" QCOMMANDLINE_FOUND
+add_feature_info("QCommandLine" QCOMMANDLINE_FOUND
   "Allows Wintermute to parse the command line.")
-add_feature_info("Logging" Log4Qt_FOUND
+add_feature_info("Log4Qt" Log4Qt_FOUND
   "Incorporates logging support.")
 
 ## }}}
