@@ -19,7 +19,7 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/arguments.hpp"
 #include "Wintermute/factory.hpp"
-#include "Wintermute/Events/Filters/call.hpp"
+#include "Wintermute/Events/call_filter.hpp"
 #include "Wintermute/Procedure/dummy_dispatcher.hpp"
 #include "Wintermute/Procedure/dummy_receiver.hpp"
 #include "Wintermute/Procedure/process_module.hpp"

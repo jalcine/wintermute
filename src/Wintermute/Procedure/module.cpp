@@ -20,7 +20,6 @@
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
 #include "Wintermute/Procedure/lambda_call.hpp"
-#include "Wintermute/Procedure/module.moc"
 
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::LambdaCall;
@@ -31,14 +30,19 @@ Module::Module ( QObject* parent ) :
 {
 }
 
+QStringList
+Module::calls () const
+{
+  Q_D ( const Module );
+  return d->calls.keys();
+}
+
+// TODO: This doesn't have to return a value in the future.
 const QVariant
 Module::dispatch ( const Call& call ) const
 {
   Q_D ( const Module );
-  const QString callStr = call.toString();
-  winfo ( this, QString ( "Sending '%1' to '%2'..." )
-    .arg ( callStr, call.recipient() ) );
-  d->sendData ( callStr );
+  d->sendData ( call.toString() );
   return QVariant();
 }
 

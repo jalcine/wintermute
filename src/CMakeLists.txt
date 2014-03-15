@@ -27,7 +27,7 @@ list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 set ( WINTERMUTE_SOURCES
   ## Events
   Wintermute/Events/call.cpp
-  Wintermute/Events/Filters/call.cpp
+  Wintermute/Events/call_filter.cpp
 
   ## Procedure Calling
   Wintermute/Procedure/module.cpp
@@ -84,9 +84,6 @@ set ( WINTERMUTE_HEADERS
   Wintermute/Procedure/dispatcher.hpp
   Wintermute/Procedure/receiver.hpp
 )
-
-# Moc the files.
-qt4_automoc( ${WINTERMUTE_SOURCES} )
 
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"

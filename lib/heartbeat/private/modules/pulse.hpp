@@ -18,6 +18,10 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QTimer>
+#include <QtCore/QVariant>
+#include <QtCore/QVariantList>
+#include <QtCore/QVariantMap>
+#include <Wintermute/Procedure/Module>
 #include "globals.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
 
@@ -40,6 +44,35 @@ class PulseModulePrivate
       timer.setInterval ( WINTERMUTE_HEARTBEAT_INTERVAL );
       timer.setSingleShot ( true );
       QObject::connect(&timer,SIGNAL(timeout()),q,SLOT(tick()));
+    }
+
+    QVariantMap
+    getModuleInfo ( const QString& moduleName )
+    {
+      Procedure::Module* module = wntrApp->findModule ( moduleName );
+      QVariantMap values;
+
+      if ( module != nullptr )
+      {
+        values.insert ( "name",    module->qualifiedName() );
+        values.insert ( "domain",  module->domain() );
+        values.insert ( "package", module->package() );
+        values.insert ( "calls",   module->calls() );
+      }
+
+      return values; 
+    }
+
+    QVariantList
+    getAllModulesInfo()
+    {
+      QVariantList modules;
+      for (Procedure::Module* module: wntrApp->modules())
+      {
+        modules.push_back ( getModuleInfo ( module->qualifiedName() ) );
+      }
+
+      return modules;
     }
 };
 }

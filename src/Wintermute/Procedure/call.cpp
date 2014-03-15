@@ -145,5 +145,3 @@ Call::attemptInvocation ( const Call* call )
 Call::~Call()
 {
 }
-
-#include "Wintermute/Procedure/call.moc"

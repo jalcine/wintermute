@@ -19,10 +19,9 @@
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
-#include "Wintermute/Events/Filters/call.hpp"
+#include "Wintermute/Events/call_filter.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/dispatcher.hpp"
-#include "Wintermute/Events/Filters/call.moc"
 
 using Wintermute::Events::CallEvent;
 using Wintermute::Events::Filters::CallFilter;
@@ -37,17 +36,9 @@ CallFilter::CallFilter() :
 bool
 CallFilter::handleDispatch ( QObject* object, QEvent* event )
 {
-  winfo ( object, "Handling a local call for dispatching aboard." );
-
-  CallEvent* callEvent = static_cast<CallEvent*> ( event );
+  CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
   const Procedure::Call* call = callEvent->call();
-
-  winfo ( object, QString ( "Dispatching %1 to '%2'." )
-    .arg ( call->toString(), call->recipient() ) );
-
   Procedure::DispatcherPrivate::dispatch ( call->toString() );
-
-  winfo ( object, "Call dispatched." );
 
   return true;
 }
@@ -55,13 +46,11 @@ CallFilter::handleDispatch ( QObject* object, QEvent* event )
 bool
 CallFilter::handleReceive ( QObject* object, QEvent* event )
 {
-  winfo ( object, "Handling a remote call for local invocation." );
-
   CallEvent* callEvent = static_cast<CallEvent*> ( event );
   const Procedure::Call* call = callEvent->call();
-  const bool invocated = Procedure::Call::attemptInvocation ( call );
+  const bool invoked = Procedure::Call::attemptInvocation ( call );
 
-  invocated ? winfo ( object, "Call invoked." ) :
+  invoked ? winfo ( object, "Call invoked." ) :
     wwarn ( object, "Call failed to invoke." );
 
   return true;

@@ -24,7 +24,7 @@
 #include "version.hpp"
 #include "Wintermute/private/application.hpp"
 #include "Wintermute/Procedure/module.hpp"
-#include "Wintermute/application.moc"
+#include "moc_application.cpp"
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
@@ -41,14 +41,14 @@ Application::Application ( int& argc, char** argv ) :
   Q_D ( Application );
   Application::self = qobject_cast<Application*> ( this );
   d->app->setApplicationName    ( WINTERMUTE_NAME );
-  d->app->setApplicationVersion ( this->version().toString() );
+  d->app->setApplicationVersion ( version().toString() );
   d->app->setOrganizationName   ( WINTERMUTE_NAME );
   d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
   d->settings = new QSettings;
   d->settings->setValue( "Timing/StartupTime" ,
     QDateTime::currentDateTimeUtc().toString() );
 
-  winfo(this, QString( "Wintermute recorded startup at %1." )
+  winfo(this, QString( "Wintermute recorded startup at %1. Hello there!" )
     .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
 }
 
@@ -91,7 +91,7 @@ void
 Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
-  log->info ( "Stopping Wintermute..." );
+  log->info ( QString ( "Stopping Wintermute '%1'..." ).arg ( processName() ) );
   QCoreApplication::quit();
   emit this->stopped();
   log->info ( "Wintermute is stopping " + QString ( "with exit code %1." )

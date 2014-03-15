@@ -17,17 +17,51 @@
  **/
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QProcess>
 #include <Wintermute/Globals>
+#include <Wintermute/Procedure/MethodCall>
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
-#include "Wintermute/Procedure/process_module.moc"
 
 using Wintermute::Procedure::ProcessModule;
+using Wintermute::Procedure::MethodCall;
 
-ProcessModule::ProcessModule() : Module ( Wintermute::Application::instance() )
+ProcessModule::ProcessModule() : 
+  Module ( Wintermute::Application::instance() )
 {
   setDomain  ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
+
+  mountLambda ( "stop", [&] (QVariantList args) -> QVariant {
+    wdebug ( this, "Remote stop initiated." );
+    stop ();
+    return true;
+  } );
+
+  mountLambda ( "quit", [&] (QVariantList args) -> QVariant {
+    wdebug ( this, "Remote quit initiated." );
+    quit ( args[0].toInt() );
+    return true;
+  } );
+
+  mountLambda ( "reboot", [&] (QVariantList args) -> QVariant {
+    wdebug ( this, "Remote reboot initiated." );
+    quit ( args[0].toInt() );
+    return true;
+  } );
+
+  connect ( wntrApp, SIGNAL ( addedModule ( const QString ) ),
+      this, SLOT ( greetSystem ( const QString ) ) );
+}
+
+void
+ProcessModule::greetSystem ( const QString& name )
+{
+  MethodCall theCall (WINTERMUTE_DOMAIN".heartbeat.monitor", "greet");
+  quint64 pid = QCoreApplication::applicationPid();
+  Module* module = wntrApp->findModule ( name );
+  theCall.setArguments( QVariantList() << name << pid );
+  module->dispatch ( theCall );
 }
 
 void
@@ -36,13 +70,14 @@ ProcessModule::start()
   connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
   winfo ( this, QString ( "Currently %1 modules loaded so far." )
       .arg ( wntrApp->modules().length() ) );
-  // TODO: Move the mode handling logic here?
 }
 
 void
 ProcessModule::reboot()
 {
-  Wintermute::Application::instance()->stop();
+  QProcess::startDetached ( QCoreApplication::applicationFilePath(), 
+      QCoreApplication::arguments() );
+  quit ( 0 );
 }
 
 void

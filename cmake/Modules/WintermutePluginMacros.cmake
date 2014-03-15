@@ -51,7 +51,7 @@ function(wintermute_plugin_declare)
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER ${wdp_TARGET} _minLocal)
-  string(TOUPPER ${wdp_TARGET} ${_local}_EXPORT_SYMBOL)
+  string(TOUPPER ${wdp_TARGET}_EXPORTS _sym)
 
   # Define the plugin's CMake properties.
   set(${_local}_SOURCES         ${wdp_SOURCES}
@@ -60,6 +60,8 @@ function(wintermute_plugin_declare)
     CACHE STRING "Headers.")
   set(${_local}_TARGET          "wintermute-${wdp_TARGET}"
     CACHE STRING "Target.")
+  set(${_local}_EXPORT_SYMBOL   ${_sym}
+    CACHE STRING "Export symbol.")
   set(${_local}_LIBRARIES       ${WINTERMUTE_LIBRARIES}
     CACHE STRING "Libraries.")
   set(${_local}_INCLUDE_DIRS    ${WINTERMUTE_INCLUDE_DIRS}
@@ -83,7 +85,6 @@ function(wintermute_plugin_target_declare)
   # Define the plugin's CMake prefix.
   string(TOUPPER "WINTERMUTE_PLUGIN_${wdp_TARGET}" _local)
   string(TOLOWER "${wdp_TARGET}" _minLocal)
-  string(TOUPPER "${wdp_TARGET}" ${_local}_EXPORT_SYMBOL)
 
   set("${_local}_VERSION" "${${_local}_PLUGIN_VERSION_MAJOR}.${${_local}_PLUGIN_VERSION_MINOR}.${${_local}_PLUGIN_VERSION_PATCH}")
 
@@ -95,10 +96,8 @@ function(wintermute_plugin_target_declare)
 
   # Define the library's version.
   set_target_properties(${${_local}_TARGET} PROPERTIES
-    FOLDER        "Wintermute/${${_local}_TARGET}")
-  set_target_properties(${${_local}_TARGET} PROPERTIES
-    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}")
-  set_target_properties(${${_local}_TARGET} PROPERTIES
+    FOLDER        "Wintermute/${${_local}_TARGET}"
+    EXPORT_SYMBOL "${${_local}_EXPORT_SYMBOL}"
     VERSION       ${${_local}_VERSION}
     SOVERSION     ${${_local}_VERSION})
 
@@ -247,10 +246,8 @@ function(wintermute_plugin_install)
     CONFIGURATIONS      Debug
     DESTINATION         ${${_local}_HEADERS_PATH}
   )
-  # TODO: Install documentation.
 
   install(FILES ${${_local}_DEFINITION_FILE}
     COMPONENT           Runtime
-    CONFIGURATIONS      Release
     DESTINATION         ${WINTERMUTE_PLUGIN_DEFINITION_DIR})
 endfunction(wintermute_plugin_install)

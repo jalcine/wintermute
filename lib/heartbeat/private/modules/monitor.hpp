@@ -24,28 +24,41 @@ namespace Wintermute
 {
 namespace Heartbeat
 {
-  class Process;
   class MonitorModulePrivate
   {
     public:
-      QMap<qint64, Process*> processes;
+      QMap<quint64, QVariantMap> processes;
       MonitorModule* q_ptr;
       Q_DECLARE_PUBLIC ( MonitorModule );
 
       MonitorModulePrivate ( MonitorModule* q ) :
-        processes (), q_ptr ( q )
+        processes ( QMap<quint64, QVariantMap>() ), q_ptr ( q )
       {
-        processes.clear();
         winfo(q, "Prepped to monitor this system.");
+      }
+
+      void
+      mountCalls()
+      {
+        q_ptr->mountLambda ( "greet", [&] (QVariantList args) -> QVariant { 
+          wdebug(q_ptr, "We got someone saying hello.");
+          return greet(args);
+        } );
+
+        q_ptr->mountLambda ( "record", [&] (QVariantList args) -> QVariant { 
+          wdebug(q_ptr, "Entering a new beating record.");
+          return record(args);
+        } );
       }
 
       QVariant greet ( const QVariantList& arguments )
       {
-        for (const QVariant i: arguments)
-        {
-          winfo(wntrApp, i.toString());
-        }
-        return 10;
+        QVariantMap newEntry;
+        newEntry.insert ( "name", arguments[0] );
+        newEntry.insert ( "pid",  arguments[1] );
+        processes.insert ( arguments[0].toUInt(), newEntry );
+        winfo ( q_ptr, QString ( "Hello %1!" ).arg ( arguments[0].toString() ) );
+        return true;
       }
 
       /**
@@ -57,10 +70,21 @@ namespace Heartbeat
        */
       QVariant record ( const QVariantList& arguments )
       {
-        // TODO: Check if said process exists.
-        // TODO: Update process information.
         quint64 pid = arguments[2].toUInt();
-        return true;
+
+        if ( processes.contains ( pid ) )
+        {
+          processes[pid]["count"] = arguments[0].toInt();
+        }
+        else
+        {
+          QVariantMap entry;
+          entry.insert ( "count",   arguments[0].toInt() );
+          entry.insert ( "signal",  arguments[1].toInt() );
+          processes.insert ( pid, entry );
+        }
+
+        return processes.contains ( pid );
       }
   };
 }

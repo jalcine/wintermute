@@ -21,7 +21,6 @@
 #include "plugin.hpp"
 #include "pulse.hpp"
 #include "private/modules/pulse.hpp"
-#include "pulse.moc"
 
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Heartbeat::Plugin;
@@ -34,6 +33,21 @@ PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   winfo (this, "Pulse ready to beat.");
   setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
   setPackage ( "pulse" );
+
+  mountLambda ( "module", [&] (QVariantList args) -> QVariant {
+    Q_D ( PulseModule );
+    const QString moduleName = args[0].toString();
+    const QVariant module = d->getModuleInfo ( moduleName );
+    wdebug ( this, module.toString() );
+    return module;
+  } );
+
+  mountLambda ( "modules", [&] (QVariantList args) -> QVariant {
+    Q_D ( PulseModule );
+    const QVariant modules = d->getAllModulesInfo();
+    wdebug ( this, modules.toString() );
+    return modules;
+  } );
 }
 
 void

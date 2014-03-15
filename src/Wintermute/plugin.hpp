@@ -64,19 +64,19 @@ public:
    * @fn name
    * Obtains the unique name of the plugin.
    */
-  virtual QString name() const = 0;
+  QString name() const;
 
   /**
    * @fn version
    * Obtains the versioning object for the plugin.
    */
-  virtual Version version() const = 0;
+  Version version() const;
 
   /**
    * @fn systemVersion
    * Obtains the minimum running version of Wintermute required for plugin.
    */
-  virtual Version systemVersion() const = 0;
+  Version systemVersion() const;
 
   /**
    * @fn isLoaded

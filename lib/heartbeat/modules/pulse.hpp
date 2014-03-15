@@ -57,9 +57,11 @@ public:
 
   explicit PulseModule ( Heartbeat::Plugin* plugin );
   virtual ~PulseModule();
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
-  Q_SLOT void pulse(PulseType type);
+
+public slots:
+  Q_INVOKABLE virtual void start();
+  Q_INVOKABLE virtual void stop();
+  Q_INVOKABLE void pulse(PulseType type);
 };
 }
 }

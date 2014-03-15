@@ -21,7 +21,6 @@
 #include "Wintermute/Procedure/receiver.hpp"
 #include "Wintermute/Procedure/dummy_receiver.hpp"
 #include "Wintermute/Procedure/dummy_dispatcher.hpp"
-#include "Wintermute/Procedure/dummy_dispatcher.moc"
 
 using Wintermute::Procedure::DummyDispatcher;
 using Wintermute::Procedure::DummyReceiver;

@@ -19,7 +19,6 @@
 #include "Wintermute/private/plugin_process.hpp"
 #include "plugin.hpp"
 #include "plugin_process.hpp"
-#include "Wintermute/plugin_process.moc"
 
 using Wintermute::Plugin;
 using Wintermute::PluginProcess;

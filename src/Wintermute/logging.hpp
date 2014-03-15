@@ -19,6 +19,7 @@
 #ifndef WINTERMUTE_LOGGING_HPP
 #define WINTERMUTE_LOGGING_HPP
 
+#include <QtCore/QtDebug>
 #include <Wintermute/Globals>
 #include <Logger>
 

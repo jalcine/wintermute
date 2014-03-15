@@ -30,6 +30,7 @@ class Plugin : public Wintermute::Plugin
 {
   Q_OBJECT;
   Q_DISABLE_COPY ( Plugin );
+  Q_CLASSINFO ( "Name", "zeromq" );
   Wintermute::ZeroMQ::Module* module;
 
 public:

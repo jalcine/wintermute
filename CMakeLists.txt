@@ -21,13 +21,10 @@ cmake_policy(SET CMP0017 NEW)
 
 ## Include our modules in the discovery of modules and incorporate our build
 ## system's logic.
-set(CMAKE_MODULE_PATH
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
-set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME
-  Runtime)
-set(WINTERMUTE_BUILD_PREFIX
-  ${CMAKE_INSTALL_PREFIX})
-set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME Runtime)
+set(WINTERMUTE_BUILD_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE 
   ${CMAKE_SOURCE_DIR}/cmake/Templates/PluginDefinition.spec.in)
 
 include(CMakeUseLocalModules)

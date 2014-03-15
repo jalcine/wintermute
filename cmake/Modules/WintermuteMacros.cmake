@@ -20,6 +20,7 @@ include(WintermuteDocumentation)
 
 macro(wintermute_add_properties _target)
   set_target_properties(${_target} PROPERTIES
+    AUTOMOC                     ON
     COMPILE_DEFINITIONS         "${WINTERMUTE_COMPILE_DEFINITIONS}"
     COMPILE_DEFINITIONS_DEBUG   "${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}"
     COMPILE_DEFINITIONS_RELEASE "${WINTERMUTE_COMPILE_DEFINITIONS_RELEASE}"
@@ -33,7 +34,6 @@ macro(wintermute_add_properties _target)
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS 
       "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
-    set(CMAKE_VERBOSE_MAKEFILE ON)
   elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set_property(TARGET ${_target} PROPERTY COMPILE_FLAGS
       "${WINTERMUTE_COMPILE_FLAGS} ${WINTERMUTE_COMPILE_FLAGS_RELEASE}")

@@ -24,7 +24,6 @@
 #include "application.hpp"
 #include "private/factory.hpp"
 #include "plugin_process.hpp"
-#include "Wintermute/factory.moc"
 
 using namespace Wintermute;
 using Wintermute::Factory;

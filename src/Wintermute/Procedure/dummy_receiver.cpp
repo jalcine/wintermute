@@ -18,7 +18,6 @@
 
 #include "Wintermute/private/Procedure/receiver.hpp"
 #include "Wintermute/Procedure/dummy_receiver.hpp"
-#include "Wintermute/Procedure/dummy_receiver.moc"
 
 using Wintermute::Procedure::DummyReceiver;
 using Wintermute::Procedure::Receiver;

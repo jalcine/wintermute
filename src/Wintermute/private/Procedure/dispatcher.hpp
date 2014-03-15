@@ -32,7 +32,8 @@ public:
 
   static bool isDispatcherKnown ( Dispatcher* dispatcher )
   {
-    for( Dispatcher * aDispatcher: DispatcherPrivate::dispatchers ) {
+    for( Dispatcher * aDispatcher: DispatcherPrivate::dispatchers )
+    {
       if ( aDispatcher->metaObject()->className()
            == dispatcher->metaObject()->className() )
       { return true; }
@@ -53,13 +54,13 @@ public:
         wdebug ( wntrApp , QString ( "Sent data to %1 for dispatching." )
            .arg ( dispatchClient->metaObject()->className() ) );
         //if ( result == Dispatcher::DispatchBreakOff )
-        {
-          // At this point; we can do two things. Either stop dispatching
-          // altogerther since we know that this message is sent reliably.
-          // Or we can continue dispatching, but only to dispatchers that can
-          // report that they have a reliable dispatching ability. The second
-          // strategy implies the ability of the first, notably.
-        }
+        //{
+        // At this point; we can do two things. Either stop dispatching
+        // altogerther since we know that this message is sent reliably.
+        // Or we can continue dispatching, but only to dispatchers that can
+        // report that they have a reliable dispatching ability. The second
+        // strategy implies the ability of the first, notably.
+        //}
       }
     }
   }

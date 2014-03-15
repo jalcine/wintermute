@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_APPLICATION_HPP
-#define WINTERMUTE_CORE_APPLICATION_HPP
+#ifndef WINTERMUTE_APPLICATION_HPP
+#define WINTERMUTE_APPLICATION_HPP
 
 #include <QtCore/QVariant>
 #include <QtCore/QList>
@@ -50,9 +50,9 @@ class ApplicationPrivate;
  */
 class Application : public QObject
 {
-  Q_OBJECT;
-  Q_DECLARE_PRIVATE ( Application );
-  Q_DISABLE_COPY ( Application );
+  Q_OBJECT
+  Q_DECLARE_PRIVATE ( Application )
+  Q_DISABLE_COPY ( Application )
 
   QScopedPointer<ApplicationPrivate> d_ptr;
   static Application* self;
@@ -70,6 +70,7 @@ class Application : public QObject
 
 public:
   virtual ~Application();
+
   /**
    * @fn instance
    * @brief Provides a pointer to an instance of Wintermute::Application.
@@ -77,11 +78,12 @@ public:
    * In order to keep Wintermute's instance running smoothly,
    * a shared pointer to the instance of the application that's running
    * and handling Wintermute's lower-level work. It's strongly recommended
-   * that you use this method if desired.
+   * that you use this method, if desired, as a parent for your QObject.
    *
    * @return A shared pointer to the working instance of Wintermute::Application.
    */
-  static inline Application* instance() {
+  static inline Application* instance()
+  {
     return self;
   }
 
@@ -174,7 +176,9 @@ public:
   // TODO: Do documentation.
   Q_SIGNAL void started();
   Q_SIGNAL void stopped();
+  Q_SIGNAL void addedModule(const QString& moduleName);
+  Q_SIGNAL void removedModule(const QString& moduleName);
 };
 }
 
-#endif /* WINTERMUTE_CORE_APPLICATION_HPP */
+#endif /* WINTERMUTE_APPLICATION_HPP */

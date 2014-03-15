@@ -19,7 +19,6 @@
 #include "plugin.hpp"
 #include "globals.hpp"
 #include "module.hpp"
-#include "plugin.moc"
 
 using Wintermute::DBus::Plugin;
 using Wintermute::DBus::Module;
@@ -27,12 +26,6 @@ using Wintermute::Version;
 
 Plugin::Plugin()
 {
-}
-
-QString
-Plugin::name() const
-{
-  return "wintermute-dbus";
 }
 
 void
@@ -47,30 +40,8 @@ Plugin::start()
   module->start();
 }
 
-Version
-Plugin::version() const
+Plugin::~Plugin()
 {
-  return Version::fromString ( configuration()->value ( 
-        "Version/Plugin" ).toString() );
-}
-
-Version
-Plugin::systemVersion() const
-{
-  return Version::fromString ( configuration()->value ( 
-        "Version/System" ).toString() );
-}
-
-Plugin::State
-Plugin::state() const
-{
-  return Loaded;
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  return Module;
 }
 
 Q_EXPORT_PLUGIN2 ( wintermute-dbus, Wintermute::DBus::Plugin );
