@@ -30,7 +30,6 @@ MethodCall::MethodCall ( const QString& module,
 {
   Q_D ( MethodCall );
   setRecipient ( module );
-  d->type = Call::TypeInvocation;
   d->data["method"] = method;
   d->data["arguments"] = arguments;
 }

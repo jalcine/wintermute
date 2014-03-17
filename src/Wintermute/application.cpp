@@ -113,6 +113,13 @@ Application::processName() const
   return d->module->qualifiedName();
 }
 
+Module*
+Application::module() const
+{
+  Q_D ( const Application );
+  return d->module.data();
+}
+
 QList<Module*>
 Application::modules() const
 {
@@ -124,11 +131,10 @@ Module*
 Application::findModule ( const QString& name ) const
 {
   Q_D ( const Application );
-  winfo(this, QString("Searching for %1 in this instance...").arg(name));
   Q_FOREACH ( Module * mod, d->modules )
   {
     QString fullPath = mod->domain() + "." + mod->package();
-    if ( fullPath == name ) { return mod; }
+    if ( fullPath == name ) return mod;
   }
   return nullptr;
 }

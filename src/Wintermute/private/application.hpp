@@ -53,7 +53,7 @@ public:
 
   void installEventFilters()
   {
-    Events::Filters::CallFilter* callFilter = new Events::Filters::CallFilter();
+    Events::CallFilter* callFilter = new Events::CallFilter();
     callFilter->setParent ( q_ptr );
     app->installEventFilter ( callFilter );
   }

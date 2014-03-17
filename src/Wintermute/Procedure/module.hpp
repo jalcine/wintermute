@@ -88,7 +88,9 @@ public:
 
   /**
    * @fn dispatch
-   * @fn Sends a method call invocation over the wire.
+   * @brief Sends a method call invocation over the wire.
+   *
+   * Sends out a call over the wire.
    */
   const QVariant dispatch ( const Call& call ) const;
 

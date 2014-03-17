@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,32 +22,49 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QSharedPointer>
+#include <functional>
 
 namespace Wintermute
 {
+namespace Events { class CallFilter; }
 namespace Procedure
 {
 class CallPrivate;
+class ReplyCall;
 class Call : public QObject
 {
   Q_OBJECT;
+  friend class Module;
+  friend class ReplyCall;
+  friend class Events::CallFilter;
+
+  void handleReply ( const ReplyCall* reply ) const;
 
 protected:
+  QSharedPointer<CallPrivate> d_ptr;
   Q_DISABLE_COPY ( Call );
   Q_DECLARE_PRIVATE ( Call );
-  QSharedPointer<CallPrivate> d_ptr;
-  Call ( CallPrivate* d );
   Q_ENUMS ( Type );
+
+  Call ( CallPrivate* d );
 
   /**
    * @fn invoke
    * @param data A list of QVariant variables.
+   *
+   * Handles the invokation of this call. By default, this method shouldn't be
+   * reached.
+   *
+   * @note Work on making this method something of a superclass.
    */
   virtual QVariant invoke ( const QVariantList& data = QVariantList() );
 
-  friend class Module;
-
 public:
+  /**
+   * @typedef CallbackSignature
+   * @brief   Signature of a function to use when a Call gets a reply.
+   */
+  typedef std::function<void (QVariant)> CallbackSignature;
 
   /**
    * @enum Type
@@ -57,17 +74,15 @@ public:
    * 0x9000 (this was intentional).
    */
   enum Type {
-    TypeUndefined    = 0x0000,  // Undefined call. Don't bother with.
+    TypeUndefined  = 0x0000,  // Undefined call. Don't bother with.
 
-    TypeResponse     = 0x0010,  // Represents a invoking call being responsed to.
-    TypeDispatch     = 0x0011,  // Represents a invoked call being sent to.
-    TypeSignal       = 0x0012,  // Represents a invoking signal being raised.
+    TypeResponse   = 0x0010,  // Represents a invoking call being responsed to.
+    TypeDispatch   = 0x0011,  // Represents a invoked call being sent to.
 
-    TypeInvocation   = 0x0020,  // Represents a call to be invoked.
-    TypeRemoteNoAuth = 0x0021,  // This call deals with a remote network with no authentication.
-    TypeRemoteAuth   = 0x0022,  // This call deals with a remote network with authentication.
+    TypeInvocation = 0x0020, // Represents a call that's to be invoked.
+    TypeReply      = 0x0021,  // Represents a reply to an invoked call.
 
-    TypeUser         = 0x9000   // Anything above this is available to the user.
+    TypeUser       = 0x9000   // Anything above this is available to the user.
   };
   Q_FLAGS ( Type Types );
 
@@ -115,6 +130,12 @@ public:
   QString recipient() const;
 
   /**
+   * @fn isValid
+   * @brief Checks if this call is minimally valid.
+   */
+  virtual bool isValid () const;
+
+  /**
    * @fn setRecipient
    * @brief Changes the recipient of this Call.
    */
@@ -126,7 +147,19 @@ public:
    */
   QVariant operator() ( const QVariantList& arguments = QVariantList() );
 
-  static bool attemptInvocation ( const Call* call );
+  /**
+   * @fn setCallback
+   * @brief Sets the callback to be invoked when a reply is received.
+   */
+  void setCallback ( CallbackSignature signature );
+
+  /**
+   * @fn clearCallback
+   * @brief Wipes the known callback used for this Call.
+   */
+  void clearCallback ();
+
+  static QVariant attemptInvocation ( const Call* call );
 };
 
 typedef QSharedPointer<Call> CallPointer;

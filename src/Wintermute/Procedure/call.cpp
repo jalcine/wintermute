@@ -22,10 +22,14 @@
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
+#include "Wintermute/Procedure/reply_call.hpp"
 #include "Wintermute/Procedure/module.hpp"
 
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::CallPrivate;
 using Wintermute::Procedure::Module;
+
+QCache <quint16, Call> CallPrivate::calls ( 500 );
 
 Call::Call ( QObject* parent ) :
   QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
@@ -39,11 +43,31 @@ Call::Call ( CallPrivate* old_d ) :
   d->q_ptr = this;
 }
 
+bool
+Call::isValid() const
+{
+  Q_D ( const Call );
+  if ( !d->hasValidData() ) return false;
+
+  return true;
+}
+
 QVariant
 Call::invoke ( const QVariantList& data )
 {
-  winfo(this, "This is an error.");
+  winfo ( this, "This is an error." );
   return QVariant();
+}
+
+void
+Call::handleReply ( const ReplyCall* reply ) const
+{
+  Q_D ( const Call );
+  if ( d->callback )
+  {
+    d->callback ( reply->response() );
+    winfo ( this, "Invoked callback to reply." );
+  }
 }
 
 void
@@ -98,10 +122,27 @@ Call::fromString ( const QString& data )
   QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
   if ( !ok ) { return 0; }
   QVariantMap callMap = callData.toMap();
-  CallPrivate* d_ptr = new CallPrivate(nullptr);
+  CallPrivate* d_ptr = new CallPrivate (nullptr);
   d_ptr->type = ( Call::Type ) callMap["type"].toInt();
   d_ptr->recipient = callMap["recipient"].toString();
   d_ptr->data = callMap["data"].toMap();
+
+  if ( d_ptr->type == Call::TypeUndefined )
+  {
+    wwarn ( wntrApp, "Missing call type." );
+    return 0;
+  }
+  else if ( d_ptr->recipient == QString::null )
+  {
+    wwarn ( wntrApp, "Missing call recipient." );
+    return 0;
+  }
+  else if ( d_ptr->data.empty() )
+  {
+    wwarn ( wntrApp, "Missing call data." );
+    return 0;
+  }
+
   return new Call(d_ptr);
 }
 
@@ -111,7 +152,7 @@ Call::operator() ( const QVariantList& data )
   return invoke ( data );
 }
 
-bool
+QVariant
 Call::attemptInvocation ( const Call* call )
 {
   Procedure::Module* module = wntrApp->findModule ( call->recipient() );
@@ -122,10 +163,6 @@ Call::attemptInvocation ( const Call* call )
         .arg ( call->recipient() ) );
     return false;
   }
-
-  winfo ( staticMetaObject.className(), 
-      QString ( "Found module %1 for invocation.")
-        .arg ( module->domain() + "." + module->package() ) );
 
   const QString methodName     = call->d_ptr->data[ "method" ].toString();
   const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
@@ -139,7 +176,22 @@ Call::attemptInvocation ( const Call* call )
   winfo ( staticMetaObject.className(),
     QString ( "Invocation result of %1: '%2'")
       .arg ( methodName, result.toString() ) );
-  return true;
+
+  return result;
+}
+
+void
+Call::setCallback ( Call::CallbackSignature callback )
+{
+  Q_D ( Call );
+  d->callback = callback;
+}
+
+void
+Call::clearCallback ()
+{
+  Q_D ( Call );
+  d->callback = nullptr;
 }
 
 Call::~Call()

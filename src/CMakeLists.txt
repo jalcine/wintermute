@@ -33,6 +33,7 @@ set ( WINTERMUTE_SOURCES
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/reply_call.cpp
   Wintermute/Procedure/lambda_call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/dispatcher.cpp

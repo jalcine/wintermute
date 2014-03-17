@@ -29,12 +29,14 @@ class MethodCallPrivate : public CallPrivate
 {
 public:
   explicit MethodCallPrivate ( MethodCall* q ) :
-    CallPrivate ( q ) {
+    CallPrivate ( q )
+  {
     type = Call::TypeInvocation;
   }
 
   void
-  composeMethodData(Procedure::Module* module) {
+  composeMethodData(Procedure::Module* module)
+  {
     QMap<QString, QVariant> appData;
     appData["pid"]     = QCoreApplication::applicationPid();
     appData["version"] = QCoreApplication::applicationVersion();
@@ -42,7 +44,8 @@ public:
     data["sender"]     = appData;
   }
 
-  virtual ~MethodCallPrivate() {
+  virtual ~MethodCallPrivate()
+  {
   }
 
   MethodCall* q;

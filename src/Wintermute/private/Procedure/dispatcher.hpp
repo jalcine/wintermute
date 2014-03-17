@@ -49,18 +49,9 @@ public:
     } 
     else 
     {
-      for ( Dispatcher* dispatchClient: dispatchers ) {
+      for ( Dispatcher* dispatchClient: dispatchers )
+      {
         dispatchClient->sendMessage ( Call::fromString ( data ) );
-        wdebug ( wntrApp , QString ( "Sent data to %1 for dispatching." )
-           .arg ( dispatchClient->metaObject()->className() ) );
-        //if ( result == Dispatcher::DispatchBreakOff )
-        //{
-        // At this point; we can do two things. Either stop dispatching
-        // altogerther since we know that this message is sent reliably.
-        // Or we can continue dispatching, but only to dispatchers that can
-        // report that they have a reliable dispatching ability. The second
-        // strategy implies the ability of the first, notably.
-        //}
       }
     }
   }

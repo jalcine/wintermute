@@ -16,15 +16,27 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#ifndef WINTERMUTE_PROCEDURE_REPLY_CALL_HPP
+#define WINTERMUTE_PROCEDURE_REPLY_CALL_HPP
 #include <Wintermute/Procedure/Call>
 
-namespace Wintermute {
-  namespace Procedure {
-    /***
-     *
-     */
-    class ReplyCall : public Call {
-      Q_OBJECT;
-    };
-  }
+namespace Wintermute
+{
+namespace Procedure
+{
+class ReplyCall : public Call {
+  Q_OBJECT;
+  QVariant m_response;
+
+public:
+  ReplyCall ( const Call* parentCall, const QVariant& response );
+  virtual ~ReplyCall();
+
+  QVariant response() const;
+  Call* call() const;
+  virtual bool isValid() const;
+};
 }
+}
+
+#endif 

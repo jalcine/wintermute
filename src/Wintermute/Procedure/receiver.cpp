@@ -43,14 +43,10 @@ Receiver::Receiver() :
 void
 Receiver::receiveMessage ( const Call* call )
 {
-  winfo ( this, QString ( "Caught a call for '%1'; passing it into event loop." ).arg ( call->recipient() ) );
   Procedure::Module* module = wntrApp->findModule ( call->recipient() );
   if ( module != nullptr ) {
-    winfo ( this, QString ( "Raising the call for '%1' throughout the event loop..." ).arg ( module->qualifiedName() ) );
     CallEvent* event = new CallEvent ( CallEvent::TypeReceive, call );
     QCoreApplication::postEvent ( wntrApp, event );
-  } else {
-    wwarn ( this, QString ( "Couldn't find the module '%1' to invoke this call with." ).arg ( call->recipient() ) );
   }
 }
 
