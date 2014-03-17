@@ -19,7 +19,6 @@
 #include <Wintermute/Logging>
 #include "adaptor.hpp"
 #include "receiver.hpp"
-#include "receiver.moc"
 
 using Wintermute::DBus::Receiver;
 using Wintermute::DBus::Adaptor;

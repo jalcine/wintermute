@@ -19,6 +19,7 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
+#include <QtCore/QCache>
 #include <QtCore/QDateTime>
 #include "Wintermute/Procedure/call.hpp"
 
@@ -26,20 +27,37 @@ namespace Wintermute
 {
 namespace Procedure
 {
-class Call;
 class CallPrivate
 {
 public:
+  static QCache<quint16, Call> calls;
   Call* q_ptr;
   QString recipient;
   QString name;
   Call::Type type;
-  QMap<QString, QVariant> data;
+  QVariantMap data;
+  quint16 id;
+  Call::CallbackSignature callback;
 
   explicit CallPrivate ( Call* q ) : q_ptr ( q ),
-    recipient(), name(), type ( Call::TypeUndefined ), data()
+    recipient(), name(), type ( Call::TypeUndefined ), 
+    data(), id ( CallPrivate::calls.size() ), callback ( )
   {
+    if ( q_ptr != nullptr )
+    {
+      CallPrivate::calls.insert ( id, q_ptr );
+    }
+
+    data["id"] = id;
     data["timestamp"] = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+  }
+
+  bool hasValidData() const
+  {
+    if ( !data.contains ( "id" ) ) return false;
+    if ( !data.contains ( "timestamp" ) ) return false;
+
+    return true;
   }
 
   virtual ~CallPrivate()

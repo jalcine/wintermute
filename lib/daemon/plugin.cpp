@@ -31,12 +31,6 @@ Plugin::Plugin()
   module->connect ( this, SIGNAL ( started() ), SLOT ( start() ) );
 }
 
-QString
-Plugin::name() const
-{
-  return "wintermute-daemon";
-}
-
 void
 Plugin::stop()
 {
@@ -48,28 +42,8 @@ Plugin::start()
   // TODO
 }
 
-Version
-Plugin::version() const
+Plugin::~Plugin()
 {
-  return Version::fromString ( configuration()->value ( "Version/Plugin" ).toString() );
 }
 
-Version
-Plugin::systemVersion() const
-{
-  return Version::fromString ( configuration()->value ( "Version/System" ).toString() );
-}
-
-Plugin::State
-Plugin::state() const
-{
-  return Loaded;
-}
-
-Plugin::Type
-Plugin::type() const
-{
-  return Module;
-}
-
-Q_EXPORT_PLUGIN2 ( wintermute - daemon, Wintermute::Daemon::Plugin );
+Q_EXPORT_PLUGIN2 ( wintermute-daemon, Wintermute::Daemon::Plugin );

@@ -27,12 +27,13 @@ list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 set ( WINTERMUTE_SOURCES
   ## Events
   Wintermute/Events/call.cpp
-  Wintermute/Events/Filters/call.cpp
+  Wintermute/Events/call_filter.cpp
 
   ## Procedure Calling
   Wintermute/Procedure/module.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/reply_call.cpp
   Wintermute/Procedure/lambda_call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/dispatcher.cpp
@@ -85,9 +86,6 @@ set ( WINTERMUTE_HEADERS
   Wintermute/Procedure/receiver.hpp
 )
 
-# Moc the files.
-qt4_automoc( ${WINTERMUTE_SOURCES} )
-
 # Wrap up the sources.
 file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
@@ -105,7 +103,8 @@ set_target_properties(wintermute PROPERTIES
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
 
-include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS})
+include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
+  ${WINTERMUTE_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.

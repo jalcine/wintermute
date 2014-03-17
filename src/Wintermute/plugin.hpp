@@ -19,13 +19,13 @@
 #ifndef WINTERMUTE_PLUGIN_HPP
 #define WINTERMUTE_PLUGIN_HPP
 
-#include <Wintermute/Globals>
-#include <Wintermute/Version>
 #include <QtCore/QObject>
 #include <QtCore/QSettings>
 #include <QtCore/QList>
 #include <QtCore/QMap>
 #include <QtCore/QtPlugin>
+#include <Wintermute/Globals>
+#include <Wintermute/Version>
 
 namespace Wintermute
 {
@@ -43,11 +43,9 @@ class PluginPrivate;
 class Plugin : public QObject
 {
   Q_OBJECT;
-  Q_ENUMS ( State );
   Q_PROPERTY ( QString Name          READ name );
   Q_PROPERTY ( Version Version       READ version );
   Q_PROPERTY ( Version SystemVersion READ systemVersion );
-  Q_PROPERTY ( State   State         READ state );
 
   QScopedPointer<PluginPrivate> d_ptr;
   Q_DECLARE_PRIVATE ( Plugin );
@@ -66,19 +64,19 @@ public:
    * @fn name
    * Obtains the unique name of the plugin.
    */
-  virtual QString name() const = 0;
+  QString name() const;
 
   /**
    * @fn version
    * Obtains the versioning object for the plugin.
    */
-  virtual Version version() const = 0;
+  Version version() const;
 
   /**
    * @fn systemVersion
    * Obtains the minimum running version of Wintermute required for plugin.
    */
-  virtual Version systemVersion() const = 0;
+  Version systemVersion() const;
 
   /**
    * @fn isLoaded

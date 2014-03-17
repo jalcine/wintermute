@@ -42,7 +42,7 @@ public:
   QMap<QString, CallPointer> calls;
 
   ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( "" ), domain ( "" ), calls()
+    q_ptr ( q ), package ( "" ), domain ( "" ), calls ( )
   {
     winfo ( q_ptr, "Module setting up..." );
   }
@@ -54,16 +54,18 @@ public:
       if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) )
       {
          wntrApp->d_ptr->modules << q_ptr;
-         // TODO: Emit an signal about 'moduleAdded' here.
+         emit wntrApp->addedModule ( q_ptr->qualifiedName() );
       }
     }
   }
 
-  void sendData ( const QString& data ) const {
+  void sendData ( const QString& data ) const
+  {
     Dispatcher::postDispatch ( Call::fromString ( data ) );
   }
 
-  virtual ~ModulePrivate () {
+  virtual ~ModulePrivate ()
+  {
     winfo ( q_ptr, "We out!" );
   }
 };

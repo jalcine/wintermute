@@ -47,6 +47,7 @@ public:
   virtual ~ProcessModule();
   Q_SLOT virtual void start();
   Q_SLOT virtual void stop();
+  Q_SLOT void greetSystem ( const QString& name );
 
 protected:
   void reboot();

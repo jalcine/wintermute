@@ -47,7 +47,16 @@ protected:
   QScopedPointer<ModulePrivate> d_ptr;
 
 public:
+  /**
+   * @ctor
+   * @brief Creates a new working module.
+   */
   explicit Module ( QObject* parent );
+
+  /**
+   * @dtor
+   * @brief Destructs this module instance.
+   */
   virtual ~Module();
 
   /**
@@ -72,8 +81,16 @@ public:
   QString qualifiedName() const;
 
   /**
+   * @fn calls
+   * @brief A list of calls that this module has.
+   */
+  QStringList calls() const;
+
+  /**
    * @fn dispatch
-   * @fn Sends a method call invocation over the wire.
+   * @brief Sends a method call invocation over the wire.
+   *
+   * Sends out a call over the wire.
    */
   const QVariant dispatch ( const Call& call ) const;
 

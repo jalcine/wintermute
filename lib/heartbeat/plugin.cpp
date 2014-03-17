@@ -21,7 +21,6 @@
 #include "globals.hpp"
 #include "modules/pulse.hpp"
 #include "modules/monitor.hpp"
-#include "plugin.moc"
 
 using Wintermute::Heartbeat::Plugin;
 using Wintermute::Version;
@@ -50,5 +49,8 @@ Plugin::start()
   module->start();
 }
 
+Plugin::~Plugin()
+{
+}
 
 Q_EXPORT_PLUGIN2 ( wintermute-heartbeat, Wintermute::Heartbeat::Plugin );

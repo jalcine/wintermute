@@ -26,7 +26,6 @@
 #include "adaptor.hpp"
 #include "dispatcher.hpp"
 #include "receiver.hpp"
-#include "module.moc"
 
 using Wintermute::DBus::Module;
 using Wintermute::DBus::Plugin;
@@ -39,11 +38,11 @@ Module::Module ( DBus::Plugin* plugin ) :
 {
   setDomain ( WINTERMUTE_DOMAIN );
   setPackage ( "dbus" );
-  m_adaptor = new Adaptor ( this );
   m_dispatcher = new Dispatcher;
   m_receiver = new Receiver;
   m_dispatcher->setParent ( this );
   m_receiver->setParent ( this );
+  m_adaptor = new Adaptor ( this );
 }
 
 void

@@ -17,13 +17,14 @@
  **/
 
 #include "Wintermute/Procedure/call.hpp"
-#include "Wintermute/Events/call.hpp"
+#include "call.hpp"
 
 using Wintermute::Events::CallEvent;
 using Wintermute::Procedure::Call;
 
 const int CallEvent::TypeReceive  = QEvent::registerEventType();
 const int CallEvent::TypeDispatch = QEvent::registerEventType();
+const int CallEvent::TypeReply    = QEvent::registerEventType();
 
 CallEvent::CallEvent ( const int type, const Call* call ) :
   QEvent ( ( QEvent::Type ) type ) , m_call ( call )

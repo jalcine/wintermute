@@ -23,7 +23,6 @@
 #include <QtDBus/QDBusReply>
 #include "dispatcher.hpp"
 #include "module.hpp"
-#include "dispatcher.moc"
 
 using Wintermute::DBus::Dispatcher;
 using Wintermute::DBus::Module;
@@ -46,18 +45,11 @@ Dispatcher::sendMessage ( const Call* call )
   QStringList remoteServices = interface->registeredServiceNames();
   QStringList friendlyServices = remoteServices.filter ( WINTERMUTE_DOMAIN );
   friendlyServices.removeAll ( sessionBus.name() );
-  if ( friendlyServices.empty() )
-  {
-    winfo (this, "No services found that are friendly to Wintermute " +
-        QString("of the known %1 services.").arg(remoteServices.length()));
-    return;
-  }
+  if ( friendlyServices.empty() ) { return; }
   else
   {
-    winfo(this, QString("Reaching out to %1 processess...").arg(friendlyServices.length()));
-    Q_FOREACH(const QString remoteService, friendlyServices)
+    for (const QString remoteService: friendlyServices)
     {
-      winfo (this, QString("Sending method call to %1...").arg ( remoteService ));
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
           "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
       methodCall << call->toString();

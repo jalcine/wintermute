@@ -48,14 +48,12 @@ class Adaptor : public QDBusAbstractAdaptor
         "")
   public:
     explicit Adaptor( Module* module );
+    virtual ~Adaptor();
     Q_SLOT void registerOnDBus();
     Q_SLOT void deregisterFromDBus(); 
-    virtual ~Adaptor();
-
-  public slots:
-    Q_NOREPLY void handleIncomingCall ( const QString& arguments,
+    Q_INVOKABLE Q_NOREPLY void handleIncomingCall ( const QString& arguments,
         const QDBusMessage& message );
-    bool hasModule ( const QString& name );
+    Q_INVOKABLE bool hasModule ( const QString& name );
 };
 }
 }

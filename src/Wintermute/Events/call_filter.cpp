@@ -19,14 +19,17 @@
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
-#include "Wintermute/Events/Filters/call.hpp"
+#include "Wintermute/Events/call_filter.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/Procedure/reply_call.hpp"
 #include "Wintermute/private/Procedure/dispatcher.hpp"
-#include "Wintermute/Events/Filters/call.moc"
+#include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Events::CallEvent;
-using Wintermute::Events::Filters::CallFilter;
+using Wintermute::Events::CallFilter;
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::CallPrivate;
+using Wintermute::Procedure::ReplyCall;
 
 CallFilter::CallFilter() :
   QObject ( wntrApp )
@@ -37,17 +40,13 @@ CallFilter::CallFilter() :
 bool
 CallFilter::handleDispatch ( QObject* object, QEvent* event )
 {
-  winfo ( object, "Handling a local call for dispatching aboard." );
+  CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
+  const Call* call = callEvent->call();
 
-  CallEvent* callEvent = static_cast<CallEvent*> ( event );
-  const Procedure::Call* call = callEvent->call();
-
-  winfo ( object, QString ( "Dispatching %1 to '%2'." )
-    .arg ( call->toString(), call->recipient() ) );
-
-  Procedure::DispatcherPrivate::dispatch ( call->toString() );
-
-  winfo ( object, "Call dispatched." );
+  if ( call->isValid() && call->type() == Call::TypeInvocation )
+  {
+    Procedure::DispatcherPrivate::dispatch ( call->toString() );
+  }
 
   return true;
 }
@@ -55,14 +54,36 @@ CallFilter::handleDispatch ( QObject* object, QEvent* event )
 bool
 CallFilter::handleReceive ( QObject* object, QEvent* event )
 {
-  winfo ( object, "Handling a remote call for local invocation." );
+  CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
+  const Call* call = callEvent->call();
+  const QVariant callResult = Procedure::Call::attemptInvocation ( call );
 
-  CallEvent* callEvent = static_cast<CallEvent*> ( event );
-  const Procedure::Call* call = callEvent->call();
-  const bool invocated = Procedure::Call::attemptInvocation ( call );
+  if ( call->isValid() )
+  {
+    ReplyCall reply ( call, callResult );
+    Procedure::Module* module = wntrApp->module();
+    module->dispatch ( reply );
+  }
 
-  invocated ? winfo ( object, "Call invoked." ) :
-    wwarn ( object, "Call failed to invoke." );
+  return true;
+}
+
+bool
+CallFilter::handleReply ( QObject* object, QEvent* event )
+{
+  CallEvent* callEvent;
+  const ReplyCall* replyCall;
+  const Call* baseCall;
+
+  callEvent = dynamic_cast<CallEvent*> ( event );
+  replyCall = qobject_cast<const ReplyCall*>( callEvent->call() );
+  const quint16 id = replyCall->call()->d_ptr->data[ "id" ].toInt();
+  baseCall = CallPrivate::calls [ id ];
+
+  if ( replyCall->isValid () )
+  {
+    baseCall->handleReply ( replyCall );
+  }
 
   return true;
 }
@@ -72,11 +93,15 @@ CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
   if ( event->type() == CallEvent::TypeDispatch )
   {
-    return handleDispatch( object, event );
+    return handleDispatch ( object, event );
   }
   else if ( event->type() == CallEvent::TypeReceive )
   { 
-    return handleReceive( object, event );
+    return handleReceive ( object, event );
+  }
+  else if ( event->type() == CallEvent::TypeReply )
+  {
+    return handleReply ( object, event );
   }
 
   return QObject::eventFilter ( object, event );

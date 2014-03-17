@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_ZEROMQ_PLUGIN_MODULE_HPP
-#define WINTERMUTE_ZEROMQ_PLUGIN_MODULE_HPP
+#ifndef WINTERMUTE_DBUS_MODULE_HPP
+#define WINTERMUTE_DBUS_MODULE_HPP
 
 #include <Wintermute/Procedure/Module>
 
@@ -32,6 +32,7 @@ class Adaptor;
 class Module : public Wintermute::Procedure::Module
 {
   Q_OBJECT;
+  Q_CLASSINFO ( "D-Bus Interface", "in.wintermute.dbus.module" );
   Dispatcher* m_dispatcher;
   Receiver* m_receiver;
   Adaptor* m_adaptor;

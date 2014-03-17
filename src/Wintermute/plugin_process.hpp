@@ -33,7 +33,6 @@ namespace Wintermute
     public:
       explicit PluginProcess(const QString& pluginName);
       virtual ~PluginProcess();
-      Plugin::State state() const;
       void start();
       void stop();
       QString pluginName() const;

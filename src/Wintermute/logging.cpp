@@ -19,7 +19,6 @@
 #include "logging.hpp"
 #include "application.hpp"
 #include "private/logging.hpp"
-#include "Wintermute/logging.moc"
 #include <QtCore/QString>
 
 using Wintermute::Application;

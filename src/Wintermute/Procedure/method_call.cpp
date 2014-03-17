@@ -19,7 +19,6 @@
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/private/Procedure/method_call.hpp"
-#include "Wintermute/Procedure/method_call.moc"
 
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
@@ -31,7 +30,6 @@ MethodCall::MethodCall ( const QString& module,
 {
   Q_D ( MethodCall );
   setRecipient ( module );
-  d->type = Call::TypeInvocation;
   d->data["method"] = method;
   d->data["arguments"] = arguments;
 }

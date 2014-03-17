@@ -21,7 +21,6 @@
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
-#include "Wintermute/Procedure/dispatcher.moc"
 
 using Wintermute::Procedure::Dispatcher;
 using Wintermute::Events::CallEvent;
@@ -37,7 +36,6 @@ Dispatcher::Dispatcher() :
 void
 Dispatcher::postDispatch ( const Call* call )
 {
-  winfo ( staticMetaObject.className(), "Caught a call; passing into the event loop." );
   CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, call );
   QCoreApplication::postEvent ( wntrApp, event );
 }

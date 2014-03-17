@@ -32,6 +32,7 @@ set(WINTERMUTE_BUILD_PREFIX           "@CMAKE_INSTALL_PREFIX@")
 
 ## Include top-level modules, we split everything up.
 include(WintermuteVariables)
+include(WintermuteVersioning)
 include(WintermuteDependencies)
 include(WintermuteMacros)
 
