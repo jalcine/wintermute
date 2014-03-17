@@ -68,21 +68,26 @@ void
 PulseModule::tick()
 {
   Q_D ( PulseModule );
-  pulse (PulseModule::PulseAlive);
+  pulse ( PulseModule::PulseAlive );
   d->timer.start();
 }
 
 void
-PulseModule::pulse(PulseType type)
+PulseModule::pulse( PulseType type )
 {
   Q_D ( PulseModule );
-  MethodCall theCall (WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
+  d->timer.stop();
+  MethodCall theCall ( WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
   quint64 pid = QCoreApplication::applicationPid();
   theCall.setArguments(QVariantList() << d->count++ << type << pid );
+  theCall.setCallback ( [&] ( QVariant result ) -> void {
+    winfo ( this, result.toString() );
+    d->timer.start();
+  } );
   dispatch ( theCall );
 }
 
 PulseModule::~PulseModule()
 {
-  winfo (this, "Pulse giving its last beat.");
+  winfo ( this, "Pulse giving its last beat." );
 }

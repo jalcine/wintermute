@@ -52,5 +52,5 @@ MonitorModule::stop()
 
 MonitorModule::~MonitorModule()
 {
-  winfo (this, "No more watching the kids.");
+  winfo ( this, "No more watching the kids." );
 }

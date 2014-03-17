@@ -48,8 +48,6 @@ Dispatcher::sendMessage ( const Call* call )
   if ( friendlyServices.empty() ) { return; }
   else
   {
-    winfo(this, QString("Reaching out to %1 instances of Wintermute.").
-      arg ( friendlyServices.length() ) );
     for (const QString remoteService: friendlyServices)
     {
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
