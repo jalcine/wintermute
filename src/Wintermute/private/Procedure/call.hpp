@@ -21,6 +21,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QCache>
 #include <QtCore/QDateTime>
+#include "Wintermute/application.hpp"
+#include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/call.hpp"
 
 namespace Wintermute
@@ -52,10 +54,12 @@ public:
     data["timestamp"] = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
   }
 
-  bool hasValidData() const
+  virtual bool hasValidData() const
   {
     if ( !data.contains ( "id" ) ) return false;
     if ( !data.contains ( "timestamp" ) ) return false;
+    if ( type == Call::TypeUndefined ) return false;
+    if ( recipient.isEmpty() || recipient.isNull() ) return false;
 
     return true;
   }
