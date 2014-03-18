@@ -16,6 +16,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QCoreApplication>
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
@@ -28,13 +29,14 @@
 using Wintermute::Events::CallEvent;
 using Wintermute::Events::CallFilter;
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::CallPrivate;
 using Wintermute::Procedure::ReplyCall;
 
 CallFilter::CallFilter() :
   QObject ( wntrApp )
 {
-  winfo ( this, "Call filter installled into process." );
+  winfo ( this, "Call filter installed into process." );
 }
 
 bool
@@ -42,12 +44,11 @@ CallFilter::handleDispatch ( QObject* object, QEvent* event )
 {
   CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
   const Call* call = callEvent->call();
+  call->d_ptr->type = call->type() | Call::TypeDispatch;
 
-  if ( call->isValid() && call->type() == Call::TypeInvocation )
-  {
-    Procedure::DispatcherPrivate::dispatch ( call->toString() );
-  }
+  if ( !call->isValid() ) return false;
 
+  Procedure::DispatcherPrivate::dispatch ( call->toString() );
   return true;
 }
 
@@ -56,13 +57,27 @@ CallFilter::handleReceive ( QObject* object, QEvent* event )
 {
   CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
   const Call* call = callEvent->call();
-  const QVariant callResult = Procedure::Call::attemptInvocation ( call );
+  QVariant callResult;
+  call->d_ptr->type = call->type() | Call::TypeRetrieval;
 
-  if ( call->isValid() )
+  if ( !call->isValid() ) return false;
+
+  if ( call->type().testFlag ( Call::TypeInvocation ) )
   {
-    ReplyCall reply ( call, callResult );
-    Procedure::Module* module = wntrApp->module();
-    module->dispatch ( reply );
+    const MethodCall* methodCall = static_cast<const MethodCall*>(call);
+    if ( !methodCall->isValid() ) return false;
+    callResult = Procedure::Call::attemptInvocation ( methodCall );
+    ReplyCall* reply = new ReplyCall ( methodCall, callResult );
+    CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, reply );
+    QCoreApplication::postEvent ( reply, event );
+  }
+  else
+  {
+    if ( call->type().testFlag ( Call::TypeReply ) )
+    {
+      CallEvent* event = new CallEvent ( CallEvent::TypeReply, call );
+      QCoreApplication::postEvent ( object, event ); 
+    }
   }
 
   return true;
@@ -76,14 +91,13 @@ CallFilter::handleReply ( QObject* object, QEvent* event )
   const Call* baseCall;
 
   callEvent = dynamic_cast<CallEvent*> ( event );
-  replyCall = qobject_cast<const ReplyCall*>( callEvent->call() );
-  const quint16 id = replyCall->call()->d_ptr->data[ "id" ].toInt();
+  replyCall = qobject_cast<const ReplyCall*> ( callEvent->call() );
+  const quint16 id = replyCall->call()->d_ptr->data[ "id" ].toUInt();
   baseCall = CallPrivate::calls [ id ];
 
-  if ( replyCall->isValid () )
-  {
-    baseCall->handleReply ( replyCall );
-  }
+  if ( ! replyCall->isValid () ) return false;
+
+  baseCall->handleReply ( replyCall );
 
   return true;
 }

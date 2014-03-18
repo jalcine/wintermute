@@ -32,6 +32,7 @@ ReplyCall::ReplyCall( const Call* call, const QVariant& response ) :
   d->type = Call::TypeReply;
   d->data["reply"] = response;
   d->data["call"]  = call->d_ptr->id;
+  CallPrivate::calls.take(call->d_ptr->id);
 }
 
 Call*

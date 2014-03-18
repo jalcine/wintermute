@@ -55,8 +55,9 @@ public:
 #else
     LogManager::setThreshold ( Log4Qt::Level::WARN_INT );
 #endif
-    primaryLayout  = new TTCCLayout();
+    primaryLayout  = new TTCCLayout( "ABSOLUTE" );
     primaryLayout->setName ( "root" );
+    ((TTCCLayout*) primaryLayout)->setThreadPrinting ( true );
     ((TTCCLayout*) primaryLayout)->setContextPrinting ( false );
     primaryLayout->activateOptions();
     addAppenders();

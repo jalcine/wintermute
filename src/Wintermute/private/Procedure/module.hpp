@@ -42,7 +42,8 @@ public:
   QMap<QString, CallPointer> calls;
 
   ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( "" ), domain ( "" ), calls ( )
+    q_ptr ( q ), package ( QString::null ), domain ( QString::null ), 
+    calls ( )
   {
     winfo ( q_ptr, "Module setting up..." );
   }

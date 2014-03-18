@@ -26,12 +26,14 @@ namespace Wintermute
 {
 namespace Heartbeat
 {
+class PulseModule;
 class Plugin : public Wintermute::Plugin
 {
   Q_OBJECT;
   Q_DISABLE_COPY ( Plugin );
   Q_CLASSINFO ( "Name", "heartbeat" );
   Procedure::Module* module;
+  friend class PulseModule;
 
 public:
   explicit Plugin();

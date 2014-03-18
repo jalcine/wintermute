@@ -60,6 +60,8 @@ public:
    */
   virtual ~MethodCall();
 
+  virtual bool isValid() const;
+
   /**
    * @fn arguments
    * @brief The arguments to pass over the wire.

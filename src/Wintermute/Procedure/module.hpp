@@ -92,7 +92,7 @@ public:
    *
    * Sends out a call over the wire.
    */
-  const QVariant dispatch ( const Call& call ) const;
+  void dispatch ( const Call& call ) const;
 
   /**
    * @fn start

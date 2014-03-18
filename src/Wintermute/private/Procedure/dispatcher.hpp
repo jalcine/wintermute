@@ -46,8 +46,8 @@ public:
     if ( dispatchers.empty() )
     {
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );
-    } 
-    else 
+    }
+    else
     {
       for ( Dispatcher* dispatchClient: dispatchers )
       {

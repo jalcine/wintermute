@@ -21,19 +21,24 @@
 
 #include <Wintermute/Procedure/Receiver>
 #include <Wintermute/Procedure/Call>
+#include <QtDBus/QDBusPendingCallWatcher>
 
 namespace Wintermute
 {
 namespace DBus
 {
 class Adaptor;
+class Dispatcher;
 class Receiver : public Wintermute::Procedure::Receiver
 {
   Q_OBJECT;
+  friend class Dispatcher;
+  
+  Q_SLOT void handleAsyncCallReply ( QDBusPendingCallWatcher* reply );
   public:
-  explicit Receiver();
-  virtual ~Receiver();
-  Q_SLOT virtual void receiveMessage(const Procedure::Call* call);
+    explicit Receiver();
+    virtual ~Receiver();
+    Q_SLOT virtual void receiveMessage(const Procedure::Call* call);
 };
 }
 }

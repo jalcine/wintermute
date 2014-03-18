@@ -34,14 +34,25 @@ public:
     type = Call::TypeInvocation;
   }
 
-  void
-  composeMethodData(Procedure::Module* module)
+  void composeMethodData(Procedure::Module* module)
   {
     QMap<QString, QVariant> appData;
     appData["pid"]     = QCoreApplication::applicationPid();
     appData["version"] = QCoreApplication::applicationVersion();
     appData["module"]  = module->qualifiedName();
     data["sender"]     = appData;
+  }
+
+  virtual bool hasValidData() const
+  {
+    if ( !CallPrivate::hasValidData() ) return false;
+    QVariantMap appData = CallPrivate::data["sender"].toMap();
+    if ( !appData.contains("pid")) return false;
+    if ( !appData.contains("version")) return false;
+    if ( !appData.contains("module")) return false;
+    if ( !data.contains("sender")) return false;
+
+    return true;
   }
 
   virtual ~MethodCallPrivate()

@@ -17,6 +17,7 @@
  **/
 
 #include <Wintermute/Logging>
+#include <QtDBus/QDBusPendingReply>
 #include "adaptor.hpp"
 #include "receiver.hpp"
 
@@ -33,6 +34,19 @@ void
 Receiver::receiveMessage ( const Call* call )
 {
   Wintermute::Procedure::Receiver::receiveMessage(call);
+}
+
+void
+Receiver::handleAsyncCallReply ( QDBusPendingCallWatcher* reply )
+{
+  QDBusPendingReply<QString> replyValue = *reply;
+
+  if ( replyValue.isValid() && replyValue.isFinished() )
+  {
+    winfo ( this, replyValue.argumentAt<0>() );
+  }
+
+  reply->deleteLater();
 }
 
 Receiver::~Receiver()

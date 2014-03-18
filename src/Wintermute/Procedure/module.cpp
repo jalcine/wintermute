@@ -19,6 +19,7 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/private/Procedure/module.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
 #include "Wintermute/Procedure/lambda_call.hpp"
 
 using Wintermute::Procedure::Module;
@@ -38,12 +39,12 @@ Module::calls () const
 }
 
 // TODO: This doesn't have to return a value in the future.
-const QVariant
+void
 Module::dispatch ( const Call& call ) const
 {
   Q_D ( const Module );
+  call.d_ptr->type = call.type() | Call::TypeInvocation;
   d->sendData ( call.toString() );
-  return QVariant();
 }
 
 QVariant

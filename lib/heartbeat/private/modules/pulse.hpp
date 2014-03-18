@@ -43,7 +43,7 @@ class PulseModulePrivate
     {
       timer.setInterval ( WINTERMUTE_HEARTBEAT_INTERVAL );
       timer.setSingleShot ( true );
-      QObject::connect(&timer,SIGNAL(timeout()),q,SLOT(tick()));
+      QObject::connect ( &timer, SIGNAL(timeout()), q, SLOT(tick()) );
     }
 
     QVariantMap

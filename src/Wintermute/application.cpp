@@ -171,6 +171,5 @@ Application::setSetting ( const QString& path, const QVariant value )
 Application::~Application()
 {
   this->stop();
-  this->deleteLater();
   winfo ( this, "Application singleton deleted." );
 }

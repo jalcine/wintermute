@@ -47,9 +47,8 @@ bool
 Call::isValid() const
 {
   Q_D ( const Call );
-  if ( !d->hasValidData() ) return false;
 
-  return true;
+  return d->hasValidData();
 }
 
 QVariant
@@ -123,27 +122,25 @@ Call::fromString ( const QString& data )
   if ( !ok ) { return 0; }
   QVariantMap callMap = callData.toMap();
   CallPrivate* d_ptr = new CallPrivate (nullptr);
-  d_ptr->type = ( Call::Type ) callMap["type"].toInt();
+
+  d_ptr->type = (Call::Type) callMap["type"].toUInt();
   d_ptr->recipient = callMap["recipient"].toString();
   d_ptr->data = callMap["data"].toMap();
 
   if ( d_ptr->type == Call::TypeUndefined )
   {
     wwarn ( wntrApp, "Missing call type." );
-    return 0;
   }
-  else if ( d_ptr->recipient == QString::null )
+  if ( d_ptr->recipient == QString::null )
   {
     wwarn ( wntrApp, "Missing call recipient." );
-    return 0;
   }
-  else if ( d_ptr->data.empty() )
+  if ( d_ptr->data.empty() )
   {
     wwarn ( wntrApp, "Missing call data." );
-    return 0;
   }
 
-  return new Call(d_ptr);
+  return ( d_ptr->hasValidData() ? new Call(d_ptr) : 0 );
 }
 
 QVariant
@@ -167,15 +164,7 @@ Call::attemptInvocation ( const Call* call )
   const QString methodName     = call->d_ptr->data[ "method" ].toString();
   const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
 
-  winfo ( staticMetaObject.className(), 
-    QString( "Invoking %1 on %2..." )
-      .arg ( methodName, module->qualifiedName() ) );
-
   QVariant result = module->invoke ( methodName, arguments );
-
-  winfo ( staticMetaObject.className(),
-    QString ( "Invocation result of %1: '%2'")
-      .arg ( methodName, result.toString() ) );
 
   return result;
 }

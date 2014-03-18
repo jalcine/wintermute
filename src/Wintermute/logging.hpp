@@ -69,9 +69,7 @@ public:
  * Obtains a logger for the specific QObject and then prints out a
  * line of text for debubgging view.
  */
-#ifdef WINTERMUTE_DEBUG
 #define wdebug(qobj, text) wlog(qobj)->debug(text)
-#endif
 
 /**
  * @fn wwarn

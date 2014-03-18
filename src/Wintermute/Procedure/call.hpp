@@ -34,6 +34,7 @@ class ReplyCall;
 class Call : public QObject
 {
   Q_OBJECT;
+  Q_FLAGS ( Type Types );
   friend class Module;
   friend class ReplyCall;
   friend class Events::CallFilter;
@@ -73,10 +74,10 @@ public:
    * order to keep things clean, you can add your own types only if it's over
    * 0x9000 (this was intentional).
    */
-  enum Type {
+  enum Types {
     TypeUndefined  = 0x0000,  // Undefined call. Don't bother with.
 
-    TypeResponse   = 0x0010,  // Represents a invoking call being responsed to.
+    TypeRetrieval  = 0x0010,  // Represents a invoking call being responsed to.
     TypeDispatch   = 0x0011,  // Represents a invoked call being sent to.
 
     TypeInvocation = 0x0020, // Represents a call that's to be invoked.
@@ -84,7 +85,7 @@ public:
 
     TypeUser       = 0x9000   // Anything above this is available to the user.
   };
-  Q_FLAGS ( Type Types );
+  Q_DECLARE_FLAGS ( Type, Types );
 
   /**
    * @ctor
@@ -166,4 +167,5 @@ typedef QSharedPointer<Call> CallPointer;
 } /* Procedure */
 } /* Wintermute */
 
+Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type );
 #endif /* WINTERMUTE_PROCEDURE_CALL_HPP */

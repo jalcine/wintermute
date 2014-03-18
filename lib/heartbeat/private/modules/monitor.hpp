@@ -57,8 +57,10 @@ class MonitorModulePrivate
       newEntry.insert ( "name", arguments[0] );
       newEntry.insert ( "pid",  arguments[1] );
       processes.insert ( arguments[0].toUInt(), newEntry );
-      winfo ( q_ptr, QString ( "Hello %1!" ).arg ( arguments[0].toString() ) );
-      return true;
+      winfo ( q_ptr, QString ( "Hello %1 from %2!" ).
+          arg ( arguments[0].toString(), arguments[1].toString() ) );
+
+      return arguments[0].toUInt();
     }
 
     /**

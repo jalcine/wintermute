@@ -103,6 +103,16 @@ set_target_properties(wintermute PROPERTIES
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
 
+# Generate documentation for Wintermute.
+wintermute_generate_documentation(
+  TARGET           wintermute
+  NAME             wintermute
+  VERSION          ${WINTERMUTE_VERSION}
+  BRIEF            "A curious app."
+  OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/wintermute-doc
+  SOURCES          ${WINTERMUTE_SOURCES}
+)
+
 include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
   ${WINTERMUTE_INCLUDE_DIRS})
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})

@@ -37,6 +37,8 @@ class Module : public Wintermute::Procedure::Module
   Receiver* m_receiver;
   Adaptor* m_adaptor;
   friend class Adaptor;
+  friend class Dispatcher;
+
 public:
   explicit Module ( DBus::Plugin* plugin );
   Q_SLOT virtual void start();

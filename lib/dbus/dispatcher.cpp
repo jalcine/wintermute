@@ -22,9 +22,11 @@
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusReply>
 #include "dispatcher.hpp"
+#include "receiver.hpp"
 #include "module.hpp"
 
 using Wintermute::DBus::Dispatcher;
+using Wintermute::DBus::Receiver;
 using Wintermute::DBus::Module;
 using Wintermute::Procedure::Call;
 
@@ -45,6 +47,7 @@ Dispatcher::sendMessage ( const Call* call )
   QStringList remoteServices = interface->registeredServiceNames();
   QStringList friendlyServices = remoteServices.filter ( WINTERMUTE_DOMAIN );
   friendlyServices.removeAll ( sessionBus.name() );
+
   if ( friendlyServices.empty() ) { return; }
   else
   {
@@ -53,7 +56,13 @@ Dispatcher::sendMessage ( const Call* call )
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
           "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
       methodCall << call->toString();
-      QDBusPendingReply<QString> methodCallState = sessionBus.asyncCall ( methodCall );
+
+      QDBusPendingReply<QString> asyncMethodCall = sessionBus.asyncCall ( methodCall );
+      DBus::Receiver* reciever = ( ( DBus::Module* ) parent() )->m_receiver;
+      QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher ( asyncMethodCall, this );
+
+      QObject::connect ( watcher, SIGNAL ( finished (QDBusPendingCallWatcher*) ),
+        reciever, SLOT ( handleAsyncCallReply (QDBusPendingCallWatcher*) ) );
     }
   }
 }

@@ -84,6 +84,16 @@ MethodCall::dispatch ( Module* module )
   module->dispatch ( *this );
 }
 
+bool
+MethodCall::isValid() const
+{
+  Q_D ( const MethodCall );
+  if ( !Call::isValid() ) return false;
+  if ( !d->hasValidData() ) return false;
+
+  return true;
+}
+
 MethodCall::~MethodCall()
 {
 }

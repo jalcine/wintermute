@@ -43,6 +43,7 @@ PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   } );
 
   mountLambda ( "modules", [&] (QVariantList args) -> QVariant {
+    // TODO: Consider using the passed arguments as a filter?
     Q_D ( PulseModule );
     const QVariant modules = d->getAllModulesInfo();
     wdebug ( this, modules.toString() );
@@ -69,6 +70,11 @@ PulseModule::tick()
 {
   Q_D ( PulseModule );
   pulse ( PulseModule::PulseAlive );
+  const Plugin* plugin = qobject_cast<Plugin*>( parent() );
+  if ( plugin->configuration()->value("Pulse/Interval").isValid() )
+  {
+    d->timer.setInterval ( plugin->configuration()->value("Pulse/Interval").toUInt() );
+  }
   d->timer.start();
 }
 
