@@ -41,15 +41,15 @@ macro(wintermute_generate_documentation)
   string(TOUPPER "WINTERMUTE_PLUGIN_${wgd_TARGET}" _local)
 
   # DONE: Configure the Doxygen configuration file.
-  set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${${_local}_TARGET}")
-  #configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
+  set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${wgd_TARGET}")
+  configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
+  message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 
   # DONE: Define a target for Doxygen to execute.
   # DONE: Make the documentation target dependent on a parent target.
-  add_custom_command(TARGET ${_local_target} PRE_BUILD
+  add_custom_command(TARGET ${wgd_TARGET} PRE_BUILD
     DEPENDS           ${wgd_TARGET}
-    COMMAND           ${DOXYGEN_EXECUTABLE}
-    ARGS              ${${_local}_DOXYFILE}
+    COMMAND           ${DOXYGEN_EXECUTABLE} ARGS ${${_local}_DOXYFILE}
     DEPENDS           ${${_local}_TARGET}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )

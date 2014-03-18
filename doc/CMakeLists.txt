@@ -20,4 +20,3 @@
 # Yeah, modularized. This is so plugins can be documented the same way the
 # core binary is.
 include(WintermuteDocumentation)
-
