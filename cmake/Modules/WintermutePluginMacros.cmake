@@ -30,8 +30,13 @@ include(WintermuteVariables)
 ## plugin.
 
 if (NOT DEFINED WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE)
-  set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE
-    "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
+  if (NOT TARGET wintermute)
+    set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE
+      "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/PluginDefinition.spec.in")
+  else()
+    set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE
+      "${CMAKE_SOURCE_DIR}/cmake/Templates/PluginDefinition.spec.in")
+  endif()
 endif()
 
 ##

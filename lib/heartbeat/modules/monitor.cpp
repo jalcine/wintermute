@@ -34,6 +34,7 @@ MonitorModule::MonitorModule( Heartbeat::Plugin* plugin ) :
   setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
   setPackage ( "monitor" );
   d->mountCalls();
+  d->killOtherMonitors();
 }
 
 void

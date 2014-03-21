@@ -38,13 +38,10 @@ Module::calls () const
   return d->calls.keys();
 }
 
-// TODO: This doesn't have to return a value in the future.
 void
-Module::dispatch ( const Call& call ) const
+Module::dispatch ( const Call* call ) const
 {
-  Q_D ( const Module );
-  call.d_ptr->type = call.type() | Call::TypeInvocation;
-  d->sendData ( call.toString() );
+  Dispatcher::postDispatch ( call );
 }
 
 QVariant
@@ -137,5 +134,9 @@ Module::setPackage ( const QString& value )
 
 Module::~Module()
 {
-  // TODO: Report to world that you're leaving us.
+  Q_D ( Module );
+  for (CallPointer call: d->calls)
+  {
+    call->deleteLater();
+  }
 }

@@ -23,14 +23,14 @@
 #include "Wintermute/Events/call_filter.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/Procedure/reply_call.hpp"
-#include "Wintermute/private/Procedure/dispatcher.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
+#include "Wintermute/private/Procedure/dispatcher.hpp"
 
 using Wintermute::Events::CallEvent;
 using Wintermute::Events::CallFilter;
 using Wintermute::Procedure::Call;
-using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::CallPrivate;
+using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 
 CallFilter::CallFilter() :
@@ -40,62 +40,55 @@ CallFilter::CallFilter() :
 }
 
 bool
-CallFilter::handleDispatch ( QObject* object, QEvent* event )
+CallFilter::handleDispatch ( QObject* object, CallEvent* callEvent )
 {
-  CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
-  const Call* call = callEvent->call();
+  Call* call = const_cast<Call*>(callEvent->call());
+  Q_CHECK_PTR ( call );
+  Q_ASSERT ( call->isValid() );
   call->d_ptr->type = call->type() | Call::TypeDispatch;
-
-  if ( !call->isValid() ) return false;
-
-  Procedure::DispatcherPrivate::dispatch ( call->toString() );
+  Procedure::DispatcherPrivate::dispatch ( call );
   return true;
 }
 
 bool
-CallFilter::handleReceive ( QObject* object, QEvent* event )
+CallFilter::handleReceive ( QObject* object, CallEvent* callEvent )
 {
-  CallEvent* callEvent = dynamic_cast<CallEvent*> ( event );
-  const Call* call = callEvent->call();
   QVariant callResult;
-  call->d_ptr->type = call->type() | Call::TypeRetrieval;
-
-  if ( !call->isValid() ) return false;
+  Call* call = const_cast<Call*>(callEvent->call());
+  Q_CHECK_PTR ( call );
+  Q_ASSERT ( call->isValid() );
 
   if ( call->type().testFlag ( Call::TypeInvocation ) )
   {
-    const MethodCall* methodCall = static_cast<const MethodCall*>(call);
-    if ( !methodCall->isValid() ) return false;
+    const MethodCall* methodCall = dynamic_cast<const MethodCall*>(call);
     callResult = Procedure::Call::attemptInvocation ( methodCall );
     ReplyCall* reply = new ReplyCall ( methodCall, callResult );
     CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, reply );
     QCoreApplication::postEvent ( reply, event );
   }
+  else if ( call->type().testFlag ( Call::TypeReply ) )
+  {
+    CallEvent* event = new CallEvent ( CallEvent::TypeReply, call );
+    QCoreApplication::postEvent ( object, event ); 
+  }
   else
   {
-    if ( call->type().testFlag ( Call::TypeReply ) )
-    {
-      CallEvent* event = new CallEvent ( CallEvent::TypeReply, call );
-      QCoreApplication::postEvent ( object, event ); 
-    }
+    wwarn ( wntrApp, "Don't know how to handle a foreign call type." );
   }
 
   return true;
 }
 
 bool
-CallFilter::handleReply ( QObject* object, QEvent* event )
+CallFilter::handleReply ( QObject* object, CallEvent* callEvent )
 {
-  CallEvent* callEvent;
-  const ReplyCall* replyCall;
-  const Call* baseCall;
+  Call* call = const_cast<Call*>(callEvent->call());
+  Q_CHECK_PTR ( call );
+  Q_ASSERT ( call->isValid() );
+  const ReplyCall* replyCall = qobject_cast<const ReplyCall*> ( call );
 
-  callEvent = dynamic_cast<CallEvent*> ( event );
-  replyCall = qobject_cast<const ReplyCall*> ( callEvent->call() );
-  const quint16 id = replyCall->call()->d_ptr->data[ "id" ].toUInt();
-  baseCall = CallPrivate::calls [ id ];
-
-  if ( ! replyCall->isValid () ) return false;
+  const quint64 id = replyCall->call()->id();
+  Call* baseCall = CallPrivate::calls [ id ];
 
   baseCall->handleReply ( replyCall );
 
@@ -105,17 +98,23 @@ CallFilter::handleReply ( QObject* object, QEvent* event )
 bool
 CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
-  if ( event->type() == CallEvent::TypeDispatch )
+  CallEvent* callEvent = reinterpret_cast<CallEvent*>(event);
+  Q_CHECK_PTR ( callEvent );
+
+  if ( callEvent != nullptr )
   {
-    return handleDispatch ( object, event );
-  }
-  else if ( event->type() == CallEvent::TypeReceive )
-  { 
-    return handleReceive ( object, event );
-  }
-  else if ( event->type() == CallEvent::TypeReply )
-  {
-    return handleReply ( object, event );
+    if ( event->type() == CallEvent::TypeDispatch )
+    {
+      return handleDispatch ( object, callEvent );
+    }
+    else if ( event->type() == CallEvent::TypeReceive )
+    { 
+      return handleReceive ( object, callEvent );
+    }
+    else if ( event->type() == CallEvent::TypeReply )
+    {
+      return handleReply ( object, callEvent );
+    }
   }
 
   return QObject::eventFilter ( object, event );

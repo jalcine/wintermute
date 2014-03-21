@@ -32,20 +32,22 @@ public:
     CallPrivate ( q )
   {
     type = Call::TypeInvocation;
+    CallPrivate::calls.take ( CallPrivate::id.toTime_t() );
   }
 
   void composeMethodData(Procedure::Module* module)
   {
-    QMap<QString, QVariant> appData;
+    QVariantMap appData;
     appData["pid"]     = QCoreApplication::applicationPid();
     appData["version"] = QCoreApplication::applicationVersion();
     appData["module"]  = module->qualifiedName();
-    data["sender"]     = appData;
+    data["sender"] = appData;
   }
 
-  virtual bool hasValidData() const
+  virtual bool isValid() const
   {
-    if ( !CallPrivate::hasValidData() ) return false;
+    if ( !CallPrivate::isValid() ) return false;
+    if ( !data.contains("data")) return false;
     QVariantMap appData = CallPrivate::data["sender"].toMap();
     if ( !appData.contains("pid")) return false;
     if ( !appData.contains("version")) return false;

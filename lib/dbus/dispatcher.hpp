@@ -33,7 +33,7 @@ class Dispatcher : public Wintermute::Procedure::Dispatcher
 public:
   explicit Dispatcher();
   virtual ~Dispatcher();
-  virtual void sendMessage ( const Procedure::Call* call );
+  virtual void sendMessage ( const Procedure::Call& call );
 };
 }
 }

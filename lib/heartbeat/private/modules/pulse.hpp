@@ -46,6 +46,22 @@ class PulseModulePrivate
       QObject::connect ( &timer, SIGNAL(timeout()), q, SLOT(tick()) );
     }
 
+    void
+    mountCalls()
+    {
+      Q_Q ( PulseModule );
+      q->mountLambda ( "module", [&] (QVariantList args) -> QVariant {
+        const QString moduleName = args[0].toString();
+        const QVariant module = getModuleInfo(moduleName);
+        return module;
+      } );
+
+      q->mountLambda ( "modules", [&] (QVariantList args) -> QVariant {
+        const QVariant modules = getAllModulesInfo();
+        return modules;
+      } );
+    }
+
     QVariantMap
     getModuleInfo ( const QString& moduleName )
     {

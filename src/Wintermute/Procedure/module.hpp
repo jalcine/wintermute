@@ -19,8 +19,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_CORE_PROCEDURE_MODULE_HPP
-#define WINTERMUTE_CORE_PROCEDURE_MODULE_HPP
+#ifndef WINTERMUTE_PROCEDURE_MODULE_HPP
+#define WINTERMUTE_PROCEDURE_MODULE_HPP
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
@@ -90,9 +90,10 @@ public:
    * @fn dispatch
    * @brief Sends a method call invocation over the wire.
    *
-   * Sends out a call over the wire.
+   * Sends out a call over the wire to the known dispatchers in this running
+   * process.
    */
-  void dispatch ( const Call& call ) const;
+  void dispatch ( const Call* call ) const;
 
   /**
    * @fn start
@@ -149,11 +150,11 @@ protected:
    * call into the system.
    */
   LambdaCall* mountLambda ( const QString& name, 
-      LambdaCall::Signature lambdaFunction );
+    LambdaCall::Signature lambdaFunction );
 };
 } /*  Procedure */
 } /*  Wintermute */
 
-Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, "in.wintermute.procedure.module/0.1.0");
+Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, "in.wintermute.procedure.module/0.1.0")
 
-#endif /* WINTERMUTE_CORE_PROCEDURE_MODULE_HPP */
+#endif /* WINTERMUTE_PROCEDURE_MODULE_HPP */

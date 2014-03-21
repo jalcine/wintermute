@@ -19,7 +19,7 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
-#include <QtCore/QCache>
+#include <QtCore/QHash>
 #include <QtCore/QDateTime>
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
@@ -32,32 +32,50 @@ namespace Procedure
 class CallPrivate
 {
 public:
-  static QCache<quint16, Call> calls;
+  typedef QHash<quint64, Call*> CallCache;
+  static CallCache calls;
   Call* q_ptr;
   QString recipient;
   QString name;
   Call::Type type;
   QVariantMap data;
-  quint16 id;
+  QDateTime id;
   Call::CallbackSignature callback;
 
   explicit CallPrivate ( Call* q ) : q_ptr ( q ),
-    recipient(), name(), type ( Call::TypeUndefined ), 
-    data(), id ( CallPrivate::calls.size() ), callback ( )
+    recipient( wntrApp->processName() ), name( QString::null), 
+    type ( Call::TypeUndefined ), data(), 
+    id ( QDateTime::currentDateTimeUtc() ), callback ( nullptr )
   {
-    if ( q_ptr != nullptr )
-    {
-      CallPrivate::calls.insert ( id, q_ptr );
-    }
-
-    data["id"] = id;
-    data["timestamp"] = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
+    data["timestamp"] = id.toTime_t();
   }
 
-  virtual bool hasValidData() const
+  static CallPrivate* fromVariantMap (const QVariantMap& data)
   {
-    if ( !data.contains ( "id" ) ) return false;
-    if ( !data.contains ( "timestamp" ) ) return false;
+    CallPrivate *d_ptr = new CallPrivate ( nullptr );
+    d_ptr->type      = (Call::Type) data["type"].toUInt();
+    d_ptr->id        = data["timestamp"].toDateTime();
+    d_ptr->recipient = data["recipient"].toString();
+    d_ptr->data      = data["data"].toMap();
+    
+    return ( d_ptr->isValid() ? d_ptr : nullptr );
+  }
+
+  QVariantMap toVariantMap() const
+  {
+    QVariantMap callData;
+    callData["type"]      = (quint64) type;
+    callData["timestamp"] = id.toTime_t();
+    callData["recipient"] = recipient;
+    callData["data"]      = data;
+
+    return callData;
+  }
+
+  virtual bool isValid() const
+  {
+    if ( id.isNull() ) return false;
     if ( type == Call::TypeUndefined ) return false;
     if ( recipient.isEmpty() || recipient.isNull() ) return false;
 

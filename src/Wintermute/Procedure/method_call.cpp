@@ -81,7 +81,7 @@ MethodCall::dispatch ( Module* module )
 {
   Q_D ( MethodCall );
   d->composeMethodData( module );
-  module->dispatch ( *this );
+  module->dispatch ( this );
 }
 
 bool
@@ -89,7 +89,7 @@ MethodCall::isValid() const
 {
   Q_D ( const MethodCall );
   if ( !Call::isValid() ) return false;
-  if ( !d->hasValidData() ) return false;
+  if ( !d->isValid() ) return false;
 
   return true;
 }

@@ -55,19 +55,15 @@ public:
       if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) )
       {
          wntrApp->d_ptr->modules << q_ptr;
-         emit wntrApp->addedModule ( q_ptr->qualifiedName() );
+         Q_EMIT wntrApp->addedModule ( q_ptr->qualifiedName() );
       }
     }
-  }
-
-  void sendData ( const QString& data ) const
-  {
-    Dispatcher::postDispatch ( Call::fromString ( data ) );
   }
 
   virtual ~ModulePrivate ()
   {
     winfo ( q_ptr, "We out!" );
+    Q_EMIT wntrApp->removedModule ( q_ptr->qualifiedName() );
   }
 };
 } /* Procedure */

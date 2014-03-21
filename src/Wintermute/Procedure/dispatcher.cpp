@@ -23,9 +23,10 @@
 #include "Wintermute/logging.hpp"
 
 using Wintermute::Procedure::Dispatcher;
+using Wintermute::Procedure::DispatcherPrivate;
 using Wintermute::Events::CallEvent;
 
-QList<Dispatcher*> Wintermute::Procedure::DispatcherPrivate::dispatchers = QList<Dispatcher*>();
+QList<Dispatcher*> DispatcherPrivate::dispatchers = QList<Dispatcher*>();
 
 Dispatcher::Dispatcher() :
   QObject ( wntrApp )

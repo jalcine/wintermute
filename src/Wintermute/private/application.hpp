@@ -53,13 +53,16 @@ public:
 
   void installEventFilters()
   {
+    winfo ( q_ptr, "Adding event filters...");
     Events::CallFilter* callFilter = new Events::CallFilter();
     callFilter->setParent ( q_ptr );
     app->installEventFilter ( callFilter );
+    winfo ( q_ptr, "Added event filters.");
   }
 
   void addLibraryPaths()
   {
+    winfo ( q_ptr, "Updating library search paths...");
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     if ( env.contains ( "WINTERMUTE_PLUGIN_LIBRARY_DIR" ) )
@@ -80,6 +83,7 @@ public:
       winfo(app.data(),
         "No library directories to read from $WINTERMUTE_PLUGIN_LIBRARY_DIR.");
     }
+    winfo ( q_ptr, "Updated library search paths.");
   }
 
   void initialize()

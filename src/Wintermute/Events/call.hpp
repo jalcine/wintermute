@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_EVENTS_CALLEVENT_HPP
-#define WINTERMUTE_EVENTS_CALLEVENT_HPP
+#ifndef WINTERMUTE_EVENTS_CALL_HPP
+#define WINTERMUTE_EVENTS_CALL_HPP
 
 #include <QtCore/QEvent>
 

@@ -29,10 +29,11 @@ ReplyCall::ReplyCall( const Call* call, const QVariant& response ) :
 {
   Q_D ( Call );
   setRecipient ( call->recipient() );
-  d->type = Call::TypeReply;
+  d->type          = Call::TypeReply;
   d->data["reply"] = response;
-  d->data["call"]  = call->d_ptr->id;
-  CallPrivate::calls.take(call->d_ptr->id);
+  d->data["call"]  = call->d_ptr->id.toTime_t();
+  CallPrivate::calls.take ( d->id.toTime_t() );
+  setParent ( wntrApp );
 }
 
 Call*

@@ -100,6 +100,12 @@ public:
   virtual ~Call ();
 
   /**
+   * @fn id
+   * @brief Returns the internal ID used for this call.
+   */
+  quint64 id() const;
+
+  /**
    * @fn name
    * @brief Obtains the name of the call.
    */

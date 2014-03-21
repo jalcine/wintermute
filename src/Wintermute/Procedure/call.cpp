@@ -29,7 +29,7 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::CallPrivate;
 using Wintermute::Procedure::Module;
 
-QCache <quint16, Call> CallPrivate::calls ( 500 );
+CallPrivate::CallCache CallPrivate::calls;
 
 Call::Call ( QObject* parent ) :
   QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
@@ -40,6 +40,7 @@ Call::Call ( CallPrivate* old_d ) :
   QObject ( Wintermute::Application::instance() ), d_ptr ( old_d )
 {
   Q_D ( Call );
+  Q_ASSERT ( old_d );
   d->q_ptr = this;
 }
 
@@ -47,8 +48,7 @@ bool
 Call::isValid() const
 {
   Q_D ( const Call );
-
-  return d->hasValidData();
+  return d->isValid();
 }
 
 QVariant
@@ -66,6 +66,10 @@ Call::handleReply ( const ReplyCall* reply ) const
   {
     d->callback ( reply->response() );
     winfo ( this, "Invoked callback to reply." );
+  }
+  else
+  {
+    winfo ( this, "No callback to invoke." );
   }
 }
 
@@ -97,20 +101,22 @@ Call::recipient() const
   return d->recipient;
 }
 
+quint64
+Call::id() const
+{
+  Q_D ( const Call );
+  return d->id.toTime_t();
+}
+
 QString
 Call::toString() const
 {
   Q_D ( const Call );
-  QJson::Serializer serializer;
   bool ok;
-  QMap<QString, QVariant> callMap;
-  callMap["type"] = ( int ) type();
-  callMap["recipient"] = recipient();
-  callMap["data"] = d->data;
-  QByteArray json = serializer.serialize ( callMap, &ok );
-  if ( !ok )
-  { return QString::null; }
-  return QString ( json );
+  QJson::Serializer serializer;
+  QVariantMap callData = d->toVariantMap();
+  QString json = serializer.serialize ( callData, &ok );
+  return ( ok ? json : QString::null );
 }
 
 Call*
@@ -118,29 +124,16 @@ Call::fromString ( const QString& data )
 {
   QJson::Parser parser;
   bool ok;
-  QVariant callData = parser.parse ( data.toLocal8Bit(), &ok );
-  if ( !ok ) { return 0; }
-  QVariantMap callMap = callData.toMap();
-  CallPrivate* d_ptr = new CallPrivate (nullptr);
+  QVariantMap callData = parser.parse ( data.toLocal8Bit(), &ok ).toMap();
 
-  d_ptr->type = (Call::Type) callMap["type"].toUInt();
-  d_ptr->recipient = callMap["recipient"].toString();
-  d_ptr->data = callMap["data"].toMap();
-
-  if ( d_ptr->type == Call::TypeUndefined )
+  if ( !ok ) 
   {
-    wwarn ( wntrApp, "Missing call type." );
-  }
-  if ( d_ptr->recipient == QString::null )
-  {
-    wwarn ( wntrApp, "Missing call recipient." );
-  }
-  if ( d_ptr->data.empty() )
-  {
-    wwarn ( wntrApp, "Missing call data." );
+    werr ( wntrApp, QString("Failed to convert '%1' into a Call.").arg(data) );
+    return nullptr;
   }
 
-  return ( d_ptr->hasValidData() ? new Call(d_ptr) : 0 );
+  CallPrivate *d_ptr = CallPrivate::fromVariantMap(callData);
+  return ( d_ptr->isValid() ? new Call (d_ptr) : 0 );
 }
 
 QVariant
@@ -165,7 +158,6 @@ Call::attemptInvocation ( const Call* call )
   const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
 
   QVariant result = module->invoke ( methodName, arguments );
-
   return result;
 }
 

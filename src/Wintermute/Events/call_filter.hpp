@@ -23,8 +23,13 @@
 
 namespace Wintermute
 {
+namespace Procedure
+{
+class Call;
+}
 namespace Events
 {
+class CallEvent;
 class CallFilter : public QObject
 {
   Q_OBJECT;
@@ -36,9 +41,9 @@ public:
   virtual bool eventFilter ( QObject* object, QEvent* event );
 
 private:
-  bool handleDispatch ( QObject* object, QEvent* event );
-  bool handleReceive ( QObject* object, QEvent* event );
-  bool handleReply ( QObject* object, QEvent* event );
+  bool handleDispatch ( QObject* object, CallEvent* call );
+  bool handleReceive ( QObject* object, CallEvent* call );
+  bool handleReply ( QObject* object, CallEvent* call );
 };
 }
 }

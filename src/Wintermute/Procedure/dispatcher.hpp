@@ -31,13 +31,13 @@ class DispatcherPrivate;
 class Dispatcher : public QObject
 {
   Q_OBJECT;
-  friend class ModulePrivate;
+  friend class Module;
   friend class DispatcherPrivate;
 
 protected:
   explicit Dispatcher();
   virtual ~Dispatcher();
-  virtual void sendMessage ( const Call* call ) = 0;
+  virtual void sendMessage ( const Call& call ) = 0;
   static void postDispatch ( const Call* call );
 };
 }

@@ -46,12 +46,10 @@ public:
 
   static Logging* instance();
   static Logger* obtainLogger ( const QString& loggerName );
-  static Logger* obtainLogger ( const QObject* object );
+  static Logger* obtainLogger ( const QObject* object = nullptr );
   static Logger* obtainRootLogger();
 };
 }
-
-// Shortcuts for quick logging support.
 
 /**
  * @fn wlog

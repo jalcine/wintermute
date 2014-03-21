@@ -17,6 +17,8 @@
  **/
 
 #include <Wintermute/Application>
+#include <Wintermute/Logging>
+#include <QtCore/QCoreApplication>
 #include "plugin.hpp"
 #include "globals.hpp"
 #include "modules/pulse.hpp"
@@ -29,7 +31,7 @@ Plugin::Plugin() :
   Wintermute::Plugin(),
   module ( 0 )
 {
-  if (wntrApp->modules().length() == 1)
+  if ( QCoreApplication::arguments().contains ( "wintermute-heartbeat") )
     module = new Heartbeat::MonitorModule(this);
 
   module = new Heartbeat::PulseModule(this);

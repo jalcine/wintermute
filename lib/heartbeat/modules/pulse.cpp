@@ -30,25 +30,11 @@ using Wintermute::Heartbeat::PulseModulePrivate;
 PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   Module ( plugin ), d_ptr ( new PulseModulePrivate(this) )
 {
-  winfo (this, "Pulse ready to beat.");
+  Q_D ( PulseModule );
   setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
   setPackage ( "pulse" );
-
-  mountLambda ( "module", [&] (QVariantList args) -> QVariant {
-    Q_D ( PulseModule );
-    const QString moduleName = args[0].toString();
-    const QVariant module = d->getModuleInfo ( moduleName );
-    wdebug ( this, module.toString() );
-    return module;
-  } );
-
-  mountLambda ( "modules", [&] (QVariantList args) -> QVariant {
-    // TODO: Consider using the passed arguments as a filter?
-    Q_D ( PulseModule );
-    const QVariant modules = d->getAllModulesInfo();
-    wdebug ( this, modules.toString() );
-    return modules;
-  } );
+  d->mountCalls();
+  winfo (this, "Pulse ready to beat.");
 }
 
 void
@@ -71,10 +57,13 @@ PulseModule::tick()
   Q_D ( PulseModule );
   pulse ( PulseModule::PulseAlive );
   const Plugin* plugin = qobject_cast<Plugin*>( parent() );
-  if ( plugin->configuration()->value("Pulse/Interval").isValid() )
+
+  if ( plugin->configuration()->value( "Pulse/Interval" ).isValid() )
   {
-    d->timer.setInterval ( plugin->configuration()->value("Pulse/Interval").toUInt() );
+    d->timer.setInterval ( 
+        plugin->configuration()->value( "Pulse/Interval" ).toUInt() );
   }
+
   d->timer.start();
 }
 
@@ -83,11 +72,11 @@ PulseModule::pulse( PulseType type )
 {
   Q_D ( PulseModule );
   d->timer.stop();
-  MethodCall theCall ( WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
+  MethodCall* theCall = new MethodCall( WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
   quint64 pid = QCoreApplication::applicationPid();
-  theCall.setArguments(QVariantList() << d->count++ << type << pid );
-  theCall.setCallback ( [&] ( QVariant result ) -> void {
-    winfo ( this, result.toString() );
+  theCall->setArguments (QVariantList() << d->count++ << type << pid );
+  theCall->setCallback ( [&] ( QVariant result ) -> void {
+    winfo ( this, QString("IS IT REAL?") + result.toString() );
     d->timer.start();
   } );
   dispatch ( theCall );

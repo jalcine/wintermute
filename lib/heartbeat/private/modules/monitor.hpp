@@ -51,6 +51,13 @@ class MonitorModulePrivate
       } );
     }
 
+    void
+    killOtherMonitors()
+    {
+      // TODO: Find other monitor instances on this local machine.
+      // TODO: Kill each instance.
+    }
+
     QVariant greet ( const QVariantList& arguments )
     {
       QVariantMap newEntry;

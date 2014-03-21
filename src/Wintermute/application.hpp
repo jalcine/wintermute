@@ -43,8 +43,9 @@ class ApplicationPrivate;
 
 /**
  * @class Application
+ * @brief Accessibility class to control this instance of `Wintermute`.
  *
- * The `Application` class in Wintermute serves as an object hierarchy
+ * The `Application` class in `Wintermute` serves as an object hierarchy
  * anchor. It's the first object to be created and fights to the death to be
  * the last one destroyed.
  */
@@ -74,18 +75,14 @@ public:
   /**
    * @fn instance
    * @brief Provides a pointer to an instance of Wintermute::Application.
+   * @return A shared pointer to the working instance of Wintermute::Application.
    *
    * In order to keep Wintermute's instance running smoothly,
    * a shared pointer to the instance of the application that's running
    * and handling Wintermute's lower-level work. It's strongly recommended
    * that you use this method, if desired, as a parent for your QObject.
-   *
-   * @return A shared pointer to the working instance of Wintermute::Application.
    */
-  static inline Application* instance()
-  {
-    return self;
-  }
+  static inline Application* instance() { return self; }
 
   /**
    * @fn run
@@ -100,14 +97,13 @@ public:
   /**
    * @fn setting
    * @brief Obtains a setting from Wintermute's local configuration.
-   *
    * @note These options are global to the Wintermute application.
    */
   static QVariant setting ( const QString& path, const QVariant defaultValue = QVariant() );
 
-  /** @fn setSetting
+  /**
+   * @fn setSetting
    * @brief Changes a value of the setting for Wintermute
-   *
    * @note These options are global to the Wintermute application.
    */
   static void setSetting ( const QString& path, const QVariant value );
@@ -115,6 +111,7 @@ public:
   /**
    * @fn version
    * @brief Obtains the current version of Wintermute.
+   * @see Wintermute::Version
    *
    * Extremely direct and to the point, this returns the version of Wintermute
    * running in this process.
@@ -124,6 +121,8 @@ public:
   /**
    * @fn processName
    * @brief Obtains the process name used by Wintermute.
+   * @see setModule()
+   * @see module()
    *
    * Obtains the process name of this running instance of 
    * Wintermute. This is typically in the form of 
@@ -131,9 +130,6 @@ public:
    * in Java. The :$PID portion is added to help increase the 
    * precision of finding specific processes. Process names 
    * are formed from the formulated name of the 'root module'.
-   *
-   * @see setModule()
-   * @see module()
    */
   QString processName() const;
 
@@ -146,18 +142,21 @@ public:
   /**
    * @fn findModule
    * @brief Finds a method by its specified module.
+   * @see modules()
    */
   Procedure::Module* findModule ( const QString& name ) const;
 
   /**
    * @fn modules
    * @brief Obtains a list of the modules registered locally.
+   * @see findModule()
    */
   QList<Procedure::Module*> modules() const;
 
   /**
    * @fn start
-   * @brief
+   * @brief Starts Wintermute's event loop.
+   * @see stop()
    *
    * Starts the initial processing required for execution in Wintermute
    * and begins the event loop.
@@ -166,17 +165,51 @@ public:
 
   /**
    * @fn stop
-   * @brief
+   * @brief Ends Wintermute's event loop.
+   * @see start()
    *
    * Stops the started processes in `start()` and begins the clean up for
    * the event loop.
    */
   void stop ( int exitcode = 0x0 );
 
-  // TODO: Do documentation.
+  /**
+   * @fn started
+   * @signal started
+   * @brief Signal when start of Wintermute has been completed.
+   * @see stopped()
+   *
+   * This signal is emitted after Wintermute's event loop has started, so
+   * event signaling may be a tad bit delayed.
+   */
   Q_SIGNAL void started();
+
+  /**
+   * @fn stopped
+   * @signal stopped
+   * @brief Signal when stop of Wintermute has been completed.
+   * @see started()
+   *
+   * This signal is emitted after Wintermute has been completed; this is
+   * typically before the end of the event loop, so event signaling may not be
+   * risen at all.
+   */
   Q_SIGNAL void stopped();
+
+  /**
+   * @fn addedModule
+   * @signal addedModule
+   * @brief Signal when a new module inserts itself to Wintermute.
+   * @see removedModule()
+   */
   Q_SIGNAL void addedModule(const QString& moduleName);
+
+  /**
+   * @fn removedModule
+   * @signal removedModule
+   * @brief Signal when a new module removes itself to Wintermute.
+   * @see addedModule()
+   */
   Q_SIGNAL void removedModule(const QString& moduleName);
 };
 }
