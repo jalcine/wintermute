@@ -72,7 +72,8 @@ Adaptor::handleIncomingCall ( const QString& arguments, const
     QDBusMessage& message )
 {
   const Call* incomingCall = Call::fromString ( arguments );
-  ((Module*) parent())->m_receiver->receiveMessage(incomingCall);
+  Module* module = qobject_cast<Wintermute::DBus::Module*>(parent());
+  module->m_receiver->receiveMessage(incomingCall);
 }
 
 bool

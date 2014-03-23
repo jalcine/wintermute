@@ -34,13 +34,14 @@ PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
   setPackage ( "pulse" );
   d->mountCalls();
-  winfo (this, "Pulse ready to beat.");
+  winfo (this, "Ready to beat.");
 }
 
 void
 PulseModule::start()
 {
   Q_D ( PulseModule );
+  winfo(this, "Started.");
   d->timer.start();
 }
 
@@ -48,6 +49,7 @@ void
 PulseModule::stop()
 {
   Q_D ( PulseModule );
+  winfo(this, "Stopped.");
   d->timer.stop();
 }
 
@@ -57,11 +59,11 @@ PulseModule::tick()
   Q_D ( PulseModule );
   pulse ( PulseModule::PulseAlive );
   const Plugin* plugin = qobject_cast<Plugin*>( parent() );
+  const QVariant interval = plugin->configuration()->value("Pulse/Interval");
 
-  if ( plugin->configuration()->value( "Pulse/Interval" ).isValid() )
+  if ( interval.isValid() )
   {
-    d->timer.setInterval ( 
-        plugin->configuration()->value( "Pulse/Interval" ).toUInt() );
+    d->timer.setInterval ( interval.toInt() );
   }
 
   d->timer.start();
@@ -79,7 +81,7 @@ PulseModule::pulse( PulseType type )
     winfo ( this, QString("IS IT REAL?") + result.toString() );
     d->timer.start();
   } );
-  dispatch ( theCall );
+  theCall->dispatch ( this );
 }
 
 PulseModule::~PulseModule()

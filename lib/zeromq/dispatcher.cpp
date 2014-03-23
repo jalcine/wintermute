@@ -44,9 +44,9 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage ( const Call* message ) throw ( zmq::error_t )
+Dispatcher::sendMessage ( const Call& message ) throw ( zmq::error_t )
 {
-  const QByteArray data = message->toString().toUtf8();
+  const QByteArray data = message.toString().toUtf8();
   Module* module = qobject_cast<Module*> ( parent() );
   winfo ( this, QString ( "Sending %1 ..." ).arg ( QString ( data ) ) );
   Q_ASSERT ( module != NULL );

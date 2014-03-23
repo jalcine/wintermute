@@ -42,7 +42,6 @@ Dispatcher::~Dispatcher()
 void
 Dispatcher::sendMessage ( const Call& call )
 {
-  Q_ASSERT ( call.isValid() );
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
   QDBusConnectionInterface* interface = sessionBus.interface();
   QStringList remoteServices = interface->registeredServiceNames();
@@ -54,12 +53,13 @@ Dispatcher::sendMessage ( const Call& call )
   {
     for (const QString remoteService: friendlyServices)
     {
+      DBus::Module* module = qobject_cast<DBus::Module*>(parent());
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
           "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
       methodCall << call.toString();
 
       QDBusPendingReply<QString> asyncMethodCall = sessionBus.asyncCall ( methodCall );
-      DBus::Receiver* reciever = ( ( DBus::Module* ) parent() )->m_receiver;
+      DBus::Receiver* reciever = module->m_receiver;
       QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher ( 
           asyncMethodCall, this );
       QObject::connect ( watcher, SIGNAL ( finished (QDBusPendingCallWatcher*) ),
