@@ -1,6 +1,5 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,8 +61,9 @@ public:
 
   virtual ~ModulePrivate ()
   {
-    winfo ( q_ptr, "We out!" );
+    wntrApp->d_ptr->modules.removeAll (q_ptr);
     Q_EMIT wntrApp->removedModule ( q_ptr->qualifiedName() );
+    winfo ( q_ptr, "We out!" );
   }
 };
 } /* Procedure */

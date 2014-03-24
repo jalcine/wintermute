@@ -32,8 +32,8 @@ namespace Events
 class CallEvent;
 class CallFilter : public QObject
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( CallFilter );
+  Q_OBJECT
+  Q_DISABLE_COPY ( CallFilter )
 
 public:
   explicit CallFilter();

@@ -36,12 +36,12 @@ class MethodCallPrivate;
  */
 class MethodCall : public Call
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( MethodCall );
-  Q_DECLARE_PRIVATE ( MethodCall );
-  Q_PROPERTY(QVariantList Arguments READ arguments WRITE setArguments);
-  Q_PROPERTY(QString Method READ method WRITE setMethod);
-  Q_PROPERTY(QString Module READ module WRITE setModule);
+  Q_OBJECT
+  Q_DISABLE_COPY ( MethodCall )
+  Q_DECLARE_PRIVATE ( MethodCall )
+  Q_PROPERTY(QVariantList Arguments READ arguments WRITE setArguments)
+  Q_PROPERTY(QString Method READ method WRITE setMethod)
+  Q_PROPERTY(QString Module READ module WRITE setModule)
 
 public:
   /**

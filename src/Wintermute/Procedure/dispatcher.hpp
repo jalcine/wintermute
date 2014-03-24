@@ -20,6 +20,7 @@
 #define WINTERMUTE_PROCEDURE_DISPATCHER_HPP
 
 #include <QtCore/QObject>
+#include <Wintermute/Application>
 #include <Wintermute/Procedure/Module>
 
 namespace Wintermute
@@ -30,7 +31,7 @@ class Module;
 class DispatcherPrivate;
 class Dispatcher : public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
   friend class Module;
   friend class DispatcherPrivate;
 
@@ -38,7 +39,7 @@ protected:
   explicit Dispatcher();
   virtual ~Dispatcher();
   virtual void sendMessage ( const Call& call ) = 0;
-  static void postDispatch ( const Call* call );
+  static void postDispatch ( const Call* call, QObject* object = wntrApp->module() );
 };
 }
 }

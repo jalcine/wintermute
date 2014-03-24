@@ -26,6 +26,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <Wintermute/Globals>
+#include <Wintermute/Application>
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/LambdaCall>
 
@@ -34,16 +35,21 @@ namespace Wintermute
 namespace Procedure
 {
 class ModulePrivate;
+/**
+ * @class Wintermute::Procedure::Module
+ * @see   Wintermute::Procedure::MethodCall
+ * @brief Represents a collection of `Call` objects to encapsulate function.
+ */
 class Module : public QObject
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Module );
-  Q_PROPERTY ( QString Domain READ domain );
-  Q_PROPERTY ( QString Package READ package );
+  Q_OBJECT
+  Q_DISABLE_COPY ( Module )
+  Q_PROPERTY ( QString Domain READ domain )
+  Q_PROPERTY ( QString Package READ package )
   friend class Call;
 
 protected:
-  Q_DECLARE_PRIVATE ( Module );
+  Q_DECLARE_PRIVATE ( Module )
   QScopedPointer<ModulePrivate> d_ptr;
 
 public:
@@ -51,7 +57,7 @@ public:
    * @ctor
    * @brief Creates a new working module.
    */
-  explicit Module ( QObject* parent );
+  explicit Module ( QObject* parent = wntrApp );
 
   /**
    * @dtor

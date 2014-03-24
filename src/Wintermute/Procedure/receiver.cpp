@@ -44,9 +44,11 @@ void
 Receiver::receiveMessage ( const Call* call )
 {
   Procedure::Module* module = wntrApp->findModule ( call->recipient() );
-  if ( module != nullptr ) {
-    CallEvent* event = new CallEvent ( CallEvent::TypeReceive, call );
-    QCoreApplication::postEvent ( wntrApp, event );
+
+  if ( module != nullptr )
+  {
+    QCoreApplication::postEvent ( module, 
+        new CallEvent ( CallEvent::TypeReceive, call ) );
   }
 }
 

@@ -18,8 +18,8 @@
 
 #include <QtCore/QString>
 #include <QtCore/QVariant>
-#include <QtCore/QMap>
-#include <QtCore/QHash>
+#include <QtCore/QBitArray>
+#include <QtCore/QCache>
 #include <QtCore/QDateTime>
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
@@ -32,7 +32,7 @@ namespace Procedure
 class CallPrivate
 {
 public:
-  typedef QHash<quint64, Call*> CallCache;
+  typedef QMap<quint64, Call*> CallCache;
   static CallCache calls;
   Call* q_ptr;
   QString recipient;
@@ -47,39 +47,40 @@ public:
     type ( Call::TypeUndefined ), data(), 
     id ( QDateTime::currentDateTimeUtc() ), callback ( nullptr )
   {
-    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
+    if ( q_ptr != nullptr ) 
+      CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
     data["timestamp"] = id.toTime_t();
   }
 
   static CallPrivate* fromVariantMap (const QVariantMap& data)
   {
     CallPrivate *d_ptr = new CallPrivate ( nullptr );
-    d_ptr->type      = (Call::Type) data["type"].toUInt();
-    d_ptr->id        = data["timestamp"].toDateTime();
+    d_ptr->type = (Call::Type) data["type"].toInt();
+    d_ptr->id = data["timestamp"].toDateTime();
     d_ptr->recipient = data["recipient"].toString();
-    d_ptr->data      = data["data"].toMap();
-    
-    return ( d_ptr->isValid() ? d_ptr : nullptr );
+    d_ptr->data = data["data"].toMap();
+
+    return d_ptr;
   }
 
   QVariantMap toVariantMap() const
   {
     QVariantMap callData;
-    callData["type"]      = (quint64) type;
+    callData["type"] = (int) type;
     callData["timestamp"] = id.toTime_t();
     callData["recipient"] = recipient;
-    callData["data"]      = data;
+    callData["data"] = data;
 
     return callData;
   }
 
   virtual bool isValid() const
   {
-    if ( id.isNull() ) return false;
-    if ( type == Call::TypeUndefined ) return false;
-    if ( recipient.isEmpty() || recipient.isNull() ) return false;
+    const bool validId = !id.isNull() && id.isValid(),
+      validRecipient = !recipient.isNull() && !recipient.isEmpty()
+    ;
 
-    return true;
+    return ( validId && validRecipient );
   }
 
   virtual ~CallPrivate()

@@ -181,8 +181,11 @@ Factory::unloadAllPlugins()
 {
   for (QString plugin: activePlugins())
   {
-    unloadPlugin ( plugin );
+    if ( !unloadPlugin ( plugin ) )
+      return false;
   }
+
+  return true;
 }
 
 void

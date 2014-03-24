@@ -29,11 +29,13 @@ const int CallEvent::TypeReply    = QEvent::registerEventType();
 CallEvent::CallEvent ( const int type, const Call* call ) :
   QEvent ( ( QEvent::Type ) type ) , m_call ( call )
 {
+  Q_CHECK_PTR ( call );
 }
 
 const Call*
 CallEvent::call() const
 {
+  Q_CHECK_PTR ( call );
   return m_call;
 }
 

@@ -49,8 +49,8 @@ class Factory : public QObject
   friend class Application;
   friend class ApplicationPrivate;
 
-  Q_OBJECT;
-  Q_DECLARE_PRIVATE ( Factory );
+  Q_OBJECT
+  Q_DECLARE_PRIVATE ( Factory )
   FactoryPrivate* d_ptr;
   static Factory* self;
 

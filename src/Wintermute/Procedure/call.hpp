@@ -26,15 +26,26 @@
 
 namespace Wintermute
 {
-namespace Events { class CallFilter; }
+namespace Events
+{
+class CallFilter;
+}
 namespace Procedure
 {
 class CallPrivate;
 class ReplyCall;
+
+/**
+ * @class Wintermute::Procedure::Call
+ *
+ * Calls are data types in Wintermute that represent the fabric of its
+ * interprocess communication between different modules. They're used mainly
+ * for procedure calling but can be used however deemed necessary.
+ */
 class Call : public QObject
 {
-  Q_OBJECT;
-  Q_FLAGS ( Type Types );
+  Q_OBJECT
+  Q_FLAGS ( Type Types )
   friend class Module;
   friend class ReplyCall;
   friend class Events::CallFilter;
@@ -43,10 +54,13 @@ class Call : public QObject
 
 protected:
   QSharedPointer<CallPrivate> d_ptr;
-  Q_DISABLE_COPY ( Call );
-  Q_DECLARE_PRIVATE ( Call );
-  Q_ENUMS ( Type );
+  Q_DISABLE_COPY ( Call )
+  Q_DECLARE_PRIVATE ( Call )
+  Q_ENUMS ( Type )
 
+  /**
+   * @ctor
+   */
   Call ( CallPrivate* d );
 
   /**
@@ -74,18 +88,16 @@ public:
    * order to keep things clean, you can add your own types only if it's over
    * 0x9000 (this was intentional).
    */
-  enum Types {
+  enum Types
+  {
     TypeUndefined  = 0x0000,  // Undefined call. Don't bother with.
-
     TypeRetrieval  = 0x0010,  // Represents a invoking call being responsed to.
     TypeDispatch   = 0x0011,  // Represents a invoked call being sent to.
-
-    TypeInvocation = 0x0020, // Represents a call that's to be invoked.
+    TypeInvocation = 0x0020,  // Represents a call that's to be invoked.
     TypeReply      = 0x0021,  // Represents a reply to an invoked call.
-
     TypeUser       = 0x9000   // Anything above this is available to the user.
   };
-  Q_DECLARE_FLAGS ( Type, Types );
+  Q_DECLARE_FLAGS ( Type, Types )
 
   /**
    * @ctor
@@ -173,5 +185,5 @@ typedef QSharedPointer<Call> CallPointer;
 } /* Procedure */
 } /* Wintermute */
 
-Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type );
+Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type )
 #endif /* WINTERMUTE_PROCEDURE_CALL_HPP */

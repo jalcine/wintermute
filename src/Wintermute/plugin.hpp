@@ -42,13 +42,13 @@ class PluginPrivate;
  */
 class Plugin : public QObject
 {
-  Q_OBJECT;
-  Q_PROPERTY ( QString Name          READ name );
-  Q_PROPERTY ( Version Version       READ version );
-  Q_PROPERTY ( Version SystemVersion READ systemVersion );
+  Q_OBJECT
+  Q_PROPERTY ( QString Name          READ name )
+  Q_PROPERTY ( Version Version       READ version )
+  Q_PROPERTY ( Version SystemVersion READ systemVersion )
 
   QScopedPointer<PluginPrivate> d_ptr;
-  Q_DECLARE_PRIVATE ( Plugin );
+  Q_DECLARE_PRIVATE ( Plugin )
 
 protected:
   explicit Plugin ( );

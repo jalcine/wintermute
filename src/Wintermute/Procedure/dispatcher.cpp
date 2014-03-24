@@ -35,10 +35,10 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::postDispatch ( const Call* call )
+Dispatcher::postDispatch ( const Call* call, QObject* object )
 {
-  CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, call );
-  QCoreApplication::postEvent ( wntrApp, event );
+  QCoreApplication::postEvent ( object , 
+      new CallEvent ( CallEvent::TypeDispatch, call ) );
 }
 
 Dispatcher::~Dispatcher()

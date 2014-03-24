@@ -41,12 +41,11 @@ Module::calls () const
 void
 Module::dispatch ( const Call* call ) const
 {
-  Dispatcher::postDispatch ( call );
+  Dispatcher::postDispatch ( call, const_cast<Module*>(this) );
 }
 
 QVariant
-Module::invoke ( const QString callName, 
-    const QVariantList data )
+Module::invoke ( const QString callName, const QVariantList data )
 {
   Q_D ( Module );
   QVariant result;

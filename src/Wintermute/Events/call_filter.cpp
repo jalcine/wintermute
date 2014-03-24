@@ -1,6 +1,5 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +42,6 @@ bool
 CallFilter::handleDispatch ( QObject* object, CallEvent* callEvent )
 {
   Call* call = const_cast<Call*>(callEvent->call());
-  Q_CHECK_PTR ( call );
   Q_ASSERT ( call->isValid() );
   call->d_ptr->type = call->type() | Call::TypeDispatch;
   Procedure::DispatcherPrivate::dispatch ( call );
@@ -55,7 +53,6 @@ CallFilter::handleReceive ( QObject* object, CallEvent* callEvent )
 {
   QVariant callResult;
   Call* call = const_cast<Call*>(callEvent->call());
-  Q_CHECK_PTR ( call );
   Q_ASSERT ( call->isValid() );
 
   if ( call->type().testFlag ( Call::TypeInvocation ) )
@@ -83,26 +80,21 @@ bool
 CallFilter::handleReply ( QObject* object, CallEvent* callEvent )
 {
   Call* call = const_cast<Call*>(callEvent->call());
-  Q_CHECK_PTR ( call );
   Q_ASSERT ( call->isValid() );
   const ReplyCall* replyCall = qobject_cast<const ReplyCall*> ( call );
-
-  const quint64 id = replyCall->call()->id();
-  Call* baseCall = CallPrivate::calls [ id ];
-
-  baseCall->handleReply ( replyCall );
-
+  Q_ASSERT ( replyCall->isValid() );
+  replyCall->call()->handleReply ( replyCall );
   return true;
 }
 
 bool
 CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
-  CallEvent* callEvent = reinterpret_cast<CallEvent*>(event);
-  Q_CHECK_PTR ( callEvent );
+  Q_CHECK_PTR ( event );
 
-  if ( callEvent != nullptr )
+  if (typeid(*event) == typeid(CallEvent))
   {
+    CallEvent* callEvent = (CallEvent*) event;
     if ( event->type() == CallEvent::TypeDispatch )
     {
       return handleDispatch ( object, callEvent );

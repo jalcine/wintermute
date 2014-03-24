@@ -28,6 +28,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QProcessEnvironment>
 #include <QtCore/QDir>
+#include <iostream>
 
 namespace Wintermute
 {
@@ -46,6 +47,7 @@ public:
     app(), module(), modules(), settings ( 0 ), q_ptr ( q )
   {
     app = QSharedPointer<QCoreApplication> ( new QCoreApplication ( argc, argv ) );
+    q_ptr->setParent(app.data());
     module.clear();
     modules.clear();
     installEventFilters();
@@ -95,7 +97,16 @@ public:
   }
 
   int exec() {
-    return app->exec();
+    int returnCode = 0;
+    //try {
+      returnCode = app->exec();
+    //}
+    //catch (...)
+    //{
+      //werr(app.data(), "An fatal error occurred in Wintermute.");
+      //returnCode = 0xff;
+    //}
+    return returnCode;
   }
 
   void loadProcessModule()

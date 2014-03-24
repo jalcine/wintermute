@@ -43,8 +43,8 @@ public:
 
   static void dispatch ( const Call* call )
   {
-    Q_CHECK_PTR (call);
-    Q_ASSERT ( call->isValid() );
+    Q_CHECK_PTR ( call );
+    winfo (wntrApp, call->toString());
     if ( dispatchers.empty() )
     {
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );

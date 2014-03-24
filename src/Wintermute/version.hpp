@@ -26,9 +26,13 @@
 
 namespace Wintermute
 {
-class Version
+/***
+ * @class Wintermute::Version
+ * @brief Provides a basis of defining version numbers.
+ * @todo  Consider making the number into a bit flag.
+ */
+struct Version
 {
-public:
   enum DevelopmentStage {
     Nightly = 0,
     Alpha,
@@ -90,6 +94,6 @@ public:
 QDataStream& operator<< ( QDataStream& out, const Wintermute::Version& version );
 QDataStream& operator>> ( QDataStream& in,  Wintermute::Version& version );
 
-Q_DECLARE_METATYPE ( Wintermute::Version );
+Q_DECLARE_METATYPE ( Wintermute::Version )
 
 #endif /* WINTERMUTE_CORE_VERSION_HPP */

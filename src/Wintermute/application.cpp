@@ -55,21 +55,24 @@ Application::Application ( int& argc, char** argv ) :
 int
 Application::run ( int& argc, char** argv )
 {
-  int returnCode = -1;
+  int returnCode = 0x0;
 
-  if ( Application::instance() == 0 )
+  if ( Application::instance() == nullptr )
   {
-    Application::self = new Application ( argc, argv );
-    Logger* log = wlog ( Application::self );
+    self = new Application ( argc, argv );
+    Logger* log = wlog ( self );
     self->d_ptr->initialize();
     log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
         arg ( QCoreApplication::applicationPid() ) );
     self->start();
     log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
-    log->info ( "Event loop ended; ended with" +
+    log->info ( "Event loop ended; ended with " +
         QString ( "exit code %1" ).arg ( returnCode ) );
+    self->deleteLater();
+    log->deleteLater();
   }
+
   return returnCode;
 }
 
@@ -91,15 +94,14 @@ void
 Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
-  log->info ( QString ( "Stopping Wintermute '%1'..." ).arg ( processName() ) );
+  log->info ( QString ( "Stopping Wintermute '%1'..." )
+      .arg ( processName() ) );
   QCoreApplication::quit();
   emit this->stopped();
-  log->info ( "Wintermute is stopping " + QString ( "with exit code %1." )
+  log->info ( QString ("Wintermute is stopping with exit code %1." )
     .arg ( exitcode ) );
-  if ( QCoreApplication::startingUp() || QCoreApplication::closingDown() )
-  {
-    exit ( exitcode );
-  }
+  exit ( exitcode );
+  wntrApp->deleteLater();
 }
 
 QString
@@ -170,6 +172,5 @@ Application::setSetting ( const QString& path, const QVariant value )
 
 Application::~Application()
 {
-  this->stop();
-  winfo ( this, "Application singleton deleted." );
+  stop();
 }

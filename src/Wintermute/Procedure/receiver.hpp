@@ -28,7 +28,7 @@ namespace Procedure
 {
 class Receiver : public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 protected:
   explicit Receiver();

@@ -25,7 +25,7 @@ namespace Wintermute
 namespace Procedure
 {
 class ReplyCall : public Call {
-  Q_OBJECT;
+  Q_OBJECT
   QVariant m_response;
 
 public:

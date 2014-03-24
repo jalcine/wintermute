@@ -41,17 +41,18 @@ public:
     appData["pid"]     = QCoreApplication::applicationPid();
     appData["version"] = QCoreApplication::applicationVersion();
     appData["module"]  = module->qualifiedName();
-    data["sender"] = appData;
+    CallPrivate::data["sender"] = appData;
   }
 
   virtual bool isValid() const
   {
     if ( !CallPrivate::isValid() ) return false;
-    if ( !data.contains("data")) return false;
-    QVariantMap appData = CallPrivate::data["sender"].toMap();
-    if ( !appData.contains("pid")) return false;
-    if ( !appData.contains("version")) return false;
-    if ( !appData.contains("module")) return false;
+    const QVariant value = CallPrivate::data["sender"];
+    const QVariantMap appData = value.toMap();
+    if ( value.isNull() ) return false;
+    if ( !appData.contains("pid") ) return false;
+    if ( !appData.contains("version") ) return false;
+    if ( !appData.contains("module") ) return false;
     if ( !data.contains("sender")) return false;
 
     return true;
@@ -60,8 +61,6 @@ public:
   virtual ~MethodCallPrivate()
   {
   }
-
-  MethodCall* q;
 };
 }
 }

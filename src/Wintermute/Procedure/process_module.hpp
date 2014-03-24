@@ -36,9 +36,9 @@ namespace Procedure
  */
 class ProcessModule : public Module
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( ProcessModule );
-  Q_INTERFACES (Wintermute::Procedure::Module);
+  Q_OBJECT
+  Q_DISABLE_COPY ( ProcessModule )
+  Q_INTERFACES (Wintermute::Procedure::Module)
 
   friend class Wintermute::ApplicationPrivate;
   explicit ProcessModule();

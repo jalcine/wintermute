@@ -27,7 +27,7 @@ namespace Procedure
 {
 class DummyDispatcher : public Dispatcher
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
   explicit DummyDispatcher();

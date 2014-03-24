@@ -27,7 +27,7 @@ namespace Procedure
 {
 class DummyReceiver : public Receiver
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
   explicit DummyReceiver();

@@ -26,7 +26,7 @@ namespace Wintermute
 class PluginPrivate
 {
 public:
-  Q_DECLARE_PUBLIC ( Plugin );
+  Q_DECLARE_PUBLIC ( Plugin )
   Plugin* q_ptr;
   mutable QSettings* settings;
   QPluginLoader* loader;

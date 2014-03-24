@@ -88,10 +88,7 @@ bool
 MethodCall::isValid() const
 {
   Q_D ( const MethodCall );
-  if ( !Call::isValid() ) return false;
-  if ( !d->isValid() ) return false;
-
-  return true;
+  return Call::isValid() && d->isValid();
 }
 
 MethodCall::~MethodCall()

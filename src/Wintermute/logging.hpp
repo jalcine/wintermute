@@ -31,8 +31,8 @@ typedef ::Log4Qt::Logger Logger;
 
 class Logging : public QObject
 {
-  Q_OBJECT;
-  Q_DECLARE_PRIVATE ( Logging );
+  Q_OBJECT
+  Q_DECLARE_PRIVATE ( Logging )
 
   friend class Application;
   friend class ApplicationPrivate;

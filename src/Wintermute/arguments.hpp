@@ -34,8 +34,8 @@ class Arguments : public QObject
   friend class Application;
   friend class ApplicationPrivate;
 
-  Q_OBJECT;
-  Q_DECLARE_PRIVATE ( Arguments );
+  Q_OBJECT
+  Q_DECLARE_PRIVATE ( Arguments )
 
   QScopedPointer<ArgumentsPrivate> d_ptr;
   static Arguments* self;

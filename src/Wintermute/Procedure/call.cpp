@@ -31,16 +31,15 @@ using Wintermute::Procedure::Module;
 
 CallPrivate::CallCache CallPrivate::calls;
 
-Call::Call ( QObject* parent ) :
-  QObject ( parent ), d_ptr ( new CallPrivate ( this ) )
+Call::Call ( QObject* parent ) : QObject ( parent ), 
+  d_ptr ( new CallPrivate ( this ))
 {
 }
 
-Call::Call ( CallPrivate* old_d ) :
+Call::Call ( CallPrivate* old_d ) : 
   QObject ( Wintermute::Application::instance() ), d_ptr ( old_d )
 {
   Q_D ( Call );
-  Q_ASSERT ( old_d );
   d->q_ptr = this;
 }
 
@@ -77,7 +76,7 @@ void
 Call::setRecipient ( const QString moduleName )
 {
   Q_D ( Call );
-  d->recipient = QString ( moduleName );
+  d->recipient = moduleName;
 }
 
 Call::Type
@@ -116,7 +115,7 @@ Call::toString() const
   QJson::Serializer serializer;
   QVariantMap callData = d->toVariantMap();
   QString json = serializer.serialize ( callData, &ok );
-  return ( ok ? json : QString::null );
+  return ( ok && isValid() ? json : QString::null );
 }
 
 Call*
@@ -133,7 +132,7 @@ Call::fromString ( const QString& data )
   }
 
   CallPrivate *d_ptr = CallPrivate::fromVariantMap(callData);
-  return ( d_ptr->isValid() ? new Call (d_ptr) : 0 );
+  return (d_ptr->isValid() ? new Call(d_ptr) : nullptr);
 }
 
 QVariant
