@@ -52,14 +52,15 @@ set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE
 
 # Define the flags for linking and compiling.
 set(WINTERMUTE_COMPILE_FLAGS
-  "-std=c++11 -Wall")
+  "-std=c++11 -frtti")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE
-  "-Ofast -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body")
+  "-Ofast -Wabi -Wall -Wextra -Wunused")
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG
-  "-g -O0 -frtti -Wextra -Winit-self -Woverflow -fprofile-arcs -ftest-coverage")
-set(WINTERMUTE_LINK_FLAGS )
+  "-g -O0 -fprofile-arcs -ftest-coverage -fno-omit-frame-pointer -fsanitize=address")
+set(WINTERMUTE_LINK_FLAGS
+  )
 set(WINTERMUTE_LINK_FLAGS_DEBUG
-  "-fprofile-arcs -ftest-coverage -lgcov")
+  "-fprofile-arcs -ftest-coverage -lgcov -fprofile-report -fbranch-probabilities")
 set(WINTERMUTE_LINK_FLAGS_RELEASE )
 
 set(WINTERMUTE_LIBRARIES
