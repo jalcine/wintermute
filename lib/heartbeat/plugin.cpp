@@ -33,8 +33,8 @@ Plugin::Plugin() :
 {
   if ( QCoreApplication::arguments().contains ( "wintermute-heartbeat") )
     module = new Heartbeat::MonitorModule(this);
-
-  module = new Heartbeat::PulseModule(this);
+  else
+    module = new Heartbeat::PulseModule(this);
 }
 
 void

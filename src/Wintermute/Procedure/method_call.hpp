@@ -28,6 +28,7 @@ namespace Wintermute
 namespace Procedure
 {
 class MethodCallPrivate;
+
 /***
  * @class MethodCall
  *
@@ -38,7 +39,6 @@ class MethodCall : public Call
 {
   Q_OBJECT
   Q_DISABLE_COPY ( MethodCall )
-  Q_DECLARE_PRIVATE ( MethodCall )
   Q_PROPERTY(QVariantList Arguments READ arguments WRITE setArguments)
   Q_PROPERTY(QString Method READ method WRITE setMethod)
   Q_PROPERTY(QString Module READ module WRITE setModule)
@@ -82,7 +82,17 @@ public:
    * @fn dispatch
    * @brief A helper method to dispatch calls to a remote module.
    */
-  void dispatch ( Module* module = wntrApp->module() );
+  void setSender ( Module* module = wntrApp->module() );
+
+  /**
+   * @fn attemptInvocation
+   * @brief Invokes a `MethodCall` in this running process.
+   *
+   * Finds the corresponding module that this `MethodCall` is being 
+   * referred to and invokes the specified method with arguments 
+   * provided by it.
+   */
+  static QVariant attemptInvocation ( const Call::Pointer &call );
 };
 }
 }

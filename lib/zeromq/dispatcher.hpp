@@ -36,7 +36,7 @@ class Dispatcher : public Wintermute::Procedure::Dispatcher
 public:
   explicit Dispatcher ( Wintermute::ZeroMQ::Module* module );
   virtual ~Dispatcher();
-  virtual void sendMessage ( const Procedure::Call& call ) throw ( zmq::error_t );
+  virtual void sendMessage ( const Procedure::Call::Pointer& call ) throw ( zmq::error_t );
 };
 }
 }

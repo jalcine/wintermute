@@ -31,8 +31,9 @@ Receiver::Receiver() :
 }
 
 void
-Receiver::receiveMessage ( const Call* call )
+Receiver::receiveMessage ( const Call::Pointer& call )
 {
+  // TODO Some meta-data about D-Bus or call origin could be added.
   Wintermute::Procedure::Receiver::receiveMessage(call);
 }
 

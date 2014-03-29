@@ -26,8 +26,8 @@
 
 // Good chance we'd need these headers.
 #include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
 #include <QtCore/QSharedPointer>
+#include <QtCore/QSharedDataPointer>
 
 /// }}} Headers
 

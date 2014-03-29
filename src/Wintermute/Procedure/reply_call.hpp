@@ -29,11 +29,11 @@ class ReplyCall : public Call {
   QVariant m_response;
 
 public:
-  ReplyCall ( const Call* parentCall, const QVariant& response );
+  ReplyCall ( const Call::Pointer &parentCall, const QVariant& response );
   virtual ~ReplyCall();
 
   QVariant response() const;
-  Call* call() const;
+  Call::Pointer call() const;
   virtual bool isValid() const;
 };
 }

@@ -40,7 +40,7 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage ( const Call& call )
+Dispatcher::sendMessage ( const Call::Pointer& call )
 {
   QDBusConnection sessionBus = QDBusConnection::sessionBus();
   QDBusConnectionInterface* interface = sessionBus.interface();
@@ -53,10 +53,11 @@ Dispatcher::sendMessage ( const Call& call )
   {
     for (const QString remoteService: friendlyServices)
     {
+      if (!interface->isServiceRegistered(remoteService)) continue;
       DBus::Module* module = qobject_cast<DBus::Module*>(parent());
       QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
           "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
-      methodCall << call.toString();
+      methodCall << call->toString();
 
       QDBusPendingReply<QString> asyncMethodCall = sessionBus.asyncCall ( methodCall );
       DBus::Receiver* reciever = module->m_receiver;

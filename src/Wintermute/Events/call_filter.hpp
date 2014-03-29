@@ -23,10 +23,6 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class Call;
-}
 namespace Events
 {
 class CallEvent;

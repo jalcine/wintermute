@@ -21,6 +21,7 @@
 #include <QtCore/QBitArray>
 #include <QtCore/QCache>
 #include <QtCore/QDateTime>
+#include "Wintermute/Globals"
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/call.hpp"
@@ -29,45 +30,76 @@ namespace Wintermute
 {
 namespace Procedure
 {
-class CallPrivate
+class CallPrivate : public QSharedData
 {
 public:
-  typedef QMap<quint64, Call*> CallCache;
-  static CallCache calls;
-  Call* q_ptr;
+  typedef QMap<quint64, Call*> Cache;
+  typedef QSharedDataPointer<CallPrivate> Pointer;
+
+  static CallPrivate::Cache calls;
   QString recipient;
   QString name;
-  Call::Type type;
   QVariantMap data;
   QDateTime id;
+  Call* q_ptr;
+  Call::Type type;
   Call::CallbackSignature callback;
 
-  explicit CallPrivate ( Call* q ) : q_ptr ( q ),
-    recipient( wntrApp->processName() ), name( QString::null), 
-    type ( Call::TypeUndefined ), data(), 
-    id ( QDateTime::currentDateTimeUtc() ), callback ( nullptr )
+  /**
+   * @brief Creates a new CallPrivate object.
+   */ 
+  explicit CallPrivate ( Call* q = nullptr ) : 
+    recipient ( wntrApp->processName() ), name ( QString::null ), data ( ), 
+    id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ), 
+    type ( Call::TypeUndefined ), callback ( nullptr )
   {
-    if ( q_ptr != nullptr ) 
-      CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
-    data["timestamp"] = id.toTime_t();
+    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
   }
 
-  static CallPrivate* fromVariantMap (const QVariantMap& data)
+  /**
+   * @brief Copies an existing CallPrivate object.
+   * @note  The ID and callback are *not* copied.
+   */
+  CallPrivate ( const CallPrivate& other, Call* q ) : 
+    QSharedData ( other ), recipient ( other.recipient ), name ( other.name ),
+    data ( other.data ), id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ), 
+    type ( other.type ), callback ( nullptr )
   {
-    CallPrivate *d_ptr = new CallPrivate ( nullptr );
-    d_ptr->type = (Call::Type) data["type"].toInt();
+    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
+  }
+
+  virtual ~CallPrivate() { }
+
+  /**
+   * @function fromVariantMap
+   * @param    data Map representing data to fill up a CallPrivate.
+   */
+  static CallPrivate::Pointer fromVariantMap ( const QVariantMap& data )
+  {
+    CallPrivate::Pointer d_ptr ( new CallPrivate );
+    Q_ASSERT ( !data.empty() );
+    Q_ASSERT ( data.contains("type") );
+    Q_ASSERT ( data.contains("timestamp") );
+    Q_ASSERT ( data.contains("recipient") );
+    Q_ASSERT ( data.contains("data") );
     d_ptr->id = data["timestamp"].toDateTime();
+    d_ptr->type = ( Call::Type ) data["type"].toInt();
     d_ptr->recipient = data["recipient"].toString();
     d_ptr->data = data["data"].toMap();
 
-    return d_ptr;
+    return d_ptr.data() != nullptr && d_ptr->isValid() ? 
+      d_ptr : CallPrivate::Pointer ( nullptr );
   }
 
+  /**
+   * @function toVariantMap
+   * @return   QVariantMap A map of data that represents this CallPrivate.
+   */
   QVariantMap toVariantMap() const
   {
     QVariantMap callData;
     callData["type"] = (int) type;
-    callData["timestamp"] = id.toTime_t();
+    callData["timestamp"] = id;
     callData["recipient"] = recipient;
     callData["data"] = data;
 
@@ -76,15 +108,13 @@ public:
 
   virtual bool isValid() const
   {
-    const bool validId = !id.isNull() && id.isValid(),
-      validRecipient = !recipient.isNull() && !recipient.isEmpty()
+    const bool validId        = !id.isNull() && id.isValid(),
+               validRecipient = !recipient.isNull() && !recipient.isEmpty()
     ;
+    winfo ( wntrApp, QString::number(validId) );
+    winfo ( wntrApp, QString::number(validRecipient) );
 
     return ( validId && validRecipient );
-  }
-
-  virtual ~CallPrivate()
-  {
   }
 };
 }

@@ -37,9 +37,7 @@ class PluginProcessPrivate
   {
     QStringList args;
     args << "--mode" << "plugin" << "--plugin" << pluginName;
-    const bool started = QProcess::startDetached ( 
-        QCoreApplication::applicationFilePath(), args );
-    // This process is created detached. Should we worry about this?
+    QProcess::startDetached ( QCoreApplication::applicationFilePath(), args );
   }
 
 };

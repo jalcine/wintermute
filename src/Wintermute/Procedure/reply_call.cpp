@@ -24,34 +24,37 @@
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::ReplyCall;
 
-ReplyCall::ReplyCall( const Call* call, const QVariant& response ) :
-  Call ( const_cast<Call*>(call) ), m_response ( response )
+ReplyCall::ReplyCall( const Call::Pointer &call, const QVariant& response ) :
+  Call ( *call ), m_response ( response )
 {
-  Q_D ( Call );
   setRecipient ( call->recipient() );
   QVariantMap calleeMap;
   d->type = Call::TypeReply;
   d->data["reply"] = response;
   d->data["call"]  = call->id();
   CallPrivate::calls.take ( id() );
-  setParent ( wntrApp );
 }
 
-Call*
+Call::Pointer
 ReplyCall::call() const
 {
-  return (Call*) parent();
+  return Call::Pointer(qobject_cast<Call*>(parent()));
 }
 
 bool
 ReplyCall::isValid() const
 {
-  Q_D ( const Call );
+  Q_ASSERT ( Call::isValid() == true );
+  Q_ASSERT ( d->data.contains("reply") == true );
+  Q_ASSERT ( d->data.contains("call") == true );
+  Q_ASSERT ( wCallCheckFlag ( *this, Call::TypeReply ) == true );
+
+  if ( !Call::isValid() ) return false;
   if ( !d->data.contains ( "reply" ) ) return false;
   if ( !d->data.contains ( "call" ) ) return false;
-  if ( !d->type != Call::TypeReply ) return false;
+  if ( !wCallCheckFlag ( *this, Call::TypeReply) ) return false;
 
-  return Call::isValid();
+  return true;
 }
 
 QVariant

@@ -16,20 +16,22 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 #include <QtCore/QCoreApplication>
+#include "Wintermute/private/Procedure/call.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
-#include "Wintermute/private/Procedure/method_call.hpp"
 
-using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::CallPrivate;
 
 MethodCall::MethodCall ( const QString& module, 
     const QString& method,
     const QVariantList arguments ) :
-  Call ( new MethodCallPrivate ( this ) )
+  Call ( wntrApp->module() )
 {
-  Q_D ( MethodCall );
   setRecipient ( module );
+  setSender ( wntrApp->module() );
+  d->type = Call::TypeInvocation;
   d->data["method"] = method;
   d->data["arguments"] = arguments;
 }
@@ -37,58 +39,90 @@ MethodCall::MethodCall ( const QString& module,
 void
 MethodCall::setArguments ( const QVariantList& arguments)
 {
-  Q_D ( MethodCall );
   d->data.insert ( "arguments", arguments );
 }
 
 void
 MethodCall::setMethod ( const QString& method )
 {
-  Q_D ( MethodCall );
   d->data.insert ( "method", method );
 }
 
 void
 MethodCall::setModule ( const QString& module )
 {
-  Q_D ( MethodCall );
   d->data.insert ( "module", module );
 }
 
 QVariantList
 MethodCall::arguments() const
 {
-  Q_D ( const MethodCall );
   return d->data.value ( "arguments" ).toList();
 }
 
 QString
 MethodCall::method() const
 {
-  Q_D ( const MethodCall );
   return d->data.value ( "method" ).toString();
 }
 
 QString
 MethodCall::module() const
 {
-  Q_D ( const MethodCall );
   return d->data.value ( "module" ).toString();
 }
 
 void
-MethodCall::dispatch ( Module* module )
+MethodCall::setSender ( Module* module )
 {
-  Q_D ( MethodCall );
-  d->composeMethodData( module );
-  module->dispatch ( this );
+  QVariantMap appData;
+  appData["pid"]     = QCoreApplication::applicationPid();
+  appData["version"] = QCoreApplication::applicationVersion();
+  appData["module"]  = module->qualifiedName();
+  d->data["sender"] = appData;
 }
 
 bool
 MethodCall::isValid() const
 {
-  Q_D ( const MethodCall );
-  return Call::isValid() && d->isValid();
+  if ( !Call::isValid() ) return false;
+
+  const QVariant value = d->data["sender"];
+  const QVariantMap appData = value.toMap();
+  Q_ASSERT ( value.isNull() == false );
+  if ( value.isNull() ) return false;
+  Q_ASSERT ( appData.contains("pid") == true );
+  if ( !appData.contains("pid") ) return false;
+  Q_ASSERT ( appData.contains("version") == true );
+  if ( !appData.contains("version") ) return false;
+  Q_ASSERT ( appData.contains("module") == true );
+  if ( !appData.contains("module") ) return false;
+
+  return true;
+}
+
+QVariant
+MethodCall::attemptInvocation ( const Call::Pointer& call )
+{
+  Q_ASSERT ( wCallCheckFlag ( *call, Call::TypeInvocation ) );
+  const MethodCall* method = call.dynamicCast<MethodCall>().data();
+  Q_CHECK_PTR ( method );
+  Q_ASSERT ( method->isValid() );
+  Procedure::Module* module = wntrApp->findModule ( method->recipient() );
+  if ( !module )
+  {
+    werr ( staticMetaObject.className(), 
+      QString ( "Can't find module '%1' in this process." )
+        .arg ( method->recipient() ) );
+    return false;
+  }
+
+  const QString methodName     = method->d->data[ "method" ].toString();
+  const QVariantList arguments = method->d->data[ "arguments" ].toList();
+  Q_ASSERT ( !methodName.isEmpty() );
+
+  QVariant result = module->invoke ( methodName, arguments );
+  return result;
 }
 
 MethodCall::~MethodCall()

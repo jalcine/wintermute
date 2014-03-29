@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_DBUS_DISPATCHER_HPP
-#define WINTERMUTE_DBUS_DISPATCHER_HPP
+#ifndef DBUS_DISPATCHER_HPP
+#define DBUS_DISPATCHER_HPP
 
 #include <Wintermute/Procedure/Dispatcher>
 
@@ -33,7 +33,7 @@ class Dispatcher : public Wintermute::Procedure::Dispatcher
 public:
   explicit Dispatcher();
   virtual ~Dispatcher();
-  virtual void sendMessage ( const Procedure::Call& call );
+  virtual void sendMessage ( const Procedure::Call::Pointer& call );
 };
 }
 }

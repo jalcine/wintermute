@@ -41,10 +41,10 @@ public:
     return false;
   }
 
-  static void dispatch ( const Call* call )
+  static void dispatch ( const Call::Pointer &call )
   {
-    Q_CHECK_PTR ( call );
-    winfo (wntrApp, call->toString());
+    Q_ASSERT ( call.isNull() == false );
+    Q_ASSERT ( call->isValid() );
     if ( dispatchers.empty() )
     {
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );
@@ -53,7 +53,7 @@ public:
     {
       for ( Dispatcher* dispatchClient: dispatchers )
       {
-        dispatchClient->sendMessage ( *call );
+        dispatchClient->sendMessage ( call );
       }
     }
   }

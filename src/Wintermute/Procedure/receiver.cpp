@@ -41,7 +41,7 @@ Receiver::Receiver() :
 }
 
 void
-Receiver::receiveMessage ( const Call* call )
+Receiver::receiveMessage ( const Call::Pointer& call )
 {
   Procedure::Module* module = wntrApp->findModule ( call->recipient() );
 

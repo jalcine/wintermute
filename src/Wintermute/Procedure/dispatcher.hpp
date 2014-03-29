@@ -38,8 +38,8 @@ class Dispatcher : public QObject
 protected:
   explicit Dispatcher();
   virtual ~Dispatcher();
-  virtual void sendMessage ( const Call& call ) = 0;
-  static void postDispatch ( const Call* call, QObject* object = wntrApp->module() );
+  virtual void sendMessage ( const Call::Pointer &call ) = 0;
+  static void postDispatch ( const Call::Pointer &call, QObject* object = wntrApp->module() );
 };
 }
 }

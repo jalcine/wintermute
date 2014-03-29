@@ -46,7 +46,7 @@ class Module : public QObject
   Q_DISABLE_COPY ( Module )
   Q_PROPERTY ( QString Domain READ domain )
   Q_PROPERTY ( QString Package READ package )
-  friend class Call;
+  friend class MethodCall;
 
 protected:
   Q_DECLARE_PRIVATE ( Module )
@@ -99,7 +99,7 @@ public:
    * Sends out a call over the wire to the known dispatchers in this running
    * process.
    */
-  void dispatch ( const Call* call ) const;
+  void dispatch ( const Call::Pointer& call ) const;
 
   /**
    * @fn start
@@ -148,7 +148,7 @@ protected:
    * @fn mount
    * @brief Registers the call into the system.
    */
-  void mount ( CallPointer call );
+  void mount ( Call::Pointer call );
 
   /**
    * @fn mountLambda

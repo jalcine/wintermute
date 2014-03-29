@@ -31,7 +31,6 @@ using Wintermute::Procedure::Call;
 Adaptor::Adaptor( Module* module ) :
     QDBusAbstractAdaptor( module )
 {
-  winfo (this, "Adaptor created.");
 }
 
 void
@@ -54,9 +53,6 @@ void
 Adaptor::deregisterFromDBus()
 {
   QDBusConnection bus = QDBusConnection::sessionBus();
-  const bool serviceRegistered = bus.registerService ( QString ( 
-      "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
-
   bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg( 
     QCoreApplication::applicationPid() ) );
 
@@ -71,9 +67,12 @@ void
 Adaptor::handleIncomingCall ( const QString& arguments, const 
     QDBusMessage& message )
 {
-  const Call* incomingCall = Call::fromString ( arguments );
+  Q_ASSERT ( !arguments.isNull() );
+  Q_ASSERT ( !arguments.isEmpty() );
+  const Call::Pointer incomingCall = Call::fromString ( arguments );
   Module* module = qobject_cast<Wintermute::DBus::Module*>(parent());
-  module->m_receiver->receiveMessage(incomingCall);
+  Q_CHECK_PTR ( module );
+  module->m_receiver->receiveMessage ( incomingCall );
 }
 
 bool

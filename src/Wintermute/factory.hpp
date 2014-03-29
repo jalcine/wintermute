@@ -1,4 +1,4 @@
-/**
+/***
  * vim: ft=cpp tw=78
  * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *

@@ -38,7 +38,7 @@ class Receiver : public Wintermute::Procedure::Receiver
   public:
     explicit Receiver();
     virtual ~Receiver();
-    Q_SLOT virtual void receiveMessage(const Procedure::Call* call);
+    Q_SLOT virtual void receiveMessage(const Procedure::Call::Pointer& call);
 };
 }
 }

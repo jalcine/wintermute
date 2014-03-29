@@ -19,7 +19,6 @@
 #ifndef WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 #define WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 
-#include <functional>
 #include <Wintermute/Procedure/Call>
 
 namespace Wintermute
@@ -35,10 +34,10 @@ public:
    */
   typedef std::function<QVariant ( QVariantList ) > Signature;
 
-  explicit LambdaCall ( const QString& name, Signature lambda );
+  explicit LambdaCall ( const QString& name, const Signature& lambda );
   virtual ~LambdaCall();
   Signature function() const;
-  void setFunction ( Signature newFunction );
+  void setFunction ( const Signature& newFunction );
   QVariant invoke ( const QVariantList& data = QVariantList() );
 private:
   Signature m_function;

@@ -20,6 +20,7 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/Events/call_filter.hpp"
+#include "Wintermute/Procedure/call.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/Procedure/reply_call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
@@ -41,9 +42,9 @@ CallFilter::CallFilter() :
 bool
 CallFilter::handleDispatch ( QObject* object, CallEvent* callEvent )
 {
-  Call* call = const_cast<Call*>(callEvent->call());
+  const Call::Pointer call = callEvent->call();
+  Q_ASSERT ( !call.isNull() );
   Q_ASSERT ( call->isValid() );
-  call->d_ptr->type = call->type() | Call::TypeDispatch;
   Procedure::DispatcherPrivate::dispatch ( call );
   return true;
 }
@@ -52,26 +53,33 @@ bool
 CallFilter::handleReceive ( QObject* object, CallEvent* callEvent )
 {
   QVariant callResult;
-  Call* call = const_cast<Call*>(callEvent->call());
+  CallEvent* event = nullptr;
+  const Call::Pointer call = callEvent->call();
+  Q_ASSERT ( !call.isNull() );
   Q_ASSERT ( call->isValid() );
 
   if ( call->type().testFlag ( Call::TypeInvocation ) )
   {
-    const MethodCall* methodCall = dynamic_cast<const MethodCall*>(call);
-    callResult = Procedure::Call::attemptInvocation ( methodCall );
-    ReplyCall* reply = new ReplyCall ( methodCall, callResult );
-    CallEvent* event = new CallEvent ( CallEvent::TypeDispatch, reply );
-    QCoreApplication::postEvent ( reply, event );
+    Call::Pointer methodCall = call, reply ( nullptr );
+    Q_ASSERT ( methodCall.isNull() == false );
+    Q_ASSERT ( methodCall->isValid() );
+    callResult = Procedure::MethodCall::attemptInvocation ( methodCall );
+    reply = Call::Pointer ( new ReplyCall ( methodCall, callResult ) );
+    Q_ASSERT ( reply.isNull() == false );
+    Q_ASSERT ( reply->isValid() );
+    event = new CallEvent ( CallEvent::TypeDispatch, reply );
   }
   else if ( call->type().testFlag ( Call::TypeReply ) )
   {
-    CallEvent* event = new CallEvent ( CallEvent::TypeReply, call );
-    QCoreApplication::postEvent ( object, event ); 
+    event = new CallEvent ( CallEvent::TypeReply, call );
   }
   else
   {
-    wwarn ( wntrApp, "Don't know how to handle a foreign call type." );
+    wwarn ( object, "Don't know how to handle a foreign call type." );
+    event = nullptr; // Ensure that no event is bubbled up.
   }
+
+  if ( event != nullptr ) QCoreApplication::postEvent ( object, event );
 
   return true;
 }
@@ -79,22 +87,46 @@ CallFilter::handleReceive ( QObject* object, CallEvent* callEvent )
 bool
 CallFilter::handleReply ( QObject* object, CallEvent* callEvent )
 {
-  Call* call = const_cast<Call*>(callEvent->call());
+  const Call::Pointer call = callEvent->call();
+  QSharedPointer<ReplyCall> replyCall ( nullptr );
   Q_ASSERT ( call->isValid() );
-  const ReplyCall* replyCall = qobject_cast<const ReplyCall*> ( call );
-  Q_ASSERT ( replyCall->isValid() );
-  replyCall->call()->handleReply ( replyCall );
+
+  if ( !call.isNull() )
+  {
+    try
+    {
+      replyCall = call.dynamicCast<ReplyCall>();
+      Q_CHECK_PTR ( replyCall );
+    }
+    catch ( std::bad_alloc &e )
+    {
+      werr ( object, 
+            QString("Couldn't parse an incoming reply: %1").arg(e.what())
+      );
+      return false;
+    }
+
+    Q_ASSERT ( replyCall->isValid() );
+    const Call::Pointer invokingCall = replyCall->call();
+    Q_ASSERT ( !invokingCall.isNull() ); 
+    Q_ASSERT ( invokingCall->isValid() );
+    replyCall->call()->handleReply ( replyCall );
+  }
+
   return true;
 }
 
-bool
+  bool
 CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
+  CallEvent* callEvent = nullptr;
   Q_CHECK_PTR ( event );
 
-  if (typeid(*event) == typeid(CallEvent))
+  if ( typeid ( *event ) == typeid ( CallEvent ) )
   {
-    CallEvent* callEvent = (CallEvent*) event;
+    callEvent = dynamic_cast<CallEvent*>(event);
+    Q_CHECK_PTR ( callEvent );
+
     if ( event->type() == CallEvent::TypeDispatch )
     {
       return handleDispatch ( object, callEvent );

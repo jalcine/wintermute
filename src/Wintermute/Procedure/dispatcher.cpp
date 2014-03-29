@@ -35,8 +35,11 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::postDispatch ( const Call* call, QObject* object )
+Dispatcher::postDispatch ( const Call::Pointer &call, QObject* object )
 {
+  Q_ASSERT ( !call.isNull() );
+  Q_ASSERT ( call->isValid() );
+  Q_ASSERT ( wCallCheckFlag( *call, Call::TypeInvocation ));
   QCoreApplication::postEvent ( object , 
       new CallEvent ( CallEvent::TypeDispatch, call ) );
 }

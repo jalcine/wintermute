@@ -38,7 +38,7 @@ public:
   Module* q_ptr;
   QString package;
   QString domain;
-  QMap<QString, CallPointer> calls;
+  QMap<QString, Call::Pointer> calls;
 
   ModulePrivate ( Module* q ) :
     q_ptr ( q ), package ( QString::null ), domain ( QString::null ), 

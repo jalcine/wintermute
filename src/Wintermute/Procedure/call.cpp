@@ -26,44 +26,60 @@
 #include "Wintermute/Procedure/module.hpp"
 
 using Wintermute::Procedure::Call;
-using Wintermute::Procedure::CallPrivate;
 using Wintermute::Procedure::Module;
+using Wintermute::Procedure::CallPrivate;
 
-CallPrivate::CallCache CallPrivate::calls;
+CallPrivate::Cache CallPrivate::calls;
+
+bool wCallCheckFlag ( const Call& call, const Call::Types& flag )
+{
+  return call.type().testFlag ( flag );
+}
+
 
 Call::Call ( QObject* parent ) : QObject ( parent ), 
-  d_ptr ( new CallPrivate ( this ))
+  d ( new CallPrivate (this) )
 {
 }
 
-Call::Call ( CallPrivate* old_d ) : 
-  QObject ( Wintermute::Application::instance() ), d_ptr ( old_d )
+Call::Call ( const CallPrivate::Pointer &other_d ) : 
+  QObject ( Wintermute::Application::instance() ), d ( other_d )
 {
-  Q_D ( Call );
+  d.detach();
   d->q_ptr = this;
 }
 
-bool
-Call::isValid() const
+Call::Call ( const Call& other ) : 
+  QObject ( other.parent() ), d ( other.d )
 {
-  Q_D ( const Call );
-  return d->isValid();
+  d.detach();
+  d->q_ptr = this;
 }
+
+Call::~Call()
+{
+}
+
+bool
+Call::isValid() const { return d->isValid(); }
 
 QVariant
 Call::invoke ( const QVariantList& data )
 {
-  winfo ( this, "This is an error." );
+  // TODO Raise an exception here.
   return QVariant();
 }
 
 void
-Call::handleReply ( const ReplyCall* reply ) const
+Call::handleReply ( const Call::Pointer& reply ) const
 {
-  Q_D ( const Call );
+  Q_ASSERT ( reply->isValid() );
+  Q_ASSERT ( reply.isNull() == false );
+  Q_ASSERT ( !wCallCheckFlag ( *reply, Call::TypeReply ) );
+  
   if ( d->callback )
   {
-    d->callback ( reply->response() );
+    d->callback ( reply.dynamicCast<ReplyCall>()->response() );
     winfo ( this, "Invoked callback to reply." );
   }
   else
@@ -73,52 +89,46 @@ Call::handleReply ( const ReplyCall* reply ) const
 }
 
 void
-Call::setRecipient ( const QString moduleName )
+Call::setRecipient ( const QString& moduleName )
 {
-  Q_D ( Call );
   d->recipient = moduleName;
 }
 
 Call::Type
 Call::type() const
 {
-  Q_D ( const Call );
   return d->type;
 }
 
 QString
 Call::name() const
 {
-  Q_D ( const Call );
   return d->name;
 }
 
 QString
 Call::recipient() const
 {
-  Q_D ( const Call );
   return d->recipient;
 }
 
 quint64
 Call::id() const
 {
-  Q_D ( const Call );
   return d->id.toTime_t();
 }
 
 QString
 Call::toString() const
 {
-  Q_D ( const Call );
   bool ok;
   QJson::Serializer serializer;
   QVariantMap callData = d->toVariantMap();
   QString json = serializer.serialize ( callData, &ok );
-  return ( ok && isValid() ? json : QString::null );
+  return ( ok ? json : QString::null );
 }
 
-Call*
+Call::Pointer
 Call::fromString ( const QString& data )
 {
   QJson::Parser parser;
@@ -128,11 +138,12 @@ Call::fromString ( const QString& data )
   if ( !ok ) 
   {
     werr ( wntrApp, QString("Failed to convert '%1' into a Call.").arg(data) );
-    return nullptr;
+    return Call::Pointer ( nullptr );
   }
 
-  CallPrivate *d_ptr = CallPrivate::fromVariantMap(callData);
-  return (d_ptr->isValid() ? new Call(d_ptr) : nullptr);
+  CallPrivate::Pointer d_ptr = CallPrivate::fromVariantMap(callData);
+  Call::Pointer call( new Call ( d_ptr ) );
+  return call;
 }
 
 QVariant
@@ -140,40 +151,14 @@ Call::operator() ( const QVariantList& data )
 {
   return invoke ( data );
 }
-
-QVariant
-Call::attemptInvocation ( const Call* call )
-{
-  Procedure::Module* module = wntrApp->findModule ( call->recipient() );
-  if ( !module )
-  {
-    werr ( staticMetaObject.className(), 
-      QString ( "Can't find module '%1' in this process." )
-        .arg ( call->recipient() ) );
-    return false;
-  }
-
-  const QString methodName     = call->d_ptr->data[ "method" ].toString();
-  const QVariantList arguments = call->d_ptr->data[ "arguments" ].toList();
-
-  QVariant result = module->invoke ( methodName, arguments );
-  return result;
-}
-
 void
-Call::setCallback ( Call::CallbackSignature callback )
+Call::setCallback ( const CallbackSignature& callback )
 {
-  Q_D ( Call );
   d->callback = callback;
 }
 
 void
 Call::clearCallback ()
 {
-  Q_D ( Call );
   d->callback = nullptr;
-}
-
-Call::~Call()
-{
 }

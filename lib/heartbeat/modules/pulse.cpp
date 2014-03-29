@@ -22,6 +22,7 @@
 #include "pulse.hpp"
 #include "private/modules/pulse.hpp"
 
+using Wintermute::Procedure::Call;
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Heartbeat::Plugin;
 using Wintermute::Heartbeat::PulseModule;
@@ -77,11 +78,14 @@ PulseModule::pulse( PulseType type )
   MethodCall* theCall = new MethodCall( WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
   quint64 pid = QCoreApplication::applicationPid();
   theCall->setArguments (QVariantList() << d->count++ << type << pid );
+  theCall->setSender ( this );
   theCall->setCallback ( [&] ( QVariant result ) -> void {
+    // TODO Get the ping stashed as properly recieved (record into monitor?)
     winfo ( this, QString("IS IT REAL?") + result.toString() );
-    d->timer.start();
   } );
-  theCall->dispatch ( this );
+  winfo ( this, "Sending a pulse..." );
+  Call::Pointer aCall ( theCall );
+  Module::dispatch ( aCall );
 }
 
 PulseModule::~PulseModule()

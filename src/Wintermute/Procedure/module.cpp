@@ -39,7 +39,7 @@ Module::calls () const
 }
 
 void
-Module::dispatch ( const Call* call ) const
+Module::dispatch ( const Call::Pointer &call ) const
 {
   Dispatcher::postDispatch ( call, const_cast<Module*>(this) );
 }
@@ -56,29 +56,29 @@ Module::invoke ( const QString callName, const QVariantList data )
     return result;
   }
 
-  CallPointer callPtr = d->calls[callName];
-  Call* call = nullptr;
-  if ( callPtr.isNull() )
+  Call::Pointer call = d->calls[callName];
+  Q_ASSERT ( call.isNull() == false );
+  Q_ASSERT ( call->isValid() );
+  if ( call.isNull() )
   {
     werr ( this, QString ("Attempted to invoke a null call '%1'.")
       .arg( callName ) );
     return result;
   }
 
-  call = callPtr.data();
   result = call->operator()( data );
   return result;
 }
 
 void
-Module::mount ( CallPointer call )
+Module::mount ( Call::Pointer call )
 {
   Q_D ( Module );
   if ( d->calls.contains( call->name() ) )
   {
     winfo ( this, QString( "Updating call %1 to %2..." )
       .arg( call->name(), domain() + "." + package() ) );
-    d->calls.remove ( call->name() );
+    Call::Pointer obtainedCall = d->calls.take( call->name() );
   }
 
   winfo ( this, QString( "Adding call %1 to %2..." )
@@ -90,9 +90,9 @@ LambdaCall*
 Module::mountLambda ( const QString& name,
     LambdaCall::Signature lambda )
 {
-  CallPointer call ( new LambdaCall ( name, lambda ) );
+  Call::Pointer call ( new LambdaCall ( name, lambda ) );
   mount ( call );
-  return dynamic_cast<LambdaCall*> ( call.data() );
+  return call.dynamicCast<LambdaCall>().data();
 }
 
 QString
@@ -134,7 +134,7 @@ Module::setPackage ( const QString& value )
 Module::~Module()
 {
   Q_D ( Module );
-  for (CallPointer call: d->calls)
+  for (Call::Pointer call: d->calls)
   {
     call->deleteLater();
   }

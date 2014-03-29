@@ -61,14 +61,18 @@ Application::run ( int& argc, char** argv )
   {
     self = new Application ( argc, argv );
     Logger* log = wlog ( self );
+
     self->d_ptr->initialize();
     log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
         arg ( QCoreApplication::applicationPid() ) );
     self->start();
     log->debug ( "Starting event loop." );
+
     returnCode = self->d_ptr->exec();
+
     log->info ( "Event loop ended; ended with " +
         QString ( "exit code %1" ).arg ( returnCode ) );
+
     self->deleteLater();
     log->deleteLater();
   }

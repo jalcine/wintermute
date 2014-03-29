@@ -52,6 +52,5 @@ Receiver::onMessageReceived ( const QList<QByteArray>& data )
     chunks += chunk;
   }
   winfo ( this, QString ( "Obtained incoming call of %1 bytes." ).arg ( chunks.size() ) );
-  Call* receivedCall = Call::fromString ( chunks );
-  receivedCall->operator()();
+  Call::Pointer receivedCall = Call::fromString ( chunks );
 }

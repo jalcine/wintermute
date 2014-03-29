@@ -38,8 +38,8 @@ set ( WINTERMUTE_SOURCES
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/dispatcher.cpp
   Wintermute/Procedure/receiver.cpp
-  Wintermute/Procedure/dummy_dispatcher.cpp
-  Wintermute/Procedure/dummy_receiver.cpp
+  #Wintermute/Procedure/dummy_dispatcher.cpp
+  #Wintermute/Procedure/dummy_receiver.cpp
 
   ## Plugin binaries
   Wintermute/factory.cpp
@@ -97,7 +97,6 @@ add_executable ( wintermute ${WINTERMUTE_SOURCES} )
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
   FOLDER        "Wintermute/Core"
-  VERSION       "${WINTERMUTE_VERSION}"
   PROJECT_LABEL "Wintermute")
 
 # Add the necessary properties to the 'wintermute' executable.

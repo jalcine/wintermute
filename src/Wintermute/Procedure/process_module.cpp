@@ -57,13 +57,15 @@ ProcessModule::ProcessModule() :
 void
 ProcessModule::greetSystem ( const QString& name )
 {
-  MethodCall* theCall = new MethodCall(WINTERMUTE_DOMAIN".heartbeat.monitor", "greet");
-  quint64 pid = QCoreApplication::applicationPid();
-  Module* module = wntrApp->findModule ( name );
-  theCall->setArguments( QVariantList() 
-      << name << QCoreApplication::applicationPid()
+  Module* module = wntrApp->findModule (name);
+  QSharedPointer<MethodCall> method ( new MethodCall (
+    WINTERMUTE_DOMAIN".heartbeat.monitor", "greet"
+  ));
+  method->setArguments( QVariantList() << 
+    module->qualifiedName() << 
+    QCoreApplication::applicationPid()
   );
-  module->dispatch ( theCall );
+  module->dispatch ( method );
 }
 
 void

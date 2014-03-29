@@ -16,6 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <Wintermute/Application>
+#include <Wintermute/Logging>
 #include "Wintermute/Procedure/call.hpp"
 #include "call.hpp"
 
@@ -26,17 +28,17 @@ const int CallEvent::TypeReceive  = QEvent::registerEventType();
 const int CallEvent::TypeDispatch = QEvent::registerEventType();
 const int CallEvent::TypeReply    = QEvent::registerEventType();
 
-CallEvent::CallEvent ( const int type, const Call* call ) :
-  QEvent ( ( QEvent::Type ) type ) , m_call ( call )
+CallEvent::CallEvent ( const int type, const Call::Pointer &call ) :
+  QEvent ( ( QEvent::Type ) type ) , m_callPtr ( call )
 {
-  Q_CHECK_PTR ( call );
+  Q_ASSERT ( !call.isNull() );
+  Q_ASSERT ( call->isValid() );
 }
 
-const Call*
+const Call::Pointer
 CallEvent::call() const
 {
-  Q_CHECK_PTR ( call );
-  return m_call;
+  return m_callPtr;
 }
 
 CallEvent::~CallEvent()

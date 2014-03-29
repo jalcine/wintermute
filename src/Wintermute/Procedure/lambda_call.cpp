@@ -23,10 +23,9 @@
 
 using Wintermute::Procedure::LambdaCall;
 
-LambdaCall::LambdaCall ( const QString& name, Signature lambda ) :
+LambdaCall::LambdaCall ( const QString& name, const Signature& lambda ) :
   Call ( Wintermute::Application::instance() )
 {
-  Q_D ( Call );
   d->name = name;
   setFunction ( lambda );
 }
@@ -38,7 +37,7 @@ LambdaCall::function() const
 }
 
 void
-LambdaCall::setFunction(Signature newFunction)
+LambdaCall::setFunction(const Signature& newFunction)
 {
   m_function = newFunction;
 }

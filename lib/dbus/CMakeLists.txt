@@ -37,6 +37,13 @@ set ( dbus_HDRS
 configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/dbus/globals.hpp
   @ONLY )
 
+find_package ( Qt4 COMPONENTS 
+  QtDBus
+  REQUIRED)
+
+# Only available with Qt5.
+# pkg_search_module(QTDBUSTEST libqtdbustest-1 REQUIRED)
+
 wintermute_plugin_declare (
   TARGET dbus
   HEADERS ${dbus_HDRS}
