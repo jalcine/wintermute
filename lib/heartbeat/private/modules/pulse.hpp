@@ -21,9 +21,11 @@
 #include <QtCore/QVariant>
 #include <QtCore/QVariantList>
 #include <QtCore/QVariantMap>
+#include <Wintermute/Logging>
 #include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/LambdaCall>
+#include <Wintermute/Procedure/MethodCall>
 #include "globals.hpp"
-#include "Wintermute/private/Procedure/module.hpp"
 
 namespace Wintermute
 {
@@ -50,22 +52,24 @@ class PulseModulePrivate
     mountCalls()
     {
       Q_Q ( PulseModule );
-      q->mountLambda ( "module", [&] (QVariantList args) -> QVariant {
-        const QString moduleName = args[0].toString();
-        const QVariant module = getModuleInfo(moduleName);
-        return module;
-      } );
+      q->mountCall ( new Procedure::LambdaCall ( "module", q,
+            [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+              const QString moduleName = args[0].toString();
+              const QVariant module = getModuleInfo(moduleName);
+              return module;
+      } ) );
 
-      q->mountLambda ( "modules", [&] (QVariantList args) -> QVariant {
-        const QVariant modules = getAllModulesInfo();
-        return modules;
-      } );
+      q->mountCall ( new Procedure::LambdaCall ( "modules", q,
+            [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+              const QVariant modules = getAllModulesInfo();
+              return modules;
+      } ) );
     }
 
     QVariantMap
     getModuleInfo ( const QString& moduleName )
     {
-      Procedure::Module* module = wntrApp->findModule ( moduleName );
+      Procedure::Module* module = Procedure::Module::findModule ( moduleName );
       QVariantMap values;
 
       if ( module != nullptr )
@@ -76,14 +80,14 @@ class PulseModulePrivate
         values.insert ( "calls",   module->calls() );
       }
 
-      return values; 
+      return values;
     }
 
     QVariantList
     getAllModulesInfo()
     {
       QVariantList modules;
-      for (Procedure::Module* module: wntrApp->modules())
+      for (Procedure::Module* module: Procedure::Module::knownModules())
       {
         modules.push_back ( getModuleInfo ( module->qualifiedName() ) );
       }

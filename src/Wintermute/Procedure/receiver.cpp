@@ -41,15 +41,12 @@ Receiver::Receiver() :
 }
 
 void
-Receiver::receiveMessage ( const Call::Pointer& call )
+Receiver::receiveMessage ( const Call& call )
 {
-  Procedure::Module* module = wntrApp->findModule ( call->recipient() );
-
-  if ( module != nullptr )
-  {
-    QCoreApplication::postEvent ( module, 
-        new CallEvent ( CallEvent::TypeReceive, call ) );
-  }
+  QPointer<Procedure::Module> module = Module::findModule ( call.recipient() );
+  if ( module.isNull() ) return;
+  QCoreApplication::postEvent ( module.data(),
+      new CallEvent ( CallEvent::TypeReceive, call ) );
 }
 
 Receiver::~Receiver()

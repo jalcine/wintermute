@@ -32,48 +32,44 @@ ProcessModule::ProcessModule() :
   setDomain  ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
 
-  mountLambda ( "stop", [&] (QVariantList args) -> QVariant {
-    wdebug ( this, "Remote stop initiated." );
-    stop ();
-    return true;
-  } );
+  mountCall ( new LambdaCall ( "stop", this,
+        [&] (QVariantList args, const MethodCall& call) -> QVariant {
+          wdebug ( this, "Remote stop initiated." );
+          stop ();
+          return true;
+  } ) );
 
-  mountLambda ( "quit", [&] (QVariantList args) -> QVariant {
-    wdebug ( this, "Remote quit initiated." );
-    quit ( args[0].toInt() );
-    return true;
-  } );
+  mountCall ( new LambdaCall ( "quit", this,
+        [&] (QVariantList args, const MethodCall& call) -> QVariant {
+          wdebug ( this, "Remote quit initiated." );
+          quit ( args[0].toInt() );
+          return true;
+  } ) );
 
-  mountLambda ( "reboot", [&] (QVariantList args) -> QVariant {
-    wdebug ( this, "Remote reboot initiated." );
-    quit ( args[0].toInt() );
-    return true;
-  } );
-
-  connect ( wntrApp, SIGNAL ( addedModule ( const QString ) ),
-      this, SLOT ( greetSystem ( const QString ) ) );
+  mountCall ( new LambdaCall ( "reboot", this,
+        [&] (QVariantList args, const MethodCall& call) -> QVariant {
+          wdebug ( this, "Remote reboot initiated." );
+          quit ( args[0].toInt() );
+          return true;
+  } ) );
 }
 
 void
 ProcessModule::greetSystem ( const QString& name )
 {
-  Module* module = wntrApp->findModule (name);
-  QSharedPointer<MethodCall> method ( new MethodCall (
-    WINTERMUTE_DOMAIN".heartbeat.monitor", "greet"
-  ));
-  method->setArguments( QVariantList() << 
-    module->qualifiedName() << 
-    QCoreApplication::applicationPid()
-  );
-  module->dispatch ( method );
+  QPointer<Module> module = Module::findModule (name);
+  const QVariantList args = QVariantList() << module->qualifiedName() <<
+    QCoreApplication::applicationPid();
+  const MethodCall methodCall ( WINTERMUTE_DOMAIN".heartbeat.monitor", "greet", args );
+  methodCall.dispatch ();
 }
 
 void
 ProcessModule::start()
 {
   connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
-  winfo ( this, QString ( "Currently %1 modules loaded so far." )
-      .arg ( wntrApp->modules().length() ) );
+  winfo ( this, QString ( "Currently %1 modules loaded so far." ).arg (
+        Module::knownModules().length() ) );
 }
 
 void

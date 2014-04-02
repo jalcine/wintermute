@@ -20,8 +20,6 @@
 #include "Wintermute/arguments.hpp"
 #include "Wintermute/factory.hpp"
 #include "Wintermute/Events/call_filter.hpp"
-#include "Wintermute/Procedure/dummy_dispatcher.hpp"
-#include "Wintermute/Procedure/dummy_receiver.hpp"
 #include "Wintermute/Procedure/process_module.hpp"
 #include <QtCore/QSharedPointer>
 #include <QtCore/QCoreApplication>
@@ -32,25 +30,20 @@
 
 namespace Wintermute
 {
+class Application;
 class ApplicationPrivate
 {
-  friend class Wintermute::Procedure::ModulePrivate;
 
 public:
-  QSharedPointer<QCoreApplication> app;
-  QSharedPointer<Procedure::ProcessModule> module;
-  QList<Procedure::Module*> modules;
-  QSettings* settings;
-  Wintermute::Application* q_ptr;
+  QScopedPointer<QCoreApplication> app;
+  QScopedPointer<QSettings> settings;
+  QPointer<Application> q_ptr;
+  QPointer<Procedure::ProcessModule> module;
 
-  ApplicationPrivate ( int& argc, char** argv, Wintermute::Application* q ) :
-    app(), module(), modules(), settings ( 0 ), q_ptr ( q )
+  ApplicationPrivate ( int& argc, char** argv, Application* q ) :
+    app(), settings ( nullptr ), q_ptr ( nullptr ), module ( nullptr )
   {
-    app = QSharedPointer<QCoreApplication> ( new QCoreApplication ( argc, argv ) );
-    q_ptr->setParent(app.data());
-    module.clear();
-    modules.clear();
-    installEventFilters();
+    app.reset(new QCoreApplication ( argc, argv ));
   }
 
   void installEventFilters()
@@ -97,68 +90,65 @@ public:
   }
 
   int exec() {
-    int returnCode = 0;
-    //try {
+    int returnCode = 0x0;
+    try {
       returnCode = app->exec();
-    //}
-    //catch (...)
-    //{
-      //werr(app.data(), "An fatal error occurred in Wintermute.");
-      //returnCode = 0xff;
-    //}
+    }
+    catch (...)
+    {
+      werr(app.data(), "An fatal error occurred in Wintermute.");
+      returnCode = 0xff;
+    }
     return returnCode;
   }
 
   void loadProcessModule()
   {
-    module = QSharedPointer<Procedure::ProcessModule> ( new 
-      Procedure::ProcessModule );
-#if DEBUG
-    //auto dummyDispatcher = new Procedure::DummyDispatcher;
-    //auto dummyReceiver   = new Procedure::DummyReceiver;
-#endif
+    module = new Procedure::ProcessModule;
   }
 
   void loadCurrentMode()
   {
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
-    if ( mode == "daemon" || mode == "d" )
+    if ( mode == "daemon" || mode == "d" ) loadDaemonState();
+    else if ( mode == "plugin" || mode == "p") loadPluginState();
+    else
     {
-      const bool daemonLoaded = Factory::instance()->loadPlugin ( "wintermute-daemon" );
-      if ( !daemonLoaded )
-      {
-        werr ( Application::instance(), "Can't load daemon plugin; bailing out!" );
-        Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
-      }
-      else
-      {
-        winfo ( Application::instance(), "Daemon started." );
-      }
+      werr ( Application::instance(), "Plugin can't be determined for loading." );
+      Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
     }
-    else if ( mode == "plugin" || mode == "p" )
+  }
+
+  void loadDaemonState()
+  {
+    if ( !wntrFactory->loadPlugin ( "wintermute-daemon" ) )
     {
-      const QString pluginName ( Arguments::instance()->argument ( "plugin" ).toString() );
-      if ( ! ( pluginName.isEmpty() && pluginName.isNull() ) )
+      werr ( wntrApp, "Can't load daemon plugin; bailing out!" );
+      Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
+    }
+    else
+    {
+      winfo ( wntrApp, "Daemon started." );
+    }
+  }
+
+  void loadPluginState()
+  {
+    const QString pluginName ( Arguments::instance()->argument ( "plugin" )
+        .toString() );
+    if ( ! ( pluginName.isEmpty() && pluginName.isNull() ) )
+    {
+      wdebug ( Application::instance(), QString("Booting plugin '%1'...")
+               .arg( pluginName ) );
+      if ( !Factory::instance()->loadPlugin ( pluginName ) )
       {
-        wdebug ( Application::instance(), QString("Booting plugin '%1'...")
-                 .arg( pluginName ) );
-        const bool pluginBooted = Factory::instance()->loadPlugin ( pluginName );
-        if ( !pluginBooted )
-        {
-          werr ( Application::instance(),
-              QString("Failed to load %1.").arg(pluginName) );
-          Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
-        }
-        else
-        {
-          winfo ( Application::instance(),
-              QString("Booted plugin %1 for plug-in mode.").arg(pluginName));
-        }
+        werr ( wntrApp, QString("Failed to load plugin %1.").arg(pluginName) );
+        Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
       }
       else
       {
-        werr ( Application::instance(), "Plugin can't be determined for loading." );
-        Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
+        winfo ( wntrApp, QString("Booted plugin %1 for plug-in mode.")
+            .arg(pluginName));
       }
     }
   }

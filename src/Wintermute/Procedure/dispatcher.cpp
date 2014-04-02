@@ -20,6 +20,7 @@
 #include "Wintermute/private/Procedure/dispatcher.hpp"
 #include "Wintermute/Events/call.hpp"
 #include "Wintermute/application.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/logging.hpp"
 
 using Wintermute::Procedure::Dispatcher;
@@ -35,13 +36,10 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::postDispatch ( const Call::Pointer &call, QObject* object )
+Dispatcher::postDispatch ( const MethodCall& call, Module* object )
 {
-  Q_ASSERT ( !call.isNull() );
-  Q_ASSERT ( call->isValid() );
-  Q_ASSERT ( wCallCheckFlag( *call, Call::TypeInvocation ));
-  QCoreApplication::postEvent ( object , 
-      new CallEvent ( CallEvent::TypeDispatch, call ) );
+  Q_ASSERT ( call.isValid() );
+  QCoreApplication::postEvent ( object, new CallEvent ( CallEvent::TypeDispatch, call ) );
 }
 
 Dispatcher::~Dispatcher()

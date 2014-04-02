@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,34 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_PROCEDURE_DISPATCHER_HPP
-#define WINTERMUTE_PROCEDURE_DISPATCHER_HPP
+#ifndef WINTERMUTE_PROCEDURE_MODULE_CALL_HPP
+#define WINTERMUTE_PROCEDURE_MODULE_CALL_HPP
 
-#include <QtCore/QObject>
 #include <Wintermute/Application>
-#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Call>
 
 namespace Wintermute
 {
 namespace Procedure
 {
 class Module;
-class DispatcherPrivate;
-class Dispatcher : public QObject
+class MethodCall;
+class ModuleCall : public Call
 {
-  Q_OBJECT
-  friend class MethodCall;
-  friend class DispatcherPrivate;
+  Q_OBJECT;
+  Q_DISABLE_COPY ( ModuleCall );
+  public:
+    typedef std::function<void (QVariant)> CallbackSignature;
+    explicit ModuleCall ( const QString& name, const Module* module );
+    virtual ~ModuleCall();
+    void setCallback ( CallbackSignature& signature );
+    const Module& module() const;
+    CallbackSignature callback() const;
+    virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call ) = 0;
 
-protected:
-  explicit Dispatcher();
-  virtual ~Dispatcher();
-  virtual void sendMessage ( const Call& call ) = 0;
-  static void postDispatch ( const MethodCall& call, Module* module = wntrApp->module() );
+  private:
+    QPointer<const Module> m_module;
+    CallbackSignature m_callback;
 };
 }
 }

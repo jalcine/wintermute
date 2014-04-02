@@ -17,6 +17,7 @@
  **/
 
 #include <QtCore/QVariantMap>
+#include <QtCore/QCoreApplication>
 #include <Wintermute/Procedure/MethodCall>
 #include "plugin.hpp"
 #include "pulse.hpp"
@@ -79,13 +80,12 @@ PulseModule::pulse( PulseType type )
   quint64 pid = QCoreApplication::applicationPid();
   theCall->setArguments (QVariantList() << d->count++ << type << pid );
   theCall->setSender ( this );
-  theCall->setCallback ( [&] ( QVariant result ) -> void {
+  //theCall->setCallback ( [&] ( QVariant result ) -> void {
     // TODO Get the ping stashed as properly recieved (record into monitor?)
-    winfo ( this, QString("IS IT REAL?") + result.toString() );
-  } );
+    //winfo ( this, QString("IS IT REAL?") + result.toString() );
+  //} );
   winfo ( this, "Sending a pulse..." );
-  Call::Pointer aCall ( theCall );
-  Module::dispatch ( aCall );
+  theCall->dispatch();
 }
 
 PulseModule::~PulseModule()

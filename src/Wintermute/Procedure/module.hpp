@@ -23,144 +23,110 @@
 #define WINTERMUTE_PROCEDURE_MODULE_HPP
 
 #include <QtCore/QString>
-#include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
 #include <Wintermute/Globals>
 #include <Wintermute/Application>
-#include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/LambdaCall>
 
 namespace Wintermute
 {
 namespace Procedure
 {
+class ModuleCall;
+class MethodCall;
 class ModulePrivate;
+
 /**
  * @class Wintermute::Procedure::Module
+ * @see   Wintermute::Procedure::ModuleCall
  * @see   Wintermute::Procedure::MethodCall
- * @brief Represents a collection of `Call` objects to encapsulate function.
+ * @brief Represents a collection of related actions.
+ *
+ * Modules represent a hub of actions that can be invoked by Wintermute over
+ * its own internal remote produce system.
  */
 class Module : public QObject
 {
   Q_OBJECT
   Q_DISABLE_COPY ( Module )
-  Q_PROPERTY ( QString Domain READ domain )
-  Q_PROPERTY ( QString Package READ package )
-  friend class MethodCall;
 
 protected:
   Q_DECLARE_PRIVATE ( Module )
   QScopedPointer<ModulePrivate> d_ptr;
-
-public:
   /**
-   * @ctor
-   * @brief Creates a new working module.
+   * Creates a Module
    */
   explicit Module ( QObject* parent = wntrApp );
 
+public:
   /**
    * @dtor
-   * @brief Destructs this module instance.
+   * Destroys this Module and its calls.
    */
   virtual ~Module();
 
   /**
-   * @fn domain
-   * Obtains the domain name that this module lives under.
+   * @function domain()
+   * @brief    Obtains the domain name that this Module claims.
    */
   QString domain() const;
 
   /**
-   * @fn domain
-   * Obtains the package name that identifies this module from other
-   * modules.
+   * @function package()
+   * @brief    Obtains the package that this Module claims.
    */
   QString package() const;
 
   /**
-   * @fn qualifiedName
+   * @function qualifiedName()
+   * @see      module()
+   * @see      package()
+   * @brief    Obtains the qualified name this this Module claims.
    *
-   * The fully formed version of the Module's name (typically a joining of the
-   * domain and package).
+   * The qualified name of a module is created by concatenating the domain
+   * name and the package name together. Thus, this method will return nothing
+   * until both values are set by the sub-classing Module.
    */
   QString qualifiedName() const;
-
+  
   /**
-   * @fn calls
-   * @brief A list of calls that this module has.
+   * @function calls()
    */
   QStringList calls() const;
 
   /**
-   * @fn dispatch
-   * @brief Sends a method call invocation over the wire.
-   *
-   * Sends out a call over the wire to the known dispatchers in this running
-   * process.
+   * @function invokeCall()
    */
-  void dispatch ( const Call::Pointer& call ) const;
+  void invokeCall ( const MethodCall& methodCall );
 
   /**
-   * @fn start
-   * @brief Starts the worker logic for this module.
-   *
-   * Use this method to invoke the starting up processes of this Module and
-   * start its chugging.
+   * @function start()
    */
   Q_SLOT virtual void start() = 0;
 
   /**
-   * @fn stop
-   * @brief Halts the worker logic for this module.
-   *
-   * Use this method to cancel pending tasks and bring the purpose of this
-   * Module to a full stop.
+   * @function stop()
    */
   Q_SLOT virtual void stop()  = 0;
 
+  /**
+   * @function findModule()
+   */
+  static QPointer<Module> findModule ( const QString& name );
+
+  /**
+   * @function  knownModules()
+   */
+  static QList<QPointer<Module>> knownModules();
+
 protected:
-  /**
-  * @fn invoke
-  * @brief Looks for the named call and invoke with the provided data.
-  *
-  * Handles the act of invocation of the named call and provides it with the
-  * necessary work to invoke it.
-  *
-  * @note This currently doesn't consider spawning a new thread to handle this
-  * working process. A separate method will consider this.
-  */
-  QVariant invoke ( const QString name, const QVariantList data = QVariantList() );
-
-  /**
-   * @fn setDomain
-   * @brief Sets the domain of this module.
-   */
+  void mountCall ( ModuleCall* call );
   void setDomain ( const QString& value );
-
-  /**
-   * @fn setPackage
-   * @brief Sets the package of this module.
-   */
   void setPackage ( const QString& value );
-
-  /**
-   * @fn mount
-   * @brief Registers the call into the system.
-   */
-  void mount ( Call::Pointer call );
-
-  /**
-   * @fn mountLambda
-   * @brief Crafts a LambdaCall out of a function pointer and adds the
-   * call into the system.
-   */
-  LambdaCall* mountLambda ( const QString& name, 
-    LambdaCall::Signature lambdaFunction );
 };
 } /*  Procedure */
 } /*  Wintermute */
 
-Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, "in.wintermute.procedure.module/0.1.0")
+Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, 
+    "in.wintermute.procedure.module/0.1.0")
 
 #endif /* WINTERMUTE_PROCEDURE_MODULE_HPP */

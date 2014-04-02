@@ -18,27 +18,28 @@
 
 #include <QtCore/QVariant>
 #include "call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
+#include "method_call.hpp"
 #include "reply_call.hpp"
+#include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::ReplyCall;
+using Wintermute::Procedure::MethodCall;
 
-ReplyCall::ReplyCall( const Call::Pointer &call, const QVariant& response ) :
-  Call ( *call ), m_response ( response )
+ReplyCall::ReplyCall( const MethodCall& call, const QVariant& response ) :
+  Call ( call ), m_response ( response )
 {
-  setRecipient ( call->recipient() );
+  setRecipient ( call.recipient() );
   QVariantMap calleeMap;
   d->type = Call::TypeReply;
   d->data["reply"] = response;
-  d->data["call"]  = call->id();
-  CallPrivate::calls.take ( id() );
+  d->data["call"]  = call.id();
 }
 
-Call::Pointer
+MethodCall&
 ReplyCall::call() const
 {
-  return Call::Pointer(qobject_cast<Call*>(parent()));
+  return *(qobject_cast<MethodCall*>(parent()));
 }
 
 bool
@@ -52,7 +53,7 @@ ReplyCall::isValid() const
   if ( !Call::isValid() ) return false;
   if ( !d->data.contains ( "reply" ) ) return false;
   if ( !d->data.contains ( "call" ) ) return false;
-  if ( !wCallCheckFlag ( *this, Call::TypeReply) ) return false;
+  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) return false;
 
   return true;
 }
@@ -61,6 +62,11 @@ QVariant
 ReplyCall::response() const
 {
   return m_response;
+}
+
+void
+ReplyCall::sendReply() const
+{
 }
 
 ReplyCall::~ReplyCall()

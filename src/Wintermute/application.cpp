@@ -33,28 +33,31 @@ using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
 using Wintermute::Procedure::Module;
 
-Application* Application::self = 0;
+QPointer<Application> Application::self ( nullptr );
 
 Application::Application ( int& argc, char** argv ) :
   QObject(), d_ptr ( new ApplicationPrivate ( argc, argv, this ) )
 {
   Q_D ( Application );
   Application::self = qobject_cast<Application*> ( this );
+  setParent(d->app.data());
   d->app->setApplicationName    ( WINTERMUTE_NAME );
   d->app->setApplicationVersion ( version().toString() );
   d->app->setOrganizationName   ( WINTERMUTE_NAME );
   d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
-  d->settings = new QSettings;
+  d->settings.reset( new QSettings );
   d->settings->setValue( "Timing/StartupTime" ,
     QDateTime::currentDateTimeUtc().toString() );
 
   winfo(this, QString( "Wintermute recorded startup at %1. Hello there!" )
     .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
+  d->installEventFilters();
 }
 
 int
 Application::run ( int& argc, char** argv )
 {
+  Q_ASSERT ( Application::instance() == nullptr );
   int returnCode = 0x0;
 
   if ( Application::instance() == nullptr )
@@ -99,7 +102,7 @@ Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
   log->info ( QString ( "Stopping Wintermute '%1'..." )
-      .arg ( processName() ) );
+      .arg ( module()->qualifiedName() ) );
   QCoreApplication::quit();
   emit this->stopped();
   log->info ( QString ("Wintermute is stopping with exit code %1." )
@@ -108,41 +111,11 @@ Application::stop ( int exitcode )
   wntrApp->deleteLater();
 }
 
-QString
-Application::processName() const
-{
-  Q_D ( const Application );
-  if ( !d->module )
-  {
-    return QString::null;
-  }
-  return d->module->qualifiedName();
-}
-
-Module*
+QPointer<Module>
 Application::module() const
 {
   Q_D ( const Application );
-  return d->module.data();
-}
-
-QList<Module*>
-Application::modules() const
-{
-  Q_D ( const Application );
-  return d->modules;
-}
-
-Module*
-Application::findModule ( const QString& name ) const
-{
-  Q_D ( const Application );
-  Q_FOREACH ( Module * mod, d->modules )
-  {
-    QString fullPath = mod->domain() + "." + mod->package();
-    if ( fullPath == name ) return mod;
-  }
-  return nullptr;
+  return qobject_cast<Module*>(d->module);
 }
 
 Version

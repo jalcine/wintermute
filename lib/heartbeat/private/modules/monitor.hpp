@@ -18,7 +18,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
-#include "Wintermute/private/Procedure/module.hpp"
+#include <Wintermute/Logging>
+#include <Wintermute/Procedure/LambdaCall>
 
 namespace Wintermute
 {
@@ -40,15 +41,17 @@ class MonitorModulePrivate
     void
     mountCalls()
     {
-      q_ptr->mountLambda ( "greet", [&] (QVariantList args) -> QVariant { 
-        wdebug(q_ptr, "We got someone saying hello.");
-        return greet(args);
-      } );
+      q_ptr->mountCall ( new Procedure::LambdaCall ( "greet", q_ptr,
+        [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+          wdebug(q_ptr, "We got someone saying hello.");
+          return greet(args);
+      } ) );
 
-      q_ptr->mountLambda ( "record", [&] (QVariantList args) -> QVariant { 
-        wdebug(q_ptr, "Entering a new beating record.");
-        return record(args);
-      } );
+      q_ptr->mountCall ( new Procedure::LambdaCall ( "record", q_ptr,
+        [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+          wdebug(q_ptr, "Entering a new beating record.");
+          return record(args);
+      } ) );
     }
 
     void

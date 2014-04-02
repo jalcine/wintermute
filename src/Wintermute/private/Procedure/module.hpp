@@ -15,14 +15,13 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/Procedure/call.hpp"
-#include "Wintermute/Procedure/method_call.hpp"
-#include "Wintermute/Procedure/module.hpp"
-#include "Wintermute/Procedure/dispatcher.hpp"
+#include <QtCore/QMap>
+#include <QtCore/QPointer>
 #include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
+#include "Wintermute/Procedure/module.hpp"
+#include "Wintermute/Procedure/module_call.hpp"
 #include "Wintermute/private/application.hpp"
-#include <QtCore/QMap>
 
 namespace Wintermute
 {
@@ -30,40 +29,40 @@ class ApplicationPrivate;
 namespace Procedure
 {
 class Module;
+class ModuleCall;
 class ModulePrivate
 {
   Q_DECLARE_PUBLIC ( Module );
 
 public:
-  Module* q_ptr;
+  static QMap<QString, QPointer<Module>> modules;
+  QPointer<Module> q_ptr;
   QString package;
   QString domain;
-  QMap<QString, Call::Pointer> calls;
+  QMap<QString, QPointer<ModuleCall>> calls;
 
-  ModulePrivate ( Module* q ) :
-    q_ptr ( q ), package ( QString::null ), domain ( QString::null ), 
-    calls ( )
+  ModulePrivate ( Module* q ) : q_ptr ( q ), package ( QString::null ), 
+    domain ( QString::null ), calls ( )
   {
     winfo ( q_ptr, "Module setting up..." );
   }
 
   void checkQualifiedName()
   {
-    if ( !domain.isEmpty() && !package.isEmpty() )
+    if ( domain.isEmpty() || package.isEmpty() ) { return; }
+    QPointer<Module> module = Module::findModule ( q_ptr->qualifiedName() );
+
+    if ( module.isNull() )
     {
-      if ( !wntrApp->findModule ( q_ptr->qualifiedName() ) )
-      {
-         wntrApp->d_ptr->modules << q_ptr;
-         Q_EMIT wntrApp->addedModule ( q_ptr->qualifiedName() );
-      }
+       ModulePrivate::modules.insert ( q_ptr->qualifiedName(), q_ptr );
+       //Q_EMIT wntrApp->addedModule ( q_ptr->qualifiedName() );
     }
   }
 
   virtual ~ModulePrivate ()
   {
-    wntrApp->d_ptr->modules.removeAll (q_ptr);
-    Q_EMIT wntrApp->removedModule ( q_ptr->qualifiedName() );
-    winfo ( q_ptr, "We out!" );
+    ModulePrivate::modules.remove ( q_ptr->qualifiedName() );
+    //Q_EMIT wntrApp->removedModule ( q_ptr->qualifiedName() );
   }
 };
 } /* Procedure */

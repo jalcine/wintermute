@@ -25,32 +25,36 @@ list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
 
 # Grab the sources!
 set ( WINTERMUTE_SOURCES
-  ## Events
-  Wintermute/Events/call.cpp
-  Wintermute/Events/call_filter.cpp
+  ## Core
+  Wintermute/version.cpp
+  Wintermute/logging.cpp
+  Wintermute/arguments.cpp
+  Wintermute/application.cpp
 
-  ## Procedure Calling
-  Wintermute/Procedure/module.cpp
-  Wintermute/Procedure/process_module.cpp
-  Wintermute/Procedure/call.cpp
-  Wintermute/Procedure/reply_call.cpp
-  Wintermute/Procedure/lambda_call.cpp
-  Wintermute/Procedure/method_call.cpp
-  Wintermute/Procedure/dispatcher.cpp
-  Wintermute/Procedure/receiver.cpp
-  #Wintermute/Procedure/dummy_dispatcher.cpp
-  #Wintermute/Procedure/dummy_receiver.cpp
-
-  ## Plugin binaries
+  ## Plugin
   Wintermute/factory.cpp
   Wintermute/plugin.cpp
   Wintermute/plugin_process.cpp
 
-  ## Core binaries
-  Wintermute/logging.cpp
-  Wintermute/arguments.cpp
-  Wintermute/version.cpp
-  Wintermute/application.cpp
+  ## Procedure/Calls
+  Wintermute/Procedure/call.cpp
+  Wintermute/Procedure/method_call.cpp
+  Wintermute/Procedure/reply_call.cpp
+  Wintermute/Procedure/module_call.cpp
+  Wintermute/Procedure/lambda_call.cpp
+
+  ## Procedure/Meta
+  Wintermute/Procedure/module.cpp
+  Wintermute/Procedure/process_module.cpp
+  Wintermute/Procedure/dispatcher.cpp
+  Wintermute/Procedure/receiver.cpp
+
+  ## Event loop
+  Wintermute/Events/call.cpp
+  Wintermute/Events/call_filter.cpp
+  #Wintermute/Events/reply_call_filter.cpp
+  #Wintermute/Events/method_call_filter.cpp
+
   main.cpp
 )
 

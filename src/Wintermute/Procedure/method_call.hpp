@@ -19,6 +19,7 @@
 #ifndef WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 #define WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 
+#include <functional>
 #include <QtCore/QObject>
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Application>
@@ -27,6 +28,7 @@ namespace Wintermute
 {
 namespace Procedure
 {
+class ReplyCall;
 class MethodCallPrivate;
 
 /***
@@ -39,27 +41,38 @@ class MethodCall : public Call
 {
   Q_OBJECT
   Q_DISABLE_COPY ( MethodCall )
-  Q_PROPERTY(QVariantList Arguments READ arguments WRITE setArguments)
-  Q_PROPERTY(QString Method READ method WRITE setMethod)
-  Q_PROPERTY(QString Module READ module WRITE setModule)
+  Q_PROPERTY ( QVariantList Arguments READ arguments WRITE setArguments )
+  Q_PROPERTY ( QString Method READ method WRITE setMethod )
+  Q_PROPERTY ( QString Module READ module WRITE setModule )
 
 public:
   /**
-   * @ctor
-   *
-   * Crafts a call that can be used to invoke a remote method over the
-   * network.
+   * @ctor   MethodCall
+   * @brief  Implements a remote method call.
+   * This crafts a `Call` that can be used to invoke a method on a remote 
+   * module. When formed, one can attach logic to handle the reply once
+   * recieved and work from there.
    */
-  explicit MethodCall ( 
+  explicit MethodCall (
     const QString& module = QString::null,
     const QString& method = QString::null, 
     const QVariantList arguments = QVariantList() );
+
+  /**
+   * @typedef Call::CallbackSignature
+   * @brief   Typedef to represent the function type for a reply to a call.
+   */
+  typedef ::std::function<void (QVariant)> CallbackSignature;
 
   /**
    * @dtor
    */
   virtual ~MethodCall();
 
+  /**
+   * @fn isValid
+   * @brief Determines if this is a valid method call.
+   */
   virtual bool isValid() const;
 
   /**
@@ -67,7 +80,17 @@ public:
    * @brief The arguments to pass over the wire.
    */
   QVariantList arguments() const;
+
+  /**
+   * @fn module
+   * @brief The module to recieve this methodCall.
+   */
   QString module() const;
+
+  /**
+   * @fn method
+   * @brief The method to be invoked on the remote module.
+   */
   QString method() const;
 
   /**
@@ -79,20 +102,28 @@ public:
   void setMethod ( const QString& method );
 
   /**
-   * @fn dispatch
-   * @brief A helper method to dispatch calls to a remote module.
+   * @fn setSender
+   * @brief Designates the module that'll be sending this call.
    */
-  void setSender ( Module* module = wntrApp->module() );
+  void setSender ( const Module* module = wntrApp->module() );
 
   /**
-   * @fn attemptInvocation
-   * @brief Invokes a `MethodCall` in this running process.
-   *
-   * Finds the corresponding module that this `MethodCall` is being 
-   * referred to and invokes the specified method with arguments 
-   * provided by it.
+   * @fn invoke
+   * @brief Handles the act of invoking this method on the module found here.
    */
-  static QVariant attemptInvocation ( const Call::Pointer &call );
+  void invoke() const;
+
+  /**
+   * @fn dispatch
+   * @brief Sends this call over the wire.
+   */
+  void dispatch() const;
+
+  /**
+   * @fn craftReply
+   * @brief Crafts a reply for this MethodCall.
+   */
+  QPointer<ReplyCall> craftReply( const QVariant& value ) const;
 };
 }
 }

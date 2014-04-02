@@ -19,9 +19,13 @@
 #include "Wintermute/private/Procedure/call.hpp"
 #include "Wintermute/Procedure/module.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/Procedure/reply_call.hpp"
+#include "Wintermute/Procedure/dispatcher.hpp"
 
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Dispatcher;
 using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::CallPrivate;
 
 MethodCall::MethodCall ( const QString& module, 
@@ -73,7 +77,7 @@ MethodCall::module() const
 }
 
 void
-MethodCall::setSender ( Module* module )
+MethodCall::setSender ( const Module* module )
 {
   QVariantMap appData;
   appData["pid"]     = QCoreApplication::applicationPid();
@@ -90,39 +94,47 @@ MethodCall::isValid() const
   const QVariant value = d->data["sender"];
   const QVariantMap appData = value.toMap();
   Q_ASSERT ( value.isNull() == false );
-  if ( value.isNull() ) return false;
   Q_ASSERT ( appData.contains("pid") == true );
-  if ( !appData.contains("pid") ) return false;
   Q_ASSERT ( appData.contains("version") == true );
-  if ( !appData.contains("version") ) return false;
   Q_ASSERT ( appData.contains("module") == true );
+  if ( value.isNull() ) return false;
+  if ( !appData.contains("pid") ) return false;
+  if ( !appData.contains("version") ) return false;
   if ( !appData.contains("module") ) return false;
 
   return true;
 }
 
-QVariant
-MethodCall::attemptInvocation ( const Call::Pointer& call )
+void
+MethodCall::invoke ( ) const
 {
-  Q_ASSERT ( wCallCheckFlag ( *call, Call::TypeInvocation ) );
-  const MethodCall* method = call.dynamicCast<MethodCall>().data();
-  Q_CHECK_PTR ( method );
-  Q_ASSERT ( method->isValid() );
-  Procedure::Module* module = wntrApp->findModule ( method->recipient() );
-  if ( !module )
+  Q_ASSERT ( isValid() );
+  QPointer<Module> theModule = Module::findModule ( recipient() );
+
+  if ( !theModule.isNull() )
   {
     werr ( staticMetaObject.className(), 
       QString ( "Can't find module '%1' in this process." )
-        .arg ( method->recipient() ) );
-    return false;
+        .arg ( recipient() ) );
   }
+  else
+  {
+    theModule->invokeCall ( *this );
+  }
+}
 
-  const QString methodName     = method->d->data[ "method" ].toString();
-  const QVariantList arguments = method->d->data[ "arguments" ].toList();
-  Q_ASSERT ( !methodName.isEmpty() );
+QPointer<ReplyCall>
+MethodCall::craftReply( const QVariant& value ) const
+{
+  return QPointer<ReplyCall>( new ReplyCall ( *this, value ) );
+}
 
-  QVariant result = module->invoke ( methodName, arguments );
-  return result;
+void
+MethodCall::dispatch() const
+{
+  QPointer<Module> const sendingModule =
+    Module::findModule(d->data["sender"].toMap()["module"].toString());
+  Dispatcher::postDispatch(*this, sendingModule.data());
 }
 
 MethodCall::~MethodCall()

@@ -25,49 +25,45 @@
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/call.hpp"
+#include "Wintermute/Procedure/module.hpp"
 
 namespace Wintermute
 {
 namespace Procedure
 {
+class Module;
 class CallPrivate : public QSharedData
 {
 public:
-  typedef QMap<quint64, Call*> Cache;
   typedef QSharedDataPointer<CallPrivate> Pointer;
 
-  static CallPrivate::Cache calls;
   QString recipient;
   QString name;
   QVariantMap data;
   QDateTime id;
   Call* q_ptr;
   Call::Type type;
-  Call::CallbackSignature callback;
 
   /**
    * @brief Creates a new CallPrivate object.
-   */ 
-  explicit CallPrivate ( Call* q = nullptr ) : 
-    recipient ( wntrApp->processName() ), name ( QString::null ), data ( ), 
-    id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ), 
-    type ( Call::TypeUndefined ), callback ( nullptr )
-  {
-    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
-  }
+   */
+  explicit CallPrivate ( Call* q = nullptr ) :
+    recipient ( QString::null ), name ( QString::null ), data ( ),
+    id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ),
+    type ( Call::TypeUndefined ) { }
 
   /**
    * @brief Copies an existing CallPrivate object.
    * @note  The ID and callback are *not* copied.
    */
-  CallPrivate ( const CallPrivate& other, Call* q ) : 
+  CallPrivate ( const CallPrivate& other, Call* q ) :
     QSharedData ( other ), recipient ( other.recipient ), name ( other.name ),
-    data ( other.data ), id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ), 
-    type ( other.type ), callback ( nullptr )
-  {
-    if ( q_ptr != nullptr ) CallPrivate::calls.insert ( id.toTime_t(), q_ptr );
-  }
+    data ( other.data ), id ( QDateTime::currentDateTimeUtc() ), q_ptr ( q ),
+    type ( other.type ) { }
 
+  /**
+   * @dtor
+   */
   virtual ~CallPrivate() { }
 
   /**
@@ -111,9 +107,6 @@ public:
     const bool validId        = !id.isNull() && id.isValid(),
                validRecipient = !recipient.isNull() && !recipient.isEmpty()
     ;
-    winfo ( wntrApp, QString::number(validId) );
-    winfo ( wntrApp, QString::number(validRecipient) );
-
     return ( validId && validRecipient );
   }
 };

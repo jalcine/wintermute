@@ -29,12 +29,11 @@ using Wintermute::Version;
 
 Plugin::Plugin() :
   Wintermute::Plugin(),
-  module ( 0 )
+  module ( nullptr )
 {
-  if ( QCoreApplication::arguments().contains ( "wintermute-heartbeat") )
-    module = new Heartbeat::MonitorModule(this);
-  else
-    module = new Heartbeat::PulseModule(this);
+  module = new Heartbeat::MonitorModule(this);
+  Heartbeat::PulseModule* pulse = new Heartbeat::PulseModule(this);
+  pulse->start();
 }
 
 void

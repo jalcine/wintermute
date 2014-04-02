@@ -19,10 +19,10 @@
 #ifndef WINTERMUTE_PROCEDURE_CALL_HPP
 #define WINTERMUTE_PROCEDURE_CALL_HPP
 
-#include <functional>
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QSharedPointer>
+#include <QtCore/QSharedDataPointer>
 #include <Wintermute/Events/call_filter.hpp>
 
 namespace Wintermute
@@ -34,9 +34,6 @@ class ReplyCall;
 class CallPrivate;
 /**
  * @class Wintermute::Procedure::Call
- * @see   Wintermute::Procedure::CallPointer
- * @see   Wintermute::Procedure::ReplyCall
- * @see   Wintermute::Procedure::MethodCall
  *
  * Calls are data types in Wintermute that represent the fabric of its
  * interprocess communication between different modules. They're used mainly
@@ -44,35 +41,13 @@ class CallPrivate;
  * common form of Call that's used is the `MethodCall` and `ReplyCall`.
  *
  * @note Throughtout Wintermute, the type `CallPointer` is used instead of
- *       directly handling with the pointer itself.
+ *       directly handling with the pointer itself, it being an implicitly
+ *       shared class.
  */
 class Call : public QObject
 {
-public:
-  /**
-   * @typedef CallbackSignature
-   * @brief   Signature of a function to use when a Call gets a reply.
-   */
-  typedef std::function< void ( const QVariant & ) > CallbackSignature;
-
-  /**
-   * @typedef Pointer
-   * @brief   Pointer type alias to handle sharing `Call` object.
-   */
-  typedef QSharedPointer<Call> Pointer;
-  
-private:
-  friend class Events::CallFilter;
-
   Q_OBJECT
   Q_FLAGS ( Type Types )
-
-  /**
-   * @fn handleReply
-   * @param reply The reply representing the information from an invocation.
-   * @brief Invokes the callback with the reply's value.
-   */
-  void handleReply ( const Call::Pointer &reply ) const;
 
 protected:
   Q_ENUMS ( Type )
@@ -83,19 +58,14 @@ protected:
    * @ctor
    * @brief Creates a new Call object wit the provided CallPrivate data.
    */
-  Call ( const QSharedDataPointer<CallPrivate> &other_d );
+  Call ( QSharedDataPointer<CallPrivate> const &other_d );
 
   /**
-   * @fn    invoke
-   * @param data A list of QVariant variables.
-   * @note  Work on making this method something of a superclass.
-   * @see   Call::callback()
-   *
-   * Handles the invokation of this call. By default, this method shouldn't be
-   * reached. This method, however, should never be reached.
-   *
+   * @ctor
+   * @fn Call
+   * @param parent Used for QObject hierarchy.
    */
-  virtual QVariant invoke ( const QVariantList &data = QVariantList() );
+  explicit Call ( QObject *parent );
 
 public:
   /**
@@ -113,14 +83,6 @@ public:
     TypeUser       = 0x0099   // User-defined calls offset.
   };
   Q_DECLARE_FLAGS ( Type, Types );
-
-  /**
-   * @ctor
-   * @fn Call
-   * @param parent Used for QObject hierarchy.
-   * @note You typically don't want to create a new Call this way.
-   */
-  explicit Call ( QObject *parent );
 
   /**
    * @dtor
@@ -171,28 +133,10 @@ public:
   void setRecipient ( const QString &moduleName );
 
   /**
-   * @operator operator()
-   * @brief Allow for functor-like capabilities for the Call object.
-   */
-  QVariant operator() ( const QVariantList &arguments = QVariantList() );
-
-  /**
-   * @fn setCallback
-   * @brief Sets the callback to be invoked when a reply is received.
-   */
-  void setCallback ( const CallbackSignature &signature );
-
-  /**
-   * @fn clearCallback
-   * @brief Wipes the known callback used for this Call.
-   */
-  void clearCallback ();
-
-  /**
    * @fn    fromString
    * @brief Creates a Call from a QString.
    */
-  static Call::Pointer fromString ( const QString &data );
+  static Call* fromString ( const QString &data );
 };
 } /* Procedure */
 } /* Wintermute */
@@ -202,8 +146,8 @@ public:
  * @param callPtr A reference or shared pointer to a Call.
  * @param flag    The flag to check for.
  */
-bool wCallCheckFlag (const Wintermute::Procedure::Call& call, 
-    const Wintermute::Procedure::Call::Types& flag);
+bool wCallCheckFlag ( const Wintermute::Procedure::Call& call,
+    const Wintermute::Procedure::Call::Types& flag );
 
 Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type )
 #endif /* WINTERMUTE_PROCEDURE_CALL_HPP */

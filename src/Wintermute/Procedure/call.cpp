@@ -29,8 +29,6 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::CallPrivate;
 
-CallPrivate::Cache CallPrivate::calls;
-
 bool wCallCheckFlag ( const Call& call, const Call::Types& flag )
 {
   return call.type().testFlag ( flag );
@@ -56,37 +54,8 @@ Call::Call ( const Call& other ) :
   d->q_ptr = this;
 }
 
-Call::~Call()
-{
-}
-
 bool
 Call::isValid() const { return d->isValid(); }
-
-QVariant
-Call::invoke ( const QVariantList& data )
-{
-  // TODO Raise an exception here.
-  return QVariant();
-}
-
-void
-Call::handleReply ( const Call::Pointer& reply ) const
-{
-  Q_ASSERT ( reply->isValid() );
-  Q_ASSERT ( reply.isNull() == false );
-  Q_ASSERT ( !wCallCheckFlag ( *reply, Call::TypeReply ) );
-  
-  if ( d->callback )
-  {
-    d->callback ( reply.dynamicCast<ReplyCall>()->response() );
-    winfo ( this, "Invoked callback to reply." );
-  }
-  else
-  {
-    winfo ( this, "No callback to invoke." );
-  }
-}
 
 void
 Call::setRecipient ( const QString& moduleName )
@@ -121,6 +90,7 @@ Call::id() const
 QString
 Call::toString() const
 {
+  Q_ASSERT ( isValid() );
   bool ok;
   QJson::Serializer serializer;
   QVariantMap callData = d->toVariantMap();
@@ -128,37 +98,23 @@ Call::toString() const
   return ( ok ? json : QString::null );
 }
 
-Call::Pointer
+Call*
 Call::fromString ( const QString& data )
 {
   QJson::Parser parser;
   bool ok;
   QVariantMap callData = parser.parse ( data.toLocal8Bit(), &ok ).toMap();
 
-  if ( !ok ) 
+  if ( !ok )
   {
     werr ( wntrApp, QString("Failed to convert '%1' into a Call.").arg(data) );
-    return Call::Pointer ( nullptr );
+    return nullptr;
   }
 
   CallPrivate::Pointer d_ptr = CallPrivate::fromVariantMap(callData);
-  Call::Pointer call( new Call ( d_ptr ) );
-  return call;
+  return new Call ( d_ptr );
 }
 
-QVariant
-Call::operator() ( const QVariantList& data )
+Call::~Call()
 {
-  return invoke ( data );
-}
-void
-Call::setCallback ( const CallbackSignature& callback )
-{
-  d->callback = callback;
-}
-
-void
-Call::clearCallback ()
-{
-  d->callback = nullptr;
 }

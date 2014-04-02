@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,37 +16,38 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "Wintermute/logging.hpp"
-#include "Wintermute/application.hpp"
-#include "Wintermute/Procedure/lambda_call.hpp"
+#include "module.hpp"
+#include "module_call.hpp"
 #include "Wintermute/private/Procedure/call.hpp"
 
-using Wintermute::Procedure::LambdaCall;
+using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Module;
+using Wintermute::Procedure::ModuleCall;
 
-LambdaCall::LambdaCall ( const QString& name, Module* const module,
-   const Signature& lambda ) : ModuleCall ( name, module )
+ModuleCall::ModuleCall( const QString& name, const Module* module ) :
+  Call ( const_cast<Module*>(module) )
 {
-  setFunction ( lambda );
+  d->name = name;
 }
 
-LambdaCall::Signature
-LambdaCall::function() const
+ModuleCall::CallbackSignature
+ModuleCall::callback() const
 {
-  return m_function;
+  return m_callback;
+}
+
+const Module&
+ModuleCall::module() const
+{
+  return *m_module;
 }
 
 void
-LambdaCall::setFunction(const Signature& newFunction)
+ModuleCall::setCallback ( ModuleCall::CallbackSignature& signature )
 {
-  m_function = newFunction;
+  m_callback = signature;
 }
 
-QVariant
-LambdaCall::invoke ( const QVariantList& data, const MethodCall& call )
-{
-  return ( m_function ? m_function ( data, call ) : QVariant() );
-}
-
-LambdaCall::~LambdaCall()
+ModuleCall::~ModuleCall()
 {
 }

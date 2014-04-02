@@ -41,10 +41,9 @@ public:
     return false;
   }
 
-  static void dispatch ( const Call::Pointer &call )
+  static void dispatch ( const Call& call )
   {
-    Q_ASSERT ( call.isNull() == false );
-    Q_ASSERT ( call->isValid() );
+    Q_ASSERT ( call.isValid() );
     if ( dispatchers.empty() )
     {
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );

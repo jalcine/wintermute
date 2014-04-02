@@ -19,26 +19,52 @@
 #ifndef WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 #define WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 
-#include <Wintermute/Procedure/Call>
+#include <Wintermute/Application>
+#include <Wintermute/Procedure/ModuleCall>
 
 namespace Wintermute
 {
 namespace Procedure
 {
-class LambdaCall : public Call
+class Module;
+class MethodCall;
+class LambdaCall : public ModuleCall
 {
+  Q_OBJECT;
+  Q_DISABLE_COPY ( LambdaCall );
+
 public:
   /**
    * @typedef Signature
    * @brief   Provides the short-hand signature for Call methods.
    */
-  typedef std::function<QVariant ( QVariantList ) > Signature;
+  typedef std::function<QVariant ( QVariantList, const MethodCall& ) > Signature;
 
-  explicit LambdaCall ( const QString& name, const Signature& lambda );
+  /**
+   * @ctor
+   */
+  explicit LambdaCall ( const QString& name, Module* const module = nullptr,
+      const Signature& lambda = nullptr );
+
+  /**
+   * @dtor
+   */
   virtual ~LambdaCall();
+
+  /**
+   * @fn function
+   * @brief The function to be invoked when this call is interacted with.
+   */
   Signature function() const;
-  void setFunction ( const Signature& newFunction );
-  QVariant invoke ( const QVariantList& data = QVariantList() );
+
+  /**
+   * @fn setFunction
+   * @brief Sets the function to be invoked.
+   */
+  void setFunction ( const LambdaCall::Signature& newFunction );
+  
+  virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call );
+
 private:
   Signature m_function;
 };

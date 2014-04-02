@@ -53,10 +53,10 @@ void
 Adaptor::deregisterFromDBus()
 {
   QDBusConnection bus = QDBusConnection::sessionBus();
-  bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg( 
+  bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
     QCoreApplication::applicationPid() ) );
 
-  for (Procedure::Module* module: wntrApp->modules() )
+  for (Procedure::Module* module: Procedure::Module::knownModules() )
   {
     const QString objectName = "/" + module->package();
     bus.unregisterObject ( objectName );
@@ -64,7 +64,7 @@ Adaptor::deregisterFromDBus()
 }
 
 void
-Adaptor::handleIncomingCall ( const QString& arguments, const 
+Adaptor::handleIncomingCall ( const QString& arguments, const
     QDBusMessage& message )
 {
   Q_ASSERT ( !arguments.isNull() );
@@ -78,7 +78,7 @@ Adaptor::handleIncomingCall ( const QString& arguments, const
 bool
 Adaptor::hasModule ( const QString& name )
 {
-  return wntrApp->findModule ( name ) != nullptr;
+  return Procedure::Module::findModule ( name ) != nullptr;
 }
 
 Adaptor::~Adaptor()

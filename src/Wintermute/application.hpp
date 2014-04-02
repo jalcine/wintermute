@@ -23,21 +23,11 @@
 #include <QtCore/QList>
 #include <Wintermute/Globals>
 
-/**
- * @constant wntrApp
- * @brief Shorthand for Wintermute::Application.
- *
- * Allows for quick access to the singleton instance of Wintermute.
- */
 #define wntrApp Wintermute::Application::instance()
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class Module;
-class ModulePrivate;
-}
+namespace Procedure { class Module; }
 class Version;
 class ApplicationPrivate;
 
@@ -56,8 +46,7 @@ class Application : public QObject
   Q_DISABLE_COPY ( Application )
 
   QScopedPointer<ApplicationPrivate> d_ptr;
-  static Application* self;
-  friend class Procedure::ModulePrivate;
+  static QPointer<Application> self;
 
   /**
    * @fn Application
@@ -82,7 +71,7 @@ public:
    * and handling Wintermute's lower-level work. It's strongly recommended
    * that you use this method, if desired, as a parent for your QObject.
    */
-  static inline Application* instance() { return self; }
+  static inline QPointer<Application> instance() { return self; }
 
   /**
    * @fn run
@@ -99,7 +88,8 @@ public:
    * @brief Obtains a setting from Wintermute's local configuration.
    * @note These options are global to the Wintermute application.
    */
-  static QVariant setting ( const QString& path, const QVariant defaultValue = QVariant() );
+  static QVariant setting ( const QString& path, const QVariant defaultValue = 
+      QVariant() );
 
   /**
    * @fn setSetting
@@ -119,39 +109,10 @@ public:
   Version version() const;
 
   /**
-   * @fn processName
-   * @brief Obtains the process name used by Wintermute.
-   * @see setModule()
-   * @see module()
-   *
-   * Obtains the process name of this running instance of 
-   * Wintermute. This is typically in the form of 
-   * `domain.application:$PID`, a bit similar to package paths
-   * in Java. The :$PID portion is added to help increase the 
-   * precision of finding specific processes. Process names 
-   * are formed from the formulated name of the 'root module'.
-   */
-  QString processName() const;
-
-  /**
    * @fn module()
    * @brief Defines the root module of the process.
    */
-  Procedure::Module* module() const;
-
-  /**
-   * @fn findModule
-   * @brief Finds a method by its specified module.
-   * @see modules()
-   */
-  Procedure::Module* findModule ( const QString& name ) const;
-
-  /**
-   * @fn modules
-   * @brief Obtains a list of the modules registered locally.
-   * @see findModule()
-   */
-  QList<Procedure::Module*> modules() const;
+  QPointer<Procedure::Module> module() const;
 
   /**
    * @fn start
@@ -195,22 +156,6 @@ public:
    * risen at all.
    */
   Q_SIGNAL void stopped();
-
-  /**
-   * @fn addedModule
-   * @signal addedModule
-   * @brief Signal when a new module inserts itself to Wintermute.
-   * @see removedModule()
-   */
-  Q_SIGNAL void addedModule(const QString& moduleName);
-
-  /**
-   * @fn removedModule
-   * @signal removedModule
-   * @brief Signal when a new module removes itself to Wintermute.
-   * @see addedModule()
-   */
-  Q_SIGNAL void removedModule(const QString& moduleName);
 };
 }
 
