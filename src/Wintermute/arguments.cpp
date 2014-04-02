@@ -29,7 +29,7 @@ using Wintermute::ArgumentsPrivate;
 Arguments* Arguments::self = 0;
 
 // TODO: Add a means of registering new arguments to the command line?
-Arguments::Arguments() : QObject ( Application::instance() ), 
+Arguments::Arguments() : QObject ( Application::instance() ),
   d_ptr ( new ArgumentsPrivate ( this ) )
 {
   Q_D ( Arguments );

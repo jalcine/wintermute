@@ -32,18 +32,18 @@ class ModuleCall : public Call
 {
   Q_OBJECT;
   Q_DISABLE_COPY ( ModuleCall );
-  public:
-    typedef std::function<void (QVariant)> CallbackSignature;
-    explicit ModuleCall ( const QString& name, const Module* module );
-    virtual ~ModuleCall();
-    void setCallback ( CallbackSignature& signature );
-    const Module& module() const;
-    CallbackSignature callback() const;
-    virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call ) = 0;
+public:
+  typedef std::function<void (QVariant)> CallbackSignature;
+  explicit ModuleCall ( const QString& name, const Module* module );
+  virtual ~ModuleCall();
+  void setCallback ( CallbackSignature& signature );
+  const Module& module() const;
+  CallbackSignature callback() const;
+  virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call ) = 0;
 
-  private:
-    QPointer<const Module> m_module;
-    CallbackSignature m_callback;
+private:
+  QPointer<const Module> m_module;
+  CallbackSignature m_callback;
 };
 }
 }

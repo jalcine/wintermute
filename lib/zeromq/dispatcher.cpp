@@ -34,7 +34,7 @@ Dispatcher::Dispatcher ( Module* a_module ) :
 {
   setParent ( a_module );
   m_socket = dynamic_cast<QtZeroMQ::PollingSocket*> (
-     a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
+               a_module->m_context->createSocket ( QtZeroMQ::Socket::TypePublish, this ) );
   m_socket->bindTo ( WINTERMUTE_SOCKET_IPC );
   winfo ( this, "Hey, sending over ZeroMQ." );
 }

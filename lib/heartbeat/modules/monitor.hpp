@@ -16,8 +16,8 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WINTERMUTE_HEARTBEAT_MONITOR_MODULE_HPP 
-#define WINTERMUTE_HEARTBEAT_MONITOR_MODULE_HPP 
+#ifndef WINTERMUTE_HEARTBEAT_MONITOR_MODULE_HPP
+#define WINTERMUTE_HEARTBEAT_MONITOR_MODULE_HPP
 
 #include <Wintermute/Procedure/Module>
 

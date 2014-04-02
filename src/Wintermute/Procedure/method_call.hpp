@@ -49,13 +49,13 @@ public:
   /**
    * @ctor   MethodCall
    * @brief  Implements a remote method call.
-   * This crafts a `Call` that can be used to invoke a method on a remote 
+   * This crafts a `Call` that can be used to invoke a method on a remote
    * module. When formed, one can attach logic to handle the reply once
    * recieved and work from there.
    */
   explicit MethodCall (
     const QString& module = QString::null,
-    const QString& method = QString::null, 
+    const QString& method = QString::null,
     const QVariantList arguments = QVariantList() );
 
   /**

@@ -25,7 +25,7 @@ using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ModulePrivate;
 
 QMap<QString, QPointer<Module>> ModulePrivate::modules =
-  QMap<QString, QPointer<Module>>();
+                               QMap<QString, QPointer<Module>>();
 
 Module::Module ( QObject* parent ) :
   QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
@@ -68,14 +68,11 @@ Module::invokeCall ( const MethodCall& methodCall )
   Q_D ( Module );
   QVariant result;
   const QString callName = methodCall.name();
-
-  if ( !d->calls.contains ( callName ) )
-  {
+  if ( !d->calls.contains ( callName ) ) {
     werr ( this, QString ( "The call '%1' doesn't exist in the module '%2'." )
            .arg ( callName , qualifiedName() ) );
     return;
   }
-
   QPointer<ModuleCall> moduleCall = d->calls[callName];
   moduleCall->invoke ( methodCall.arguments(), methodCall );
 }
@@ -97,7 +94,7 @@ Module::mountCall ( ModuleCall* call )
 }
 
 QList<QPointer<Module>>
-Module::knownModules()
+                     Module::knownModules()
 {
   return ModulePrivate::modules.values();
 }
@@ -125,8 +122,7 @@ Module::setPackage ( const QString& value )
 Module::~Module()
 {
   Q_D ( Module );
-  for (QPointer<ModuleCall> call : d->calls)
-  {
+  for (QPointer<ModuleCall> call : d->calls) {
     Q_ASSERT ( !call.isNull() );
     Q_ASSERT ( call->isValid() );
     call->deleteLater();

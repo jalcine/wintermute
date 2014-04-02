@@ -1,4 +1,4 @@
-#aaaaa!/bin/bash
+#!/bin/bash
 #
 # Copyright (c) 2013, Jacky Alciné <me@jalcine.me>
 # All rights reserved.
@@ -28,17 +28,17 @@
 
 TOPLEVELGITDIR=`git rev-parse --show-toplevel`
 
-case "${1}" in
-    --about )
-        echo "Generates tags of branch."
-        ;;
-    --clean )
-        rm $TOPLEVELGITDIR/.git/tags
-        echo "[ctags] Cleaned tags."
-        ;;
-    * )
-        echo "[ctags] Generating tags for repository..."
-        PWD=$TOPLEVELGITDIR ctags -R $TOPLEVELGITDIR/*
+               case "${1}" in
+                 --about )
+  echo "Generates tags of current commit."
+  ;;
+  --clean )
+  rm $TOPLEVELGITDIR/.git/tags
+  echo "[ctags] Cleaned tags."
+  ;;
+  * )
+  echo "[ctags] Generating tags for repository..."
+  PWD=$TOPLEVELGITDIR ctags -R $TOPLEVELGITDIR/*
         echo "[ctags] Tags generated; update tag clients."
         ;;
 esac

@@ -24,7 +24,7 @@
 using Wintermute::Procedure::LambdaCall;
 
 LambdaCall::LambdaCall ( const QString& name, Module* const module,
-   const Signature& lambda ) : ModuleCall ( name, module )
+                         const Signature& lambda ) : ModuleCall ( name, module )
 {
   setFunction ( lambda );
 }

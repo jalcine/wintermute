@@ -31,9 +31,8 @@ public:
   mutable QSettings* settings;
   QPluginLoader* loader;
 
-  PluginPrivate ( Plugin* q ) : 
-    q_ptr ( q ), settings ( 0 ), loader ( 0 )
-  {
+  PluginPrivate ( Plugin* q ) :
+    q_ptr ( q ), settings ( 0 ), loader ( 0 ) {
   }
 
   ~PluginPrivate() {

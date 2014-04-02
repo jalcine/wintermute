@@ -32,7 +32,7 @@ using Wintermute::DBus::Plugin;
 using Wintermute::DBus::Dispatcher;
 using Wintermute::Procedure::Call;
 
-Module::Module ( DBus::Plugin* plugin ) : 
+Module::Module ( DBus::Plugin* plugin ) :
   Wintermute::Procedure::Module ( plugin ),
   m_dispatcher ( 0 ), m_receiver ( 0 )
 {

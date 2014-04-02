@@ -62,12 +62,9 @@ PulseModule::tick()
   pulse ( PulseModule::PulseAlive );
   const Plugin* plugin = qobject_cast<Plugin*>( parent() );
   const QVariant interval = plugin->configuration()->value("Pulse/Interval");
-
-  if ( interval.isValid() )
-  {
+  if ( interval.isValid() ) {
     d->timer.setInterval ( interval.toInt() );
   }
-
   d->timer.start();
 }
 
@@ -81,8 +78,8 @@ PulseModule::pulse( PulseType type )
   theCall->setArguments (QVariantList() << d->count++ << type << pid );
   theCall->setSender ( this );
   //theCall->setCallback ( [&] ( QVariant result ) -> void {
-    // TODO Get the ping stashed as properly recieved (record into monitor?)
-    //winfo ( this, QString("IS IT REAL?") + result.toString() );
+  // TODO Get the ping stashed as properly recieved (record into monitor?)
+  //winfo ( this, QString("IS IT REAL?") + result.toString() );
   //} );
   winfo ( this, "Sending a pulse..." );
   theCall->dispatch();

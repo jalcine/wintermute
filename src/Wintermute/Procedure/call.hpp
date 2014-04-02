@@ -58,14 +58,14 @@ protected:
    * @ctor
    * @brief Creates a new Call object wit the provided CallPrivate data.
    */
-  Call ( QSharedDataPointer<CallPrivate> const &other_d );
+  Call ( QSharedDataPointer<CallPrivate> const& other_d );
 
   /**
    * @ctor
    * @fn Call
    * @param parent Used for QObject hierarchy.
    */
-  explicit Call ( QObject *parent );
+  explicit Call ( QObject* parent );
 
 public:
   /**
@@ -73,10 +73,9 @@ public:
    *
    * Defines the potential types a Call can take in the procedural system. In
    * order to keep things clean, you can add your own types only if it's over
-   * Call::TypeUser (this was intentional). Avoid using 
+   * Call::TypeUser (this was intentional). Avoid using
    */
-  enum Types
-  {
+  enum Types {
     TypeUndefined  = 0x0000,  // Undefined call. Don't bother with.
     TypeInvocation = 0x0001,  // Represents a call that's to be invoked.
     TypeReply      = 0x0002,  // Represents a reply to an invoked call.
@@ -130,13 +129,13 @@ public:
    * @fn setRecipient
    * @brief Changes the recipient of this Call.
    */
-  void setRecipient ( const QString &moduleName );
+  void setRecipient ( const QString& moduleName );
 
   /**
    * @fn    fromString
    * @brief Creates a Call from a QString.
    */
-  static Call* fromString ( const QString &data );
+  static Call* fromString ( const QString& data );
 };
 } /* Procedure */
 } /* Wintermute */
@@ -147,7 +146,7 @@ public:
  * @param flag    The flag to check for.
  */
 bool wCallCheckFlag ( const Wintermute::Procedure::Call& call,
-    const Wintermute::Procedure::Call::Types& flag );
+                      const Wintermute::Procedure::Call::Types& flag );
 
 Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type )
 #endif /* WINTERMUTE_PROCEDURE_CALL_HPP */

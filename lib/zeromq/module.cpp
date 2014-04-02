@@ -43,8 +43,8 @@ Module::Module ( ZeroMQ::Plugin* plugin ) :
   Receiver receiver ( this );
   Dispatcher dispatcher ( this );
   connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
-  connect ( m_context, SIGNAL ( pollError(int, const QString&) ), 
-      this, SLOT ( pollError(int, const QString&) ) );
+  connect ( m_context, SIGNAL ( pollError(int, const QString&) ),
+            this, SLOT ( pollError(int, const QString&) ) );
 }
 
 void
@@ -57,7 +57,7 @@ void
 Module::pollError(int errorNumber, const QString& errorMessage)
 {
   werr(this, QString("ZeroMQ error %1: %2").
-    arg(QString::number(errorNumber), errorMessage));
+       arg(QString::number(errorNumber), errorMessage));
 }
 
 void

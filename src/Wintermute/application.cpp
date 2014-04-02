@@ -24,7 +24,6 @@
 #include "version.hpp"
 #include "Wintermute/private/application.hpp"
 #include "Wintermute/Procedure/module.hpp"
-#include "moc_application.cpp"
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
@@ -47,10 +46,9 @@ Application::Application ( int& argc, char** argv ) :
   d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
   d->settings.reset( new QSettings );
   d->settings->setValue( "Timing/StartupTime" ,
-    QDateTime::currentDateTimeUtc().toString() );
-
+                         QDateTime::currentDateTimeUtc().toString() );
   winfo(this, QString( "Wintermute recorded startup at %1. Hello there!" )
-    .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
+        .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
   d->installEventFilters();
 }
 
@@ -59,27 +57,20 @@ Application::run ( int& argc, char** argv )
 {
   Q_ASSERT ( Application::instance() == nullptr );
   int returnCode = 0x0;
-
-  if ( Application::instance() == nullptr )
-  {
+  if ( Application::instance() == nullptr ) {
     self = new Application ( argc, argv );
     Logger* log = wlog ( self );
-
     self->d_ptr->initialize();
     log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
-        arg ( QCoreApplication::applicationPid() ) );
+                arg ( QCoreApplication::applicationPid() ) );
     self->start();
     log->debug ( "Starting event loop." );
-
     returnCode = self->d_ptr->exec();
-
     log->info ( "Event loop ended; ended with " +
-        QString ( "exit code %1" ).arg ( returnCode ) );
-
+                QString ( "exit code %1" ).arg ( returnCode ) );
     self->deleteLater();
     log->deleteLater();
   }
-
   return returnCode;
 }
 
@@ -102,11 +93,11 @@ Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
   log->info ( QString ( "Stopping Wintermute '%1'..." )
-      .arg ( module()->qualifiedName() ) );
+              .arg ( module()->qualifiedName() ) );
   QCoreApplication::quit();
   emit this->stopped();
   log->info ( QString ("Wintermute is stopping with exit code %1." )
-    .arg ( exitcode ) );
+              .arg ( exitcode ) );
   exit ( exitcode );
   wntrApp->deleteLater();
 }

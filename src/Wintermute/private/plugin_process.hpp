@@ -29,12 +29,10 @@ class PluginProcessPrivate
   QString pluginName;
 
   PluginProcessPrivate ( PluginProcess* q ) :
-    q_ptr ( q ), pluginName ( QString::null )
-  {
+    q_ptr ( q ), pluginName ( QString::null ) {
   }
 
-  void buildProcess()
-  {
+  void buildProcess() {
     QStringList args;
     args << "--mode" << "plugin" << "--plugin" << pluginName;
     QProcess::startDetached ( QCoreApplication::applicationFilePath(), args );

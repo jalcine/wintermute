@@ -41,13 +41,11 @@ public:
   QPointer<Procedure::ProcessModule> module;
 
   ApplicationPrivate ( int& argc, char** argv, Application* q ) :
-    app(), settings ( nullptr ), q_ptr ( nullptr ), module ( nullptr )
-  {
+    app(), settings ( nullptr ), q_ptr ( nullptr ), module ( nullptr ) {
     app.reset(new QCoreApplication ( argc, argv ));
   }
 
-  void installEventFilters()
-  {
+  void installEventFilters() {
     winfo ( q_ptr, "Adding event filters...");
     Events::CallFilter* callFilter = new Events::CallFilter();
     callFilter->setParent ( q_ptr );
@@ -55,34 +53,28 @@ public:
     winfo ( q_ptr, "Added event filters.");
   }
 
-  void addLibraryPaths()
-  {
+  void addLibraryPaths() {
     winfo ( q_ptr, "Updating library search paths...");
     app->addLibraryPath ( WINTERMUTE_PLUGIN_LIBRARY_DIR );
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    if ( env.contains ( "WINTERMUTE_PLUGIN_LIBRARY_DIR" ) )
-    {
+    if ( env.contains ( "WINTERMUTE_PLUGIN_LIBRARY_DIR" ) ) {
       winfo(app.data(),
-        "Pulling library directories from $WINTERMUTE_PLUGIN_LIBRARY_DIR...");
+            "Pulling library directories from $WINTERMUTE_PLUGIN_LIBRARY_DIR...");
       QStringList envLibDirs = env.value ( "WINTERMUTE_PLUGIN_LIBRARY_DIR" ).
-         split ( ":", QString::SkipEmptyParts );
-      Q_FOREACH ( const QString libDir, envLibDirs )
-      {
+                               split ( ":", QString::SkipEmptyParts );
+      Q_FOREACH ( const QString libDir, envLibDirs ) {
         app->addLibraryPath ( libDir );
         winfo(app.data(),
-          QString("Added %1 to the library discovery path.").arg(libDir));
+              QString("Added %1 to the library discovery path.").arg(libDir));
       }
-    }
-    else
-    {
+    } else {
       winfo(app.data(),
-        "No library directories to read from $WINTERMUTE_PLUGIN_LIBRARY_DIR.");
+            "No library directories to read from $WINTERMUTE_PLUGIN_LIBRARY_DIR.");
     }
     winfo ( q_ptr, "Updated library search paths.");
   }
 
-  void initialize()
-  {
+  void initialize() {
     addLibraryPaths();
     Logging::instance();
     Arguments::instance();
@@ -93,62 +85,48 @@ public:
     int returnCode = 0x0;
     try {
       returnCode = app->exec();
-    }
-    catch (...)
-    {
+    } catch (...) {
       werr(app.data(), "An fatal error occurred in Wintermute.");
       returnCode = 0xff;
     }
     return returnCode;
   }
 
-  void loadProcessModule()
-  {
+  void loadProcessModule() {
     module = new Procedure::ProcessModule;
   }
 
-  void loadCurrentMode()
-  {
+  void loadCurrentMode() {
     const QString mode = Arguments::instance()->argument ( "mode" ).toString();
-    if ( mode == "daemon" || mode == "d" ) loadDaemonState();
-    else if ( mode == "plugin" || mode == "p") loadPluginState();
-    else
-    {
+    if ( mode == "daemon" || mode == "d" ) { loadDaemonState(); }
+    else if ( mode == "plugin" || mode == "p") { loadPluginState(); }
+    else {
       werr ( Application::instance(), "Plugin can't be determined for loading." );
       Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
     }
   }
 
-  void loadDaemonState()
-  {
-    if ( !wntrFactory->loadPlugin ( "wintermute-daemon" ) )
-    {
+  void loadDaemonState() {
+    if ( !wntrFactory->loadPlugin ( "wintermute-daemon" ) ) {
       werr ( wntrApp, "Can't load daemon plugin; bailing out!" );
       Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
-    }
-    else
-    {
+    } else {
       winfo ( wntrApp, "Daemon started." );
     }
   }
 
-  void loadPluginState()
-  {
+  void loadPluginState() {
     const QString pluginName ( Arguments::instance()->argument ( "plugin" )
-        .toString() );
-    if ( ! ( pluginName.isEmpty() && pluginName.isNull() ) )
-    {
+                               .toString() );
+    if ( ! ( pluginName.isEmpty() && pluginName.isNull() ) ) {
       wdebug ( Application::instance(), QString("Booting plugin '%1'...")
                .arg( pluginName ) );
-      if ( !Factory::instance()->loadPlugin ( pluginName ) )
-      {
+      if ( !Factory::instance()->loadPlugin ( pluginName ) ) {
         werr ( wntrApp, QString("Failed to load plugin %1.").arg(pluginName) );
         Application::instance()->stop ( WINTERMUTE_ERROR_MODE_FAILED );
-      }
-      else
-      {
+      } else {
         winfo ( wntrApp, QString("Booted plugin %1 for plug-in mode.")
-            .arg(pluginName));
+                .arg(pluginName));
       }
     }
   }

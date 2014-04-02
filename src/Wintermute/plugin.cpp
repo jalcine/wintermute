@@ -31,8 +31,8 @@ using Wintermute::Plugin;
 using Wintermute::Logging;
 using Wintermute::Logger;
 
-Plugin::Plugin ( ) : 
-  QObject ( Factory::instance() ), 
+Plugin::Plugin ( ) :
+  QObject ( Factory::instance() ),
   d_ptr ( new PluginPrivate ( this ) )
 {
 }
@@ -42,8 +42,8 @@ Plugin::configuration() const
 {
   Q_D ( const Plugin );
   if ( d->settings == 0 ) {
-    QMetaClassInfo nameClass = metaObject()->classInfo ( 
-        metaObject()->indexOfClassInfo ( "Name" ) );
+    QMetaClassInfo nameClass = metaObject()->classInfo (
+                                 metaObject()->indexOfClassInfo ( "Name" ) );
     const QString name = nameClass.value();
     d->settings = new QSettings( "Wintermute", name, parent() );
     winfo( this, QString( "%1's settings are now found at %2." ).arg( name,
@@ -69,8 +69,8 @@ Plugin::systemVersion() const
 QString
 Plugin::name() const
 {
-  QMetaClassInfo nameClass = metaObject()->classInfo ( 
-    metaObject()->indexOfClassInfo ( "Name" ) );
+  QMetaClassInfo nameClass = metaObject()->classInfo (
+                               metaObject()->indexOfClassInfo ( "Name" ) );
   QVariant value = configuration()->value("Plugin/Name");
   return value.isNull() ? nameClass.value() : value.toString();
 }

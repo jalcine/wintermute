@@ -31,8 +31,7 @@ namespace Wintermute
  * @brief Provides a basis of defining version numbers.
  * @todo  Consider making the number into a bit flag.
  */
-struct Version
-{
+struct Version {
   enum DevelopmentStage {
     Nightly = 0,
     Alpha,

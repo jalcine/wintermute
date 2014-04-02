@@ -26,31 +26,28 @@
 using Wintermute::Procedure::ProcessModule;
 using Wintermute::Procedure::MethodCall;
 
-ProcessModule::ProcessModule() : 
+ProcessModule::ProcessModule() :
   Module ( Wintermute::Application::instance() )
 {
   setDomain  ( WINTERMUTE_DOMAIN );
   setPackage ( "process" );
-
   mountCall ( new LambdaCall ( "stop", this,
-        [&] (QVariantList args, const MethodCall& call) -> QVariant {
-          wdebug ( this, "Remote stop initiated." );
-          stop ();
-          return true;
+  [&] (QVariantList args, const MethodCall& call) -> QVariant {
+    wdebug ( this, "Remote stop initiated." );
+    stop ();
+    return true;
   } ) );
-
   mountCall ( new LambdaCall ( "quit", this,
-        [&] (QVariantList args, const MethodCall& call) -> QVariant {
-          wdebug ( this, "Remote quit initiated." );
-          quit ( args[0].toInt() );
-          return true;
+  [&] (QVariantList args, const MethodCall& call) -> QVariant {
+    wdebug ( this, "Remote quit initiated." );
+    quit ( args[0].toInt() );
+    return true;
   } ) );
-
   mountCall ( new LambdaCall ( "reboot", this,
-        [&] (QVariantList args, const MethodCall& call) -> QVariant {
-          wdebug ( this, "Remote reboot initiated." );
-          quit ( args[0].toInt() );
-          return true;
+  [&] (QVariantList args, const MethodCall& call) -> QVariant {
+    wdebug ( this, "Remote reboot initiated." );
+    quit ( args[0].toInt() );
+    return true;
   } ) );
 }
 
@@ -59,7 +56,7 @@ ProcessModule::greetSystem ( const QString& name )
 {
   QPointer<Module> module = Module::findModule (name);
   const QVariantList args = QVariantList() << module->qualifiedName() <<
-    QCoreApplication::applicationPid();
+                            QCoreApplication::applicationPid();
   const MethodCall methodCall ( WINTERMUTE_DOMAIN".heartbeat.monitor", "greet", args );
   methodCall.dispatch ();
 }
@@ -69,14 +66,14 @@ ProcessModule::start()
 {
   connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
   winfo ( this, QString ( "Currently %1 modules loaded so far." ).arg (
-        Module::knownModules().length() ) );
+            Module::knownModules().length() ) );
 }
 
 void
 ProcessModule::reboot()
 {
-  QProcess::startDetached ( QCoreApplication::applicationFilePath(), 
-      QCoreApplication::arguments() );
+  QProcess::startDetached ( QCoreApplication::applicationFilePath(),
+                            QCoreApplication::arguments() );
   quit ( 0 );
 }
 
@@ -97,5 +94,5 @@ ProcessModule::quit ( const int exitcode )
 ProcessModule::~ProcessModule()
 {
   if ( !QCoreApplication::closingDown() )
-    stop();
+  { stop(); }
 }

@@ -35,19 +35,19 @@ bool wCallCheckFlag ( const Call& call, const Call::Types& flag )
 }
 
 
-Call::Call ( QObject* parent ) : QObject ( parent ), 
+Call::Call ( QObject* parent ) : QObject ( parent ),
   d ( new CallPrivate (this) )
 {
 }
 
-Call::Call ( const CallPrivate::Pointer &other_d ) : 
+Call::Call ( const CallPrivate::Pointer& other_d ) :
   QObject ( Wintermute::Application::instance() ), d ( other_d )
 {
   d.detach();
   d->q_ptr = this;
 }
 
-Call::Call ( const Call& other ) : 
+Call::Call ( const Call& other ) :
   QObject ( other.parent() ), d ( other.d )
 {
   d.detach();
@@ -104,13 +104,10 @@ Call::fromString ( const QString& data )
   QJson::Parser parser;
   bool ok;
   QVariantMap callData = parser.parse ( data.toLocal8Bit(), &ok ).toMap();
-
-  if ( !ok )
-  {
+  if ( !ok ) {
     werr ( wntrApp, QString("Failed to convert '%1' into a Call.").arg(data) );
     return nullptr;
   }
-
   CallPrivate::Pointer d_ptr = CallPrivate::fromVariantMap(callData);
   return new Call ( d_ptr );
 }

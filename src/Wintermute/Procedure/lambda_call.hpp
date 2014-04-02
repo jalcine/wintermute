@@ -44,7 +44,7 @@ public:
    * @ctor
    */
   explicit LambdaCall ( const QString& name, Module* const module = nullptr,
-      const Signature& lambda = nullptr );
+                        const Signature& lambda = nullptr );
 
   /**
    * @dtor
@@ -62,7 +62,7 @@ public:
    * @brief Sets the function to be invoked.
    */
   void setFunction ( const LambdaCall::Signature& newFunction );
-  
+
   virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call );
 
 private:

@@ -41,26 +41,21 @@ public:
   QString domain;
   QMap<QString, QPointer<ModuleCall>> calls;
 
-  ModulePrivate ( Module* q ) : q_ptr ( q ), package ( QString::null ), 
-    domain ( QString::null ), calls ( )
-  {
+  ModulePrivate ( Module* q ) : q_ptr ( q ), package ( QString::null ),
+    domain ( QString::null ), calls ( ) {
     winfo ( q_ptr, "Module setting up..." );
   }
 
-  void checkQualifiedName()
-  {
+  void checkQualifiedName() {
     if ( domain.isEmpty() || package.isEmpty() ) { return; }
     QPointer<Module> module = Module::findModule ( q_ptr->qualifiedName() );
-
-    if ( module.isNull() )
-    {
-       ModulePrivate::modules.insert ( q_ptr->qualifiedName(), q_ptr );
-       //Q_EMIT wntrApp->addedModule ( q_ptr->qualifiedName() );
+    if ( module.isNull() ) {
+      ModulePrivate::modules.insert ( q_ptr->qualifiedName(), q_ptr );
+      //Q_EMIT wntrApp->addedModule ( q_ptr->qualifiedName() );
     }
   }
 
-  virtual ~ModulePrivate ()
-  {
+  virtual ~ModulePrivate () {
     ModulePrivate::modules.remove ( q_ptr->qualifiedName() );
     //Q_EMIT wntrApp->removedModule ( q_ptr->qualifiedName() );
   }

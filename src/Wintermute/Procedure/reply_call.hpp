@@ -25,12 +25,13 @@ namespace Wintermute
 namespace Procedure
 {
 class MethodCall;
-class ReplyCall : public Call {
+class ReplyCall : public Call
+{
   Q_OBJECT
   QVariant m_response;
 
 public:
-  ReplyCall ( const MethodCall &call, const QVariant& response );
+  ReplyCall ( const MethodCall& call, const QVariant& response );
   virtual ~ReplyCall();
 
   QVariant response() const;
@@ -41,4 +42,4 @@ public:
 }
 }
 
-#endif 
+#endif

@@ -44,9 +44,9 @@ void
 Receiver::receiveMessage ( const Call& call )
 {
   QPointer<Procedure::Module> module = Module::findModule ( call.recipient() );
-  if ( module.isNull() ) return;
+  if ( module.isNull() ) { return; }
   QCoreApplication::postEvent ( module.data(),
-      new CallEvent ( CallEvent::TypeReceive, call ) );
+                                new CallEvent ( CallEvent::TypeReceive, call ) );
 }
 
 Receiver::~Receiver()

@@ -41,12 +41,9 @@ void
 Receiver::handleAsyncCallReply ( QDBusPendingCallWatcher* reply )
 {
   QDBusPendingReply<QString> replyValue = *reply;
-
-  if ( replyValue.isValid() && replyValue.isFinished() )
-  {
+  if ( replyValue.isValid() && replyValue.isFinished() ) {
     winfo ( this, replyValue.argumentAt<0>() );
   }
-
   reply->deleteLater();
 }
 

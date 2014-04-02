@@ -56,24 +56,16 @@ CallFilter::handleReceive ( QObject* object, CallEvent* callEvent )
   const Call* call = callEvent->call();
   Q_CHECK_PTR ( call );
   Q_ASSERT ( call->isValid() );
-
-  if ( call->type().testFlag ( Call::TypeInvocation ) )
-  {
+  if ( call->type().testFlag ( Call::TypeInvocation ) ) {
     const MethodCall* methodCall = dynamic_cast<const MethodCall*>(call);
     Q_ASSERT ( methodCall->isValid() );
     methodCall->invoke();
-  }
-  else if ( call->type().testFlag ( Call::TypeReply ) )
-  {
+  } else if ( call->type().testFlag ( Call::TypeReply ) ) {
     event = new CallEvent ( CallEvent::TypeReply, call );
-  }
-  else
-  {
+  } else {
     wwarn ( object, "Don't know how to handle a foreign call type." );
   }
-
-  if ( event != nullptr ) QCoreApplication::postEvent ( object, event );
-
+  if ( event != nullptr ) { QCoreApplication::postEvent ( object, event ); }
   return true;
 }
 
@@ -83,54 +75,38 @@ CallFilter::handleReply ( QObject* object, CallEvent* callEvent )
   const Call::ConstPointer call(callEvent->call());
   QSharedPointer<const ReplyCall> replyCall;
   Q_ASSERT ( call->isValid() );
-
-  if ( !call.isNull() )
-  {
-    try
-    {
+  if ( !call.isNull() ) {
+    try {
       replyCall = call.dynamicCast<const ReplyCall>();
       Q_CHECK_PTR ( replyCall );
-    }
-    catch ( std::bad_alloc &e )
-    {
+    } catch ( std::bad_alloc& e ) {
       werr ( object,
-            QString("Couldn't parse an incoming reply: %1").arg(e.what())
-      );
+             QString("Couldn't parse an incoming reply: %1").arg(e.what())
+           );
       return false;
     }
-
     Q_ASSERT ( replyCall->isValid() );
     replyCall->sendReply();
   }
-
   return true;
 }
 
-  bool
+bool
 CallFilter::eventFilter ( QObject* object, QEvent* event )
 {
   CallEvent* callEvent = nullptr;
   Q_CHECK_PTR ( event );
-
-  if ( typeid ( *event ) == typeid ( CallEvent ) )
-  {
+  if ( typeid ( *event ) == typeid ( CallEvent ) ) {
     callEvent = dynamic_cast<CallEvent*>(event);
     Q_CHECK_PTR ( callEvent );
-
-    if ( event->type() == CallEvent::TypeDispatch )
-    {
+    if ( event->type() == CallEvent::TypeDispatch ) {
       return handleDispatch ( object, callEvent );
-    }
-    else if ( event->type() == CallEvent::TypeReceive )
-    {
+    } else if ( event->type() == CallEvent::TypeReceive ) {
       return handleReceive ( object, callEvent );
-    }
-    else if ( event->type() == CallEvent::TypeReply )
-    {
+    } else if ( event->type() == CallEvent::TypeReply ) {
       return handleReply ( object, callEvent );
     }
   }
-
   return QObject::eventFilter ( object, event );
 }
 

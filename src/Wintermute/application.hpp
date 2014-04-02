@@ -88,8 +88,8 @@ public:
    * @brief Obtains a setting from Wintermute's local configuration.
    * @note These options are global to the Wintermute application.
    */
-  static QVariant setting ( const QString& path, const QVariant defaultValue = 
-      QVariant() );
+  static QVariant setting ( const QString& path, const QVariant defaultValue =
+                              QVariant() );
 
   /**
    * @fn setSetting

@@ -40,8 +40,7 @@ Factory::Factory() : QObject ( Application::instance() ), d_ptr ( new FactoryPri
 Factory*
 Factory::instance()
 {
-  if ( !self )
-  {
+  if ( !self ) {
     self = new Factory;
   }
   return self;
@@ -80,29 +79,22 @@ Factory::loadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   Logger* log = wlog ( this );
-
-  if ( loadedPlugin ( id ) )
-  {
+  if ( loadedPlugin ( id ) ) {
     log->warn ( QString ( "Already loaded plug-in %1." ).arg ( id ) );
     return true;
   }
-
   QPluginLoader* loader = d->obtainBinary ( id );
   Plugin* plugin = 0;
-  if ( !loader )
-  {
+  if ( !loader ) {
     log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).arg ( id ) );
     return false;
   }
-
   log->debug ( QString ( "Found binary for plugin '%1', loading symbols..." ).arg ( id ) );
   plugin = qobject_cast<Plugin*> ( loader->instance() );
-  if ( !plugin )
-  {
+  if ( !plugin ) {
     log->error ( QString("Failed to load plugin due to %1." ).arg( loader->errorString() ) );
     return false;
   }
-
   d->active.insert ( id, plugin );
   log->info ( QString ( "Invoking start of %1..." ).arg ( plugin->name() ) );
   plugin->start();
@@ -126,8 +118,7 @@ Factory::unloadPlugin ( const QString& id )
 {
   Q_D ( Factory );
   Plugin* plugin = d->plugin ( id );
-  if ( !plugin->isLoaded() )
-  {
+  if ( !plugin->isLoaded() ) {
     return true;
   }
   plugin->stop();
@@ -141,34 +132,26 @@ Factory::autoloadPlugins()
 {
   Logger* log = wlog ( this );
   QVariant autoload = Wintermute::Application::setting ( "Plugins/Autoload",
-      QStringList() << "wintermute-dbus" << "wintermute-zeromq" );
+                      QStringList() << "wintermute-dbus" << "wintermute-zeromq" );
   QStringList autoloadList = autoload.value<QStringList>();
   QStringList all = availablePlugins();
-
   log->info ( QString ( "Loading %1 of %2 known plugins..." ).
-    arg ( autoloadList.length() ).arg ( all.length() ) );
-
-  if ( autoloadList.empty() )
-  {
+              arg ( autoloadList.length() ).arg ( all.length() ) );
+  if ( autoloadList.empty() ) {
     log->warn ( "No plug-ins were specified for auto-loading." );
     return true;
   }
-
-  for ( QString plugin: autoloadList )
-  {
-    if ( !all.contains ( plugin ) )
-    {
+  for ( QString plugin: autoloadList ) {
+    if ( !all.contains ( plugin ) ) {
       log->info ( QString ( "The plugin '%1' is not available; bailing out." )
-        .arg ( plugin ) );
+                  .arg ( plugin ) );
       unloadAllPlugins();
       return false;
     }
-
     bool pluginLoaded = loadPlugin ( plugin );
-    if ( !pluginLoaded )
-    {
+    if ( !pluginLoaded ) {
       log->info ( QString ( "Autoload of %1 failed;" ).arg ( plugin ) +
-        " thus cancelling the auto-loading process." );
+                  " thus cancelling the auto-loading process." );
       unloadAllPlugins();
       return false;
     }
@@ -179,12 +162,10 @@ Factory::autoloadPlugins()
 bool
 Factory::unloadAllPlugins()
 {
-  for (QString plugin: activePlugins())
-  {
+  for (QString plugin: activePlugins()) {
     if ( !unloadPlugin ( plugin ) )
-      return false;
+    { return false; }
   }
-
   return true;
 }
 

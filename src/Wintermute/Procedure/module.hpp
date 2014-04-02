@@ -87,7 +87,7 @@ public:
    * until both values are set by the sub-classing Module.
    */
   QString qualifiedName() const;
-  
+
   /**
    * @function calls()
    */
@@ -126,7 +126,7 @@ protected:
 } /*  Procedure */
 } /*  Wintermute */
 
-Q_DECLARE_INTERFACE(Wintermute::Procedure::Module, 
-    "in.wintermute.procedure.module/0.1.0")
+Q_DECLARE_INTERFACE(Wintermute::Procedure::Module,
+                    "in.wintermute.procedure.module/0.1.0")
 
 #endif /* WINTERMUTE_PROCEDURE_MODULE_HPP */

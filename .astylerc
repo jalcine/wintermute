@@ -3,20 +3,17 @@
 --style=kr
 
 # Spacing and indentation
-indent=spaces=2
-indent-switches
-indent-cases
-pad-header
-convert-tabs
+        indent=spaces=2
+                      indent-switches
+                      indent-cases
+                      pad-header
+                      convert-tabs
 
 # Alignment and positioning
-delete-empty-lines
-align-pointer=type
-add-brackets
-add-one-line-brackets
-lineend=linux
-suffix=none
-preserve-date
-
-# Auxillary options
-recursive
+                      delete-empty-lines
+                      align-pointer=type
+                                    add-brackets
+                                    add-one-line-brackets
+                                    lineend=linux
+                                        suffix=none
+                                            preserve-date

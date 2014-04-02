@@ -47,24 +47,20 @@ Dispatcher::sendMessage ( const Call::Pointer& call )
   QStringList remoteServices = interface->registeredServiceNames();
   QStringList friendlyServices = remoteServices.filter ( WINTERMUTE_DOMAIN );
   friendlyServices.removeAll ( sessionBus.name() );
-
   if ( friendlyServices.empty() ) { return; }
-  else
-  {
-    for (const QString remoteService: friendlyServices)
-    {
-      if (!interface->isServiceRegistered(remoteService)) continue;
+  else {
+    for (const QString remoteService: friendlyServices) {
+      if (!interface->isServiceRegistered(remoteService)) { continue; }
       DBus::Module* module = qobject_cast<DBus::Module*>(parent());
-      QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService, 
-          "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
+      QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService,
+                                "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
       methodCall << call->toString();
-
       QDBusPendingReply<QString> asyncMethodCall = sessionBus.asyncCall ( methodCall );
       DBus::Receiver* reciever = module->m_receiver;
-      QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher ( 
-          asyncMethodCall, this );
+      QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher (
+        asyncMethodCall, this );
       QObject::connect ( watcher, SIGNAL ( finished (QDBusPendingCallWatcher*) ),
-        reciever, SLOT ( handleAsyncCallReply (QDBusPendingCallWatcher*) ) );
+                         reciever, SLOT ( handleAsyncCallReply (QDBusPendingCallWatcher*) ) );
     }
   }
 }

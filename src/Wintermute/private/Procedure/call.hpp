@@ -70,8 +70,7 @@ public:
    * @function fromVariantMap
    * @param    data Map representing data to fill up a CallPrivate.
    */
-  static CallPrivate::Pointer fromVariantMap ( const QVariantMap& data )
-  {
+  static CallPrivate::Pointer fromVariantMap ( const QVariantMap& data ) {
     CallPrivate::Pointer d_ptr ( new CallPrivate );
     Q_ASSERT ( !data.empty() );
     Q_ASSERT ( data.contains("type") );
@@ -82,31 +81,27 @@ public:
     d_ptr->type = ( Call::Type ) data["type"].toInt();
     d_ptr->recipient = data["recipient"].toString();
     d_ptr->data = data["data"].toMap();
-
-    return d_ptr.data() != nullptr && d_ptr->isValid() ? 
-      d_ptr : CallPrivate::Pointer ( nullptr );
+    return d_ptr.data() != nullptr && d_ptr->isValid() ?
+           d_ptr : CallPrivate::Pointer ( nullptr );
   }
 
   /**
    * @function toVariantMap
    * @return   QVariantMap A map of data that represents this CallPrivate.
    */
-  QVariantMap toVariantMap() const
-  {
+  QVariantMap toVariantMap() const {
     QVariantMap callData;
     callData["type"] = (int) type;
     callData["timestamp"] = id;
     callData["recipient"] = recipient;
     callData["data"] = data;
-
     return callData;
   }
 
-  virtual bool isValid() const
-  {
+  virtual bool isValid() const {
     const bool validId        = !id.isNull() && id.isValid(),
                validRecipient = !recipient.isNull() && !recipient.isEmpty()
-    ;
+                                ;
     return ( validId && validRecipient );
   }
 };

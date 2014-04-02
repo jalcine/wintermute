@@ -30,10 +30,8 @@ class DispatcherPrivate
 public:
   static QList<Dispatcher*> dispatchers;
 
-  static bool isDispatcherKnown ( Dispatcher* dispatcher )
-  {
-    for( Dispatcher * aDispatcher: DispatcherPrivate::dispatchers )
-    {
+  static bool isDispatcherKnown ( Dispatcher* dispatcher ) {
+    for ( Dispatcher * aDispatcher: DispatcherPrivate::dispatchers ) {
       if ( aDispatcher->metaObject()->className()
            == dispatcher->metaObject()->className() )
       { return true; }
@@ -41,27 +39,20 @@ public:
     return false;
   }
 
-  static void dispatch ( const Call& call )
-  {
+  static void dispatch ( const Call& call ) {
     Q_ASSERT ( call.isValid() );
-    if ( dispatchers.empty() )
-    {
+    if ( dispatchers.empty() ) {
       wwarn ( wntrApp, "Wintermute is running with no dispatchers." );
-    }
-    else
-    {
-      for ( Dispatcher* dispatchClient: dispatchers )
-      {
+    } else {
+      for ( Dispatcher* dispatchClient: dispatchers ) {
         dispatchClient->sendMessage ( call );
       }
     }
   }
 
-  static bool addDispatcher ( Dispatcher* dispatcher )
-  {
+  static bool addDispatcher ( Dispatcher* dispatcher ) {
     if ( !dispatcher ) { return false; }
-    if ( isDispatcherKnown ( dispatcher ) )
-    {
+    if ( isDispatcherKnown ( dispatcher ) ) {
       wdebug ( dispatcher, "Already added into dispatcher index." );
       return false;
     }
@@ -71,12 +62,11 @@ public:
     return true;
   }
 
-  static bool removeDispatcher ( Dispatcher* dispatcher )
-  {
+  static bool removeDispatcher ( Dispatcher* dispatcher ) {
     if ( !isDispatcherKnown ( dispatcher ) ) { return false; }
     DispatcherPrivate::dispatchers.removeAll ( dispatcher );
     wdebug ( dispatcher, QString ( "%1 removed from dispatcher pool." ).
-       arg ( dispatcher->metaObject()->className() ) );
+             arg ( dispatcher->metaObject()->className() ) );
     return true;
   }
 };

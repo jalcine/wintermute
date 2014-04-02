@@ -49,12 +49,10 @@ ReplyCall::isValid() const
   Q_ASSERT ( d->data.contains("reply") == true );
   Q_ASSERT ( d->data.contains("call") == true );
   Q_ASSERT ( wCallCheckFlag ( *this, Call::TypeReply ) == true );
-
-  if ( !Call::isValid() ) return false;
-  if ( !d->data.contains ( "reply" ) ) return false;
-  if ( !d->data.contains ( "call" ) ) return false;
-  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) return false;
-
+  if ( !Call::isValid() ) { return false; }
+  if ( !d->data.contains ( "reply" ) ) { return false; }
+  if ( !d->data.contains ( "call" ) ) { return false; }
+  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) { return false; }
   return true;
 }
 

@@ -28,9 +28,9 @@ using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::CallPrivate;
 
-MethodCall::MethodCall ( const QString& module, 
-    const QString& method,
-    const QVariantList arguments ) :
+MethodCall::MethodCall ( const QString& module,
+                         const QString& method,
+                         const QVariantList arguments ) :
   Call ( wntrApp->module() )
 {
   setRecipient ( module );
@@ -89,19 +89,17 @@ MethodCall::setSender ( const Module* module )
 bool
 MethodCall::isValid() const
 {
-  if ( !Call::isValid() ) return false;
-
+  if ( !Call::isValid() ) { return false; }
   const QVariant value = d->data["sender"];
   const QVariantMap appData = value.toMap();
   Q_ASSERT ( value.isNull() == false );
   Q_ASSERT ( appData.contains("pid") == true );
   Q_ASSERT ( appData.contains("version") == true );
   Q_ASSERT ( appData.contains("module") == true );
-  if ( value.isNull() ) return false;
-  if ( !appData.contains("pid") ) return false;
-  if ( !appData.contains("version") ) return false;
-  if ( !appData.contains("module") ) return false;
-
+  if ( value.isNull() ) { return false; }
+  if ( !appData.contains("pid") ) { return false; }
+  if ( !appData.contains("version") ) { return false; }
+  if ( !appData.contains("module") ) { return false; }
   return true;
 }
 
@@ -110,15 +108,11 @@ MethodCall::invoke ( ) const
 {
   Q_ASSERT ( isValid() );
   QPointer<Module> theModule = Module::findModule ( recipient() );
-
-  if ( !theModule.isNull() )
-  {
-    werr ( staticMetaObject.className(), 
-      QString ( "Can't find module '%1' in this process." )
-        .arg ( recipient() ) );
-  }
-  else
-  {
+  if ( !theModule.isNull() ) {
+    werr ( staticMetaObject.className(),
+           QString ( "Can't find module '%1' in this process." )
+           .arg ( recipient() ) );
+  } else {
     theModule->invokeCall ( *this );
   }
 }

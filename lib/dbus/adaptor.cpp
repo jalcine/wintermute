@@ -29,7 +29,7 @@ using Wintermute::DBus::Receiver;
 using Wintermute::Procedure::Call;
 
 Adaptor::Adaptor( Module* module ) :
-    QDBusAbstractAdaptor( module )
+  QDBusAbstractAdaptor( module )
 {
 }
 
@@ -37,15 +37,12 @@ void
 Adaptor::registerOnDBus()
 {
   QDBusConnection bus = QDBusConnection::sessionBus();
-  const bool serviceRegistered = bus.registerService ( QString ( 
-      "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
-
-  if ( !serviceRegistered )
-  {
+  const bool serviceRegistered = bus.registerService ( QString (
+                                   "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
+  if ( !serviceRegistered ) {
     werr (this, "Failed to register service with D-Bus.");
     return;
   }
-
   bus.registerObject( "/Process", this, QDBusConnection::ExportAllInvokables );
 }
 
@@ -54,10 +51,8 @@ Adaptor::deregisterFromDBus()
 {
   QDBusConnection bus = QDBusConnection::sessionBus();
   bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
-    QCoreApplication::applicationPid() ) );
-
-  for (Procedure::Module* module: Procedure::Module::knownModules() )
-  {
+                            QCoreApplication::applicationPid() ) );
+  for (Procedure::Module* module: Procedure::Module::knownModules() ) {
     const QString objectName = "/" + module->package();
     bus.unregisterObject ( objectName );
   }
@@ -65,7 +60,7 @@ Adaptor::deregisterFromDBus()
 
 void
 Adaptor::handleIncomingCall ( const QString& arguments, const
-    QDBusMessage& message )
+                              QDBusMessage& message )
 {
   Q_ASSERT ( !arguments.isNull() );
   Q_ASSERT ( !arguments.isEmpty() );
