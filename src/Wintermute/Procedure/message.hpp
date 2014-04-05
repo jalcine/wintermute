@@ -19,6 +19,11 @@
 #ifndef WINTERMUTE_PROCEDURE_MESSAGE_HPP
 #define WINTERMUTE_PROCEDURE_MESSAGE_HPP
 
+/**
+ * @file  Wintermute/Procedure/message.hpp
+ * @brief Definition of `Wintermute::Procedure::Message`.
+ */
+
 #include <Wintermute/Globals>
 #include <QtCore/QMetaType>
 #include <QtCore/QDataStream>
@@ -30,19 +35,6 @@ namespace Wintermute
   {
     class MessagePrivate;
 
-    /**
-     * @class Wintermute::Procedure::Message
-     * @brief Basis of data transfer in RPC for Wintermute.
-     * @shared-implicitly
-     *
-     * This class serves as the basis for data, 'packets' if you will, for
-     * Wintermute's RPC. It's meant to be used as a foundation for serializing
-     * data like `Call` or `Signal` objects or so that they can be used over any
-     * compatible medium.
-     *
-     * `Message` is registered into Qt's QMetaType system so that you can use it
-     * wherever you'd use QVariant; for quick serializing across the board.
-     */
     class Message
     {
       public:

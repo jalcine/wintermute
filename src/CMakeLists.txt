@@ -16,15 +16,16 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-project ( Wintermute )
-include ( WintermuteVersioning )
+project(Wintermute)
+include(WintermuteVersioning)
+include(WintermuteDocumentation)
 
-set ( WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
-list ( REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR} )
+set(WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
-set ( WINTERMUTE_SOURCES
+set(WINTERMUTE_SOURCES
   ## Core
   Wintermute/version.cpp
   Wintermute/logging.cpp
@@ -62,7 +63,7 @@ set ( WINTERMUTE_SOURCES
   main.cpp
 )
 
-set ( WINTERMUTE_HEADERS
+set(WINTERMUTE_HEADERS
   ## Pretty headers
   Wintermute/Application
   Wintermute/Arguments
@@ -95,12 +96,12 @@ set ( WINTERMUTE_HEADERS
 )
 
 # Wrap up the sources.
-file ( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Events/Filters")
 
 # Define the executable.
-add_executable ( wintermute ${WINTERMUTE_SOURCES} )
+add_executable(wintermute ${WINTERMUTE_SOURCES})
 
 # Define properties for Wintermute's executable.
 set_target_properties(wintermute PROPERTIES
@@ -110,28 +111,32 @@ set_target_properties(wintermute PROPERTIES
 # Add the necessary properties to the 'wintermute' executable.
 wintermute_add_properties(wintermute)
 
-# Generate documentation for Wintermute.
-wintermute_generate_documentation(
-  TARGET           wintermute
-  NAME             wintermute
-  VERSION          ${WINTERMUTE_VERSION}
-  BRIEF            "A curious app."
-  OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/wintermute-doc
-  SOURCES          ${WINTERMUTE_SOURCES}
-)
-
+# Include local directories for core binary.
 include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
   ${WINTERMUTE_INCLUDE_DIRS})
+
+# Link dependencies to core binary.
 target_link_libraries(wintermute ${WINTERMUTE_LIBRARIES})
 
 # Generate the global definition file.
-configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in ${CMAKE_SOURCE_DIR}/src/Wintermute/Globals @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in
+  ${CMAKE_SOURCE_DIR}/src/Wintermute/Globals @ONLY)
+
+# Generate documentation.
+wintermute_generate_documentation(TARGET wintermute
+  NAME             "Wintermute Core" 
+  SOURCES          ${WINTERMUTE_SOURCES}
+  BRIEF            "A (hopefully) cross-platform approach to AI."
+  VERSION          ${WINTERMUTE_VERSION}
+  OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
+)
 
 # Install the binary.
 install(TARGETS wintermute
   COMPONENT Runtime
   RUNTIME DESTINATION ${WINTERMUTE_BIN_DIR})
 
+# Install all of the headers in the proper folder.
 foreach(_HDR ${WINTERMUTE_HEADERS})
   string(FIND ${_HDR} / _dir_pos REVERSE)
   string(SUBSTRING "${_HDR}" 0 ${_dir_pos} _DIR)

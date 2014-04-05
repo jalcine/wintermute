@@ -68,6 +68,7 @@ public:
 	 * @fn instance
 	 * @brief Provides a pointer to an instance of Wintermute::Application.
 	 * @return A shared pointer to the working instance of Wintermute::Application.
+   * @callergraph
 	 *
 	 * In order to keep Wintermute's instance running smoothly,
 	 * a shared pointer to the instance of the application that's running

@@ -16,30 +16,28 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-project ( WintermuteHeartbeat )
-set ( heartbeat_SRCS
+project(WintermuteHeartbeat)
+set(heartbeat_SRCS
   plugin.cpp
   modules/monitor.cpp
   modules/pulse.cpp
 )
 
-set ( heartbeat_HDRS
+set(heartbeat_HDRS
   plugin.hpp
   globals.hpp
   modules/monitor.hpp
   modules/pulse.hpp
 )
 
-configure_file ( globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/heartbeat/globals.hpp
-  @ONLY )
+configure_file(globals.hpp.in ${CMAKE_SOURCE_DIR}/lib/heartbeat/globals.hpp @ONLY)
 
-wintermute_plugin_declare ( 
-  TARGET  heartbeat
+wintermute_plugin_declare(TARGET heartbeat
   HEADERS ${heartbeat_HDRS}
   SOURCES ${heartbeat_SRCS}
 )
 
-wintermute_plugin_set_version (
+wintermute_plugin_set_version(
   TARGET heartbeat
   PLUGIN_VERSION_MAJOR 0
   PLUGIN_VERSION_MINOR 1
@@ -52,11 +50,15 @@ wintermute_plugin_set_version (
   SYSTEM_VERSION_STAGE ${WINTERMUTE_VERSION_STAGE}
 )
 
-wintermute_plugin_configure ( TARGET heartbeat
+wintermute_plugin_configure(TARGET heartbeat
   AUTHOR_NAME "Jacky Alciné"
   NAME_RPC "wintermute.in.heartbeat"
   EMAIL "me@jalcine.me"
-  URI "http://wintermute.jalcine.me/plugins/heartbeart.html"
+  URI "http://wintermute.jalcine.me/plugins/heartbeat/"
   )
-wintermute_plugin_target_declare ( TARGET heartbeat SOURCES ${heartbeat_SRCS} )
-wintermute_plugin_install ( TARGET heartbeat )
+wintermute_plugin_generate_documentation(TARGET heartbeat
+  NAME "Heartbeat"
+  BRIEF "Module tracking in Wintermute."
+)
+wintermute_plugin_target_declare(TARGET heartbeat SOURCES ${heartbeat_SRCS})
+wintermute_plugin_install(TARGET heartbeat)

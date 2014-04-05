@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ * \copyright Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
+
+/**
+ * @namespace Wintermute
+ * @brief     Represents the parent namespace of Wintermute.
+ */
+
+/**
+ * @namespace Wintermute::Procedure
+ * @brief     Represents the parent namespace of Wintermute::Procedure.
+ */
+
+/**
+ * @namespace Wintermute::Events
+ * @brief     Represents the parent namespace of Wintermute::Events.
+ */
 
 #include "Wintermute/application.hpp"
 
