@@ -17,5 +17,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+# Yeah, modularized. This is so plugins can be documented the same way the
+# core binary is.
 include(WintermuteDocumentation)
-

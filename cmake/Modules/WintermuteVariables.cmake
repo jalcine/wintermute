@@ -37,8 +37,9 @@ set(WINTERMUTE_LIBEXEC_DIR
   "${WINTERMUTE_BUILD_PREFIX}/${CMAKE_INSTALL_LIBEXECDIR}")
 set(WINTERMUTE_DATA_DIR
   "${WINTERMUTE_BUILD_PREFIX}/${CMAKE_INSTALL_DATADIR}/wintermute")
-set(WINTERMUTE_CMAKE_TEMPLATES_DIR
+set(WINTERMUTE_CMAKE_TEMPLATES_INSTALL_DIR
   "${WINTERMUTE_BUILD_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Templates")
+set(WINTERMUTE_CMAKE_TEMPLATES_DIR "${CMAKE_SOURCE_DIR}/cmake/Templates")
 set(WINTERMUTE_CMAKE_MODULES_DIR
   "${WINTERMUTE_BUILD_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules")
 
@@ -54,11 +55,12 @@ set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE
 set(WINTERMUTE_COMPILE_FLAGS
   "-std=c++11 -frtti -Wall -Wunused")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE
-  "-Ofast -Wunused")
+  "-Ofast -frtti -Wunused-parameter -Wunused-function -Wunused -Wabi")
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG
-  "-g -O0 -fprofile-arcs -ftest-coverage -fno-omit-frame-pointer")
-set(WINTERMUTE_LINK_FLAGS
-  )
+  "-g -O0 -Wextra -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body -Winit-self -Woverflow -fprofile-arcs -ftest-coverage -fno-omit-frame-pointer")
+set(WINTERMUTE_COMPILE_FLAGS_RELEASE
+  "-Ofast -frtti -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body")
+set(WINTERMUTE_LINK_FLAGS )
 set(WINTERMUTE_LINK_FLAGS_DEBUG
   "-fprofile-arcs -ftest-coverage -lgcov -v")
 set(WINTERMUTE_LINK_FLAGS_RELEASE

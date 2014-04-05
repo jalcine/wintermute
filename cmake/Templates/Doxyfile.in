@@ -26,33 +26,26 @@ DOXYFILE_ENCODING      = UTF-8
 # identify the project. Note that if you do not use Doxywizard you need
 # to put quotes around the project name if it contains spaces.
 
-PROJECT_NAME           = "@PROJECT_NAME@"
+PROJECT_NAME           = "@wgd_NAME@"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = "@PROJECT_VERSION@"
+PROJECT_NUMBER         = "@wgd_VERSION@"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
 # a quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "@PROJECT_BRIEF@"
-
-# With the PROJECT_LOGO tag one can specify an logo or icon that is
-# included in the documentation. The maximum height of the logo should not
-# exceed 55 pixels and the maximum width should not exceed 200 pixels.
-# Doxygen will copy the logo to the output directory.
-
-PROJECT_LOGO           = "@PROJECT_LOGO@"
+PROJECT_BRIEF          = "@wgd_BRIEF@"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
 # If a relative path is entered, it will be relative to the location
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doc"
+OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doc/@_wgd_TARGET@"
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create
 # 4096 sub-directories (in 2 levels) under the output directory of each output
@@ -119,7 +112,7 @@ INLINE_INHERITED_MEMB  = NO
 # path before files name in the file list and in the header files. If set
 # to NO the shortest path that makes the file name unique will be used.
 
-FULL_PATH_NAMES        = YES
+FULL_PATH_NAMES        = NO
 
 # If the FULL_PATH_NAMES tag is set to YES then the STRIP_FROM_PATH tag
 # can be used to strip a user-defined part of the path. Stripping is
@@ -130,7 +123,7 @@ FULL_PATH_NAMES        = YES
 # relative paths, which will be relative from the directory where doxygen is
 # started.
 
-STRIP_FROM_PATH        =
+STRIP_FROM_PATH        = ""
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of
 # the path mentioned in the documentation of a class, which tells
@@ -186,7 +179,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # The TAB_SIZE tag can be used to set the number of spaces in a tab.
 # Doxygen uses this value to replace tabs by spaces in code fragments.
 
-TAB_SIZE               = 2 2 
+TAB_SIZE               = 2
 
 # This tag can be used to specify a number of aliases that acts
 # as commands in the documentation. An alias has the form "name=value".
@@ -380,7 +373,7 @@ EXTRACT_PACKAGE        = NO
 # If the EXTRACT_STATIC tag is set to YES all static members of a file
 # will be included in the documentation.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs)
 # defined locally in source files will be included in the documentation.
@@ -416,14 +409,14 @@ HIDE_UNDOC_MEMBERS     = NO
 # If set to NO (the default) these classes will be included in the various
 # overviews. This option has no effect if EXTRACT_ALL is enabled.
 
-HIDE_UNDOC_CLASSES     = NO
+HIDE_UNDOC_CLASSES     = YES
 
 # If the HIDE_FRIEND_COMPOUNDS tag is set to YES, Doxygen will hide all
 # friend (class|struct|union) declarations.
 # If set to NO (the default) these declarations will be included in the
 # documentation.
 
-HIDE_FRIEND_COMPOUNDS  = NO
+HIDE_FRIEND_COMPOUNDS  = YES
 
 # If the HIDE_IN_BODY_DOCS tag is set to YES, Doxygen will hide any
 # documentation blocks found inside the body of a function.
@@ -492,13 +485,13 @@ SORT_BRIEF_DOCS        = NO
 # This tag will be ignored for brief docs if SORT_BRIEF_DOCS is set to NO
 # and ignored for detailed docs if SORT_MEMBER_DOCS is set to NO.
 
-SORT_MEMBERS_CTORS_1ST = NO
+SORT_MEMBERS_CTORS_1ST = YES
 
 # If the SORT_GROUP_NAMES tag is set to YES then doxygen will sort the
 # hierarchy of group names into alphabetical order. If set to NO (the default)
 # the group names will appear in their defined order.
 
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be
 # sorted by fully-qualified names, including namespaces. If set to
@@ -692,7 +685,7 @@ FILE_PATTERNS          =
 # should be searched for input files as well. Possible values are YES and NO.
 # If left blank NO is used.
 
-RECURSIVE              = NO
+RECURSIVE              = YES
 
 # The EXCLUDE tag can be used to specify files and/or directories that should be
 # excluded from the INPUT source files. This way you can easily exclude a
@@ -791,7 +784,7 @@ FILTER_SOURCE_PATTERNS =
 # This can be useful if you have a project on for instance GitHub and want reuse
 # the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = @CMAKE_SOURCE_DIR@/doc/Intro.markdown
 
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
@@ -1067,14 +1060,14 @@ BINARY_TOC             = NO
 # The TOC_EXPAND flag can be set to YES to add extra items for group members
 # to the contents of the HTML help documentation and to the tree view.
 
-TOC_EXPAND             = NO
+TOC_EXPAND             = YES
 
 # If the GENERATE_QHP tag is set to YES and both QHP_NAMESPACE and
 # QHP_VIRTUAL_FOLDER are set, an additional index file will be generated
 # that can be used as input for Qt's qhelpgenerator to generate a
 # Qt Compressed Help (.qch) of the generated HTML documentation.
 
-GENERATE_QHP           = NO
+GENERATE_QHP           = YES
 
 # If the QHG_LOCATION tag is specified, the QCH_FILE tag can
 # be used to specify the file name of the resulting .qch file.
@@ -1086,7 +1079,7 @@ QCH_FILE               =
 # Qt Help Project output. For more information please see
 # http://doc.trolltech.com/qthelpproject.html#namespace
 
-QHP_NAMESPACE          = org.doxygen.Project
+QHP_NAMESPACE          = in.wintermute
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating
 # Qt Help Project output. For more information please see
@@ -1157,7 +1150,7 @@ DISABLE_INDEX          = NO
 # Since the tree basically has the same information as the tab index you
 # could consider to set DISABLE_INDEX to NO when enabling this option.
 
-GENERATE_TREEVIEW      = NO
+GENERATE_TREEVIEW      = YES
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values
 # (range [0,1..20]) that doxygen will group on one line in the generated HTML
