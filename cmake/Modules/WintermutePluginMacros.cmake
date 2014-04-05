@@ -123,7 +123,20 @@ endfunction(wintermute_plugin_target_declare)
 ## TODO: Document this method.
 ## TODO: Implement this method.
 function(wintermute_plugin_generate_documentation)
-  message(WARNING "[cmake] Documentation function not yet built.")
+  set(_oneArgs   TARGET BRIEF NAME)
+  cmake_parse_arguments(wpgd "" "${_oneArgs}" "" ${ARGN})
+
+  # Define the plugin's CMake prefix.
+  string(TOUPPER "WINTERMUTE_PLUGIN_${wpgd_TARGET}" _local)
+  string(TOLOWER "${wpgd_TARGET}" _minLocal)
+  wintermute_generate_documentation (TARGET ${${_local}_TARGET}
+    NAME             ${${_local}_NAME}
+    SOURCES          ${${_local}_SOURCES}
+    BRIEF            ${${_local}_BRIEF}
+    VERSION          ${${_local}_VERSION}
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/${${_local}_TARGET}
+  )
+
 endfunction(wintermute_plugin_generate_documentation)
 
 ##
@@ -184,6 +197,7 @@ function(wintermute_plugin_configure)
     set("${_local}_${_validProperty}" "${wpc_${_validProperty}}" 
       CACHE STRING "Configuration property.")
   endforeach(_validProperty ${_validProperties})
+
 endfunction(wintermute_plugin_configure)
 
 ##

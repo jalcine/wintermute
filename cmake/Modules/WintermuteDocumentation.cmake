@@ -18,17 +18,15 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-find_package(Doxygen REQUIRED)
+option(WITH_DOCUMENTATION ON "Generate documentation for the project.")
 
-include(CMakeParseArguments)
-include(WintermuteVariables)
+if (WITH_DOCUMENTATION)
+  find_package(Doxygen REQUIRED)
 
-if (NOT TARGET wintermute)
-  set(WINTERMUTE_DOXYFILE_TEMPLATE 
-    "${WINTERMUTE_CMAKE_TEMPLATES_DIR}/Doxyfile.in")
-else()
-  set(WINTERMUTE_DOXYFILE_TEMPLATE 
-    "${WINTERMUTE_CMAKE_TEMPLATES_INSTALL_DIR}/Doxyfile.in")
+  include(CMakeParseArguments)
+  include(WintermuteVariables)
+
+  set(WINTERMUTE_DOXYFILE_TEMPLATE "${WINTERMUTE_TEMPLATES_DIR}/Doxyfile.in")
 endif()
 
 macro(wintermute_generate_documentation)
@@ -37,20 +35,22 @@ macro(wintermute_generate_documentation)
 
   cmake_parse_arguments(wgd "" "${_singleArgs}" "${_multiArgs}" ${ARGN})
 
-  set(_local_target ${wgd_TARGET}-doc)
-  string(TOUPPER "WINTERMUTE_PLUGIN_${wgd_TARGET}" _local)
+  if (NOT DOXYGEN_FOUND OR NOT WITH_DOCUMENTATION)
+    message(STATUS "Not making documentation for ${wgd_TARGET}.")
+    return()
+  endif()
 
-  # DONE: Configure the Doxygen configuration file.
-  set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${wgd_TARGET}")
-  configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE})
-  message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
+  set(_local_target "${wgd_TARGET}-doc")
+  if (NOT TARGET ${_local_target})
+    string(TOUPPER "WINTERMUTE_PLUGIN_${wgd_TARGET}" _local)
 
-  # DONE: Define a target for Doxygen to execute.
-  # DONE: Make the documentation target dependent on a parent target.
-  add_custom_command(TARGET ${wgd_TARGET} PRE_BUILD
-    DEPENDS           ${wgd_TARGET}
-    COMMAND           ${DOXYGEN_EXECUTABLE} ARGS ${${_local}_DOXYFILE}
-    DEPENDS           ${${_local}_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
+    set(${_local}_DOXYFILE "${CMAKE_BINARY_DIR}/Doxyfile.${wgd_TARGET}")
+    configure_file(${WINTERMUTE_DOXYFILE_TEMPLATE} ${${_local}_DOXYFILE} @ONLY)
+
+    add_custom_command(TARGET ${wgd_TARGET}
+      COMMAND           ${DOXYGEN_EXECUTABLE} ${${_local}_DOXYFILE}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMENT           "Generating documentation for ${wgd_TARGET}..."
+    )
+  endif()
 endmacro(wintermute_generate_documentation)

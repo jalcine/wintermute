@@ -29,4 +29,5 @@ list(APPEND WINTERMUTE_CMAKE_MODULES
 
 ## Install the file to a discoverable path by CMake.
 install(FILES ${WINTERMUTE_CMAKE_MODULES}
+  COMPONENT   Development
   DESTINATION "${WINTERMUTE_CMAKE_MODULES_DIR}")
