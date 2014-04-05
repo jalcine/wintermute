@@ -46,107 +46,107 @@ class PluginProcess;
  */
 class Factory : public QObject
 {
-  friend class Application;
-  friend class ApplicationPrivate;
+	friend class Application;
+	friend class ApplicationPrivate;
 
-  Q_OBJECT
-  Q_DECLARE_PRIVATE ( Factory )
-  FactoryPrivate* d_ptr;
-  static Factory* self;
+	Q_OBJECT
+	Q_DECLARE_PRIVATE ( Factory )
+	FactoryPrivate* d_ptr;
+	static Factory* self;
 
-  /**
-   * @function Factory
-   * @ctor
-   */
-  explicit Factory();
+	/**
+	 * @function Factory
+	 * @ctor
+	 */
+	explicit Factory();
 
 private:
-  Q_SLOT void start();
-  Q_SLOT void stop();
-  Q_SIGNAL void started();
-  Q_SIGNAL void stopped();
+	Q_SLOT void start();
+	Q_SLOT void stop();
+	Q_SIGNAL void started();
+	Q_SIGNAL void stopped();
 
 public:
-  /**
-   * @function ~Factory
-   * @destructor
-   */
-  virtual ~Factory();
+	/**
+	 * @function ~Factory
+	 * @destructor
+	 */
+	virtual ~Factory();
 
-  /**
-   * @function instance
-   * @static
-   */
-  static Factory* instance();
+	/**
+	 * @function instance
+	 * @static
+	 */
+	static Factory* instance();
 
-  /**
-   * @function availablePlugins
-   *
-   * A list of all of the plugins that Wintermute can load.
-   */
-  QStringList availablePlugins() const;
+	/**
+	 * @function availablePlugins
+	 *
+	 * A list of all of the plugins that Wintermute can load.
+	 */
+	QStringList availablePlugins() const;
 
-  /**
-   * @function activePlugins
-   *
-   * Obtains a list of actively loaded plugins in this process.
-   */
-  QStringList activePlugins() const;
+	/**
+	 * @function activePlugins
+	 *
+	 * Obtains a list of actively loaded plugins in this process.
+	 */
+	QStringList activePlugins() const;
 
-  /**
-   * @function plugin
-   * @param name
-   *
-   * Obtains the specified plugin.
-   */
-  Plugin* plugin ( const QString& name ) const;
+	/**
+	 * @function plugin
+	 * @param name
+	 *
+	 * Obtains the specified plugin.
+	 */
+	Plugin* plugin ( const QString& name ) const;
 
-  /**
-   * @function loadPlugin
-   * @param name The name of the plug-in.
-   *
-   * Loads the specified plugin into this Wintermute process.
-   */
-  bool loadPlugin ( const QString& name );
+	/**
+	 * @function loadPlugin
+	 * @param name The name of the plug-in.
+	 *
+	 * Loads the specified plugin into this Wintermute process.
+	 */
+	bool loadPlugin ( const QString& name );
 
-  /**
-   * @function unloadPlugin
-   * @param name The name of the plug-in.
-   *
-   * Unloads the specified plugin from this Wintermute process.
-   */
-  bool unloadPlugin ( const QString& name );
+	/**
+	 * @function unloadPlugin
+	 * @param name The name of the plug-in.
+	 *
+	 * Unloads the specified plugin from this Wintermute process.
+	 */
+	bool unloadPlugin ( const QString& name );
 
-  /**
-   * @function spawnPlugin
-   * @param name The name of the plug-in.
-   *
-   * Loads the specified plugin in a separate process.
-   */
-  PluginProcess* spawnPlugin ( const QString& name );
+	/**
+	 * @function spawnPlugin
+	 * @param name The name of the plug-in.
+	 *
+	 * Loads the specified plugin in a separate process.
+	 */
+	PluginProcess* spawnPlugin ( const QString& name );
 
-  /**
-   * @function loadedPlugin
-   * @param plugin The name of the plugin in question.
-   */
-  bool loadedPlugin ( const QString& plugin );
+	/**
+	 * @function loadedPlugin
+	 * @param plugin The name of the plugin in question.
+	 */
+	bool loadedPlugin ( const QString& plugin );
 
-  /**
-   * @function autoloadPlugins
-   *
-   * Automatically loads the appropriate plugins for this process. This
-   * operation changes on the following cases:
-   *
-   *  + --mode=daemon (loads the daemon plugin)
-   *  + --mode=plugin (loads the plugin as specified by --plugin)
-   */
-  bool autoloadPlugins();
+	/**
+	 * @function autoloadPlugins
+	 *
+	 * Automatically loads the appropriate plugins for this process. This
+	 * operation changes on the following cases:
+	 *
+	 *  + --mode=daemon (loads the daemon plugin)
+	 *  + --mode=plugin (loads the plugin as specified by --plugin)
+	 */
+	bool autoloadPlugins();
 
-  /**
-   * @function unloadAllPlugins
-   * @brief    Unloads all of the active plugins in the process.
-   */
-  bool unloadAllPlugins();
+	/**
+	 * @function unloadAllPlugins
+	 * @brief    Unloads all of the active plugins in the process.
+	 */
+	bool unloadAllPlugins();
 };
 }
 

@@ -31,14 +31,14 @@ class Adaptor;
 class Dispatcher;
 class Receiver : public Wintermute::Procedure::Receiver
 {
-  Q_OBJECT;
-  friend class Dispatcher;
+	Q_OBJECT;
+	friend class Dispatcher;
 
-  Q_SLOT void handleAsyncCallReply ( QDBusPendingCallWatcher* reply );
+	Q_SLOT void handleAsyncCallReply ( QDBusPendingCallWatcher* reply );
 public:
-  explicit Receiver();
-  virtual ~Receiver();
-  Q_SLOT virtual void receiveMessage(const Procedure::Call::Pointer& call);
+	explicit Receiver();
+	virtual ~Receiver();
+	Q_SLOT virtual void receiveMessage(const Procedure::Call::Pointer& call);
 };
 }
 }

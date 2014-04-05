@@ -27,8 +27,8 @@ using Wintermute::Version;
 
 Plugin::Plugin()
 {
-  module = new Daemon::Module ( this );
-  module->connect ( this, SIGNAL ( started() ), SLOT ( start() ) );
+	module = new Daemon::Module ( this );
+	module->connect ( this, SIGNAL ( started() ), SLOT ( start() ) );
 }
 
 void
@@ -39,7 +39,7 @@ Plugin::stop()
 void
 Plugin::start()
 {
-  // TODO
+	// TODO
 }
 
 Plugin::~Plugin()

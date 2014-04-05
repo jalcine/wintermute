@@ -25,35 +25,35 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-/**
- * @class ProcessModule
- *
- * ProcessModule serves as a means of exposing this current process over
- * the network. Typically the first module created by a running process,
- * it connects it to the other processes quickly.
- */
-class ProcessModule : public Module
-{
-  Q_OBJECT
-  Q_DISABLE_COPY ( ProcessModule )
-  Q_INTERFACES (Wintermute::Procedure::Module)
+  namespace Procedure
+  {
+    /**
+     * @class ProcessModule
+     *
+     * ProcessModule serves as a means of exposing this current process over
+     * the network. Typically the first module created by a running process,
+     * it connects it to the other processes quickly.
+     */
+    class ProcessModule : public Module
+    {
+        Q_OBJECT
+        Q_DISABLE_COPY ( ProcessModule )
+        Q_INTERFACES (Wintermute::Procedure::Module)
 
-  friend class Wintermute::ApplicationPrivate;
-  explicit ProcessModule();
+        friend class Wintermute::ApplicationPrivate;
+        explicit ProcessModule();
 
-public:
-  virtual ~ProcessModule();
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
-  Q_SLOT void greetSystem ( const QString& name );
+      public:
+        virtual ~ProcessModule();
+        Q_SLOT virtual void start();
+        Q_SLOT virtual void stop();
+        Q_SLOT void greetSystem ( const QString &name );
 
-protected:
-  void reboot();
-  void quit ( const int exitcode = 0 );
-};
-}
+      protected:
+        void reboot();
+        void quit ( const int exitcode = 0 );
+    };
+  }
 }
 
 #endif

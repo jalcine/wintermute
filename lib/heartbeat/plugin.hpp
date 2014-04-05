@@ -29,17 +29,17 @@ namespace Heartbeat
 class PulseModule;
 class Plugin : public Wintermute::Plugin
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Plugin );
-  Q_CLASSINFO ( "Name", "heartbeat" );
-  Procedure::Module* module;
-  friend class PulseModule;
+	Q_OBJECT;
+	Q_DISABLE_COPY ( Plugin );
+	Q_CLASSINFO ( "Name", "heartbeat" );
+	Procedure::Module* module;
+	friend class PulseModule;
 
 public:
-  explicit Plugin();
-  virtual ~Plugin();
-  virtual Q_SLOT void start();
-  virtual Q_SLOT void stop();
+	explicit Plugin();
+	virtual ~Plugin();
+	virtual Q_SLOT void start();
+	virtual Q_SLOT void stop();
 
 };
 }

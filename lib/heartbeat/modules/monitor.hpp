@@ -23,43 +23,43 @@
 
 namespace Wintermute
 {
-namespace Heartbeat
-{
-class Plugin;
+  namespace Heartbeat
+  {
+    class Plugin;
 
-/**
- * @class MonitorModule
- * @brief Represents the monitoring instance of the heartbeat plugin.
- *
- * The monitor module keeps track of all of the processes on this local
- * machine that send a signal to this instance. This is done by recording the
- * initial 'pulse' that comes from a PulseModule that's embedded into every
- * process of Wintermute.
- */
-class MonitorModulePrivate;
-class MonitorModule : public Wintermute::Procedure::Module
-{
-  Q_OBJECT;
-  Q_DISABLE_COPY ( MonitorModule );
-  Q_DECLARE_PRIVATE ( MonitorModule );
-  QScopedPointer<MonitorModulePrivate> d_ptr;
+    /**
+     * @class MonitorModule
+     * @brief Represents the monitoring instance of the heartbeat plugin.
+     *
+     * The monitor module keeps track of all of the processes on this local
+     * machine that send a signal to this instance. This is done by recording the
+     * initial 'pulse' that comes from a PulseModule that's embedded into every
+     * process of Wintermute.
+     */
+    class MonitorModulePrivate;
+    class MonitorModule : public Wintermute::Procedure::Module
+    {
+        Q_OBJECT;
+        Q_DISABLE_COPY ( MonitorModule );
+        Q_DECLARE_PRIVATE ( MonitorModule );
+        QScopedPointer<MonitorModulePrivate> d_ptr;
 
-public:
-  explicit MonitorModule ( Heartbeat::Plugin* plugin );
-  virtual ~MonitorModule();
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
+      public:
+        explicit MonitorModule ( Heartbeat::Plugin *plugin );
+        virtual ~MonitorModule();
+        Q_SLOT virtual void start();
+        Q_SLOT virtual void stop();
 
-  /**
-   * @fn pids
-   * @brief Gets the known PIDS of Wintermute.
-   *
-   * Gets a list of the reporting PIDs that are currently running processes of
-   * Wintermute.
-   */
-  QList<qint64> pids() const;
-};
-}
+        /**
+         * @fn pids
+         * @brief Gets the known PIDS of Wintermute.
+         *
+         * Gets a list of the reporting PIDs that are currently running processes of
+         * Wintermute.
+         */
+        QList<qint64> pids() const;
+    };
+  }
 }
 
 #endif /* */

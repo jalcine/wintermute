@@ -28,64 +28,64 @@ namespace Heartbeat
 class MonitorModulePrivate
 {
 public:
-  QMap<quint64, QVariantMap> processes;
-  MonitorModule* q_ptr;
-  Q_DECLARE_PUBLIC ( MonitorModule );
+	QMap<quint64, QVariantMap> processes;
+	MonitorModule* q_ptr;
+	Q_DECLARE_PUBLIC ( MonitorModule );
 
-  MonitorModulePrivate ( MonitorModule* q ) :
-    processes ( QMap<quint64, QVariantMap>() ), q_ptr ( q ) {
-    winfo(q, "Prepped to monitor this system.");
-  }
+	MonitorModulePrivate ( MonitorModule* q ) :
+		processes ( QMap<quint64, QVariantMap>() ), q_ptr ( q ) {
+		winfo(q, "Prepped to monitor this system.");
+	}
 
-  void
-  mountCalls() {
-    q_ptr->mountCall ( new Procedure::LambdaCall ( "greet", q_ptr,
-    [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-      wdebug(q_ptr, "We got someone saying hello.");
-      return greet(args);
-    } ) );
-    q_ptr->mountCall ( new Procedure::LambdaCall ( "record", q_ptr,
-    [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-      wdebug(q_ptr, "Entering a new beating record.");
-      return record(args);
-    } ) );
-  }
+	void
+	mountCalls() {
+		q_ptr->mountCall ( new Procedure::LambdaCall ( "greet", q_ptr,
+		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+			wdebug(q_ptr, "We got someone saying hello.");
+			return greet(args);
+		} ) );
+		q_ptr->mountCall ( new Procedure::LambdaCall ( "record", q_ptr,
+		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+			wdebug(q_ptr, "Entering a new beating record.");
+			return record(args);
+		} ) );
+	}
 
-  void
-  killOtherMonitors() {
-    // TODO: Find other monitor instances on this local machine.
-    // TODO: Kill each instance.
-  }
+	void
+	killOtherMonitors() {
+		// TODO: Find other monitor instances on this local machine.
+		// TODO: Kill each instance.
+	}
 
-  QVariant greet ( const QVariantList& arguments ) {
-    QVariantMap newEntry;
-    newEntry.insert ( "name", arguments[0] );
-    newEntry.insert ( "pid",  arguments[1] );
-    processes.insert ( arguments[0].toUInt(), newEntry );
-    winfo ( q_ptr, QString ( "Hello %1 from %2!" ).
-            arg ( arguments[0].toString(), arguments[1].toString() ) );
-    return arguments[0].toUInt();
-  }
+	QVariant greet ( const QVariantList& arguments ) {
+		QVariantMap newEntry;
+		newEntry.insert ( "name", arguments[0] );
+		newEntry.insert ( "pid",  arguments[1] );
+		processes.insert ( arguments[0].toUInt(), newEntry );
+		winfo ( q_ptr, QString ( "Hello %1 from %2!" ).
+		        arg ( arguments[0].toString(), arguments[1].toString() ) );
+		return arguments[0].toUInt();
+	}
 
-  /**
-   * @fn record
-   * @param QVariantList arguments
-   *        - count: A count of the number of total pings sent.
-   *        - type:  The type of ping this is.
-   *        - pid:   PID of process that's pinging.
-   */
-  QVariant record ( const QVariantList& arguments ) {
-    quint64 pid = arguments[2].toUInt();
-    if ( processes.contains ( pid ) ) {
-      processes[pid]["count"] = arguments[0].toInt();
-    } else {
-      QVariantMap entry;
-      entry.insert ( "count",   arguments[0].toInt() );
-      entry.insert ( "signal",  arguments[1].toInt() );
-      processes.insert ( pid, entry );
-    }
-    return processes.contains ( pid );
-  }
+	/**
+	 * @fn record
+	 * @param QVariantList arguments
+	 *        - count: A count of the number of total pings sent.
+	 *        - type:  The type of ping this is.
+	 *        - pid:   PID of process that's pinging.
+	 */
+	QVariant record ( const QVariantList& arguments ) {
+		quint64 pid = arguments[2].toUInt();
+		if ( processes.contains ( pid ) ) {
+			processes[pid]["count"] = arguments[0].toInt();
+		} else {
+			QVariantMap entry;
+			entry.insert ( "count",   arguments[0].toInt() );
+			entry.insert ( "signal",  arguments[1].toInt() );
+			processes.insert ( pid, entry );
+		}
+		return processes.contains ( pid );
+	}
 };
 }
 }

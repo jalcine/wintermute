@@ -28,15 +28,15 @@ namespace Daemon
 class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
-  Q_OBJECT;
+	Q_OBJECT;
 public:
-  explicit Module ( Daemon::Plugin* plugin );
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
-  virtual ~Module();
+	explicit Module ( Daemon::Plugin* plugin );
+	Q_SLOT virtual void start();
+	Q_SLOT virtual void stop();
+	virtual ~Module();
 
 private:
-  void startUpPlugins(const QStringList& plugins);
+	void startUpPlugins(const QStringList& plugins);
 };
 }
 }

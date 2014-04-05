@@ -29,14 +29,14 @@ namespace ZeroMQ
 class Module;
 class Dispatcher : public Wintermute::Procedure::Dispatcher
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Dispatcher );
-  QtZeroMQ::PollingSocket* m_socket;
+	Q_OBJECT;
+	Q_DISABLE_COPY ( Dispatcher );
+	QtZeroMQ::PollingSocket* m_socket;
 
 public:
-  explicit Dispatcher ( Wintermute::ZeroMQ::Module* module );
-  virtual ~Dispatcher();
-  virtual void sendMessage ( const Procedure::Call::Pointer& call ) throw ( zmq::error_t );
+	explicit Dispatcher ( Wintermute::ZeroMQ::Module* module );
+	virtual ~Dispatcher();
+	virtual void sendMessage ( const Procedure::Call::Pointer& call ) throw ( zmq::error_t );
 };
 }
 }

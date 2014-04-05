@@ -28,8 +28,8 @@ using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::CallPrivate;
 
-MethodCall::MethodCall ( const QString& module,
-                         const QString& method,
+MethodCall::MethodCall ( const QString &module,
+                         const QString &method,
                          const QVariantList arguments ) :
   Call ( wntrApp->module() )
 {
@@ -41,19 +41,19 @@ MethodCall::MethodCall ( const QString& module,
 }
 
 void
-MethodCall::setArguments ( const QVariantList& arguments)
+MethodCall::setArguments ( const QVariantList &arguments)
 {
   d->data.insert ( "arguments", arguments );
 }
 
 void
-MethodCall::setMethod ( const QString& method )
+MethodCall::setMethod ( const QString &method )
 {
   d->data.insert ( "method", method );
 }
 
 void
-MethodCall::setModule ( const QString& module )
+MethodCall::setModule ( const QString &module )
 {
   d->data.insert ( "module", module );
 }
@@ -77,7 +77,7 @@ MethodCall::module() const
 }
 
 void
-MethodCall::setSender ( const Module* module )
+MethodCall::setSender ( const Module *module )
 {
   QVariantMap appData;
   appData["pid"]     = QCoreApplication::applicationPid();
@@ -89,17 +89,27 @@ MethodCall::setSender ( const Module* module )
 bool
 MethodCall::isValid() const
 {
-  if ( !Call::isValid() ) { return false; }
+  if ( !Call::isValid() ) {
+    return false;
+  }
   const QVariant value = d->data["sender"];
   const QVariantMap appData = value.toMap();
   Q_ASSERT ( value.isNull() == false );
   Q_ASSERT ( appData.contains("pid") == true );
   Q_ASSERT ( appData.contains("version") == true );
   Q_ASSERT ( appData.contains("module") == true );
-  if ( value.isNull() ) { return false; }
-  if ( !appData.contains("pid") ) { return false; }
-  if ( !appData.contains("version") ) { return false; }
-  if ( !appData.contains("module") ) { return false; }
+  if ( value.isNull() ) {
+    return false;
+  }
+  if ( !appData.contains("pid") ) {
+    return false;
+  }
+  if ( !appData.contains("version") ) {
+    return false;
+  }
+  if ( !appData.contains("module") ) {
+    return false;
+  }
   return true;
 }
 
@@ -118,7 +128,7 @@ MethodCall::invoke ( ) const
 }
 
 QPointer<ReplyCall>
-MethodCall::craftReply( const QVariant& value ) const
+MethodCall::craftReply( const QVariant &value ) const
 {
   return QPointer<ReplyCall>( new ReplyCall ( *this, value ) );
 }

@@ -28,16 +28,16 @@ namespace DBus
 class Module;
 class Plugin : public Wintermute::Plugin
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Plugin );
-  Q_CLASSINFO ( "Name", "dbus" );
-  Wintermute::DBus::Module* module;
+	Q_OBJECT;
+	Q_DISABLE_COPY ( Plugin );
+	Q_CLASSINFO ( "Name", "dbus" );
+	Wintermute::DBus::Module* module;
 
 public:
-  explicit Plugin();
-  virtual ~Plugin();
-  virtual Q_SLOT void start();
-  virtual Q_SLOT void stop();
+	explicit Plugin();
+	virtual ~Plugin();
+	virtual Q_SLOT void start();
+	virtual Q_SLOT void stop();
 };
 }
 }

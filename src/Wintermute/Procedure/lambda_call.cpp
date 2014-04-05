@@ -23,8 +23,8 @@
 
 using Wintermute::Procedure::LambdaCall;
 
-LambdaCall::LambdaCall ( const QString& name, Module* const module,
-                         const Signature& lambda ) : ModuleCall ( name, module )
+LambdaCall::LambdaCall ( const QString &name, Module *const module,
+                         const Signature &lambda ) : ModuleCall ( name, module )
 {
   setFunction ( lambda );
 }
@@ -36,13 +36,13 @@ LambdaCall::function() const
 }
 
 void
-LambdaCall::setFunction(const Signature& newFunction)
+LambdaCall::setFunction(const Signature &newFunction)
 {
   m_function = newFunction;
 }
 
 QVariant
-LambdaCall::invoke ( const QVariantList& data, const MethodCall& call )
+LambdaCall::invoke ( const QVariantList &data, const MethodCall &call )
 {
   return ( m_function ? m_function ( data, call ) : QVariant() );
 }

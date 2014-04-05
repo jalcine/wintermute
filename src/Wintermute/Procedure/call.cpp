@@ -29,25 +29,25 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::CallPrivate;
 
-bool wCallCheckFlag ( const Call& call, const Call::Types& flag )
+bool wCallCheckFlag ( const Call &call, const Call::Types &flag )
 {
   return call.type().testFlag ( flag );
 }
 
 
-Call::Call ( QObject* parent ) : QObject ( parent ),
+Call::Call ( QObject *parent ) : QObject ( parent ),
   d ( new CallPrivate (this) )
 {
 }
 
-Call::Call ( const CallPrivate::Pointer& other_d ) :
+Call::Call ( const CallPrivate::Pointer &other_d ) :
   QObject ( Wintermute::Application::instance() ), d ( other_d )
 {
   d.detach();
   d->q_ptr = this;
 }
 
-Call::Call ( const Call& other ) :
+Call::Call ( const Call &other ) :
   QObject ( other.parent() ), d ( other.d )
 {
   d.detach();
@@ -55,10 +55,13 @@ Call::Call ( const Call& other ) :
 }
 
 bool
-Call::isValid() const { return d->isValid(); }
+Call::isValid() const
+{
+  return d->isValid();
+}
 
 void
-Call::setRecipient ( const QString& moduleName )
+Call::setRecipient ( const QString &moduleName )
 {
   d->recipient = moduleName;
 }
@@ -98,8 +101,8 @@ Call::toString() const
   return ( ok ? json : QString::null );
 }
 
-Call*
-Call::fromString ( const QString& data )
+Call *
+Call::fromString ( const QString &data )
 {
   QJson::Parser parser;
   bool ok;

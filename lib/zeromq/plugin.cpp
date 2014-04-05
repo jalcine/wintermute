@@ -33,13 +33,13 @@ Plugin::Plugin() : module ( new ZeroMQ::Module ( this ) )
 void
 Plugin::stop()
 {
-  module->stop();
+	module->stop();
 }
 
 void
 Plugin::start()
 {
-  module->start();
+	module->start();
 }
 
 Q_EXPORT_PLUGIN2 ( wintermute-zeromq, Wintermute::ZeroMQ::Plugin );

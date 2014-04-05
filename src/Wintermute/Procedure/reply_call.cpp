@@ -26,7 +26,7 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::MethodCall;
 
-ReplyCall::ReplyCall( const MethodCall& call, const QVariant& response ) :
+ReplyCall::ReplyCall( const MethodCall &call, const QVariant &response ) :
   Call ( call ), m_response ( response )
 {
   setRecipient ( call.recipient() );
@@ -36,10 +36,10 @@ ReplyCall::ReplyCall( const MethodCall& call, const QVariant& response ) :
   d->data["call"]  = call.id();
 }
 
-MethodCall&
+MethodCall &
 ReplyCall::call() const
 {
-  return *(qobject_cast<MethodCall*>(parent()));
+  return *(qobject_cast<MethodCall *>(parent()));
 }
 
 bool
@@ -49,10 +49,18 @@ ReplyCall::isValid() const
   Q_ASSERT ( d->data.contains("reply") == true );
   Q_ASSERT ( d->data.contains("call") == true );
   Q_ASSERT ( wCallCheckFlag ( *this, Call::TypeReply ) == true );
-  if ( !Call::isValid() ) { return false; }
-  if ( !d->data.contains ( "reply" ) ) { return false; }
-  if ( !d->data.contains ( "call" ) ) { return false; }
-  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) { return false; }
+  if ( !Call::isValid() ) {
+    return false;
+  }
+  if ( !d->data.contains ( "reply" ) ) {
+    return false;
+  }
+  if ( !d->data.contains ( "call" ) ) {
+    return false;
+  }
+  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) {
+    return false;
+  }
   return true;
 }
 

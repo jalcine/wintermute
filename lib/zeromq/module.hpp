@@ -32,22 +32,22 @@ namespace ZeroMQ
 class Plugin;
 class Module : public Wintermute::Procedure::Module
 {
-  Q_OBJECT;
-  friend class Wintermute::ZeroMQ::Receiver;
-  friend class Wintermute::ZeroMQ::Dispatcher;
-  QtZeroMQ::PollingSocket* m_incomingSocket;
+	Q_OBJECT;
+	friend class Wintermute::ZeroMQ::Receiver;
+	friend class Wintermute::ZeroMQ::Dispatcher;
+	QtZeroMQ::PollingSocket* m_incomingSocket;
 
 public:
-  explicit Module ( ZeroMQ::Plugin* plugin );
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
-  virtual ~Module();
+	explicit Module ( ZeroMQ::Plugin* plugin );
+	Q_SLOT virtual void start();
+	Q_SLOT virtual void stop();
+	virtual ~Module();
 
 private:
-  void bindIncomingSocket();
-  Q_SLOT void pollInvoked();
-  Q_SLOT void pollError(int errorNumber, const QString& errorMessage);
-  QtZeroMQ::PollingContext* m_context;
+	void bindIncomingSocket();
+	Q_SLOT void pollInvoked();
+	Q_SLOT void pollError(int errorNumber, const QString& errorMessage);
+	QtZeroMQ::PollingContext* m_context;
 };
 }
 }

@@ -28,32 +28,34 @@ using Log4Qt::Logger;
 Logging* Logging::self = nullptr;
 
 Logging::Logging() :
-  QObject ( Application::instance() ), d_ptr ( new LoggingPrivate )
+	QObject ( Application::instance() ), d_ptr ( new LoggingPrivate )
 {
 }
 
 Logger*
 Logging::obtainLogger ( const QString& loggerName )
 {
-  Logger* log = Logger::logger ( loggerName );
-  log->setParent ( Application::instance() );
-  return log;
+	Logger* log = Logger::logger ( loggerName );
+	log->setParent ( Application::instance() );
+	return log;
 }
 
 Logger*
 Logging::obtainLogger ( const QObject* object )
 {
-  if ( object == 0 )
-  { return Logging::obtainLogger ( wntrApp ); }
-  return Logging::obtainLogger ( object->metaObject()->className() );
+	if ( object == 0 ) {
+		return Logging::obtainLogger ( wntrApp );
+	}
+	return Logging::obtainLogger ( object->metaObject()->className() );
 }
 
 Logging*
 Logging::instance()
 {
-  if ( !self )
-  { self = new Logging(); }
-  return self;
+	if ( !self ) {
+		self = new Logging();
+	}
+	return self;
 }
 
 Logging::~Logging()

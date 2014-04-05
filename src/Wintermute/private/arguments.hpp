@@ -21,36 +21,36 @@
 
 namespace Wintermute
 {
-class ArgumentsPrivate
-{
-public:
-  QCommandLine* args;
-  QVariantMap arguments;
+  class ArgumentsPrivate
+  {
+    public:
+      QCommandLine *args;
+      QVariantMap arguments;
 
-  ArgumentsPrivate ( QObject* parent ) :
-    args ( new QCommandLine ( parent ) ) {
-    args->enableVersion ( true );
-    args->enableHelp ( true );
-    addArguments();
+      ArgumentsPrivate ( QObject *parent ) :
+        args ( new QCommandLine ( parent ) ) {
+        args->enableVersion ( true );
+        args->enableHelp ( true );
+        addArguments();
+      };
+
+      /**
+       * @fn addArguments
+       *
+       * This private method handles the work of calling the necessary
+       * methods to grab all of the valid arguments from the command line.
+       *
+       * TODO: Allow dynamic appending to list of default methods.
+       */
+      void addArguments() {
+        args->addOption ( 'm', "mode",
+                          "Defines the mode that of which Wintermute will operate as.",
+                          QCommandLine::Mandatory );
+        args->addOption ( 'f', "fork", "Runs this process in the background.",
+                          QCommandLine::Optional );
+        args->addOption ( 'p', "plugin", "Defines the plugin UUID to be used.",
+                          QCommandLine::Optional );
+      }
   };
-
-  /**
-   * @fn addArguments
-   *
-   * This private method handles the work of calling the necessary
-   * methods to grab all of the valid arguments from the command line.
-   *
-   * TODO: Allow dynamic appending to list of default methods.
-   */
-  void addArguments() {
-    args->addOption ( 'm', "mode",
-                      "Defines the mode that of which Wintermute will operate as.",
-                      QCommandLine::Mandatory );
-    args->addOption ( 'f', "fork", "Runs this process in the background.",
-                      QCommandLine::Optional );
-    args->addOption ( 'p', "plugin", "Defines the plugin UUID to be used.",
-                      QCommandLine::Optional );
-  }
-};
 }
 

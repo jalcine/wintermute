@@ -31,19 +31,19 @@ class Receiver;
 class Adaptor;
 class Module : public Wintermute::Procedure::Module
 {
-  Q_OBJECT;
-  Q_CLASSINFO ( "D-Bus Interface", "in.wintermute.dbus.module" );
-  Dispatcher* m_dispatcher;
-  Receiver* m_receiver;
-  Adaptor* m_adaptor;
-  friend class Adaptor;
-  friend class Dispatcher;
+	Q_OBJECT;
+	Q_CLASSINFO ( "D-Bus Interface", "in.wintermute.dbus.module" );
+	Dispatcher* m_dispatcher;
+	Receiver* m_receiver;
+	Adaptor* m_adaptor;
+	friend class Adaptor;
+	friend class Dispatcher;
 
 public:
-  explicit Module ( DBus::Plugin* plugin );
-  Q_SLOT virtual void start();
-  Q_SLOT virtual void stop();
-  virtual ~Module();
+	explicit Module ( DBus::Plugin* plugin );
+	Q_SLOT virtual void start();
+	Q_SLOT virtual void stop();
+	virtual ~Module();
 };
 }
 }

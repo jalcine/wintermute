@@ -1,19 +1,20 @@
 # vim: ft=astylerc tw=78
-
 --style=kr
-
-# Spacing and indentation
-        indent=spaces=2
-                      indent-switches
-                      indent-cases
-                      pad-header
-                      convert-tabs
-
-# Alignment and positioning
-                      delete-empty-lines
-                      align-pointer=type
-                                    add-brackets
-                                    add-one-line-brackets
-                                    lineend=linux
-                                        suffix=none
-                                            preserve-date
+--lineend=linux
+--formatted
+--indent=spaces=2
+--indent-classes
+--indent-switches
+--indent-namespaces
+--indent-preprocessor
+--indent-col1-comments
+--min-conditional-indent=1
+--add-brackets
+--align-pointer=name
+--break-after-logical
+--delete-empty-lines
+--convert-tabs
+--max-code-length=80
+--pad-header
+--preserve-date
+--suffix=none

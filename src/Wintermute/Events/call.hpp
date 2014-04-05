@@ -20,25 +20,29 @@
 #define WINTERMUTE_EVENTS_CALL_HPP
 
 #include <QtCore/QEvent>
+#include <Wintermute/Globals>
 
 namespace Wintermute
 {
-namespace Procedure { class Call; }
-namespace Events
-{
-class CallEvent : public QEvent
-{
-  const Procedure::Call m_call;
+  namespace Procedure
+  {
+    class Call;
+  }
+  namespace Events
+  {
+    class CallEvent : public QEvent
+    {
+        const QScopedPointer<const Procedure::Call> m_callPtr;
 
-public:
-  static const int TypeReceive;
-  static const int TypeDispatch;
-  static const int TypeReply;
-  explicit CallEvent ( const int type, const Procedure::Call& callPtr );
-  virtual ~CallEvent();
-  const Procedure::Call& call() const;
-};
-} /* Events */
+      public:
+        static const int TypeReceive;
+        static const int TypeDispatch;
+        static const int TypeReply;
+        explicit CallEvent ( const int type, const Procedure::Call &callPtr );
+        virtual ~CallEvent();
+        const QScopedPointer<const Procedure::Call> &call() const;
+    };
+  } /* Events */
 }
 
 #endif

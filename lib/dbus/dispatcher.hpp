@@ -27,13 +27,13 @@ namespace DBus
 {
 class Dispatcher : public Wintermute::Procedure::Dispatcher
 {
-  Q_OBJECT;
-  Q_DISABLE_COPY ( Dispatcher );
+	Q_OBJECT;
+	Q_DISABLE_COPY ( Dispatcher );
 
 public:
-  explicit Dispatcher();
-  virtual ~Dispatcher();
-  virtual void sendMessage ( const Procedure::Call::Pointer& call );
+	explicit Dispatcher();
+	virtual ~Dispatcher();
+	virtual void sendMessage ( const Procedure::Call::Pointer& call );
 };
 }
 }

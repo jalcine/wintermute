@@ -32,7 +32,8 @@
 using Wintermute::Procedure::Receiver;
 using Wintermute::Events::CallEvent;
 
-QList<Receiver*> Wintermute::Procedure::ReceiverPrivate::receivers = QList<Receiver*>();
+QList<Receiver *> Wintermute::Procedure::ReceiverPrivate::receivers =
+  QList<Receiver *>();
 
 Receiver::Receiver() :
   QObject ( wntrApp )
@@ -41,10 +42,12 @@ Receiver::Receiver() :
 }
 
 void
-Receiver::receiveMessage ( const Call& call )
+Receiver::receiveMessage ( const Call &call )
 {
   QPointer<Procedure::Module> module = Module::findModule ( call.recipient() );
-  if ( module.isNull() ) { return; }
+  if ( module.isNull() ) {
+    return;
+  }
   QCoreApplication::postEvent ( module.data(),
                                 new CallEvent ( CallEvent::TypeReceive, call ) );
 }

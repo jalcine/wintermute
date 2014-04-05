@@ -21,22 +21,22 @@
 
 namespace Wintermute
 {
-class PluginProcess;
-class PluginProcessPrivate
-{
-  Q_DECLARE_PUBLIC ( PluginProcess );
-  PluginProcess* q_ptr;
-  QString pluginName;
+  class PluginProcess;
+  class PluginProcessPrivate
+  {
+      Q_DECLARE_PUBLIC ( PluginProcess );
+      PluginProcess *q_ptr;
+      QString pluginName;
 
-  PluginProcessPrivate ( PluginProcess* q ) :
-    q_ptr ( q ), pluginName ( QString::null ) {
-  }
+      PluginProcessPrivate ( PluginProcess *q ) :
+        q_ptr ( q ), pluginName ( QString::null ) {
+      }
 
-  void buildProcess() {
-    QStringList args;
-    args << "--mode" << "plugin" << "--plugin" << pluginName;
-    QProcess::startDetached ( QCoreApplication::applicationFilePath(), args );
-  }
+      void buildProcess() {
+        QStringList args;
+        args << "--mode" << "plugin" << "--plugin" << pluginName;
+        QProcess::startDetached ( QCoreApplication::applicationFilePath(), args );
+      }
 
-};
+  };
 }

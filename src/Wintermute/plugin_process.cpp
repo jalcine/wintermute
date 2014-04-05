@@ -24,17 +24,17 @@ using Wintermute::Plugin;
 using Wintermute::PluginProcess;
 
 PluginProcess::PluginProcess(const QString& pluginName) :
-  d_ptr ( new PluginProcessPrivate(this) )
+	d_ptr ( new PluginProcessPrivate(this) )
 {
-  Q_D ( PluginProcess );
-  d->pluginName = pluginName;
+	Q_D ( PluginProcess );
+	d->pluginName = pluginName;
 }
 
 void
 PluginProcess::start()
 {
-  Q_D( PluginProcess );
-  d->buildProcess();
+	Q_D( PluginProcess );
+	d->buildProcess();
 }
 
 void
@@ -45,8 +45,8 @@ PluginProcess::stop()
 QString
 PluginProcess::pluginName() const
 {
-  Q_D ( const PluginProcess );
-  return d->pluginName;
+	Q_D ( const PluginProcess );
+	return d->pluginName;
 }
 
 PluginProcess::~PluginProcess()

@@ -29,7 +29,7 @@ using Wintermute::Heartbeat::Plugin;
 using Wintermute::Heartbeat::PulseModule;
 using Wintermute::Heartbeat::PulseModulePrivate;
 
-PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
+PulseModule::PulseModule( Heartbeat::Plugin *plugin ) :
   Module ( plugin ), d_ptr ( new PulseModulePrivate(this) )
 {
   Q_D ( PulseModule );
@@ -60,7 +60,7 @@ PulseModule::tick()
 {
   Q_D ( PulseModule );
   pulse ( PulseModule::PulseAlive );
-  const Plugin* plugin = qobject_cast<Plugin*>( parent() );
+  const Plugin *plugin = qobject_cast<Plugin *>( parent() );
   const QVariant interval = plugin->configuration()->value("Pulse/Interval");
   if ( interval.isValid() ) {
     d->timer.setInterval ( interval.toInt() );
@@ -73,7 +73,8 @@ PulseModule::pulse( PulseType type )
 {
   Q_D ( PulseModule );
   d->timer.stop();
-  MethodCall* theCall = new MethodCall( WINTERMUTE_HEARTBEAT_DOMAIN".monitor", "record");
+  MethodCall *theCall = new MethodCall( WINTERMUTE_HEARTBEAT_DOMAIN".monitor",
+                                        "record");
   quint64 pid = QCoreApplication::applicationPid();
   theCall->setArguments (QVariantList() << d->count++ << type << pid );
   theCall->setSender ( this );

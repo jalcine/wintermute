@@ -28,37 +28,43 @@ class Receiver;
 class ReceiverPrivate
 {
 public:
-  static QList<Receiver*> receivers;
+	static QList<Receiver*> receivers;
 
-  static bool isReceiverKnown ( Receiver* receiver ) {
-    Q_FOREACH ( Receiver * aReceiver, ReceiverPrivate::receivers ) {
-      if ( aReceiver->metaObject()->className() ==
-           receiver->metaObject()->className() ) { return true; }
-    }
-    return false;
-  }
+	static bool isReceiverKnown ( Receiver* receiver ) {
+		Q_FOREACH ( Receiver * aReceiver, ReceiverPrivate::receivers ) {
+			if ( aReceiver->metaObject()->className() ==
+			     receiver->metaObject()->className() ) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  static bool addReceiver ( Receiver* receiver ) {
-    if ( !receiver ) { return false; }
-    if ( isReceiverKnown ( receiver ) ) {
-      wdebug ( receiver, "Already added into receiver pool." );
-      return false;
-    }
-    ReceiverPrivate::receivers << receiver;
-    wdebug ( receiver,
-             QString ( "%1 added to receiver pool." )
-             .arg ( receiver->metaObject()->className() ) );
-    return true;
-  }
+	static bool addReceiver ( Receiver* receiver ) {
+		if ( !receiver ) {
+			return false;
+		}
+		if ( isReceiverKnown ( receiver ) ) {
+			wdebug ( receiver, "Already added into receiver pool." );
+			return false;
+		}
+		ReceiverPrivate::receivers << receiver;
+		wdebug ( receiver,
+		         QString ( "%1 added to receiver pool." )
+		         .arg ( receiver->metaObject()->className() ) );
+		return true;
+	}
 
-  static bool removeReceiver ( Receiver* receiver ) {
-    if ( !isReceiverKnown ( receiver ) ) { return false; }
-    ReceiverPrivate::receivers.removeAll ( receiver );
-    wdebug ( receiver,
-             QString ( "%1 removed from receiver pool." )
-             .arg ( receiver->metaObject()->className() ) );
-    return true;
-  }
+	static bool removeReceiver ( Receiver* receiver ) {
+		if ( !isReceiverKnown ( receiver ) ) {
+			return false;
+		}
+		ReceiverPrivate::receivers.removeAll ( receiver );
+		wdebug ( receiver,
+		         QString ( "%1 removed from receiver pool." )
+		         .arg ( receiver->metaObject()->className() ) );
+		return true;
+	}
 };
 }
 }

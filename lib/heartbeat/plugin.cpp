@@ -28,26 +28,26 @@ using Wintermute::Heartbeat::Plugin;
 using Wintermute::Version;
 
 Plugin::Plugin() :
-  Wintermute::Plugin(),
-  module ( nullptr )
+	Wintermute::Plugin(),
+	module ( nullptr )
 {
-  module = new Heartbeat::MonitorModule(this);
-  Heartbeat::PulseModule* pulse = new Heartbeat::PulseModule(this);
-  pulse->start();
+	module = new Heartbeat::MonitorModule(this);
+	Heartbeat::PulseModule* pulse = new Heartbeat::PulseModule(this);
+	pulse->start();
 }
 
 void
 Plugin::stop()
 {
-  Q_ASSERT (module != 0);
-  module->stop();
+	Q_ASSERT (module != 0);
+	module->stop();
 }
 
 void
 Plugin::start()
 {
-  Q_ASSERT (module != 0);
-  module->start();
+	Q_ASSERT (module != 0);
+	module->start();
 }
 
 Plugin::~Plugin()

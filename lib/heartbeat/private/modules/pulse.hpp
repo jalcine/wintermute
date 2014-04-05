@@ -35,55 +35,55 @@ class PulseModule;
 class PulseModulePrivate
 {
 public:
-  QTimer timer;
-  PulseModule* q_ptr;
-  quint64 count;
-  Q_DECLARE_PUBLIC ( PulseModule );
+	QTimer timer;
+	PulseModule* q_ptr;
+	quint64 count;
+	Q_DECLARE_PUBLIC ( PulseModule );
 
-  PulseModulePrivate ( PulseModule* q ) :
-    timer ( q ), q_ptr ( q ), count ( 0 ) {
-    timer.setInterval ( WINTERMUTE_HEARTBEAT_INTERVAL );
-    timer.setSingleShot ( true );
-    QObject::connect ( &timer, SIGNAL(timeout()), q, SLOT(tick()) );
-  }
+	PulseModulePrivate ( PulseModule* q ) :
+		timer ( q ), q_ptr ( q ), count ( 0 ) {
+		timer.setInterval ( WINTERMUTE_HEARTBEAT_INTERVAL );
+		timer.setSingleShot ( true );
+		QObject::connect ( &timer, SIGNAL(timeout()), q, SLOT(tick()) );
+	}
 
-  void
-  mountCalls() {
-    Q_Q ( PulseModule );
-    q->mountCall ( new Procedure::LambdaCall ( "module", q,
-    [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-      const QString moduleName = args[0].toString();
-      const QVariant module = getModuleInfo(moduleName);
-      return module;
-    } ) );
-    q->mountCall ( new Procedure::LambdaCall ( "modules", q,
-    [&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-      const QVariant modules = getAllModulesInfo();
-      return modules;
-    } ) );
-  }
+	void
+	mountCalls() {
+		Q_Q ( PulseModule );
+		q->mountCall ( new Procedure::LambdaCall ( "module", q,
+		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+			const QString moduleName = args[0].toString();
+			const QVariant module = getModuleInfo(moduleName);
+			return module;
+		} ) );
+		q->mountCall ( new Procedure::LambdaCall ( "modules", q,
+		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+			const QVariant modules = getAllModulesInfo();
+			return modules;
+		} ) );
+	}
 
-  QVariantMap
-  getModuleInfo ( const QString& moduleName ) {
-    Procedure::Module* module = Procedure::Module::findModule ( moduleName );
-    QVariantMap values;
-    if ( module != nullptr ) {
-      values.insert ( "name",    module->qualifiedName() );
-      values.insert ( "domain",  module->domain() );
-      values.insert ( "package", module->package() );
-      values.insert ( "calls",   module->calls() );
-    }
-    return values;
-  }
+	QVariantMap
+	getModuleInfo ( const QString& moduleName ) {
+		Procedure::Module* module = Procedure::Module::findModule ( moduleName );
+		QVariantMap values;
+		if ( module != nullptr ) {
+			values.insert ( "name",    module->qualifiedName() );
+			values.insert ( "domain",  module->domain() );
+			values.insert ( "package", module->package() );
+			values.insert ( "calls",   module->calls() );
+		}
+		return values;
+	}
 
-  QVariantList
-  getAllModulesInfo() {
-    QVariantList modules;
-    for (Procedure::Module* module: Procedure::Module::knownModules()) {
-      modules.push_back ( getModuleInfo ( module->qualifiedName() ) );
-    }
-    return modules;
-  }
+	QVariantList
+	getAllModulesInfo() {
+		QVariantList modules;
+		for (Procedure::Module* module: Procedure::Module::knownModules()) {
+			modules.push_back ( getModuleInfo ( module->qualifiedName() ) );
+		}
+		return modules;
+	}
 };
 }
 }

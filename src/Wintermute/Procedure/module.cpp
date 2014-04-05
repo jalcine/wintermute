@@ -27,7 +27,7 @@ using Wintermute::Procedure::ModulePrivate;
 QMap<QString, QPointer<Module>> ModulePrivate::modules =
                                QMap<QString, QPointer<Module>>();
 
-Module::Module ( QObject* parent ) :
+Module::Module ( QObject *parent ) :
   QObject ( parent ), d_ptr ( new ModulePrivate ( this ) )
 {
 }
@@ -62,7 +62,7 @@ Module::calls () const
 }
 
 void
-Module::invokeCall ( const MethodCall& methodCall )
+Module::invokeCall ( const MethodCall &methodCall )
 {
   Q_ASSERT ( methodCall.isValid() );
   Q_D ( Module );
@@ -78,7 +78,7 @@ Module::invokeCall ( const MethodCall& methodCall )
 }
 
 QPointer<Module>
-Module::findModule ( const QString& name )
+Module::findModule ( const QString &name )
 {
   Q_ASSERT ( !name.isEmpty() );
   Q_ASSERT ( !name.isNull() );
@@ -86,7 +86,7 @@ Module::findModule ( const QString& name )
 }
 
 void
-Module::mountCall ( ModuleCall* call )
+Module::mountCall ( ModuleCall *call )
 {
   Q_D ( Module );
   Q_ASSERT ( call != nullptr );
@@ -100,7 +100,7 @@ QList<QPointer<Module>>
 }
 
 void
-Module::setDomain ( const QString& value )
+Module::setDomain ( const QString &value )
 {
   Q_ASSERT ( !value.isEmpty() );
   Q_ASSERT ( !value.isNull() );
@@ -110,7 +110,7 @@ Module::setDomain ( const QString& value )
 }
 
 void
-Module::setPackage ( const QString& value )
+Module::setPackage ( const QString &value )
 {
   Q_ASSERT ( !value.isEmpty() );
   Q_ASSERT ( !value.isNull() );

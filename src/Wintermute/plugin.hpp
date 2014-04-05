@@ -42,63 +42,63 @@ class PluginPrivate;
  */
 class Plugin : public QObject
 {
-  Q_OBJECT
-  Q_PROPERTY ( QString Name          READ name )
-  Q_PROPERTY ( Version Version       READ version )
-  Q_PROPERTY ( Version SystemVersion READ systemVersion )
+	Q_OBJECT
+	Q_PROPERTY ( QString Name          READ name )
+	Q_PROPERTY ( Version Version       READ version )
+	Q_PROPERTY ( Version SystemVersion READ systemVersion )
 
-  QScopedPointer<PluginPrivate> d_ptr;
-  Q_DECLARE_PRIVATE ( Plugin )
+	QScopedPointer<PluginPrivate> d_ptr;
+	Q_DECLARE_PRIVATE ( Plugin )
 
 protected:
-  explicit Plugin ( );
-  QSettings* configuration() const;
+	explicit Plugin ( );
+	QSettings* configuration() const;
 
 public:
-  virtual ~Plugin();
+	virtual ~Plugin();
 
-  Q_SIGNAL void started();
-  Q_SIGNAL void stopped();
+	Q_SIGNAL void started();
+	Q_SIGNAL void stopped();
 
-  /**
-   * @fn name
-   * Obtains the unique name of the plugin.
-   */
-  QString name() const;
+	/**
+	 * @fn name
+	 * Obtains the unique name of the plugin.
+	 */
+	QString name() const;
 
-  /**
-   * @fn version
-   * Obtains the versioning object for the plugin.
-   */
-  Version version() const;
+	/**
+	 * @fn version
+	 * Obtains the versioning object for the plugin.
+	 */
+	Version version() const;
 
-  /**
-   * @fn systemVersion
-   * Obtains the minimum running version of Wintermute required for plugin.
-   */
-  Version systemVersion() const;
+	/**
+	 * @fn systemVersion
+	 * Obtains the minimum running version of Wintermute required for plugin.
+	 */
+	Version systemVersion() const;
 
-  /**
-   * @fn isLoaded
-   * Determines if the plugin has been loaded.
-   */
-  bool isLoaded() const;
+	/**
+	 * @fn isLoaded
+	 * Determines if the plugin has been loaded.
+	 */
+	bool isLoaded() const;
 
-  /**
-   * @fn start
-   * Defines the logic for the activation of the plugin.
-   */
-  virtual void start() = 0;
+	/**
+	 * @fn start
+	 * Defines the logic for the activation of the plugin.
+	 */
+	virtual void start() = 0;
 
-  /**
-   * @fn stop
-   * Defines the logic for the deactivation of the plugin.
-   */
-  virtual void stop() = 0;
+	/**
+	 * @fn stop
+	 * Defines the logic for the deactivation of the plugin.
+	 */
+	virtual void stop() = 0;
 
-  friend class Factory;
-  friend class FactoryPrivate;
-  friend class TemporaryPlugin;
+	friend class Factory;
+	friend class FactoryPrivate;
+	friend class TemporaryPlugin;
 };
 
 typedef QList<Plugin*> PluginList;

@@ -24,18 +24,18 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class Receiver : public QObject
-{
-  Q_OBJECT
+  namespace Procedure
+  {
+    class Receiver : public QObject
+    {
+        Q_OBJECT
 
-protected:
-  explicit Receiver();
-  virtual ~Receiver();
-  Q_SLOT virtual void receiveMessage ( const Call& call );
-};
-}
+      protected:
+        explicit Receiver();
+        virtual ~Receiver();
+        Q_SLOT virtual void receiveMessage ( const Call &call );
+    };
+  }
 }
 
 #endif

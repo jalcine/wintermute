@@ -35,44 +35,44 @@ using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Receiver;
 
 Module::Module ( ZeroMQ::Plugin* plugin ) :
-  Wintermute::Procedure::Module ( plugin ),
-  m_context ( new QtZeroMQ::PollingContext ( this ) )
+	Wintermute::Procedure::Module ( plugin ),
+	m_context ( new QtZeroMQ::PollingContext ( this ) )
 {
-  setDomain ( WINTERMUTE_DOMAIN );
-  setPackage ( "zeromq" );
-  Receiver receiver ( this );
-  Dispatcher dispatcher ( this );
-  connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
-  connect ( m_context, SIGNAL ( pollError(int, const QString&) ),
-            this, SLOT ( pollError(int, const QString&) ) );
+	setDomain ( WINTERMUTE_DOMAIN );
+	setPackage ( "zeromq" );
+	Receiver receiver ( this );
+	Dispatcher dispatcher ( this );
+	connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
+	connect ( m_context, SIGNAL ( pollError(int, const QString&) ),
+	          this, SLOT ( pollError(int, const QString&) ) );
 }
 
 void
 Module::pollInvoked()
 {
-  // TODO Query context for more messages.
+	// TODO Query context for more messages.
 }
 
 void
 Module::pollError(int errorNumber, const QString& errorMessage)
 {
-  werr(this, QString("ZeroMQ error %1: %2").
-       arg(QString::number(errorNumber), errorMessage));
+	werr(this, QString("ZeroMQ error %1: %2").
+	     arg(QString::number(errorNumber), errorMessage));
 }
 
 void
 Module::start()
 {
-  m_context->start();
+	m_context->start();
 }
 
 void
 Module::stop()
 {
-  m_context->stop();
+	m_context->stop();
 }
 
 Module::~Module()
 {
-  stop();
+	stop();
 }

@@ -27,16 +27,16 @@ namespace Wintermute
 class PluginProcessPrivate;
 class PluginProcess : public QObject
 {
-  Q_OBJECT
-  QScopedPointer<PluginProcessPrivate> d_ptr;
-  Q_DECLARE_PRIVATE ( PluginProcess )
+	Q_OBJECT
+	QScopedPointer<PluginProcessPrivate> d_ptr;
+	Q_DECLARE_PRIVATE ( PluginProcess )
 
 public:
-  explicit PluginProcess(const QString& pluginName);
-  virtual ~PluginProcess();
-  void start();
-  void stop();
-  QString pluginName() const;
+	explicit PluginProcess(const QString& pluginName);
+	virtual ~PluginProcess();
+	void start();
+	void stop();
+	QString pluginName() const;
 };
 }
 

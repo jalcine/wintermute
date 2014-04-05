@@ -23,47 +23,47 @@
 
 namespace Wintermute
 {
-namespace Heartbeat
-{
-class Plugin;
+  namespace Heartbeat
+  {
+    class Plugin;
 
-/**
- * @class PulseModule
- * @brief Represents the monitoring instance of the heartbeat plugin.
- *
- * The monitor module keeps track of all of the processes on this local
- * machine that send a signal to this instance. This is done by recording the
- * initial 'pulse' that comes from a PulseModule that's embedded into every
- * process of Wintermute.
- */
-class PulseModulePrivate;
-class PulseModule : public Wintermute::Procedure::Module
-{
-  Q_OBJECT;
-  Q_DISABLE_COPY ( PulseModule );
-  QScopedPointer<PulseModulePrivate> d_ptr;
-  Q_DECLARE_PRIVATE ( PulseModule );
-  Q_SLOT void tick();
+    /**
+     * @class PulseModule
+     * @brief Represents the monitoring instance of the heartbeat plugin.
+     *
+     * The monitor module keeps track of all of the processes on this local
+     * machine that send a signal to this instance. This is done by recording the
+     * initial 'pulse' that comes from a PulseModule that's embedded into every
+     * process of Wintermute.
+     */
+    class PulseModulePrivate;
+    class PulseModule : public Wintermute::Procedure::Module
+    {
+        Q_OBJECT;
+        Q_DISABLE_COPY ( PulseModule );
+        QScopedPointer<PulseModulePrivate> d_ptr;
+        Q_DECLARE_PRIVATE ( PulseModule );
+        Q_SLOT void tick();
 
-public:
-  enum PulseType {
-    PulseStartingUp   = 0x001,
-    PulseIdle         = 0x002,
-    PulseAlive        = 0x003,
-    PulseClosingDown  = 0xfff
-  };
+      public:
+        enum PulseType {
+          PulseStartingUp   = 0x001,
+          PulseIdle         = 0x002,
+          PulseAlive        = 0x003,
+          PulseClosingDown  = 0xfff
+        };
 
-  Q_ENUMS(PulseType);
+        Q_ENUMS(PulseType);
 
-  explicit PulseModule ( Heartbeat::Plugin* plugin );
-  virtual ~PulseModule();
+        explicit PulseModule ( Heartbeat::Plugin *plugin );
+        virtual ~PulseModule();
 
-public slots:
-  Q_INVOKABLE virtual void start();
-  Q_INVOKABLE virtual void stop();
-  Q_INVOKABLE void pulse(PulseType type);
-};
-}
+      public slots:
+        Q_INVOKABLE virtual void start();
+        Q_INVOKABLE virtual void stop();
+        Q_INVOKABLE void pulse(PulseType type);
+    };
+  }
 }
 
 #endif /* */

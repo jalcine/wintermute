@@ -24,8 +24,8 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ModuleCall;
 
-ModuleCall::ModuleCall( const QString& name, const Module* module ) :
-  Call ( const_cast<Module*>(module) )
+ModuleCall::ModuleCall( const QString &name, const Module *module ) :
+  Call ( const_cast<Module *>(module) )
 {
   d->name = name;
 }
@@ -36,14 +36,14 @@ ModuleCall::callback() const
   return m_callback;
 }
 
-const Module&
+const Module &
 ModuleCall::module() const
 {
   return *m_module;
 }
 
 void
-ModuleCall::setCallback ( ModuleCall::CallbackSignature& signature )
+ModuleCall::setCallback ( ModuleCall::CallbackSignature &signature )
 {
   m_callback = signature;
 }

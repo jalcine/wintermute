@@ -28,16 +28,16 @@ const int CallEvent::TypeReceive  = QEvent::registerEventType();
 const int CallEvent::TypeDispatch = QEvent::registerEventType();
 const int CallEvent::TypeReply    = QEvent::registerEventType();
 
-CallEvent::CallEvent ( const int type, const Call& call ) :
-  QEvent ( ( QEvent::Type ) type ) , m_call ( call )
+CallEvent::CallEvent ( const int type, const Call &call ) :
+  QEvent ( ( QEvent::Type ) type ), m_callPtr ( &call )
 {
-  Q_ASSERT ( call->isValid() );
+  Q_ASSERT ( m_callPtr->isValid() );
 }
 
-const Call&
+const QScopedPointer<const Call> &
 CallEvent::call() const
 {
-  return m_call;
+  return m_callPtr;
 }
 
 CallEvent::~CallEvent()

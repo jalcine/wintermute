@@ -29,51 +29,51 @@ using Wintermute::DBus::Receiver;
 using Wintermute::Procedure::Call;
 
 Adaptor::Adaptor( Module* module ) :
-  QDBusAbstractAdaptor( module )
+	QDBusAbstractAdaptor( module )
 {
 }
 
 void
 Adaptor::registerOnDBus()
 {
-  QDBusConnection bus = QDBusConnection::sessionBus();
-  const bool serviceRegistered = bus.registerService ( QString (
-                                   "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
-  if ( !serviceRegistered ) {
-    werr (this, "Failed to register service with D-Bus.");
-    return;
-  }
-  bus.registerObject( "/Process", this, QDBusConnection::ExportAllInvokables );
+	QDBusConnection bus = QDBusConnection::sessionBus();
+	const bool serviceRegistered = bus.registerService ( QString (
+	                                 "in.wintermute.p%1" ).arg( QCoreApplication::applicationPid() ) );
+	if ( !serviceRegistered ) {
+		werr (this, "Failed to register service with D-Bus.");
+		return;
+	}
+	bus.registerObject( "/Process", this, QDBusConnection::ExportAllInvokables );
 }
 
 void
 Adaptor::deregisterFromDBus()
 {
-  QDBusConnection bus = QDBusConnection::sessionBus();
-  bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
-                            QCoreApplication::applicationPid() ) );
-  for (Procedure::Module* module: Procedure::Module::knownModules() ) {
-    const QString objectName = "/" + module->package();
-    bus.unregisterObject ( objectName );
-  }
+	QDBusConnection bus = QDBusConnection::sessionBus();
+	bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
+	                          QCoreApplication::applicationPid() ) );
+	for (Procedure::Module* module: Procedure::Module::knownModules() ) {
+		const QString objectName = "/" + module->package();
+		bus.unregisterObject ( objectName );
+	}
 }
 
 void
 Adaptor::handleIncomingCall ( const QString& arguments, const
                               QDBusMessage& message )
 {
-  Q_ASSERT ( !arguments.isNull() );
-  Q_ASSERT ( !arguments.isEmpty() );
-  const Call::Pointer incomingCall = Call::fromString ( arguments );
-  Module* module = qobject_cast<Wintermute::DBus::Module*>(parent());
-  Q_CHECK_PTR ( module );
-  module->m_receiver->receiveMessage ( incomingCall );
+	Q_ASSERT ( !arguments.isNull() );
+	Q_ASSERT ( !arguments.isEmpty() );
+	const Call::Pointer incomingCall = Call::fromString ( arguments );
+	Module* module = qobject_cast<Wintermute::DBus::Module*>(parent());
+	Q_CHECK_PTR ( module );
+	module->m_receiver->receiveMessage ( incomingCall );
 }
 
 bool
 Adaptor::hasModule ( const QString& name )
 {
-  return Procedure::Module::findModule ( name ) != nullptr;
+	return Procedure::Module::findModule ( name ) != nullptr;
 }
 
 Adaptor::~Adaptor()

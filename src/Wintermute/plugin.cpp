@@ -32,54 +32,54 @@ using Wintermute::Logging;
 using Wintermute::Logger;
 
 Plugin::Plugin ( ) :
-  QObject ( Factory::instance() ),
-  d_ptr ( new PluginPrivate ( this ) )
+	QObject ( Factory::instance() ),
+	d_ptr ( new PluginPrivate ( this ) )
 {
 }
 
 QSettings*
 Plugin::configuration() const
 {
-  Q_D ( const Plugin );
-  if ( d->settings == 0 ) {
-    QMetaClassInfo nameClass = metaObject()->classInfo (
-                                 metaObject()->indexOfClassInfo ( "Name" ) );
-    const QString name = nameClass.value();
-    d->settings = new QSettings( "Wintermute", name, parent() );
-    winfo( this, QString( "%1's settings are now found at %2." ).arg( name,
-           d->settings->fileName() ) );
-  }
-  return d->settings;
+	Q_D ( const Plugin );
+	if ( d->settings == 0 ) {
+		QMetaClassInfo nameClass = metaObject()->classInfo (
+		                             metaObject()->indexOfClassInfo ( "Name" ) );
+		const QString name = nameClass.value();
+		d->settings = new QSettings( "Wintermute", name, parent() );
+		winfo( this, QString( "%1's settings are now found at %2." ).arg( name,
+		       d->settings->fileName() ) );
+	}
+	return d->settings;
 }
 
 Version
 Plugin::version() const
 {
-  QVariant value = configuration()->value ( "Version/Plugin" );
-  return value.isNull() ? Version() : Version::fromString ( value.toString() );
+	QVariant value = configuration()->value ( "Version/Plugin" );
+	return value.isNull() ? Version() : Version::fromString ( value.toString() );
 }
 
 Version
 Plugin::systemVersion() const
 {
-  QVariant value = configuration()->value ( "Version/System" );
-  return value.isNull() ? Version() : Version::fromString ( value.toString() );
+	QVariant value = configuration()->value ( "Version/System" );
+	return value.isNull() ? Version() : Version::fromString ( value.toString() );
 }
 
 QString
 Plugin::name() const
 {
-  QMetaClassInfo nameClass = metaObject()->classInfo (
-                               metaObject()->indexOfClassInfo ( "Name" ) );
-  QVariant value = configuration()->value("Plugin/Name");
-  return value.isNull() ? nameClass.value() : value.toString();
+	QMetaClassInfo nameClass = metaObject()->classInfo (
+	                             metaObject()->indexOfClassInfo ( "Name" ) );
+	QVariant value = configuration()->value("Plugin/Name");
+	return value.isNull() ? nameClass.value() : value.toString();
 }
 
 bool
 Plugin::isLoaded() const
 {
-  Q_D ( const Plugin );
-  return d->loader != 0 && d->loader->isLoaded();
+	Q_D ( const Plugin );
+	return d->loader != 0 && d->loader->isLoaded();
 }
 
 Plugin::~Plugin()

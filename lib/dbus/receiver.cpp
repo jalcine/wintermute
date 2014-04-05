@@ -26,25 +26,25 @@ using Wintermute::DBus::Adaptor;
 using Wintermute::Procedure::Call;
 
 Receiver::Receiver() :
-  Wintermute::Procedure::Receiver()
+	Wintermute::Procedure::Receiver()
 {
 }
 
 void
 Receiver::receiveMessage ( const Call::Pointer& call )
 {
-  // TODO Some meta-data about D-Bus or call origin could be added.
-  Wintermute::Procedure::Receiver::receiveMessage(call.data());
+	// TODO Some meta-data about D-Bus or call origin could be added.
+	Wintermute::Procedure::Receiver::receiveMessage(call.data());
 }
 
 void
 Receiver::handleAsyncCallReply ( QDBusPendingCallWatcher* reply )
 {
-  QDBusPendingReply<QString> replyValue = *reply;
-  if ( replyValue.isValid() && replyValue.isFinished() ) {
-    winfo ( this, replyValue.argumentAt<0>() );
-  }
-  reply->deleteLater();
+	QDBusPendingReply<QString> replyValue = *reply;
+	if ( replyValue.isValid() && replyValue.isFinished() ) {
+		winfo ( this, replyValue.argumentAt<0>() );
+	}
+	reply->deleteLater();
 }
 
 Receiver::~Receiver()

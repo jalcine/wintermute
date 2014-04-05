@@ -52,12 +52,13 @@ ProcessModule::ProcessModule() :
 }
 
 void
-ProcessModule::greetSystem ( const QString& name )
+ProcessModule::greetSystem ( const QString &name )
 {
   QPointer<Module> module = Module::findModule (name);
   const QVariantList args = QVariantList() << module->qualifiedName() <<
                             QCoreApplication::applicationPid();
-  const MethodCall methodCall ( WINTERMUTE_DOMAIN".heartbeat.monitor", "greet", args );
+  const MethodCall methodCall ( WINTERMUTE_DOMAIN".heartbeat.monitor", "greet",
+                                args );
   methodCall.dispatch ();
 }
 
@@ -93,6 +94,7 @@ ProcessModule::quit ( const int exitcode )
 
 ProcessModule::~ProcessModule()
 {
-  if ( !QCoreApplication::closingDown() )
-  { stop(); }
+  if ( !QCoreApplication::closingDown() ) {
+    stop();
+  }
 }

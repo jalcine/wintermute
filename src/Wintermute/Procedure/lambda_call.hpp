@@ -24,51 +24,52 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class Module;
-class MethodCall;
-class LambdaCall : public ModuleCall
-{
-  Q_OBJECT;
-  Q_DISABLE_COPY ( LambdaCall );
+  namespace Procedure
+  {
+    class Module;
+    class MethodCall;
+    class LambdaCall : public ModuleCall
+    {
+        Q_OBJECT;
+        Q_DISABLE_COPY ( LambdaCall );
 
-public:
-  /**
-   * @typedef Signature
-   * @brief   Provides the short-hand signature for Call methods.
-   */
-  typedef std::function<QVariant ( QVariantList, const MethodCall& ) > Signature;
+      public:
+        /**
+         * @typedef Signature
+         * @brief   Provides the short-hand signature for Call methods.
+         */
+        typedef std::function<QVariant ( QVariantList, const MethodCall & ) > Signature;
 
-  /**
-   * @ctor
-   */
-  explicit LambdaCall ( const QString& name, Module* const module = nullptr,
-                        const Signature& lambda = nullptr );
+        /**
+         * @ctor
+         */
+        explicit LambdaCall ( const QString &name, Module *const module = nullptr,
+                              const Signature &lambda = nullptr );
 
-  /**
-   * @dtor
-   */
-  virtual ~LambdaCall();
+        /**
+         * @dtor
+         */
+        virtual ~LambdaCall();
 
-  /**
-   * @fn function
-   * @brief The function to be invoked when this call is interacted with.
-   */
-  Signature function() const;
+        /**
+         * @fn function
+         * @brief The function to be invoked when this call is interacted with.
+         */
+        Signature function() const;
 
-  /**
-   * @fn setFunction
-   * @brief Sets the function to be invoked.
-   */
-  void setFunction ( const LambdaCall::Signature& newFunction );
+        /**
+         * @fn setFunction
+         * @brief Sets the function to be invoked.
+         */
+        void setFunction ( const LambdaCall::Signature &newFunction );
 
-  virtual QVariant invoke ( const QVariantList& arguments, const MethodCall& call );
+        virtual QVariant invoke ( const QVariantList &arguments,
+                                  const MethodCall &call );
 
-private:
-  Signature m_function;
-};
-}
+      private:
+        Signature m_function;
+    };
+  }
 }
 
 #endif

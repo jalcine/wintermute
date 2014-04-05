@@ -22,24 +22,24 @@
 
 namespace Wintermute
 {
-namespace Procedure
-{
-class MethodCall;
-class ReplyCall : public Call
-{
-  Q_OBJECT
-  QVariant m_response;
+  namespace Procedure
+  {
+    class MethodCall;
+    class ReplyCall : public Call
+    {
+        Q_OBJECT
+        QVariant m_response;
 
-public:
-  ReplyCall ( const MethodCall& call, const QVariant& response );
-  virtual ~ReplyCall();
+      public:
+        ReplyCall ( const MethodCall &call, const QVariant &response );
+        virtual ~ReplyCall();
 
-  QVariant response() const;
-  MethodCall& call() const;
-  virtual bool isValid() const;
-  void sendReply() const;
-};
-}
+        QVariant response() const;
+        MethodCall &call() const;
+        virtual bool isValid() const;
+        void sendReply() const;
+    };
+  }
 }
 
 #endif

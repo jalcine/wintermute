@@ -1,6 +1,6 @@
 /**
  * vim: ft=cpp tw=78
- * Copyright (C) 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,9 @@ QPointer<Application> Application::self ( nullptr );
 Application::Application ( int& argc, char** argv ) :
   QObject(), d_ptr ( new ApplicationPrivate ( argc, argv, this ) )
 {
-  Q_D ( Application );
   Application::self = qobject_cast<Application*> ( this );
+  Q_D ( Application );
+
   setParent(d->app.data());
   d->app->setApplicationName    ( WINTERMUTE_NAME );
   d->app->setApplicationVersion ( version().toString() );
@@ -57,7 +58,8 @@ Application::run ( int& argc, char** argv )
 {
   Q_ASSERT ( Application::instance() == nullptr );
   int returnCode = 0x0;
-  if ( Application::instance() == nullptr ) {
+  if ( Application::instance() == nullptr )
+  {
     self = new Application ( argc, argv );
     Logger* log = wlog ( self );
     self->d_ptr->initialize();
@@ -133,6 +135,7 @@ Application::setting ( const QString& path, const QVariant value )
 void
 Application::setSetting ( const QString& path, const QVariant value )
 {
+  // TODO: Should we force the sync?
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
   d->settings->setValue ( path, value );
   d->settings->sync();

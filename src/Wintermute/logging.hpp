@@ -31,23 +31,23 @@ typedef ::Log4Qt::Logger Logger;
 
 class Logging : public QObject
 {
-  Q_OBJECT
-  Q_DECLARE_PRIVATE ( Logging )
+	Q_OBJECT
+	Q_DECLARE_PRIVATE ( Logging )
 
-  friend class Application;
-  friend class ApplicationPrivate;
+	friend class Application;
+	friend class ApplicationPrivate;
 
-  QScopedPointer<LoggingPrivate> d_ptr;
-  static Logging* self;
-  explicit Logging();
+	QScopedPointer<LoggingPrivate> d_ptr;
+	static Logging* self;
+	explicit Logging();
 
 public:
-  virtual ~Logging();
+	virtual ~Logging();
 
-  static Logging* instance();
-  static Logger* obtainLogger ( const QString& loggerName );
-  static Logger* obtainLogger ( const QObject* object = nullptr );
-  static Logger* obtainRootLogger();
+	static Logging* instance();
+	static Logger* obtainLogger ( const QString& loggerName );
+	static Logger* obtainLogger ( const QObject* object = nullptr );
+	static Logger* obtainRootLogger();
 };
 }
 

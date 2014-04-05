@@ -24,7 +24,7 @@
 using Wintermute::Heartbeat::MonitorModule;
 using Wintermute::Heartbeat::MonitorModulePrivate;
 
-MonitorModule::MonitorModule( Heartbeat::Plugin* plugin ) :
+MonitorModule::MonitorModule( Heartbeat::Plugin *plugin ) :
   Wintermute::Procedure::Module ( plugin ),
   d_ptr ( new MonitorModulePrivate ( this ) )
 {

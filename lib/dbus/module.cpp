@@ -33,28 +33,28 @@ using Wintermute::DBus::Dispatcher;
 using Wintermute::Procedure::Call;
 
 Module::Module ( DBus::Plugin* plugin ) :
-  Wintermute::Procedure::Module ( plugin ),
-  m_dispatcher ( 0 ), m_receiver ( 0 )
+	Wintermute::Procedure::Module ( plugin ),
+	m_dispatcher ( 0 ), m_receiver ( 0 )
 {
-  setDomain ( WINTERMUTE_DOMAIN );
-  setPackage ( "dbus" );
-  m_dispatcher = new Dispatcher;
-  m_receiver = new Receiver;
-  m_dispatcher->setParent ( this );
-  m_receiver->setParent ( this );
-  m_adaptor = new Adaptor ( this );
+	setDomain ( WINTERMUTE_DOMAIN );
+	setPackage ( "dbus" );
+	m_dispatcher = new Dispatcher;
+	m_receiver = new Receiver;
+	m_dispatcher->setParent ( this );
+	m_receiver->setParent ( this );
+	m_adaptor = new Adaptor ( this );
 }
 
 void
 Module::start()
 {
-  m_adaptor->registerOnDBus();
+	m_adaptor->registerOnDBus();
 }
 
 void
 Module::stop()
 {
-  m_adaptor->deregisterFromDBus();
+	m_adaptor->deregisterFromDBus();
 }
 
 Module::~Module()

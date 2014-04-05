@@ -34,17 +34,17 @@ using Wintermute::Daemon::Plugin;
 
 Module::Module ( Daemon::Plugin* plugin ) : Wintermute::Procedure::Module ( plugin )
 {
-  setDomain ( WINTERMUTE_DOMAIN );
-  setPackage ( "daemon" );
+	setDomain ( WINTERMUTE_DOMAIN );
+	setPackage ( "daemon" );
 }
 
 void
 Module::start()
 {
-  QStringList values = QString(WINTERMUTE_DAEMON_STARTUP_LIST).split(';');
-  winfo(this, QString("Plugins to start up: %1.")
-        .arg(WINTERMUTE_DAEMON_STARTUP_LIST));
-  startUpPlugins(values);
+	QStringList values = QString(WINTERMUTE_DAEMON_STARTUP_LIST).split(';');
+	winfo(this, QString("Plugins to start up: %1.")
+	      .arg(WINTERMUTE_DAEMON_STARTUP_LIST));
+	startUpPlugins(values);
 }
 
 void
@@ -55,13 +55,13 @@ Module::stop()
 void
 Module::startUpPlugins(const QStringList& plugins)
 {
-  for (const QString& plugin: plugins) {
-    winfo(wntrFactory,
-          QString("Invoking %1 for daemon startup...").arg(plugin));
-    wntrFactory->spawnPlugin(plugin);
-    winfo(wntrFactory,
-          QString("Started daemon plugin '%1'.").arg(plugin));
-  }
+	for (const QString& plugin: plugins) {
+		winfo(wntrFactory,
+		      QString("Invoking %1 for daemon startup...").arg(plugin));
+		wntrFactory->spawnPlugin(plugin);
+		winfo(wntrFactory,
+		      QString("Started daemon plugin '%1'.").arg(plugin));
+	}
 }
 
 Module::~Module()

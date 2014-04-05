@@ -23,25 +23,25 @@
 
 namespace Wintermute
 {
-namespace Events
-{
-class CallEvent;
-class CallFilter : public QObject
-{
-  Q_OBJECT
-  Q_DISABLE_COPY ( CallFilter )
+  namespace Events
+  {
+    class CallEvent;
+    class CallFilter : public QObject
+    {
+        Q_OBJECT
+        Q_DISABLE_COPY ( CallFilter )
 
-public:
-  explicit CallFilter();
-  virtual ~CallFilter();
-  virtual bool eventFilter ( QObject* object, QEvent* event );
+      public:
+        explicit CallFilter();
+        virtual ~CallFilter();
+        virtual bool eventFilter ( QObject *object, QEvent *event );
 
-private:
-  bool handleDispatch ( QObject* object, CallEvent* call );
-  bool handleReceive ( QObject* object, CallEvent* call );
-  bool handleReply ( QObject* object, CallEvent* call );
-};
-}
+      private:
+        bool handleDispatch ( QObject *object, CallEvent *call );
+        bool handleReceive ( QObject *object, CallEvent *call );
+        bool handleReply ( QObject *object, CallEvent *call );
+    };
+  }
 }
 
 #endif

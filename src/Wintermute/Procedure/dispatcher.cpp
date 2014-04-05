@@ -27,7 +27,7 @@ using Wintermute::Procedure::Dispatcher;
 using Wintermute::Procedure::DispatcherPrivate;
 using Wintermute::Events::CallEvent;
 
-QList<Dispatcher*> DispatcherPrivate::dispatchers = QList<Dispatcher*>();
+QList<Dispatcher *> DispatcherPrivate::dispatchers = QList<Dispatcher *>();
 
 Dispatcher::Dispatcher() :
   QObject ( wntrApp )
@@ -36,10 +36,11 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::postDispatch ( const MethodCall& call, Module* object )
+Dispatcher::postDispatch ( const MethodCall &call, Module *object )
 {
   Q_ASSERT ( call.isValid() );
-  QCoreApplication::postEvent ( object, new CallEvent ( CallEvent::TypeDispatch, call ) );
+  QCoreApplication::postEvent ( object, new CallEvent ( CallEvent::TypeDispatch,
+                                call ) );
 }
 
 Dispatcher::~Dispatcher()
