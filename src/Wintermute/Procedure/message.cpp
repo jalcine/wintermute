@@ -22,7 +22,7 @@
 using Wintermute::Procedure::Message;
 using Wintermute::Procedure::MessagePrivate;
 
-const int Message::MetaTypeId = 
+const int Message::MetaTypeId =
   qRegisterMetaType<Message>("Wintermute::Procedure::Message");
 
 QDataStream &operator<<(QDataStream &out, const Message &myObj)
@@ -39,7 +39,7 @@ QDataStream &operator>>(QDataStream &in, Message &myObj)
 Message::Message() : d ( new MessagePrivate )
 { }
 
-Message::Message(const Message& other) : d ( other.d )
+Message::Message(const Message &other) : d ( other.d )
 { }
 
 Message::operator QString() const
