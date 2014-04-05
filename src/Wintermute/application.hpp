@@ -31,7 +31,7 @@ namespace Procedure
 {
 class Module;
 }
-class Version;
+struct Version;
 class ApplicationPrivate;
 
 /**

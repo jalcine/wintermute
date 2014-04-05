@@ -36,10 +36,13 @@ set ( WINTERMUTE_SOURCES
   Wintermute/plugin.cpp
   Wintermute/plugin_process.cpp
 
-  ## Procedure/Calls
+  ## Procedure
+  Wintermute/Procedure/message.hpp
+  # Wintermute/Procedure/event.hpp
   Wintermute/Procedure/call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/reply_call.cpp
+  # Wintermute/Procedure/event_call.cpp
   Wintermute/Procedure/module_call.cpp
   Wintermute/Procedure/lambda_call.cpp
 
@@ -51,6 +54,7 @@ set ( WINTERMUTE_SOURCES
 
   ## Event loop
   Wintermute/Events/call.cpp
+  # Wintermute/Events/event.cpp
   Wintermute/Events/call_filter.cpp
   #Wintermute/Events/reply_call_filter.cpp
   #Wintermute/Events/method_call_filter.cpp
