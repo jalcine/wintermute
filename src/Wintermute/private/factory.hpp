@@ -52,11 +52,11 @@ namespace Wintermute
         QStringList files = pluginDefDir.entryList ( QStringList() << "*.spec",
                             QDir::Files );
         QStringList plugins;
-        wdebug ( wntrFactory, QString ( "Scanning %1" ).
+        wdebug ( wntrFactory.data(), QString ( "Scanning %1" ).
                  arg(WINTERMUTE_PLUGIN_DEFINITION_DIR));
         for ( QString pluginFile: files ) {
           QString name = pluginFile.remove ( ".spec" );
-          wdebug ( wntrFactory,
+          wdebug ( wntrFactory.data(),
                    QString ( "Found plugin file '%1'." ).arg ( name ) );
           plugins << name;
         }
@@ -68,27 +68,27 @@ namespace Wintermute
         return active.keys();
       }
 
-      Plugin *
+      Plugin::Ptr
       plugin ( const QString &name ) const {
         if ( active.contains ( name ) ) {
           return active[name];
         }
-        return 0;
+        return Plugin::Ptr(nullptr);
       }
 
       QSettings *
       obtainConfiguration ( const QString &name ) const {
-        const QString settingsPath = QString ( WINTERMUTE_PLUGIN_DEFINITION_DIR
-                                               "/" + name + ".spec" );
+        const QString settingsPath = QString (
+                                       WINTERMUTE_PLUGIN_DEFINITION_DIR "/" + name + ".spec" );
         if ( QFile::exists ( settingsPath ) ) {
           QSettings *settings = new QSettings ( settingsPath,
-                                                QSettings::IniFormat, Factory::instance() );
-          winfo ( Factory::instance(), QString (
+                                                QSettings::IniFormat, wntrFactory.data() );
+          winfo ( wntrFactory.data(), QString (
                     "Found configuraton for plug-in '%1' at '%2'." )
                   .arg ( name ).arg ( settingsPath ) );
           return settings;
         }
-        wdebug ( Factory::instance(),
+        wdebug ( wntrFactory.data(),
                  QString ( "Can't find configuration data for %1 at %2." )
                  .arg ( name ).arg ( settingsPath ) );
         return 0;
@@ -100,12 +100,12 @@ namespace Wintermute
         QPluginLoader *loader = nullptr;
         const QString libraryName = "lib" + name + ".so";
         if ( QLibrary::isLibrary ( libraryName ) ) {
-          wwarn ( Factory::instance(),
+          wwarn ( wntrFactory.data(),
                   QString ( "Library not found on operating system: '%1'" )
                   .arg ( libraryName ) );
           Q_FOREACH ( QString libraryPath, QCoreApplication::libraryPaths() ) {
             path = libraryPath + "/" + libraryName;
-            wdebug ( Factory::instance(),
+            wdebug ( wntrFactory.data(),
                      QString ( "Trying library path '%1'..." ).arg ( path ) );
             if ( QLibrary::isLibrary ( path ) ) {
               break;
@@ -120,7 +120,7 @@ namespace Wintermute
           }
         }
         if ( loader && loader->fileName().isEmpty() ) {
-          werr ( Factory::instance(), QString ( "Library '%1' not found." )
+          werr ( wntrFactory.data(), QString ( "Library '%1' not found." )
                  .arg ( libraryName ) );
           return nullptr;
         }

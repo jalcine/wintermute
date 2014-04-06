@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,7 +14,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
+
+/**
+ * @headerfile Wintermute/plugin.hpp <Wintermute/Plugin>
+ * @brief      Definition of Wintermute::Plugin class.
+ */
 
 #ifndef WINTERMUTE_PLUGIN_HPP
 #define WINTERMUTE_PLUGIN_HPP
@@ -32,77 +38,88 @@ namespace Wintermute
 class PluginPrivate;
 
 /**
- * @class Wintermute::Plugin
+ * @brief An abstract definition of a %Plugin in Wintermute.
+ * @sa    Wintermute::Factory
+ * @sa    Wintermute::PluginProcess
  *
  * The Plugin object is meant as a way to manage the highest of plug-ins
  * that can be mananged in the platform.
- *
- * @note The most direct means of handling plugins is recommended to be done
- * through the Factory class.
  */
+/// @note The most direct means of handling plugins is recommended to be 
+//        done through the Factory class.
+/// @note Move most of ABI determination in this class.
 class Plugin : public QObject
 {
 	Q_OBJECT
+  Q_DISABLE_COPY ( Plugin )
+	Q_DECLARE_PRIVATE ( Plugin )
+	QScopedPointer<PluginPrivate> d_ptr;
+
+  /** @brief Obtains the name of the plugin. */
 	Q_PROPERTY ( QString Name          READ name )
+  /** @brief Obtains the name of the version. */
 	Q_PROPERTY ( Version Version       READ version )
+  /** @brief Obtains the name of the system-required version. */
 	Q_PROPERTY ( Version SystemVersion READ systemVersion )
 
-	QScopedPointer<PluginPrivate> d_ptr;
-	Q_DECLARE_PRIVATE ( Plugin )
+  friend class Factory;
 
 protected:
+  /** @brief Default constructor for this plugin. */
 	explicit Plugin ( );
+
+  /** @brief Used to obtain the configuration for this plug-in. */
 	QSettings* configuration() const;
 
 public:
+  typedef QPointer<Plugin> Ptr; ///< Pointer type for Plugin.
 	virtual ~Plugin();
 
+  /** @brief Signaled to be invoked when this plugin has started. */
 	Q_SIGNAL void started();
+
+  /** @brief Signaled to be invoked when this plugin has stopped. */
 	Q_SIGNAL void stopped();
 
 	/**
-	 * @fn name
-	 * Obtains the unique name of the plugin.
+	 * @brief Obtains the unique name of the plugin.
+   * @retval QString The name of the plug-in.
 	 */
 	QString name() const;
 
 	/**
-	 * @fn version
-	 * Obtains the versioning object for the plugin.
+	 * @brief Obtains the versioning object for the plugin.
+   * @retval Version The current version of this plugin.
 	 */
 	Version version() const;
 
 	/**
-	 * @fn systemVersion
-	 * Obtains the minimum running version of Wintermute required for plugin.
+	 * @brief Obtains the minimum running version of Wintermute required.
+   * @retval Version The minimal version of Wintermute for this plugin.
 	 */
 	Version systemVersion() const;
 
 	/**
-	 * @fn isLoaded
-	 * Determines if the plugin has been loaded.
+	 * @brief Determines if the plugin has been loaded.
+   * @retval boolean Determines if the plugin's binary has been loaded.
 	 */
 	bool isLoaded() const;
 
 	/**
-	 * @fn start
-	 * Defines the logic for the activation of the plugin.
+	 * @brief Defines the logic for the activation of the plugin.
+   * @sa started()
 	 */
 	virtual void start() = 0;
 
 	/**
-	 * @fn stop
-	 * Defines the logic for the deactivation of the plugin.
+	 * @brief Defines the logic for the deactivation of the plugin.
+   * @sa stopped()
 	 */
 	virtual void stop() = 0;
-
-	friend class Factory;
-	friend class FactoryPrivate;
-	friend class TemporaryPlugin;
 };
 
-typedef QList<Plugin*> PluginList;
-typedef QMap<QString, Plugin*> PluginMap;
+typedef QList<Plugin::Ptr> PluginList;        ///< Represents a list of plugins.
+typedef QMap<QString, Plugin::Ptr> PluginMap; ///< Represents a map of plugins.
 }
 
 #endif /* WINTERMUTE_PLUGIN_HPP */

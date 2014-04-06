@@ -19,29 +19,32 @@
 cmake_minimum_required (VERSION 2.8)
 cmake_policy(SET CMP0017 NEW)
 
-## Include our modules in the discovery of modules and incorporate our build
-## system's logic.
+# Add our modules to CMake's searchable path.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
+# By default, install only runtime.
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME Runtime)
+
+# We need to know this (for text processing purposes).
 set(WINTERMUTE_BUILD_PREFIX ${CMAKE_INSTALL_PREFIX})
-set(WINTERMUTE_PLUGIN_DEFINITION_TEMPLATE 
-  ${CMAKE_SOURCE_DIR}/cmake/Templates/PluginDefinition.spec.in)
+set(WINTERMUTE_TEMPLATES_DIR ${CMAKE_SOURCE_DIR}/cmake/Templates)
 
 include(CMakeUseLocalModules)
 include(CMakeProvideUninstallTarget)
 add_subdirectory(cmake)
 
 ## Import Wintermute's CMake infrastructure.
-include ( WintermuteVersioning )
-include ( WintermuteVariables )
-include ( WintermuteDependencies )
-include ( WintermuteMacros )
+include(WintermuteVersioning)
+include(WintermuteVariables)
+include(WintermuteDependencies)
+include(WintermuteMacros)
+include(WintermuteDocumentation)
 
 ## Enable testing.
 enable_testing()
 
 ## Include sub-directories.
-add_subdirectory ( src )
-add_subdirectory ( lib )
-add_subdirectory ( test )
-add_subdirectory ( doc )
+add_subdirectory(src)
+add_subdirectory(lib)
+add_subdirectory(test)
+add_subdirectory(doc)

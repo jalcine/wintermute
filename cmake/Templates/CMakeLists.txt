@@ -24,4 +24,5 @@ file(GLOB WINTERMUTE_CMAKE_TEMPLATES "${CMAKE_CURRENT_SOURCE_DIR}/*.in")
 
 ## Install the file to a discoverable path by CMake.
 install(FILES ${WINTERMUTE_CMAKE_TEMPLATES}
+  COMPONENT   Development
   DESTINATION "${WINTERMUTE_CMAKE_TEMPLATES_DIR}")

@@ -29,7 +29,7 @@ using namespace Wintermute;
 using Wintermute::Factory;
 using Wintermute::FactoryPrivate;
 
-Factory* Factory::self = 0;
+Factory::Ptr Factory::self(nullptr);
 
 Factory::Factory() : QObject ( Application::instance() ),
 	d_ptr ( new FactoryPrivate )
@@ -38,16 +38,16 @@ Factory::Factory() : QObject ( Application::instance() ),
 	connect ( wntrApp, SIGNAL ( stopped() ), SLOT ( stop() ) );
 }
 
-Factory*
+Factory::Ptr
 Factory::instance()
 {
-	if ( !self ) {
-		self = new Factory;
-	}
-	return self;
+  if ( !self ) 
+    self = Factory::Ptr(new Factory());
+
+	return Factory::self;
 }
 
-Plugin*
+Plugin::Ptr
 Factory::plugin ( const QString& name ) const
 {
 	Q_D ( const Factory );
@@ -69,7 +69,7 @@ Factory::activePlugins() const
 }
 
 bool
-Factory::loadedPlugin ( const QString& name )
+Factory::isPluginLoaded ( const QString& name ) const
 {
 	return activePlugins().contains ( name );
 }
@@ -79,21 +79,23 @@ bool
 Factory::loadPlugin ( const QString& id )
 {
 	Q_D ( Factory );
-	Logger* log = wlog ( this );
-	if ( loadedPlugin ( id ) ) {
+	Logger* log = wlog(this);
+	if ( isPluginLoaded ( id ) ) {
 		log->warn ( QString ( "Already loaded plug-in %1." ).arg ( id ) );
 		return true;
 	}
-	QPluginLoader* loader = d->obtainBinary ( id );
-	Plugin* plugin = 0;
+
+	QScopedPointer<QPluginLoader> loader (d->obtainBinary ( id ));
 	if ( !loader ) {
 		log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).
 		             arg ( id ) );
 		return false;
 	}
+
 	log->debug ( QString ( "Found binary for plugin '%1', loading symbols..." ).
 	             arg ( id ) );
-	plugin = qobject_cast<Plugin*> ( loader->instance() );
+
+  Plugin* plugin = qobject_cast<Plugin*> ( loader->instance() );
 	if ( !plugin ) {
 		log->error ( QString("Failed to load plugin due to %1." ).
 		             arg( loader->errorString() ) );
@@ -108,12 +110,12 @@ Factory::loadPlugin ( const QString& id )
 	return true;
 }
 
-PluginProcess*
+PluginProcess::Ptr
 Factory::spawnPlugin ( const QString& name )
 {
-	PluginProcess* process = new PluginProcess ( name );
+  PluginProcess::Ptr process(new PluginProcess ( name ));
 	process->start();
-	winfo(wntrFactory, QString("Spawned instance of plugin '%1'.").arg(name));
+	winfo(wntrFactory.data(), QString("Spawned instance of plugin '%1'.").arg(name));
 	return process;
 }
 
@@ -121,7 +123,7 @@ bool
 Factory::unloadPlugin ( const QString& id )
 {
 	Q_D ( Factory );
-	Plugin* plugin = d->plugin ( id );
+  Plugin::Ptr plugin = d->plugin ( id );
 	if ( !plugin->isLoaded() ) {
 		return true;
 	}

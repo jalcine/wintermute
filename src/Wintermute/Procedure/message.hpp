@@ -19,6 +19,11 @@
 #ifndef WINTERMUTE_PROCEDURE_MESSAGE_HPP
 #define WINTERMUTE_PROCEDURE_MESSAGE_HPP
 
+/**
+ * @file  Wintermute/Procedure/message.hpp
+ * @brief Definition of `Wintermute::Procedure::Message`.
+ */
+
 #include <Wintermute/Globals>
 #include <QtCore/QMetaType>
 #include <QtCore/QDataStream>

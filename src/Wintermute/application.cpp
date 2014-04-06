@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <QtCore/QCoreApplication>
@@ -118,10 +119,9 @@ Application::version() const
   ver.major = WINTERMUTE_VERSION_MAJOR;
   ver.minor = WINTERMUTE_VERSION_MINOR;
   ver.patch = WINTERMUTE_VERSION_PATCH;
-  ver.state = ( Wintermute::Version::DevelopmentStage )
+  ver.stage = ( Version::DevelopmentStage )
               WINTERMUTE_VERSION_STAGE;
-  ver.stage = QString ( "%1-%2" ).arg ( WINTERMUTE_VERSION_STAGE_REF,
-                                        WINTERMUTE_VERSION_STAGE_BRANCH );
+  ver.hash =  WINTERMUTE_VERSION_STAGE_REF;
   return ver;
 }
 
