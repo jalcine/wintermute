@@ -16,49 +16,53 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QtCore/QVariant>
-#include "call.hpp"
-#include "method_call.hpp"
-#include "reply_call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
+#include "Wintermute/private/Procedure/message.hpp"
+#include "Wintermute/Procedure/method_call.hpp"
+#include "Wintermute/Procedure/reply_call.hpp"
 
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::MethodCall;
 
 ReplyCall::ReplyCall( const MethodCall &call, const QVariant &response ) :
-  Call ( call ), m_response ( response )
+  Call ( call.name() ), m_methodCall (call)
 {
-  setRecipient ( call.recipient() );
-  QVariantMap calleeMap;
-  d->type = Call::TypeReply;
-  d->data["reply"] = response;
-  d->data["call"]  = call.id();
+  QVariantMap replyMap;
+  replyMap.insert("value", response);
+  replyMap.insert("call", QVariant());
+  d->dataMap.insert("reply", replyMap);
+  d->receiverMap = call.rawData()[1].toMap();
 }
 
-MethodCall &
-ReplyCall::call() const
+const MethodCall &
+ReplyCall::methodCall() const
 {
-  return *(qobject_cast<MethodCall *>(parent()));
+  return m_methodCall;
 }
 
 bool
-ReplyCall::isValid() const
+ReplyCall::valid() const
 {
-  Q_ASSERT ( Call::isValid() == true );
-  Q_ASSERT ( d->data.contains("reply") == true );
-  Q_ASSERT ( d->data.contains("call") == true );
-  Q_ASSERT ( wCallCheckFlag ( *this, Call::TypeReply ) == true );
-  if ( !Call::isValid() ) {
+  Q_ASSERT ( Call::valid() == true );
+  Q_ASSERT ( d->dataMap.contains("reply") == true );
+  if ( !Call::valid() ) {
     return false;
   }
-  if ( !d->data.contains ( "reply" ) ) {
+  if ( !d->dataMap.contains ( "reply" ) ) {
     return false;
   }
-  if ( !d->data.contains ( "call" ) ) {
+  QVariant replyVariant = d->dataMap.value("reply");
+  if ( !replyVariant.isValid() ) {
     return false;
   }
-  if ( !wCallCheckFlag ( *this, Call::TypeReply ) ) {
+  if ( replyVariant.isNull() ) {
+    return false;
+  }
+  QVariantMap replyMap = replyVariant.toMap();
+  if ( !replyMap.contains("call") ) {
+    return false;
+  }
+  if ( !replyMap.contains("value") ) {
     return false;
   }
   return true;
@@ -67,12 +71,12 @@ ReplyCall::isValid() const
 QVariant
 ReplyCall::response() const
 {
-  return m_response;
-}
-
-void
-ReplyCall::sendReply() const
-{
+  Q_ASSERT ( valid() );
+  QVariant replyVariant = d->dataMap.value("reply");
+  if ( replyVariant.isValid() ) {
+    return replyVariant.toMap().value("value");
+  }
+  return QVariant();
 }
 
 ReplyCall::~ReplyCall()

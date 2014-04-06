@@ -28,16 +28,15 @@ namespace Wintermute
     class ReplyCall : public Call
     {
         Q_OBJECT
-        QVariant m_response;
+        const MethodCall &m_methodCall;
 
       public:
-        ReplyCall ( const MethodCall &call, const QVariant &response );
+        ReplyCall ( const MethodCall &methodCall, const QVariant &response );
         virtual ~ReplyCall();
 
         QVariant response() const;
-        MethodCall &call() const;
-        virtual bool isValid() const;
-        void sendReply() const;
+        const MethodCall &methodCall() const;
+        virtual bool valid() const;
     };
   }
 }
