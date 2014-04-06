@@ -19,55 +19,61 @@
 #ifndef WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 #define WINTERMUTE_PROCEDURE_LAMBDA_CALL_HPP
 
-#include <Wintermute/Application>
+#include <Wintermute/Procedure/MethodCall>
 #include <Wintermute/Procedure/ModuleCall>
 
 namespace Wintermute
 {
   namespace Procedure
   {
-    class Module;
-    class MethodCall;
+    /**
+     * @brief Allows lambda functions to be invoked in Module objects.
+     * @sa Wintermute::Procedure::Module
+     */
     class LambdaCall : public ModuleCall
     {
-        Q_OBJECT;
-        Q_DISABLE_COPY ( LambdaCall );
-
       public:
-        /**
-         * @typedef Signature
-         * @brief   Provides the short-hand signature for Call methods.
-         */
-        typedef std::function<QVariant ( QVariantList, const MethodCall & ) > Signature;
+        /// @brief Provides the short-hand signature for Call methods.
+        typedef std::function<QVariant(QVariantList, const MethodCall &)> Signature;
 
         /**
-         * @ctor
+         * @brief Crafts a new lambda-powered call.
+         * @param[in] QString The name of the call.
+         * @param[in] Module The module to be part of.
+         * @param[in] Signature The lambda to be added.
          */
-        explicit LambdaCall ( const QString &name, Module *const module = nullptr,
-                              const Signature &lambda = nullptr );
+        explicit LambdaCall(const QString &name, QPointer<const Module> module,
+                            const Signature &lambda);
+
+        virtual ~LambdaCall(); ///< @brief Destructor.
 
         /**
-         * @dtor
+         * @brief Obtains the lambda that's to be invoked.
+         * @retval Signature The lambda to be invoked, in a function pointer.
          */
-        virtual ~LambdaCall();
+        Signature lambda() const;
 
         /**
-         * @fn function
-         * @brief The function to be invoked when this call is interacted with.
+         * @brief Determines the validity of this LambdaCall.
+         * @retval boolean The validness of this calll.
          */
-        Signature function() const;
+        virtual bool valid() const;
 
         /**
-         * @fn setFunction
-         * @brief Sets the function to be invoked.
+         * @brief Updates the lambda to be invoked by this method.
+         * @param[in] Signature The lambda to be used.
          */
-        void setFunction ( const LambdaCall::Signature &newFunction );
+        void setLambda(const Signature &lambda);
 
-        virtual QVariant invoke ( const QVariantList &arguments,
-                                  const MethodCall &call );
+        /**
+         * @brief Invokes the lambda held by this LambdaCall.
+         * @param[in] QVariantList The arguments to use.
+         * @param[in] MethodCall The method call that's invoked this call.
+         */
+        virtual void invoke (const QVariantList &arguments, const MethodCall &call);
 
       private:
-        Signature m_function;
+        Signature m_lambda;
     };
   }
 }

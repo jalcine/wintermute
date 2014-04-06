@@ -19,32 +19,47 @@
 #include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/lambda_call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
 
 using Wintermute::Procedure::LambdaCall;
 
-LambdaCall::LambdaCall ( const QString &name, Module *const module,
-                         const Signature &lambda ) : ModuleCall ( name, module )
+LambdaCall::LambdaCall(const QString &name, QPointer <const Module> module,
+                       const Signature &lambda) : ModuleCall(name, module), m_lambda(lambda)
 {
-  setFunction ( lambda );
+}
+
+bool
+LambdaCall::valid() const
+{
+  if (!ModuleCall::valid()) {
+    return false;
+  }
+  if (!m_lambda) {
+    return false;
+  }
+  return true;
 }
 
 LambdaCall::Signature
-LambdaCall::function() const
+LambdaCall::lambda() const
 {
-  return m_function;
+  Q_ASSERT ( valid() );
+  return m_lambda;
 }
 
 void
-LambdaCall::setFunction(const Signature &newFunction)
+LambdaCall::setLambda ( const Signature &lambda )
 {
-  m_function = newFunction;
+  Q_ASSERT ( !lambda == false );
+  m_lambda = lambda;
 }
 
-QVariant
-LambdaCall::invoke ( const QVariantList &data, const MethodCall &call )
+void
+LambdaCall::invoke(const QVariantList &arguments, const MethodCall &call)
 {
-  return ( m_function ? m_function ( data, call ) : QVariant() );
+  Q_ASSERT ( valid() );
+  if ( valid() ) {
+    m_lambda(arguments,call);
+  }
 }
 
 LambdaCall::~LambdaCall()

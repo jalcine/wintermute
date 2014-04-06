@@ -16,6 +16,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QCoreApplication>
 #include "Wintermute/Procedure/message.hpp"
 #include "Wintermute/private/Procedure/message.hpp"
 
@@ -33,6 +34,12 @@ QDataStream &operator<<(QDataStream &out, const Message &myObj)
 
 QDataStream &operator>>(QDataStream &in, Message &myObj)
 {
+  QVariantList maps;
+  in >> maps;
+  myObj.d->senderMap = maps[0].toMap();
+  myObj.d->receiverMap = maps[1].toMap();
+  myObj.d->dataMap = maps[2].toMap();
+  Q_ASSERT ( myObj.valid() );
   return in;
 }
 
@@ -55,6 +62,57 @@ Message::operator QVariant() const
 Message::operator const char *() const
 {
   return Message::operator QString().toStdString().data();
+}
+
+QVariantList
+Message::rawData() const
+{
+  return QVariantList() << d->senderMap << d->receiverMap << d->dataMap;
+}
+
+QString
+Message::toString() const
+{
+  return Message::operator QString();
+}
+
+bool
+Message::valid() const
+{
+  Q_ASSERT ( d->valid() );
+  return d->valid();
+}
+
+bool
+Message::isLocal() const
+{
+  const quint64 localPid = QCoreApplication::applicationPid(),
+                aPid = d->senderMap.value("pid").toUInt()
+                       ;
+  Q_ASSERT(localPid == aPid);
+  return (localPid == aPid);
+}
+
+const QString
+Message::receivingModuleName() const
+{
+  Q_ASSERT ( valid() );
+  QVariant name = d->receiverMap.value("module");
+  Q_ASSERT ( name.isValid() );
+  Q_ASSERT ( !name.isNull() );
+  Q_ASSERT ( name.canConvert(QVariant::String) );
+  return name.toString();
+}
+
+const QString
+Message::sendingModuleName() const
+{
+  Q_ASSERT ( valid() );
+  QVariant name = d->senderMap.value("module");
+  Q_ASSERT ( name.isValid() );
+  Q_ASSERT ( !name.isNull() );
+  Q_ASSERT ( name.canConvert(QVariant::String) );
+  return name.toString();
 }
 
 Message::~Message()

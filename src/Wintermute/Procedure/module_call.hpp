@@ -19,32 +19,32 @@
 #ifndef WINTERMUTE_PROCEDURE_MODULE_CALL_HPP
 #define WINTERMUTE_PROCEDURE_MODULE_CALL_HPP
 
-#include <Wintermute/Application>
+#include <functional>
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Module>
 
 namespace Wintermute
 {
   namespace Procedure
   {
-    class Module;
-    class MethodCall;
+    /**
+     * @brief Allows the registration of a function into a module for invocation.
+     * @sa Wintermute::Procedure::Module
+     *
+     * ModuleCall objects can be used to register calls into a Module object.
+     */
     class ModuleCall : public Call
     {
-        Q_OBJECT;
-        Q_DISABLE_COPY ( ModuleCall );
       public:
-        typedef std::function<void (QVariant)> CallbackSignature;
-        explicit ModuleCall ( const QString &name, const Module *module );
         virtual ~ModuleCall();
-        void setCallback ( CallbackSignature &signature );
-        const Module &module() const;
-        CallbackSignature callback() const;
-        virtual QVariant invoke ( const QVariantList &arguments,
-                                  const MethodCall &call ) = 0;
+        QPointer<const Module> module() const;
+        virtual bool valid() const;
+        virtual void invoke ( const QVariantList &arguments,
+                              const MethodCall &call ) = 0;
 
-      private:
+      protected:
+        explicit ModuleCall(const QString &name, QPointer<const Module> module);
         QPointer<const Module> m_module;
-        CallbackSignature m_callback;
     };
   }
 }

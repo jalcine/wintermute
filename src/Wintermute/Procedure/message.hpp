@@ -28,12 +28,21 @@ namespace Wintermute
 {
   namespace Procedure
   {
+    class Message;
+  }
+}
+
+QDataStream &operator>>(QDataStream &, Wintermute::Procedure::Message & );
+QDataStream &operator<<(QDataStream &, const Wintermute::Procedure::Message & );
+
+namespace Wintermute
+{
+  namespace Procedure
+  {
     class MessagePrivate;
 
     /**
-     * @class Wintermute::Procedure::Message
      * @brief Basis of data transfer in RPC for Wintermute.
-     * @shared-implicitly
      *
      * This class serves as the basis for data, 'packets' if you will, for
      * Wintermute's RPC. It's meant to be used as a foundation for serializing
@@ -45,84 +54,105 @@ namespace Wintermute
      */
     class Message
     {
+        friend QDataStream &::operator>>(QDataStream &, Message & );
+        friend QDataStream &::operator<<(QDataStream &, const Message & );
+
       public:
-        /**
-         * @constructor
-         * @brief Creates a new, empty Message.
-         */
-        Message();
-
-        /**
-         * @copy-constructor
-         * @brief Copies an existing Message.
-         */
-        Message(const Message &other);
-
-        /**
-         * @destructor
-         * @brief Deletes this Message.
-         */
-        virtual ~Message();
+        Message(); /** @brief Creates an empty Message. */
+        Message(const Message &other); /** @brief Copies an existing Message. */
+        virtual ~Message(); /** @brief Deletes this Message. */
 
         /**
          * @brief Converts this Message into a QVariant.
-         * @see operator QString() const
-         * @see operator const char *() const
+         * @sa Message::operator QString() const
+         * @sa Message::operator const char *() const
+         * @retval QVariant Returns a variant value format of this Message.
          */
         operator QVariant() const;
 
         /**
          * @brief Converts this Message into a QString.
-         * @see operator QVariant() const
-         * @see operator const char *() const
+         * @sa Message::operator QVariant() const
+         * @sa Message::operator const char *() const
+         * @retval QString Returns a string format of this Message.
          */
         operator QString() const;
 
         /**
          * @brief Converts this Message into a C-style string.
-         * @see operator QString() const
-         * @see operator QVariant() const
+         * @sa Message::operator QString() const
+         * @sa Message::operator QVariant() const
+         * @retval char* Returns a C-style string of this message.
          */
         operator const char *() const;
 
         /**
-         * @fn rawData()
-         * @brief Obtains a list of maps that represent the data stored by this
-         * Message.
+         * @brief Obtains an QVariant-based version of the internal data.
          *
          * The entries for this map are as follows:
          *    + sender information
          *    + receiver information
          *    + the data to be sent/received
          */
-        QList<QVariantMap> rawData() const;
+        QVariantList rawData() const;
 
         /**
-         * @fn toString()
          * @brief Converts this Message into a String.
-         * @see operator QString() const
-         * @see operator const char *() const
+         * @sa operator QString() const
+         * @sa operator const char *() const
          */
         QString toString() const;
 
         /**
-         * @constant
+         * @brief Determines the validity of this Message.
+         * @retval boolean Whether or not this Message is valid.
+         */
+        virtual bool valid() const;
+
+        /**
+         * @brief Obtains the module name that's sending this message.
+         * @retval QString The qualified module name that's sending this message.
+         */
+        const QString sendingModuleName() const;
+
+        /**
+         * @brief Obtains the module name that's receiving this message.
+         * @retval QString The qualified module name that's receiving this message.
+         */
+        const QString receivingModuleName() const;
+
+        /**
+         * @brief Determines if this message is local to this process.
+         * @retval Whether or not this message was made here.
+         */
+        bool isLocal() const;
+
+        /**
          * @brief Holds the integer that represents this type to `QMetaType`.
          */
         static const int MetaTypeId;
 
       protected:
-        void setSender ( const QVariantMap &newSenderData );
-        void setReceiver ( const QVariantMap &newSenderData );
-        void setData ( const QVariantMap &newSenderData );
-        QSharedDataPointer<MessagePrivate> d;
+        /**
+         * @brief Sets the sender information with the new provided value.
+         * @param[in] The new value to update the sender with.
+         */
+        void setSender ( const QVariant &newSenderData );
+        /**
+         * @brief Sets the receiver information with the new provided value.
+         * @param[in] The new value to update the receiver with.
+         */
+        void setReceiver ( const QVariant &newReceiverData );
+        /**
+         * @brief Sets the free-form data with the new provided value.
+         * @param[in] The new value to update the data with.
+         */
+        void setData ( const QVariant &newData );
+
+        QSharedDataPointer<MessagePrivate> d; ///< Internal data pointer.
     };
   }
 }
-
-QDataStream &operator<<(QDataStream &out,
-                        const Wintermute::Procedure::Message &myObj);
-QDataStream &operator>>(QDataStream &in, Wintermute::Procedure::Message &myObj);
 
 Q_DECLARE_METATYPE(Wintermute::Procedure::Message)
 

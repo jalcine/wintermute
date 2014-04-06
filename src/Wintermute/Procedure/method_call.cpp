@@ -15,130 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
-#include <QtCore/QCoreApplication>
-#include "Wintermute/private/Procedure/call.hpp"
-#include "Wintermute/Procedure/module.hpp"
+
+#include "Wintermute/private/Procedure/message.hpp"
 #include "Wintermute/Procedure/method_call.hpp"
-#include "Wintermute/Procedure/reply_call.hpp"
-#include "Wintermute/Procedure/dispatcher.hpp"
 
 using Wintermute::Procedure::Call;
-using Wintermute::Procedure::Dispatcher;
 using Wintermute::Procedure::MethodCall;
-using Wintermute::Procedure::ReplyCall;
-using Wintermute::Procedure::CallPrivate;
 
-MethodCall::MethodCall ( const QString &module,
-                         const QString &method,
-                         const QVariantList arguments ) :
-  Call ( wntrApp->module() )
+MethodCall::MethodCall(const QString &methodName, const QString &remoteModule,
+                       const QVariant &arguments, const quint64 &pid) : Call(methodName)
 {
-  setRecipient ( module );
-  setSender ( wntrApp->module() );
-  d->type = Call::TypeInvocation;
-  d->data["method"] = method;
-  d->data["arguments"] = arguments;
-}
-
-void
-MethodCall::setArguments ( const QVariantList &arguments)
-{
-  d->data.insert ( "arguments", arguments );
-}
-
-void
-MethodCall::setMethod ( const QString &method )
-{
-  d->data.insert ( "method", method );
-}
-
-void
-MethodCall::setModule ( const QString &module )
-{
-  d->data.insert ( "module", module );
-}
-
-QVariantList
-MethodCall::arguments() const
-{
-  return d->data.value ( "arguments" ).toList();
-}
-
-QString
-MethodCall::method() const
-{
-  return d->data.value ( "method" ).toString();
-}
-
-QString
-MethodCall::module() const
-{
-  return d->data.value ( "module" ).toString();
-}
-
-void
-MethodCall::setSender ( const Module *module )
-{
-  QVariantMap appData;
-  appData["pid"]     = QCoreApplication::applicationPid();
-  appData["version"] = QCoreApplication::applicationVersion();
-  appData["module"]  = module->qualifiedName();
-  d->data["sender"] = appData;
+  QVariantMap receiverMap;
+  receiverMap.insert("pid", pid);
+  receiverMap.insert("module", remoteModule);
+  setReceiver(receiverMap);
+  d->dataMap["call"].toMap().insert("arguments", arguments);
 }
 
 bool
-MethodCall::isValid() const
+MethodCall::valid() const
 {
-  if ( !Call::isValid() ) {
+  if ( !Call::valid() ) {
     return false;
   }
-  const QVariant value = d->data["sender"];
-  const QVariantMap appData = value.toMap();
-  Q_ASSERT ( value.isNull() == false );
-  Q_ASSERT ( appData.contains("pid") == true );
-  Q_ASSERT ( appData.contains("version") == true );
-  Q_ASSERT ( appData.contains("module") == true );
-  if ( value.isNull() ) {
+  if ( !callData().contains("arguments") ) {
     return false;
   }
-  if ( !appData.contains("pid") ) {
-    return false;
-  }
-  if ( !appData.contains("version") ) {
-    return false;
-  }
-  if ( !appData.contains("module") ) {
+  if ( d->dataMap["reciever"].type() != QVariant::Map ) {
     return false;
   }
   return true;
 }
 
-void
-MethodCall::invoke ( ) const
+QVariant
+MethodCall::arguments() const
 {
-  Q_ASSERT ( isValid() );
-  QPointer<Module> theModule = Module::findModule ( recipient() );
-  if ( !theModule.isNull() ) {
-    werr ( staticMetaObject.className(),
-           QString ( "Can't find module '%1' in this process." )
-           .arg ( recipient() ) );
-  } else {
-    theModule->invokeCall ( *this );
-  }
-}
-
-QPointer<ReplyCall>
-MethodCall::craftReply( const QVariant &value ) const
-{
-  return QPointer<ReplyCall>( new ReplyCall ( *this, value ) );
-}
-
-void
-MethodCall::dispatch() const
-{
-  QPointer<Module> const sendingModule =
-    Module::findModule(d->data["sender"].toMap()["module"].toString());
-  Dispatcher::postDispatch(*this, sendingModule.data());
+  Q_ASSERT ( valid() );
+  QVariant data = callData().value("key");
+  Q_ASSERT ( data.isValid() );
+  Q_ASSERT ( !data.isNull() );
+  return data;
 }
 
 MethodCall::~MethodCall()

@@ -16,105 +16,69 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <qjson/serializer.h>
-#include <qjson/parser.h>
 #include "Wintermute/logging.hpp"
 #include "Wintermute/application.hpp"
 #include "Wintermute/Procedure/call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
-#include "Wintermute/Procedure/reply_call.hpp"
+#include "Wintermute/private/Procedure/message.hpp"
 #include "Wintermute/Procedure/module.hpp"
 
 using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Module;
-using Wintermute::Procedure::CallPrivate;
 
-bool wCallCheckFlag ( const Call &call, const Call::Types &flag )
+Call::Call(const QString &name) : Message()
 {
-  return call.type().testFlag ( flag );
-}
-
-
-Call::Call ( QObject *parent ) : QObject ( parent ),
-  d ( new CallPrivate (this) )
-{
-}
-
-Call::Call ( const CallPrivate::Pointer &other_d ) :
-  QObject ( Wintermute::Application::instance() ), d ( other_d )
-{
-  d.detach();
-  d->q_ptr = this;
-}
-
-Call::Call ( const Call &other ) :
-  QObject ( other.parent() ), d ( other.d )
-{
-  d.detach();
-  d->q_ptr = this;
-}
-
-bool
-Call::isValid() const
-{
-  return d->isValid();
+  // Make the map representing this call in dataMap.
+  d->dataMap.insert("call", QVariantMap());
+  d->dataMap["call"].toMap()["name"] = name;
 }
 
 void
-Call::setRecipient ( const QString &moduleName )
+Call::setName(const QString &newName)
 {
-  d->recipient = moduleName;
+  Q_ASSERT ( valid() );
+  d->dataMap["call"].toMap()["name"] = newName;
 }
 
-Call::Type
-Call::type() const
+bool
+Call::valid() const
 {
-  return d->type;
+  // If it's not valid upstream or we don't exist, forget it.
+  if (!Message::valid()) {
+    return false;
+  }
+  if (!d->dataMap.contains("call")) {
+    return false;
+  }
+  QVariant callData = d->dataMap.value("call");
+  if (callData.isNull()) {
+    return false;
+  }
+  if (!callData.isValid()) {
+    return false;
+  }
+  if (!callData.toMap().contains("name")) {
+    return false;
+  }
+  return true;
+}
+
+QVariantMap
+Call::callData() const
+{
+  QVariant callData = d->dataMap["call"];
+  Q_ASSERT ( callData.isValid() );
+  Q_ASSERT ( !callData.isNull() );
+  return callData.toMap();
 }
 
 QString
 Call::name() const
 {
-  return d->name;
-}
-
-QString
-Call::recipient() const
-{
-  return d->recipient;
-}
-
-quint64
-Call::id() const
-{
-  return d->id.toTime_t();
-}
-
-QString
-Call::toString() const
-{
-  Q_ASSERT ( isValid() );
-  bool ok;
-  QJson::Serializer serializer;
-  QVariantMap callData = d->toVariantMap();
-  QString json = serializer.serialize ( callData, &ok );
-  return ( ok ? json : QString::null );
-}
-
-Call *
-Call::fromString ( const QString &data )
-{
-  QJson::Parser parser;
-  bool ok;
-  QVariantMap callData = parser.parse ( data.toLocal8Bit(), &ok ).toMap();
-  if ( !ok ) {
-    werr ( wntrApp, QString("Failed to convert '%1' into a Call.").arg(data) );
-    return nullptr;
-  }
-  CallPrivate::Pointer d_ptr = CallPrivate::fromVariantMap(callData);
-  return new Call ( d_ptr );
-}
-
-Call::~Call()
-{
+  Q_ASSERT ( valid() );
+  QVariant name = callData().value("name");
+  Q_ASSERT ( !name.isNull() );
+  Q_ASSERT ( name.isValid() );
+  Q_ASSERT ( name.canConvert(QVariant::String) );
+  return name.toString();
 }

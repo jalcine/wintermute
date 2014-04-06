@@ -16,38 +16,34 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "module.hpp"
-#include "module_call.hpp"
-#include "Wintermute/private/Procedure/call.hpp"
+#include "Wintermute/Procedure/module_call.hpp"
 
-using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ModuleCall;
 
-ModuleCall::ModuleCall( const QString &name, const Module *module ) :
-  Call ( const_cast<Module *>(module) )
+ModuleCall::ModuleCall(const QString &name, QPointer<const Module> module) :
+  Call(name), m_module(module)
 {
-  d->name = name;
 }
 
-ModuleCall::CallbackSignature
-ModuleCall::callback() const
+bool
+ModuleCall::valid() const
 {
-  return m_callback;
+  if ( !Call::valid() ) {
+    return false;
+  }
+  if ( m_module.isNull() ) {
+    return false;
+  }
+  return true;
 }
 
-const Module &
+QPointer<const Module>
 ModuleCall::module() const
 {
-  return *m_module;
-}
-
-void
-ModuleCall::setCallback ( ModuleCall::CallbackSignature &signature )
-{
-  m_callback = signature;
+  Q_ASSERT ( valid() );
+  return m_module;
 }
 
 ModuleCall::~ModuleCall()
-{
-}
+{}

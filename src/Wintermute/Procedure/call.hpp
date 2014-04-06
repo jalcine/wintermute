@@ -19,134 +19,49 @@
 #ifndef WINTERMUTE_PROCEDURE_CALL_HPP
 #define WINTERMUTE_PROCEDURE_CALL_HPP
 
-#include <QtCore/QObject>
-#include <QtCore/QVariant>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QSharedDataPointer>
-#include <Wintermute/Events/call_filter.hpp>
+#include <Wintermute/Procedure/Message>
 
 namespace Wintermute
 {
   namespace Procedure
   {
-    class Call;
-    class ReplyCall;
-    class CallPrivate;
-    /**
-     * @class Wintermute::Procedure::Call
-     *
-     * Calls are data types in Wintermute that represent the fabric of its
-     * interprocess communication between different modules. They're used mainly
-     * for procedure calling but can be used however deemed necessary. The most
-     * common form of Call that's used is the `MethodCall` and `ReplyCall`.
-     *
-     * @note Throughtout Wintermute, the type `CallPointer` is used instead of
-     *       directly handling with the pointer itself, it being an implicitly
-     *       shared class.
-     */
-    class Call : public QObject
+    class Call : public Message
     {
-        Q_OBJECT
-        Q_FLAGS ( Type Types )
-
-      protected:
-        Q_ENUMS ( Type )
-        Q_DISABLE_COPY ( Call )
-        QSharedDataPointer<CallPrivate> d;
-
-        /**
-         * @ctor
-         * @brief Creates a new Call object wit the provided CallPrivate data.
-         */
-        Call ( QSharedDataPointer<CallPrivate> const &other_d );
-
-        /**
-         * @ctor
-         * @fn Call
-         * @param parent Used for QObject hierarchy.
-         */
-        explicit Call ( QObject *parent );
-
       public:
-        /**
-         * @enum Types
-         *
-         * Defines the potential types a Call can take in the procedural system. In
-         * order to keep things clean, you can add your own types only if it's over
-         * Call::TypeUser (this was intentional). Avoid using
-         */
-        enum Types {
-          TypeUndefined  = 0x0000,  // Undefined call. Don't bother with.
-          TypeInvocation = 0x0001,  // Represents a call that's to be invoked.
-          TypeReply      = 0x0002,  // Represents a reply to an invoked call.
-          TypeUser       = 0x0099   // User-defined calls offset.
-        };
-        Q_DECLARE_FLAGS ( Type, Types );
+        virtual ~Call(); ///< @brief Destructor.
 
         /**
-         * @dtor
-         * @fn ~Call
+         * @brief Determines if this call is valid.
+         * @retval boolean Whether or not this call is valid.
          */
-        virtual ~Call ();
+        virtual bool valid() const;
 
         /**
-         * @fn id
-         * @brief Returns the internal ID used for this call.
-         */
-        quint64 id() const;
-
-        /**
-         * @fn name
-         * @brief Obtains the name of the call.
+         * @brief Obtains the name of this call.
+         * @retval QString The name of this call.
          */
         QString name() const;
 
+      protected:
         /**
-         * @fn type
-         * @brief Obtains the type of call this is.
+         * @brief Creates a Call named 'name'.
+         * @param[in] QString The new name of this call.
          */
-        Type type() const;
+        explicit Call(const QString &name);
 
         /**
-         * @fn toString
-         * @brief Generates a string representation of this call.
+         * @brief Updates the name of this call.
+         * @param[in] QString The new name of this call.
          */
-        QString toString() const;
+        void setName(const QString &newName);
 
         /**
-         * @fn recipient
-         * @brief Obtains the name of the module to recieve this message.
+         * @brief Obtains the variant map of this call.
+         * @retval QVariantMap The variant map of this call.
          */
-        QString recipient() const;
-
-        /**
-         * @fn isValid
-         * @brief Determines if this Call's data is miniminally viable.
-         */
-        virtual bool isValid () const;
-
-        /**
-         * @fn setRecipient
-         * @brief Changes the recipient of this Call.
-         */
-        void setRecipient ( const QString &moduleName );
-
-        /**
-         * @fn    fromString
-         * @brief Creates a Call from a QString.
-         */
-        static Call *fromString ( const QString &data );
+        QVariantMap callData() const;
     };
-  } /* Procedure */
-} /* Wintermute */
+  }
+}
 
-/***
- * @function wCallCheckFlag
- * @param callPtr A reference or shared pointer to a Call.
- * @param flag    The flag to check for.
- */
-bool wCallCheckFlag ( const Wintermute::Procedure::Call &call,
-                      const Wintermute::Procedure::Call::Types &flag );
-
-Q_DECLARE_OPERATORS_FOR_FLAGS ( Wintermute::Procedure::Call::Type )
 #endif /* WINTERMUTE_PROCEDURE_CALL_HPP */
