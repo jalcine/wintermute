@@ -20,7 +20,7 @@
 
 using Wintermute::Version;
 
-Version Version::Any = Version();
+Version Version::Null = Version();
 
 QDataStream& operator<< ( QDataStream& out, const Wintermute::Version& version )
 {

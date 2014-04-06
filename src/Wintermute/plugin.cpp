@@ -32,7 +32,7 @@ using Wintermute::Logging;
 using Wintermute::Logger;
 
 Plugin::Plugin ( ) :
-	QObject ( Factory::instance() ),
+	QObject ( wntrFactory.data() ),
 	d_ptr ( new PluginPrivate ( this ) )
 {
 }

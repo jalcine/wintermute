@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include "Wintermute/logging.hpp"
@@ -41,7 +42,7 @@ namespace Wintermute
       QPointer<Procedure::ProcessModule> module;
 
       ApplicationPrivate ( int &argc, char **argv, Application *q ) :
-        app(), settings ( nullptr ), q_ptr ( nullptr ), module ( nullptr ) {
+        app(), settings ( nullptr ), q_ptr ( q ), module ( nullptr ) {
         app.reset(new QCoreApplication ( argc, argv ));
       }
 
