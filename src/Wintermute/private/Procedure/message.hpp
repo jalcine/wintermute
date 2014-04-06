@@ -83,16 +83,3 @@ struct MessagePrivate : public QSharedData
 };
 }
 }
-    return true;
-  }
-  bool isValidReceiverData ()
-  {
-    return true;
-  }
-
-  QVariantMap senderMap;
-  QVariantMap receiverMap;
-  QVariantMap dataMap;
-};
-}
-}
