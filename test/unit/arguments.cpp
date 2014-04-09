@@ -33,10 +33,35 @@ class ArgumentsUnitTest : public QObject
   {
   }
 
+  Q_SLOT void provideFlagOptions()
+  {
+    QSKIP("Not defined yet.", SkipSingle);
+  }
+
+  Q_SLOT void provideSwitchOptions()
+  {
+    QSKIP("Not defined yet.", SkipSingle);
+  }
+
+  Q_SLOT void provideSingleOptions()
+  {
+    QSKIP("Not defined yet.", SkipSingle);
+  }
+
+  Q_SLOT void provideMultiOptions()
+  {
+    QSKIP("Not defined yet.", SkipSingle);
+  }
+
+  Q_SLOT void reparseArguments()
+  {
+    QSKIP("Not defined yet.",SkipSingle);
+  }
+
   Q_SLOT void cleanup()
   {
   }
 };
 
-QTEST_MAIN ( ArgumentsUnitTest )
+QTEST_APPLESS_MAIN ( ArgumentsUnitTest )
 #include "arguments.moc"
