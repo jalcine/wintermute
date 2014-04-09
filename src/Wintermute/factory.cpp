@@ -41,7 +41,7 @@ Factory::Factory() : QObject ( Application::instance() ),
 Factory::Ptr
 Factory::instance()
 {
-  if ( !self ) 
+  if ( self.isNull() ) 
     self = Factory::Ptr(new Factory());
 
 	return Factory::self;
@@ -137,7 +137,8 @@ bool
 Factory::autoloadPlugins()
 {
 	Logger* log = wlog ( this );
-	const QStringList defaultPlugins = QStringList() << "wintermute-zeromq";
+	const QStringList defaultPlugins = QStringList() << "wintermute-dbus"
+    << "wintermute-zeromq";
 	QVariant autoload = Wintermute::Application::setting ( "Plugins/Autoload",
 	                    defaultPlugins );
 	QStringList autoloadList = autoload.value<QStringList>();

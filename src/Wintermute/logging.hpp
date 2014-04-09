@@ -95,7 +95,6 @@ public:
  * @brief Quickly grabs a logger and send text to debug output.
  * @param[in] qobj An object based on QObject.
  * @param[in] text The text to be displayed for debugging.
- * @retval Logger* A logging instance to use.
  *
  * Obtains a logger for the specific QObject and then prints out a
  * line of text for debubgging view.
@@ -106,7 +105,6 @@ public:
  * @brief Quickly grabs a logger and send text to warning output.
  * @param qobj An object based on QObject.
  * @param text The text to be displayed as a warning.
- * @retval Logger* A logging instance to use.
  */
 #define wwarn(qobj, text) wlog(qobj)->warn(text)
 
@@ -114,7 +112,6 @@ public:
  * @brief Quickly grabs a logger and send text to informational output.
  * @param qobj An object based on QObject.
  * @param text The text to be shown informatively.
- * @retval Logger* A logging instance to use.
  */
 #define winfo(qobj, text) wlog(qobj)->info(text)
 
@@ -122,8 +119,21 @@ public:
  * @brief Quickly grabs a logger and send text to error output.
  * @param qobj An object based on QObject.
  * @param text The text to be shown as an error message.
- * @retval Logger* A logging instance to use.
  */
 #define werr(qobj, text) wlog(qobj)->error(text)
+
+/**
+ * @brief Quickly grabs a logger and send text to fatal output.
+ * @param qobj An object based on QObject.
+ * @param text The text to be shown as an fatal message.
+ */
+#define wfatal(qobj, text) wlog(qobj)->fatal(text)
+
+/**
+ * @brief Quickly grabs a logger and send text to trace output.
+ * @param qobj An object based on QObject.
+ * @param text The text to be shown as an trace message.
+ */
+#define wtrace(qobj, text) wlog(qobj)->trace(text)
 
 #endif /* WINTERMUTE_LOGGING_HPP */

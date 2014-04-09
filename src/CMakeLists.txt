@@ -38,8 +38,8 @@ set(WINTERMUTE_SOURCES
   Wintermute/plugin_process.cpp
 
   ## Procedure
-  Wintermute/Procedure/message.hpp
-  # Wintermute/Procedure/event.hpp
+  Wintermute/Procedure/message.cpp
+  # Wintermute/Procedure/event.cpp
   Wintermute/Procedure/call.cpp
   Wintermute/Procedure/method_call.cpp
   Wintermute/Procedure/reply_call.cpp
@@ -49,14 +49,15 @@ set(WINTERMUTE_SOURCES
 
   ## Procedure/Meta
   Wintermute/Procedure/module.cpp
+  Wintermute/Procedure/module_definition.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/dispatcher.cpp
   Wintermute/Procedure/receiver.cpp
 
   ## Event loop
-  Wintermute/Events/call.cpp
+  Wintermute/Events/message.cpp
   # Wintermute/Events/event.cpp
-  Wintermute/Events/call_filter.cpp
+  Wintermute/Events/message_filter.cpp
   #Wintermute/Events/reply_call_filter.cpp
   #Wintermute/Events/method_call_filter.cpp
 
@@ -73,9 +74,11 @@ set(WINTERMUTE_HEADERS
   Wintermute/Version
   Wintermute/Procedure/Module
   Wintermute/Procedure/ProcessModule
+  Wintermute/Procedure/Message
   Wintermute/Procedure/Call
   Wintermute/Procedure/LambdaCall
   Wintermute/Procedure/MethodCall
+  Wintermute/Procedure/ModuleCall
   Wintermute/Procedure/Dispatcher
   Wintermute/Procedure/Receiver
 
@@ -89,8 +92,10 @@ set(WINTERMUTE_HEADERS
   Wintermute/Procedure/module.hpp
   Wintermute/Procedure/process_module.hpp
   Wintermute/Procedure/call.hpp
+  Wintermute/Procedure/message.hpp
   Wintermute/Procedure/lambda_call.hpp
   Wintermute/Procedure/method_call.hpp
+  Wintermute/Procedure/module_call.hpp
   Wintermute/Procedure/dispatcher.hpp
   Wintermute/Procedure/receiver.hpp
 )
@@ -98,7 +103,7 @@ set(WINTERMUTE_HEADERS
 # Wrap up the sources.
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/Wintermute"
   "${CMAKE_BINARY_DIR}/src/Wintermute/Procedure"
-  "${CMAKE_BINARY_DIR}/src/Wintermute/Events/Filters")
+  "${CMAKE_BINARY_DIR}/src/Wintermute/Events")
 
 # Define the executable.
 add_executable(wintermute ${WINTERMUTE_SOURCES})

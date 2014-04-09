@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <TTCCLayout>
@@ -35,54 +36,54 @@ using Log4Qt::ColorConsoleAppender;
 
 namespace Wintermute
 {
-  class LoggingPrivate
-  {
-    public:
-      Layout *primaryLayout;
-      ColorConsoleAppender *stdOutAppender;
-      ColorConsoleAppender *stdErrAppender;
-      FileAppender *fileAppender;
-      MainThreadAppender *mainThreadAppender;
+class LoggingPrivate
+{
+  public:
+    Layout* primaryLayout;
+    ColorConsoleAppender* stdOutAppender;
+    ColorConsoleAppender* stdErrAppender;
+    FileAppender* fileAppender;
+    MainThreadAppender* mainThreadAppender;
 
-      LoggingPrivate() :
-        primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) ,
-        fileAppender ( 0 ) {
-        LogManager::startup();
-        LogManager::handleQtMessages();
+    LoggingPrivate() :
+      primaryLayout ( 0 ), stdOutAppender ( 0 ), stdErrAppender ( 0 ) ,
+      fileAppender ( 0 ) {
+      LogManager::startup();
+      LogManager::handleQtMessages();
 #ifdef WINTERMUTE_DEBUG
-        LogManager::setThreshold ( Log4Qt::Level::INFO_INT );
+      LogManager::setThreshold ( Log4Qt::Level::ALL_INT );
 #else
-        LogManager::setThreshold ( Log4Qt::Level::WARN_INT );
+      LogManager::setThreshold ( Log4Qt::Level::WARN_INT );
 #endif
-        primaryLayout  = new TTCCLayout( "ABSOLUTE" );
-        primaryLayout->setName ( "root" );
-        ((TTCCLayout *) primaryLayout)->setThreadPrinting ( true );
-        ((TTCCLayout *) primaryLayout)->setContextPrinting ( false );
-        primaryLayout->activateOptions();
-        addAppenders();
-      }
+      primaryLayout  = new TTCCLayout( "ABSOLUTE" );
+      primaryLayout->setName ( "root" );
+      ((TTCCLayout*) primaryLayout)->setThreadPrinting ( true );
+      ((TTCCLayout*) primaryLayout)->setContextPrinting ( true );
+      primaryLayout->activateOptions();
+      addAppenders();
+    }
 
-      void
-      addAppenders() {
-        stdOutAppender = new ColorConsoleAppender ( primaryLayout,
-            ConsoleAppender::STDOUT_TARGET );
-        stdOutAppender->setName ( "stdout" );
-        stdOutAppender->activateOptions();
-        stdErrAppender = new ColorConsoleAppender ( primaryLayout,
-            ConsoleAppender::STDERR_TARGET );
-        stdErrAppender->setName ( "stderr" );
-        stdErrAppender->activateOptions();
-        fileAppender = new FileAppender ( primaryLayout, "wintermute.log",
-                                          true, true, QCoreApplication::instance() );
-        fileAppender->setName( "file" );
-        fileAppender->activateOptions();
-        mainThreadAppender = new MainThreadAppender ( );
-        Logger::rootLogger()->addAppender ( stdOutAppender );
-        Logger::rootLogger()->addAppender ( fileAppender );
-      }
+    void
+    addAppenders() {
+      stdOutAppender = new ColorConsoleAppender ( primaryLayout,
+          ConsoleAppender::STDOUT_TARGET );
+      stdOutAppender->setName ( "stdout" );
+      stdOutAppender->activateOptions();
+      stdErrAppender = new ColorConsoleAppender ( primaryLayout,
+          ConsoleAppender::STDERR_TARGET );
+      stdErrAppender->setName ( "stderr" );
+      stdErrAppender->activateOptions();
+      fileAppender = new FileAppender ( primaryLayout, "wintermute.log",
+                                        true, true, QCoreApplication::instance() );
+      fileAppender->setName( "file" );
+      fileAppender->activateOptions();
+      mainThreadAppender = new MainThreadAppender ( );
+      Logger::rootLogger()->addAppender ( stdOutAppender );
+      Logger::rootLogger()->addAppender ( fileAppender );
+    }
 
-      virtual ~LoggingPrivate() {
-        LogManager::shutdown();
-      }
-  };
+    virtual ~LoggingPrivate() {
+      LogManager::shutdown();
+    }
+};
 }

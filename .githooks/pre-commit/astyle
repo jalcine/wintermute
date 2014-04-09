@@ -35,6 +35,7 @@ EOF
   * )
     for file in `git diff-index --cached --name-only HEAD -- {src,lib,test}/**/**/*pp` ; do
       astyle --options=./.astylerc ${file}
+      git add ${file}
     done
   ;;
 esac

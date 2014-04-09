@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,20 +14,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
-#include <QtCore/QCoreApplication>
-#include "Wintermute/private/Procedure/dispatcher.hpp"
-#include "Wintermute/Events/call.hpp"
 #include "Wintermute/application.hpp"
-#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/logging.hpp"
+#include "Wintermute/Procedure/message.hpp"
+#include "Wintermute/Events/message.hpp"
+#include "Wintermute/private/Procedure/dispatcher.hpp"
 
+using Wintermute::Events::MessageEvent;
 using Wintermute::Procedure::Dispatcher;
 using Wintermute::Procedure::DispatcherPrivate;
-using Wintermute::Events::CallEvent;
 
-QList<Dispatcher *> DispatcherPrivate::dispatchers = QList<Dispatcher *>();
+QList<Dispatcher*> DispatcherPrivate::dispatchers = QList<Dispatcher*>();
 
 Dispatcher::Dispatcher() :
   QObject ( wntrApp )
@@ -36,11 +36,14 @@ Dispatcher::Dispatcher() :
 }
 
 void
-Dispatcher::postDispatch ( const MethodCall &call, Module *object )
+Dispatcher::queueMessage ( const Message& message )
 {
-  Q_ASSERT ( call.isValid() );
-  QCoreApplication::postEvent ( object, new CallEvent ( CallEvent::TypeDispatch,
-                                call ) );
+  Q_ASSERT ( message.valid() );
+  wtrace("(Dispatcher::static)",
+         QString("Got %1 for dispatching; but not yet implemented.").arg(message));
+  MessageEvent* event = new MessageEvent(MessageEvent::DirectionDispatch,
+                                         message);
+  QCoreApplication::postEvent(wntrApp, event);
 }
 
 Dispatcher::~Dispatcher()

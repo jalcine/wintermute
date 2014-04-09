@@ -19,7 +19,7 @@
 #include <QtZeroMQ/Message>
 #include <QtZeroMQ/PollingSocket>
 #include <Wintermute/Logging>
-#include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Message>
 #include "globals.hpp"
 #include "module.hpp"
 #include "receiver.hpp"
@@ -27,7 +27,7 @@
 
 using Wintermute::ZeroMQ::Receiver;
 using Wintermute::ZeroMQ::Module;
-using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Message;
 
 Receiver::Receiver ( Module* a_module ) :
 	Wintermute::Procedure::Receiver(), m_socket ( 0 )
@@ -52,5 +52,6 @@ Receiver::onMessageReceived ( const QList<QByteArray>& data )
 		chunks += chunk;
 	}
 	winfo ( this, QString ( "Obtained incoming call of %1 bytes." ).arg ( chunks.size() ) );
-	Call::Pointer receivedCall = Call::fromString ( chunks );
+	const Message& message = qvariant_cast<Message>(chunks);
+  receiveMessage(message);
 }

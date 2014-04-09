@@ -20,29 +20,27 @@
 #define WINTERMUTE_PROCEDURE_DISPATCHER_HPP
 
 #include <QtCore/QObject>
-#include <Wintermute/Application>
-#include <Wintermute/Procedure/Module>
 
 namespace Wintermute
 {
-  namespace Procedure
-  {
-    class Module;
-    class DispatcherPrivate;
-    class Dispatcher : public QObject
-    {
-        Q_OBJECT
-        friend class MethodCall;
-        friend class DispatcherPrivate;
+namespace Procedure
+{
+class Module;
+class Message;
+class DispatcherPrivate;
+class Dispatcher : public QObject
+{
+    Q_OBJECT
+    friend class Message;
+    friend class DispatcherPrivate;
 
-      protected:
-        explicit Dispatcher();
-        virtual ~Dispatcher();
-        virtual void sendMessage ( const Call &call ) = 0;
-        static void postDispatch ( const MethodCall &call,
-                                   Module *module = wntrApp->module() );
-    };
-  }
+  protected:
+    explicit Dispatcher();
+    virtual ~Dispatcher();
+    virtual void sendMessage ( const Message& message ) = 0;
+    static void queueMessage ( const Message& call );
+};
+}
 }
 
 #endif

@@ -16,20 +16,36 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  * @endif
  **/
-
 /**
  * @namespace Wintermute
  * @brief     Represents the parent namespace of Wintermute.
  */
-
 /**
  * @namespace Wintermute::Procedure
  * @brief     Represents the parent namespace of Wintermute::Procedure.
  */
-
 /**
  * @namespace Wintermute::Events
  * @brief     Represents the parent namespace of Wintermute::Events.
+ */
+/**
+ * @defgroup rcp Remote Procedure Calling
+ *
+ * Wintermute takes remote procedure calling to an interesting level. It
+ * abstracts different messaging systems like D-Bus and ZeroMQ so that the
+ * Wintermute processes and its friends could send and recieve information
+ * regardless of location and/or speed.
+ */
+/**
+ * @mainpage
+ *
+ * [Wintermute][]'s aiming to be a pretty nifty application framework to
+ * effectively make it the closest thing we have to a incarnation of Jarvis
+ * from Marvel's Iron Man or at least something remotely similar.
+ *
+ * This serves as documentation to the source of the core binary.
+ *
+ * [wintermute]: http://wintermute.jalcine.me
  */
 
 #include "Wintermute/application.hpp"

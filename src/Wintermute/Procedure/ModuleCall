@@ -1,2 +1,1 @@
-/* vim: set ft=cpp tw=78 */
 #include "Wintermute/Procedure/module_call.hpp"

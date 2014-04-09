@@ -17,38 +17,31 @@
  * @endif
  **/
 
-#include <Wintermute/Logging>
-#include <QtDBus/QDBusPendingReply>
-#include "adaptor.hpp"
-#include "receiver.hpp"
+#include "Wintermute/Events/message.hpp"
 
-using Wintermute::DBus::Receiver;
-using Wintermute::DBus::Adaptor;
+using Wintermute::Events::MessageEvent;
 using Wintermute::Procedure::Message;
 
-Receiver::Receiver() :
-	Wintermute::Procedure::Receiver()
+const int MessageEvent::EventType = QEvent::registerEventType();
+
+MessageEvent::MessageEvent(const TransportDirection& direction,
+                           const Message& message) : QEvent( (QEvent::Type) MessageEvent::EventType),
+  m_direction(direction), m_message(message)
 {
 }
 
-void
-Receiver::receiveMessage ( const Message& message )
+MessageEvent::TransportDirection
+MessageEvent::direction() const
 {
-	// TODO Some meta-data about D-Bus or call origin could be added.
-	Wintermute::Procedure::Receiver::receiveMessage(message);
+  return m_direction;
 }
 
-void
-Receiver::handleAsyncCallReply ( QDBusPendingCallWatcher* reply )
+const Message&
+MessageEvent::message() const
 {
-	QDBusPendingReply<QVariant> replyValue = *reply;
-	if ( replyValue.isValid() && replyValue.isFinished() ) {
-    const Message theMessage = replyValue.value().value<Message>();
-    receiveMessage(theMessage);
-	}
-	reply->deleteLater();
+  return m_message;
 }
 
-Receiver::~Receiver()
+MessageEvent::~MessageEvent()
 {
 }

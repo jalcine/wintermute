@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,9 +14,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <Wintermute/Globals>
+#include <Wintermute/Logging>
+#include <Wintermute/Procedure/Module>
 #include <QtCore/QVariantMap>
 
 namespace Wintermute
@@ -31,11 +34,20 @@ namespace Procedure
  */
 struct MessagePrivate : public QSharedData
 {
-  MessagePrivate() : senderMap(), receiverMap(), dataMap() { }
-  MessagePrivate( const MessagePrivate& other ) :
-    QSharedData ( other ), senderMap ( other.senderMap ),
-    receiverMap ( other.receiverMap ), dataMap ( other.dataMap ) { }
-  virtual ~MessagePrivate() { }
+  MessagePrivate() : QSharedData(), sender(Module::Definition::Null), 
+    receiver(Module::Definition::Null), dataMap()
+  {
+  }
+
+  MessagePrivate( const MessagePrivate& other ) : QSharedData ( other ), 
+    sender ( other.sender ), receiver ( other.receiver ), 
+    dataMap ( other.dataMap )
+  {
+  }
+
+  virtual ~MessagePrivate()
+  {
+  }
 
   bool valid() const
   {
@@ -44,41 +56,18 @@ struct MessagePrivate : public QSharedData
     return isValidSenderData() && isValidReceiverData();
   }
 
-  bool isValidSenderData ()
+  bool isValidSenderData () const
   {
-    if ( senderMap.empty() ) return false;
-    if ( !senderMap.contains("module") ) return false;
-    if ( !senderMap.contains("pid") ) return false;
-
-    QVariant module = senderMap.value("module");
-    if ( !module.isValid() ) return false;
-    if ( module.isNull() ) return false;
-
-    QVariant pid = senderMap.value("pid");
-    if ( !pid.isValid() ) return false;
-    if ( pid.isNull() ) return false;
-
-    return true;
-  }
-  bool isValidReceiverData ()
-  {
-    if ( receiverMap.empty() ) return false;
-    if ( !receiverMap.contains("module") ) return false;
-    if ( !receiverMap.contains("pid") ) return false;
-
-    QVariant module = receiverMap.value("module");
-    if ( !module.isValid() ) return false;
-    if ( module.isNull() ) return false;
-
-    QVariant pid = receiverMap.value("pid");
-    if ( !pid.isValid() ) return false;
-    if ( pid.isNull() ) return false;
-
-    return true;
+    return sender.valid() && sender.pid != 0;
   }
 
-  QVariantMap senderMap;
-  QVariantMap receiverMap;
+  bool isValidReceiverData () const
+  {
+    return receiver.valid();
+  }
+
+  Module::Definition sender;
+  Module::Definition receiver;
   QVariantMap dataMap;
 };
 }

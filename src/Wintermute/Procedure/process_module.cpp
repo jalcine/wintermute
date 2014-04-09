@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,52 +14,49 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QProcess>
+#include <QtCore/QCoreApplication>
 #include <Wintermute/Globals>
-#include <Wintermute/Procedure/MethodCall>
-#include "Wintermute/logging.hpp"
-#include "Wintermute/Procedure/process_module.hpp"
+#include <Wintermute/Logging>
+#include "lambda_call.hpp"
+#include "method_call.hpp"
+#include "reply_call.hpp"
+#include "process_module.hpp"
 
+using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ProcessModule;
 using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::ReplyCall;
+using Wintermute::Procedure::LambdaCall;
 
 ProcessModule::ProcessModule() :
   Module ( Wintermute::Application::instance() )
 {
-  setDomain  ( WINTERMUTE_DOMAIN );
-  setPackage ( "process" );
-  mountCall ( new LambdaCall ( "stop", this,
-  [&] (QVariantList args, const MethodCall& call) -> QVariant {
-    wdebug ( this, "Remote stop initiated." );
+  setDefinition(WINTERMUTE_DOMAIN, "process");
+  mountCall( new LambdaCall("stop", this,
+  [&] (QVariant args, const MethodCall & call) -> void {
+    winfo(this, QString("Remote stop initiated; %1.").arg(args.toString()));
+    ReplyCall reply = call.craftReply(true);
+    reply.queueForDispatch();
     stop ();
-    return true;
   } ) );
-  mountCall ( new LambdaCall ( "quit", this,
-  [&] (QVariantList args, const MethodCall& call) -> QVariant {
-    wdebug ( this, "Remote quit initiated." );
-    quit ( args[0].toInt() );
-    return true;
+  mountCall(new LambdaCall("quit", this,
+  [&] (QVariant args, const MethodCall & call) -> void {
+    winfo( this, "Remote quit initiated." );
+    ReplyCall reply = call.craftReply(true);
+    reply.queueForDispatch();
+    quit ( args.toInt() );
   } ) );
-  mountCall ( new LambdaCall ( "reboot", this,
-  [&] (QVariantList args, const MethodCall& call) -> QVariant {
-    wdebug ( this, "Remote reboot initiated." );
-    quit ( args[0].toInt() );
-    return true;
+  mountCall(new LambdaCall("reboot", this,
+  [&] (QVariant , const MethodCall & call) -> void {
+    winfo( this, "Remote reboot initiated." );
+    ReplyCall reply = call.craftReply(true);
+    reply.queueForDispatch();
+    reboot();
   } ) );
-}
-
-void
-ProcessModule::greetSystem ( const QString &name )
-{
-  QPointer<Module> module = Module::findModule (name);
-  const QVariantList args = QVariantList() << module->qualifiedName() <<
-                            QCoreApplication::applicationPid();
-  const MethodCall methodCall ( WINTERMUTE_DOMAIN".heartbeat.monitor", "greet",
-                                args );
-  methodCall.dispatch ();
 }
 
 void
@@ -73,6 +70,7 @@ ProcessModule::start()
 void
 ProcessModule::reboot()
 {
+  wtrace(this, "Invoking reboot...");
   QProcess::startDetached ( QCoreApplication::applicationFilePath(),
                             QCoreApplication::arguments() );
   quit ( 0 );
@@ -81,20 +79,23 @@ ProcessModule::reboot()
 void
 ProcessModule::stop()
 {
-  winfo ( this, QString ("Stopping Wintermute...") );
+  wtrace ( this, QString ("Stopping Wintermute...") );
   quit ();
 }
 
 void
 ProcessModule::quit ( const int exitcode )
 {
-  winfo ( this, "Invoking remote exit..." );
+  wtrace ( this, "Invoking remote exit..." );
   wntrApp->stop ( exitcode );
 }
 
 ProcessModule::~ProcessModule()
 {
   if ( !QCoreApplication::closingDown() ) {
+    wtrace(this, "Attempting to quit the process...");
     stop();
+  } else {
+    wtrace(this, "Already dying, not bothering to kill process.");
   }
 }

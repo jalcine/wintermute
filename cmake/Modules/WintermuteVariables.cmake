@@ -1,4 +1,3 @@
-## TODO: Add proper CMake module definition here.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
@@ -74,7 +73,7 @@ set(WINTERMUTE_LIBRARIES
 )
 set(WINTERMUTE_INCLUDE_DIRS
   ${LOG4QT_INCLUDE_DIRS}
-  ${QJSON_INCLUDE_DIRS}
+  ${QJSON_INCLUDE_DIR}
   ${QCOMMANDLINE_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
 )

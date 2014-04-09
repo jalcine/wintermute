@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,12 +14,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <Wintermute/Logging>
 #include <Wintermute/Procedure/LambdaCall>
+#include <Wintermute/Procedure/ReplyCall>
 
 namespace Wintermute
 {
@@ -39,15 +41,21 @@ public:
 
 	void
 	mountCalls() {
-		q_ptr->mountCall ( new Procedure::LambdaCall ( "greet", q_ptr,
-		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-			wdebug(q_ptr, "We got someone saying hello.");
-			return greet(args);
+    q_ptr->mountCall( new Procedure::LambdaCall ( "greet",
+		  q_ptr, [&] (QVariant args, const Procedure::MethodCall& call) -> void {
+        wdebug(q_ptr, "We got someone saying hello.");
+        QVariantList theArgs(args.toList());
+        theArgs.push_back(call.sendingModule().pid);
+        QVariant greetResult = greet(theArgs);
+        Procedure::ReplyCall reply = call.craftReply(greetResult);
+        reply.queueForDispatch();
 		} ) );
-		q_ptr->mountCall ( new Procedure::LambdaCall ( "record", q_ptr,
-		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+    q_ptr->mountCall(new Procedure::LambdaCall ( "record", 
+        q_ptr, [&] (QVariant args, const Procedure::MethodCall& call) -> void {
 			wdebug(q_ptr, "Entering a new beating record.");
-			return record(args);
+      QVariant recordResult = record(args.toList());
+      Procedure::ReplyCall reply = call.craftReply(recordResult);
+      reply.queueForDispatch();
 		} ) );
 	}
 
@@ -72,7 +80,6 @@ public:
 	 * @param QVariantList arguments
 	 *        - count: A count of the number of total pings sent.
 	 *        - type:  The type of ping this is.
-	 *        - pid:   PID of process that's pinging.
 	 */
 	QVariant record ( const QVariantList& arguments ) {
 		quint64 pid = arguments[2].toUInt();

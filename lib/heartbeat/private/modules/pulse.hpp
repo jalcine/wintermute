@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <QtCore/QObject>
@@ -25,6 +26,7 @@
 #include <Wintermute/Procedure/Module>
 #include <Wintermute/Procedure/LambdaCall>
 #include <Wintermute/Procedure/MethodCall>
+#include <Wintermute/Procedure/ReplyCall>
 #include "globals.hpp"
 
 namespace Wintermute
@@ -51,36 +53,36 @@ public:
 	mountCalls() {
 		Q_Q ( PulseModule );
 		q->mountCall ( new Procedure::LambdaCall ( "module", q,
-		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
-			const QString moduleName = args[0].toString();
-			const QVariant module = getModuleInfo(moduleName);
-			return module;
+		[&] (QVariant args, const Procedure::MethodCall& call) -> void {
+			const QVariant module = getModuleInfo(args);
+      Procedure::ReplyCall reply = call.craftReply(module);
+      reply.queueForDispatch();
 		} ) );
 		q->mountCall ( new Procedure::LambdaCall ( "modules", q,
-		[&] (QVariantList args, const Procedure::MethodCall& call) -> QVariant {
+		[&] (QVariant , const Procedure::MethodCall& call) -> void {
 			const QVariant modules = getAllModulesInfo();
-			return modules;
+      Procedure::ReplyCall reply = call.craftReply(modules);
+      reply.queueForDispatch();
 		} ) );
 	}
 
 	QVariantMap
-	getModuleInfo ( const QString& moduleName ) {
-		Procedure::Module* module = Procedure::Module::findModule ( moduleName );
+	getModuleInfo ( const QVariant& aDef ) {
+		QPointer<Procedure::Module> module = 
+      Procedure::Module::findModule ( aDef.value<Procedure::Module::Definition>() );
 		QVariantMap values;
-		if ( module != nullptr ) {
-			values.insert ( "name",    module->qualifiedName() );
-			values.insert ( "domain",  module->domain() );
-			values.insert ( "package", module->package() );
+		if ( !module.isNull() ) {
 			values.insert ( "calls",   module->calls() );
 		}
 		return values;
 	}
 
-	QVariantList
+	QVariantHash
 	getAllModulesInfo() {
-		QVariantList modules;
-		for (Procedure::Module* module: Procedure::Module::knownModules()) {
-			modules.push_back ( getModuleInfo ( module->qualifiedName() ) );
+		QVariantHash modules;
+		for (QPointer<Procedure::Module> mod: Procedure::Module::knownModules()) {
+			modules.insert ( mod->definition(), 
+          getModuleInfo ( QVariant::fromValue(mod->definition() ) ) );
 		}
 		return modules;
 	}

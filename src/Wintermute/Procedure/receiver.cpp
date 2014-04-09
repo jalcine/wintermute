@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,42 +14,41 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
-/**
- * Receivers do nothing more besides collecting inbound information and
- * deserializing it from its obtained format into something that Wintermute
- * can use to invoke a local call or response to a call.
- */
-
 #include <QtCore/QCoreApplication>
-#include <Wintermute/Procedure/Module>
-#include "Wintermute/private/Procedure/receiver.hpp"
 #include "Wintermute/application.hpp"
-#include "Wintermute/Events/call.hpp"
-#include "Wintermute/Procedure/receiver.hpp"
+#include "module.hpp"
+#include "message.hpp"
+#include "Wintermute/private/Procedure/receiver.hpp"
+#include "receiver.hpp"
 
+using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Receiver;
-using Wintermute::Events::CallEvent;
+using Wintermute::Procedure::ReceiverList;
+using Wintermute::Procedure::ReceiverPrivate;
 
-QList<Receiver *> Wintermute::Procedure::ReceiverPrivate::receivers =
-  QList<Receiver *>();
+ReceiverList ReceiverPrivate::receivers = ReceiverList();
 
-Receiver::Receiver() :
-  QObject ( wntrApp )
+Receiver::Receiver (QObject* parent) :
+  QObject ( parent == nullptr ? wntrApp : parent )
 {
   ReceiverPrivate::addReceiver ( this );
 }
 
 void
-Receiver::receiveMessage ( const Call &call )
+Receiver::receiveMessage ( const Message& message )
 {
-  QPointer<Procedure::Module> module = Module::findModule ( call.recipient() );
+  QPointer<Module> module = Module::findModule ( message.receivingModule() );
+
   if ( module.isNull() ) {
+    wtrace(this, QString("No module found by %1.").arg(message.receivingModule()));
     return;
+  } else {
+    /// @todo Use MessageEvent and send a 'TypeReceived' kind of event.
+    wtrace(this, "Received message but not able to handle yet.");
   }
-  QCoreApplication::postEvent ( module.data(),
-                                new CallEvent ( CallEvent::TypeReceive, call ) );
 }
 
 Receiver::~Receiver()

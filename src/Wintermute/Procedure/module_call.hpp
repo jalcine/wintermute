@@ -21,32 +21,33 @@
 
 #include <functional>
 #include <Wintermute/Procedure/Call>
-#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/MethodCall>
 
 namespace Wintermute
 {
-  namespace Procedure
-  {
-    /**
-     * @brief Allows the registration of a function into a module for invocation.
-     * @sa Wintermute::Procedure::Module
-     *
-     * ModuleCall objects can be used to register calls into a Module object.
-     */
-    class ModuleCall : public Call
-    {
-      public:
-        virtual ~ModuleCall();
-        QPointer<const Module> module() const;
-        virtual bool valid() const;
-        virtual void invoke ( const QVariantList &arguments,
-                              const MethodCall &call ) = 0;
+namespace Procedure
+{
+class Module;
+/**
+ * @brief Allows the registration of a function into a module for invocation.
+ * @sa Wintermute::Procedure::Module
+ *
+ * ModuleCall objects can be used to register calls into a Module object.
+ */
+class ModuleCall : public Call
+{
+  public:
+    virtual ~ModuleCall();
+    const Module* module() const;
+    virtual bool valid() const;
+    virtual void invoke ( const QVariant& arguments,
+                          const MethodCall& call ) = 0;
 
-      protected:
-        explicit ModuleCall(const QString &name, QPointer<const Module> module);
-        QPointer<const Module> m_module;
-    };
-  }
+  protected:
+    explicit ModuleCall(const QString& name, const Module* module);
+    QPointer<Module> m_module;
+};
+}
 }
 
 #endif

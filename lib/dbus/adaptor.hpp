@@ -51,7 +51,7 @@ public:
 	virtual ~Adaptor();
 	Q_SLOT void registerOnDBus();
 	Q_SLOT void deregisterFromDBus();
-	Q_INVOKABLE Q_NOREPLY void handleIncomingCall ( const QString& arguments,
+	Q_INVOKABLE Q_NOREPLY void handleIncomingCall ( const QVariant& arguments,
 	    const QDBusMessage& message );
 	Q_INVOKABLE bool hasModule ( const QString& name );
 };

@@ -17,7 +17,7 @@
  **/
 
 #include <Wintermute/Logging>
-#include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Message>
 #include <QtZeroMQ/Message>
 #include "globals.hpp"
 #include "dispatcher.hpp"
@@ -26,7 +26,7 @@
 
 using Wintermute::ZeroMQ::Dispatcher;
 using Wintermute::ZeroMQ::Module;
-using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Message;;
 
 Dispatcher::Dispatcher ( Module* a_module ) :
 	Wintermute::Procedure::Dispatcher::Dispatcher(),
@@ -44,9 +44,9 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage ( const Call::Pointer& message ) throw ( zmq::error_t )
+Dispatcher::sendMessage ( const Message& message ) throw ( zmq::error_t )
 {
-	const QByteArray data = message->toString().toUtf8();
+	const QByteArray data(message);
 	Module* module = qobject_cast<Module*> ( parent() );
 	winfo ( this, QString ( "Sending %1 ..." ).arg ( QString ( data ) ) );
 	Q_ASSERT ( module != NULL );

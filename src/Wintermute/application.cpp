@@ -95,8 +95,7 @@ void
 Application::stop ( int exitcode )
 {
   Logger* log = wlog ( this );
-  log->info ( QString ( "Stopping Wintermute '%1'..." )
-              .arg ( module()->qualifiedName() ) );
+  log->info ( QString ( "Stopping Wintermute ..." ) );
   QCoreApplication::quit();
   emit this->stopped();
   log->info ( QString ("Wintermute is stopping with exit code %1." )
@@ -105,11 +104,11 @@ Application::stop ( int exitcode )
   wntrApp->deleteLater();
 }
 
-QPointer<Module>
+Module*
 Application::module() const
 {
   Q_D ( const Application );
-  return qobject_cast<Module*>(d->module);
+  return d->module;
 }
 
 Version

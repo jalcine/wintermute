@@ -53,18 +53,18 @@ Adaptor::deregisterFromDBus()
 	bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
 	                          QCoreApplication::applicationPid() ) );
 	for (Procedure::Module* module: Procedure::Module::knownModules() ) {
-		const QString objectName = "/" + module->package();
+		const QString objectName = "/" + module->definition().package;
 		bus.unregisterObject ( objectName );
 	}
 }
 
 void
-Adaptor::handleIncomingCall ( const QString& arguments, const
+Adaptor::handleIncomingCall ( const QVariant& arguments, const
                               QDBusMessage& message )
 {
+	Q_ASSERT ( arguments.isValid() );
 	Q_ASSERT ( !arguments.isNull() );
-	Q_ASSERT ( !arguments.isEmpty() );
-	const Call::Pointer incomingCall = Call::fromString ( arguments );
+	const Call incomingCall = static_cast<Call>(arguments.value<Wintermute::Procedure::Message>());
 	Module* module = qobject_cast<Wintermute::DBus::Module*>(parent());
 	Q_CHECK_PTR ( module );
 	module->m_receiver->receiveMessage ( incomingCall );
@@ -73,7 +73,8 @@ Adaptor::handleIncomingCall ( const QString& arguments, const
 bool
 Adaptor::hasModule ( const QString& name )
 {
-	return Procedure::Module::findModule ( name ) != nullptr;
+	return Procedure::Module::findModule ( 
+      QVariant::fromValue(name).value<Module::Definition>() ) != nullptr;
 }
 
 Adaptor::~Adaptor()

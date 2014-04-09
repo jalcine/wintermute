@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <QtCore/QVariantMap>
@@ -29,21 +30,20 @@ using Wintermute::Heartbeat::Plugin;
 using Wintermute::Heartbeat::PulseModule;
 using Wintermute::Heartbeat::PulseModulePrivate;
 
-PulseModule::PulseModule( Heartbeat::Plugin *plugin ) :
+PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   Module ( plugin ), d_ptr ( new PulseModulePrivate(this) )
 {
   Q_D ( PulseModule );
-  setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
-  setPackage ( "pulse" );
+  setDefinition(WINTERMUTE_HEARTBEAT_DOMAIN, "pulse");
   d->mountCalls();
-  winfo (this, "Ready to beat.");
+  wtrace (this, "Ready to beat.");
 }
 
 void
 PulseModule::start()
 {
   Q_D ( PulseModule );
-  winfo(this, "Started.");
+  wtrace(this, "Started.");
   d->timer.start();
 }
 
@@ -51,7 +51,7 @@ void
 PulseModule::stop()
 {
   Q_D ( PulseModule );
-  winfo(this, "Stopped.");
+  wtrace(this, "Stopped.");
   d->timer.stop();
 }
 
@@ -60,11 +60,13 @@ PulseModule::tick()
 {
   Q_D ( PulseModule );
   pulse ( PulseModule::PulseAlive );
-  const Plugin *plugin = qobject_cast<Plugin *>( parent() );
+  const Plugin* plugin = qobject_cast<Plugin*>( parent() );
   const QVariant interval = plugin->configuration()->value("Pulse/Interval");
+
   if ( interval.isValid() ) {
     d->timer.setInterval ( interval.toInt() );
   }
+
   d->timer.start();
 }
 
@@ -73,20 +75,18 @@ PulseModule::pulse( PulseType type )
 {
   Q_D ( PulseModule );
   d->timer.stop();
-  MethodCall *theCall = new MethodCall( WINTERMUTE_HEARTBEAT_DOMAIN".monitor",
-                                        "record");
-  quint64 pid = QCoreApplication::applicationPid();
-  theCall->setArguments (QVariantList() << d->count++ << type << pid );
-  theCall->setSender ( this );
-  //theCall->setCallback ( [&] ( QVariant result ) -> void {
-  // TODO Get the ping stashed as properly recieved (record into monitor?)
-  //winfo ( this, QString("IS IT REAL?") + result.toString() );
-  //} );
-  winfo ( this, "Sending a pulse..." );
-  theCall->dispatch();
+  Module::Definition monitorDef = Module::Definition::compose(
+                                    WINTERMUTE_HEARTBEAT_DOMAIN, "monitor", 0);
+  MethodCall theCall("record", monitorDef, QVariantList() << d->count++ << type );
+  theCall.setSender(definition());
+  theCall.setCallback ( [&] ( QVariant result ) -> void {
+    // @TODO Get the ping stashed as properly recieved (record into monitor?)
+    winfo ( this, QString("IS IT REAL?") + result.toString() );
+  } );
+  theCall.queueForDispatch();
 }
 
 PulseModule::~PulseModule()
 {
-  winfo ( this, "Pulse giving its last beat." );
+  wtrace ( this, "Pulse giving its last beat." );
 }

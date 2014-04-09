@@ -21,7 +21,7 @@
 option(WITH_DOCUMENTATION ON "Generate documentation for the project.")
 
 if (WITH_DOCUMENTATION)
-  find_package(Doxygen REQUIRED)
+  find_package(Doxygen 1.8.6 REQUIRED)
 
   include(CMakeParseArguments)
   include(WintermuteVariables)
@@ -54,3 +54,16 @@ macro(wintermute_generate_documentation)
     )
   endif()
 endmacro(wintermute_generate_documentation)
+
+## Define the features provided for documentation.
+if (NOT DEFINED _hax_dox)
+  set(_hax_dox OFF)
+  if (WITH_DOCUMENTATION AND DOXYGEN_FOUND)
+    set(_hax_dox ON)
+  endif()
+
+  set_package_properties(Doxygen PROPERTIES TYPE RECOMMENDED)
+
+  add_feature_info(Documentation _hax_dox 
+    "Documentation generation tool to HTML, QHP, and man pages.")
+endif()

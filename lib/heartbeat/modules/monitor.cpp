@@ -24,15 +24,13 @@
 using Wintermute::Heartbeat::MonitorModule;
 using Wintermute::Heartbeat::MonitorModulePrivate;
 
-MonitorModule::MonitorModule( Heartbeat::Plugin *plugin ) :
+MonitorModule::MonitorModule( Heartbeat::Plugin* plugin ) :
   Wintermute::Procedure::Module ( plugin ),
   d_ptr ( new MonitorModulePrivate ( this ) )
 {
   Q_D ( MonitorModule );
-  winfo (this,
-         "Getting ready to listen to the heartbeat pulse.");
-  setDomain ( WINTERMUTE_HEARTBEAT_DOMAIN );
-  setPackage ( "monitor" );
+  winfo (this, "Getting ready to listen to the heartbeat pulse.");
+  setDefinition(WINTERMUTE_HEARTBEAT_DOMAIN, "monitor");
   d->mountCalls();
   d->killOtherMonitors();
 }
@@ -40,6 +38,7 @@ MonitorModule::MonitorModule( Heartbeat::Plugin *plugin ) :
 void
 MonitorModule::start()
 {
+  wtrace(this, "Started.");
   Q_D ( MonitorModule );
   d->processes.clear();
 }
@@ -47,6 +46,7 @@ MonitorModule::start()
 void
 MonitorModule::stop()
 {
+  wtrace(this, "Stopped.");
   // TODO: If the monitor goes down; what should we do? Let the kids go play?
   // NOTE: Consider sending a 'mute' signal to the processes.
 }

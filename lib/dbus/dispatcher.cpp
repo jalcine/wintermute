@@ -17,7 +17,7 @@
  **/
 
 #include <Wintermute/Logging>
-#include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Message>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusReply>
@@ -28,7 +28,7 @@
 using Wintermute::DBus::Dispatcher;
 using Wintermute::DBus::Receiver;
 using Wintermute::DBus::Module;
-using Wintermute::Procedure::Call;
+using Wintermute::Procedure::Message;
 
 Dispatcher::Dispatcher() :
 	Wintermute::Procedure::Dispatcher::Dispatcher()
@@ -40,7 +40,7 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::sendMessage ( const Call::Pointer& call )
+Dispatcher::sendMessage ( const Message& message )
 {
 	QDBusConnection sessionBus = QDBusConnection::sessionBus();
 	QDBusConnectionInterface* interface = sessionBus.interface();
@@ -57,7 +57,7 @@ Dispatcher::sendMessage ( const Call::Pointer& call )
 			DBus::Module* module = qobject_cast<DBus::Module*>(parent());
 			QDBusMessage methodCall = QDBusMessage::createMethodCall ( remoteService,
 			                          "/Process", WINTERMUTE_DOMAIN ".dbus" , "handleIncomingCall" );
-			methodCall << call->toString();
+			methodCall << message;
 			QDBusPendingReply<QString> asyncMethodCall = sessionBus.asyncCall ( methodCall );
 			DBus::Receiver* reciever = module->m_receiver;
 			QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher (

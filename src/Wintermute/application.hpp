@@ -140,7 +140,7 @@ public:
    * extract this process over RPC. It doesn't allow plugins to replace the
    * root module with their preference. This might be a design flaw for now.
    */
-  QPointer<Procedure::Module> module() const;
+  Procedure::Module* module() const;
 
   /**
    * @brief Starts Wintermute's event loop.

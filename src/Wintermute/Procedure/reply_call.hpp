@@ -22,23 +22,42 @@
 
 namespace Wintermute
 {
-  namespace Procedure
-  {
-    class MethodCall;
-    class ReplyCall : public Call
-    {
-        Q_OBJECT
-        const MethodCall &m_methodCall;
+namespace Procedure
+{
+class MethodCall;
 
-      public:
-        ReplyCall ( const MethodCall &methodCall, const QVariant &response );
-        virtual ~ReplyCall();
+/**
+ * @brief Represents a reply to a MethodCall invoked here.
+ * @sa MethodCall
+ */
+class ReplyCall : public Call
+{
+    friend class MethodCall;
+    const MethodCall& m_methodCall;
+    ReplyCall ( const MethodCall& methodCall, const QVariant& response );
+  public:
+    virtual ~ReplyCall(); ///< @brief Destructor.
 
-        QVariant response() const;
-        const MethodCall &methodCall() const;
-        virtual bool valid() const;
-    };
-  }
+    /**
+     * @brief Obtains the response provided by the MethodCall.
+     * @retval QVariant The return value.
+     */
+    QVariant response() const;
+
+    /**
+     * @brief Obtains the invoking MethodCall.
+     * @retval MethodCall The method call.
+     */
+    const MethodCall& methodCall() const;
+
+    /**
+     * @brief Determines if this is a valid ReplyCall.
+     * @retval boolean Whether or not this is a valid ReplyCall.
+     */
+    virtual bool valid() const;
+
+};
+}
 }
 
 #endif
