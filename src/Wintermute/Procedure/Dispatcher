@@ -1,0 +1,28 @@
+/**
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
+ *
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
+/**
+ * The whole purpose of Dispatcher is allow for quick and simple remote
+ * procedure calling over any means possible. Of course, this can lead to
+ * some issues like duplication of message responses and what not, but it's up
+ * to the dispatcher to resolve this at the moment. Also, dispatchers are
+ * meant only to *send* Call data, nothing more. See Receiver for information
+ * about capturing and handling Call data.
+ */
+
+#include "Wintermute/Procedure/dispatcher.hpp"

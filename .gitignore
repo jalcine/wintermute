@@ -7,6 +7,9 @@ debian
 .pc
 build
 CMakeLists.txt.user
+.gdbinit
+.local.vimrc
+.ycm_extra_conf.py
 global.hpp
 test/include/Wintermute/Testing
 CMakeCache.txt
@@ -16,5 +19,9 @@ Makefile
 cmake_install.cmake
 cmake_uninstall.cmake
 FindWintermute.cmake
-src/global.hpp
-.ycm_extra_conf.pyc
+src/Wintermute/Globals
+lib/*/globals.hpp
+*.pyc
+gdb.txt
+*.orig
+tags

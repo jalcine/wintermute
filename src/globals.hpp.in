@@ -1,10 +1,7 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
- *
- * This file is part of Wintermute, the extensible AI platform.
- *
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -17,34 +14,87 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
- */
+ * @endif
+ *
+ **/
 
 #ifndef WINTERMUTE_GLOBALS_HPP
 #define WINTERMUTE_GLOBALS_HPP
 
-/// {{{ Headers
-
-// Bring in Qt's globals, we like them.
 #include <QtCore/QtGlobal>
-
-// Good chance we'd need these headers.
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QSharedPointer>
+#include <QtCore/QSharedDataPointer>
 
-/// }}} Headers
+/*
+ * @defgroup WntrConstants Compile-Time Constants
+ * {
+ */
+/**
+ * @def WINTERMUTE_NAME
+ * @brief The alias Wintermute will use for internal purposes.
+ */
+#define WINTERMUTE_NAME "Wintermute"
 
-/// {{{ Constants
+/**
+ * @def WINTERMUTE_DOMAIN
+ * @brief The domain that Wintermute's processes reference to.
+ */
+#define WINTERMUTE_DOMAIN "in.wintermute"
 
-#define WINTERMUTE_VERSION_MAJOR              @WINTERMUTE_VERSION_MAJOR@
-#define WINTERMUTE_VERSION_MINOR              @WINTERMUTE_VERSION_MINOR@
-#define WINTERMUTE_VERSION_PATCH              @WINTERMUTE_VERSION_PATCH@
-#define WINTERMUTE_VERSION_STAGE              @WINTERMUTE_VERSION_STAGE@
-#define WINTERMUTE_VERSION_STAGE_BRANCH       "@WINTERMUTE_VERSION_STAGE_BRANCH@"
-#define WINTERMUTE_VERSION_STAGE_REF          "@WINTERMUTE_VERSION_STAGE_REF@"
-#define WINTERMUTE_PLUGIN_LIBRARY_DIR         "@WINTERMUTE_PLUGIN_LIBRARY_DIR@"
-#define WINTERMUTE_PLUGIN_DEFINITION_DIR      "@WINTERMUTE_PLUGIN_DEFINITION_DIR@"
+/**
+ * @def   WINTERMUTE_VERSION_MAJOR
+ * @brief Obtains the major version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_MAJOR           @WINTERMUTE_VERSION_MAJOR@
 
-/// }}} Constants
+/**
+ * @def   WINTERMUTE_VERSION_MINOR
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_MINOR           @WINTERMUTE_VERSION_MINOR@
+
+/**
+ * @def   WINTERMUTE_VERSION_PATCH
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_PATCH           @WINTERMUTE_VERSION_PATCH@
+
+/**
+ * @def   WINTERMUTE_VERSION_STAGE
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_STAGE           @WINTERMUTE_VERSION_STAGE@
+
+/**
+ * @def   WINTERMUTE_VERSION_STAGE_BRANCH
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_STAGE_BRANCH    "@WINTERMUTE_VERSION_STAGE_BRANCH@"
+
+/**
+ * @def   WINTERMUTE_VERSION_STAGE_REF
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_VERSION_STAGE_REF       "@WINTERMUTE_VERSION_STAGE_REF@"
+
+/**
+ * @def   WINTERMUTE_PLUGIN_LIBRARY_DIR
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_PLUGIN_LIBRARY_DIR      "@WINTERMUTE_PLUGIN_LIBRARY_DIR@"
+
+/**
+ * @def   WINTERMUTE_PLUGIN_DEFINITION_DIR
+ * @brief Obtains the minor version number upon compilation of Wintermute.
+ */
+#define WINTERMUTE_PLUGIN_DEFINITION_DIR   "@WINTERMUTE_PLUGIN_DEFINITION_DIR@"
+
+/** @internal */
+#define WINTERMUTE_ERROR_MODE_FAILED          0x00101
+
+/** @} */
 
 #endif /* WINTERMUTE_GLOBALS_HPP */

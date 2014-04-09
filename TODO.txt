@@ -1,0 +1,66 @@
+# Quicktask v1.2
+
+CURRENT TASKS:
+  - Re-implement test suite.
+    @ Added [Sun 2013-09-29]
+    - Repair unit testing capabilities.
+      @ Added [Sun 2013-09-29]
+    - Implement extra testing functionality.
+      @ Added [Sun 2013-09-29]
+      - Implement `FeatureTest`.
+        @ Added [Sun 2013-09-29]
+      - Implement `RegressionTest`.
+        @ Added [Sun 2013-09-29]
+    - Implement tests that checks command-line arguments.
+      @ Added [Sun 2013-09-29]
+  - Complete RPC suite (issue #16).
+    @ Added [Sun 2013-09-29]
+    - Complete necessary classes.
+      @ Added [Sun 2013-09-29]
+      @ Start [Sun 2013-09-29] [02:01]
+      - Implement `Wintermute::Procedure::Dispatcher`.
+        @ Added [Sun 2013-09-29]
+        @ Start [Sun 2013-09-29] [14:51]
+      - Implement `Wintermute::Procedure::Receiver`.
+        @ Added [Sun 2013-09-29]
+    - Test necessary classes.
+      @ Added [Sun 2013-09-29]
+      - Write testing foundation for `Wintermute::Procedure`.
+        @ Added [Sun 2013-09-29]
+      - Test `DummyReceiver`.
+        @ Added [Sun 2013-09-29]
+      - Test `DummyDispatcher`.
+        @ Added [Sun 2013-09-29]
+  - Implement core plug-ins.
+    @ Added [Sun 2013-09-29]
+    - Implement TCP/IP networking plug-in.
+      @ Added [Sun 2013-09-29]
+    - Implement heartbeat plug-in.
+      @ Added [Sun 2013-09-29]
+    - Implement daemon plug-in.
+      @ Added [Sun 2013-09-29]
+    - Test core plug-ins.
+      @ Added [Sun 2013-09-29]
+  - Implement language bindings.
+    @ Added [Sun 2013-09-29]
+    - Implement foundational logic to bind Wintermute to a scripting language.
+      @ Added [Sun 2013-09-29]
+      - Implement 'wintermute-scripting' to handle the root scripting functions.
+        @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-javascript' using QtScript (issue #9).
+      @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-python' (issue #10).
+      @ Added [Sun 2013-09-29]
+    - Implement 'wintermute-ruby' (issue #8).
+      @ Added [Sun 2013-09-29]
+  - Add POSIX/UNIX signal handling (issue #12).
+    @ Added [Sun 2013-09-29]
+  - Allow log output to be written to disk (issue #15).
+    @ Added [Sun 2013-09-29]
+  - Incorporate a documenting tool (issue #11).
+    @ Added [Sun 2013-09-29]
+  - Implement the use of a state machine.
+    
+COMPLETED TASKS:
+
+# vim:ft=quicktask

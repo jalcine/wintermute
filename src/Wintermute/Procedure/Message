@@ -1,0 +1,32 @@
+/**
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
+ *
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
+/**
+ * @class Wintermute::Procedure::Message
+ * @brief Basis of data transfer in RPC for Wintermute.
+ *
+ * This class serves as the basis for data, 'packets' if you will, for
+ * Wintermute's RPC. It's meant to be used as a foundation for serializing
+ * data like `Call` or `Signal` objects or so that they can be used over any
+ * compatible medium.
+ *
+ * `Message` is registered into Qt's QMetaType system so that you can use it
+ * wherever you'd use QVariant; for quick serializing across the board.
+ */
+
+#include "Wintermute/Procedure/message.hpp"

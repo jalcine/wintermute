@@ -1,9 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
- *
- * This file is part of Wintermute, the extensible AI platform.
- *
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,216 +16,188 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QtCore/QDebug>
 #include "factory.hpp"
 #include "plugin.hpp"
+#include "plugin_process.hpp"
 #include "logging.hpp"
 #include "application.hpp"
-#include "temporaryplugin.hpp"
-#include <QDir>
-#include <QFile>
-#include <QCoreApplication>
-#include <QDebug>
+#include "private/factory.hpp"
+#include "plugin_process.hpp"
 
 using namespace Wintermute;
 using Wintermute::Factory;
 using Wintermute::FactoryPrivate;
 
-namespace Wintermute {
-  class FactoryPrivate {
-    public:
-      PluginMap active;
+Factory::Ptr Factory::self(nullptr);
 
-      explicit FactoryPrivate() { }
-      
-      ~FactoryPrivate() { }
-      
-      /**
-       * @fn availablePlugins
-       *
-       * Obtains a list of the plug-ins that Wintermute can find on this local 
-       * system.
-       *
-       * TODO: Incorporate a means of collecting a remote list of plug-ins?
-       */
-      PluginList availablePlugins() const {
-        // Grab a list of plug-ins in the definition folder.
-        QDir pluginDefDir(WINTERMUTE_PLUGIN_DEFINITION_DIR);
-        QStringList files = pluginDefDir.entryList(QStringList() << "*.spec", QDir::Files);
-        PluginList plugins;
-
-        wdebug(Factory::instance(), files.join(","));
-        wdebug(Factory::instance(), WINTERMUTE_PLUGIN_DEFINITION_DIR);
-
-        Q_FOREACH(QString pluginFile, files){
-          QString uuid = pluginFile.remove(".spec");
-          wdebug(Wintermute::Application::instance(), QString("Found plugin file '%1'.").arg(uuid));
-          plugins << new TemporaryPlugin(uuid, 0);
-        }
-
-        return plugins;
-      }
-      
-      PluginList activePlugins() const {
-        return active.values();
-      }
-
-      Plugin* plugin(const QUuid& id) const {
-        if (active.contains(id))
-          return active[id];
-
-        return 0;
-      }
-
-      QSettings* obtainConfiguration(const QUuid& id) const {
-        const QString settingsPath = QString(WINTERMUTE_PLUGIN_DEFINITION_DIR "/" + id.toString() + ".spec").replace("}","").replace("{","");
-        
-        if (QFile::exists(settingsPath)){
-          QSettings* settings = new QSettings(settingsPath, QSettings::IniFormat, Factory::instance());
-          winfo(Factory::instance(), QString("Found configuraton for plug-in '%1' at '%2'.").arg(id.toString()).arg(settingsPath));
-          return settings;
-        }
-
-        wdebug(Factory::instance(), QString("Can't find configuration data for %1 at %2.").arg(id.toString()).arg(settingsPath));
-        return 0;
-      }
-      
-      QPluginLoader* obtainBinary(const QUuid& id) const {
-        const QSettings* config = this->obtainConfiguration(id);
-
-        if (!config){
-          wdebug(Factory::instance(), QString("Can't find meta-configuration for plugin %1.").arg(id.toString()));
-          return 0;
-        }
-
-        const QString libraryName = config->value("Plugin/Library").toString();
-        QPluginLoader* loader = new QPluginLoader(QString(WINTERMUTE_PLUGIN_LIBRARY_DIR "/lib%1.so").arg(libraryName));
-
-        if (loader->fileName().isEmpty()){
-          wdebug(Factory::instance(), QString("Library not found on operating system: '%1'").arg(libraryName));
-          Q_FOREACH(QString libraryPath, QCoreApplication::libraryPaths()){
-            wdebug(Factory::instance(), QString("Available library path: %1").arg(libraryPath));
-          }
-          return 0;
-        }
-
-        return loader;
-      }
-  };
-}
-Factory* Factory::self = 0;
-
-Factory::Factory() : QObject(Application::instance()), d_ptr(new FactoryPrivate) {
-  wdebug(this,"Factory created.");
+Factory::Factory() : QObject ( Application::instance() ),
+	d_ptr ( new FactoryPrivate )
+{
+	connect ( wntrApp, SIGNAL ( started() ), SLOT ( start() ) );
+	connect ( wntrApp, SIGNAL ( stopped() ), SLOT ( stop() ) );
 }
 
-Factory*
-Factory::instance() {
-  if (!self)
-    self = new Factory;
+Factory::Ptr
+Factory::instance()
+{
+  if ( self.isNull() ) 
+    self = Factory::Ptr(new Factory());
 
-  return self;
+	return Factory::self;
 }
 
-PluginList
-Factory::availablePlugins() const {
-  Q_D(const Factory);
-  return d->availablePlugins();
+Plugin::Ptr
+Factory::plugin ( const QString& name ) const
+{
+	Q_D ( const Factory );
+	return d->plugin ( name );
 }
 
-PluginList
-Factory::activePlugins() const {
-  Q_D(const Factory);
-  return d->activePlugins();
+QStringList
+Factory::availablePlugins() const
+{
+	Q_D ( const Factory );
+	return d->availablePlugins();
+}
+
+QStringList
+Factory::activePlugins() const
+{
+	Q_D ( const Factory );
+	return d->activePlugins();
+}
+
+bool
+Factory::isPluginLoaded ( const QString& name ) const
+{
+	return activePlugins().contains ( name );
 }
 
 // TODO: Ensure plug-in loading process.
 bool
-Factory::loadPlugin(const QUuid& id){
-  Q_D(Factory);
-  PluginInterfaceable* obtainedPluginInterface = 0;
-  Logger* log = wlog(this);
-  QPluginLoader* loader = d->obtainBinary(id);
-  TemporaryPlugin* plugin = new TemporaryPlugin(id, loader);
-  
-  if (!loader){
-    log->debug(QString("Couldn't find binary for plugin '%1'.").arg(id.toString()));
-    return false;
-  } else {
-    log->debug(QString("Found binary for plugin '%1'.").arg(id.toString()));
-  }
-
-  log->info(QString("Attempted to load plug-in instance for %1...").arg(id.toString()));
-  obtainedPluginInterface = plugin->tryLoad(loader);
-
-  if (obtainedPluginInterface == 0){
-    log->error(QString("Plug-in instance for %1 failed to load due to '%2'.").arg(id.toString()).arg(loader->errorString()));
-  }
-
-  return obtainedPluginInterface;
-}
-
-// TODO: Verify the unloading process.
-bool
-Factory::unloadPlugin(const QUuid& id){
-  Q_D(Factory);
-
-  Plugin* plugin = d->plugin(id);
-  if (!plugin->isLoaded()){
-    return true;
-  }
-
-  return plugin->unload();
-}
-
-// TODO: Auto load plugins on start.
-bool
-Factory::autoloadPlugins(){
-  Logger* log = wlog(this);
-  QVariantList autoloadList = Wintermute::Application::setting("Plugins/Autoload", QVariantList()).toList();
-  PluginList all = this->availablePlugins();
-
-  log->info(QString("Loading %1 of %2 plugins...").arg(autoloadList.length()).arg(all.length()));
-
-  Q_FOREACH(Plugin* plugin, all){
-    bool pluginLoaded = this->loadPlugin(plugin->id().toString());
-    if (!pluginLoaded){
-      log->info(QString("Autoload of %1 failed; thus cancelling the auto-loading process.").arg(plugin->id().toString()));
-      //return false;
-    }
-  }
-
-  return true;
-}
-
-bool
-Factory::unloadAllPlugins(){
-  return false;
-}
-
-void
-Factory::pluginStateChange(const QUuid& id, const Plugin::State& state)
+Factory::loadPlugin ( const QString& id )
 {
-  Logger* log = wlog(this);
-  log->info("Passing signal.");
-  emit this->pluginStateChanged(id, state);
+	Q_D ( Factory );
+	Logger* log = wlog(this);
+	if ( isPluginLoaded ( id ) ) {
+		log->warn ( QString ( "Already loaded plug-in %1." ).arg ( id ) );
+		return true;
+	}
+
+	QScopedPointer<QPluginLoader> loader (d->obtainBinary ( id ));
+	if ( !loader ) {
+		log->debug ( QString ( "Couldn't find binary for plugin '%1'." ).
+		             arg ( id ) );
+		return false;
+	}
+
+	log->debug ( QString ( "Found binary for plugin '%1', loading symbols..." ).
+	             arg ( id ) );
+
+  Plugin* plugin = qobject_cast<Plugin*> ( loader->instance() );
+	if ( !plugin ) {
+		log->error ( QString("Failed to load plugin due to %1." ).
+		             arg( loader->errorString() ) );
+		return false;
+	}
+	d->active.insert ( id, plugin );
+	log->info ( QString ( "Invoking start of %1..." ).arg ( plugin->name() ) );
+	plugin->start();
+	log->info( "Started " + plugin->name());
+	emit plugin->started();
+	log->info ( QString ( "%1 is loaded." ).arg ( id ) );
+	return true;
+}
+
+PluginProcess::Ptr
+Factory::spawnPlugin ( const QString& name )
+{
+  PluginProcess::Ptr process(new PluginProcess ( name ));
+	process->start();
+	winfo(wntrFactory.data(), QString("Spawned instance of plugin '%1'.").arg(name));
+	return process;
+}
+
+bool
+Factory::unloadPlugin ( const QString& id )
+{
+	Q_D ( Factory );
+  Plugin::Ptr plugin = d->plugin ( id );
+	if ( !plugin->isLoaded() ) {
+		return true;
+	}
+	plugin->stop();
+	emit plugin->stopped();
+	plugin->d_ptr->loader->unload();
+	return true;
+}
+
+bool
+Factory::autoloadPlugins()
+{
+	Logger* log = wlog ( this );
+	const QStringList defaultPlugins = QStringList() << "wintermute-dbus"
+    << "wintermute-zeromq";
+	QVariant autoload = Wintermute::Application::setting ( "Plugins/Autoload",
+	                    defaultPlugins );
+	QStringList autoloadList = autoload.value<QStringList>();
+	QStringList all = availablePlugins();
+	log->info ( QString ( "Loading %1 of %2 known plugins..." ).
+	            arg ( autoloadList.length() ).arg ( all.length() ) );
+	if ( autoloadList.empty() ) {
+		log->warn ( "No plug-ins were specified for auto-loading." );
+		return true;
+	}
+	for ( QString plugin : autoloadList ) {
+		if ( !all.contains ( plugin ) ) {
+			log->info ( QString ( "The plugin '%1' is not available; bailing out." )
+			            .arg ( plugin ) );
+			unloadAllPlugins();
+			return false;
+		}
+		bool pluginLoaded = loadPlugin ( plugin );
+		if ( !pluginLoaded ) {
+			log->info ( QString ( "Autoload of %1 failed;" ).arg ( plugin ) +
+			            " thus cancelling the auto-loading process." );
+			unloadAllPlugins();
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
+Factory::unloadAllPlugins()
+{
+	for (QString plugin : activePlugins()) {
+		if ( !unloadPlugin ( plugin ) ) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void
-Factory::start() {
-  Logger* log = wlog(this);
-  log->info("Starting..");
-  this->autoloadPlugins();
-  log->info("Started.");
+Factory::start()
+{
+	Logger* log = wlog ( this );
+	log->info ( "Starting.." );
+	autoloadPlugins();
+	emit started();
+	log->info ( "Started." );
 }
 
 void
-Factory::stop() {
-  Logger* log = wlog(this);
-  log->info("Stopping..");
-  log->info("Stopped.");
+Factory::stop()
+{
+	Logger* log = wlog ( this );
+	log->info ( "Stopping.." );
+	emit stopped();
+	unloadAllPlugins();
+	log->info ( "Stopped." );
 }
 
-Factory::~Factory(){
+Factory::~Factory()
+{
 }
-
-#include "Wintermute/factory.moc"

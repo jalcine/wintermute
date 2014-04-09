@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alciné <jacky.alcine@thesii.org>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -17,39 +17,27 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-## Grab us some coverage stuff.
-find_program(GCOV_PATH gcov-4.6)
-find_program(LCOV_PATH lcov)
-find_program(VALGRIND_PATH valgrind)
-find_program(GENHTML_PATH genhtml)
-find_package(Ruby)
+# TODO: Add a check for lcov.
+# TODO: Add a check for valgrind.
+# TODO: Add a check for genhtml.
 
+## Grab us some coverage stuff.
+find_program(GCOV_PATH gcov)
+find_program(VALGRIND_PATH valgrind)
+
+# Check for gcov.
 if (NOT GCOV_PATH)
   message(FATAL_ERROR "We need `gcov` for coverage information.")
 endif(NOT GCOV_PATH)
 
-## Define the top-level targets for testing.
-add_custom_target(test ALL
-  COMMAND ${RUBY_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/Scripts/tests.rb
-  COMMENT "Executing test suite...")
-
-add_custom_target(unittest ALL
-  COMMENT "Running unit tests...")
-
-if (PROJECT_LABEL EQUAL "Wintermute")
-  add_dependencies(test wintermute)
-endif(PROJECT_LABEL EQUAL "Wintermute")
-
-## Define some dependencies.
-add_dependencies(unittest test)
-add_dependencies(test wintermute)
-
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${QT_QTTEST_INCLUDE_DIR})
-set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
-  ${WINTERMUTE_LIBRARIES})
-set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-v2" "-vb")
+  ${QT_QTTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test/include
+  ${CMAKE_CURRENT_BINARY_DIR})
+
+set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY} ${WINTERMUTE_LIBRARIES})
+set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-random"  "-nocrashhandler"
+  "-tickcounter" "-vs" "-v2" "-vb" )
 
 ## Automatically include the testing directories.
 include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
@@ -57,6 +45,5 @@ include_directories(${WINTERMUTE_TEST_INCLUDE_DIRS})
 ## Make some directories
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test/bin)
 
-## Include macros
-include(TestingTargets)
+## Include macros.
 include(WintermuteTestingMacros)

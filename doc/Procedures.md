@@ -1,42 +1,34 @@
 # Procedure Calling
-The act of procedure calling in Wintermute allows for a perfect opporunity to 
-implement a concrete means of interally extending Wintermute. Since Wintermute 
-doesn't attempt to stick to a single platform standard, we moved from the 
-original implementation of D-Bus to ZeroMQ. Wintermute uses **hosts** to 
-collect a suite of methods whom of which contain **methods** that can be 
-invoked. The term **hosts** and **objects** are used interchangably.
 
-## Hosts
-**Hosts** give Wintermute the ability to define a set of functionality and 
-serve it out to other instances of Wintermute without too much fuss on how 
-it'd discover itself in the world. The base class for hosts is 
-`Wintermute::Procedure::Hosts::Base`. It provides the methods required to 
-become a host but nothing more. Using interfaces, Wintermute allows developers 
-to mold their hosts to whatever situation that they see fit.
+Wintermute abstracts its IPC system with the classes found under the 
+`Wintermute::Procedure` namespace. Under the hood, Wintermute isn't quite sure
+*how* the call from one process to another gets there but Wintermute does the
+work necessary to inform invokers of the arrival of a call as well as
+returning a reply once handled.
 
-For most cases, using the `Wintermute::Procedure::Hosts::Local` would be 
-enough for developers that wish to communicate with Wintermute instances 
-on a local machine and using `Wintermute::Procedure::Hosts::Remote` would
-provide their host with the capability of speaking to remote instances of
-Wintermute. These two are based on the versions of IPC / RPC Wintermute
-recommends, that being ZeroMQ for local and remote socket communication.
+## Calls
 
-Now, some developers may wish to further extend their support of Wintermute to 
-different protocols like via JSON-RPC, D-Bus or even via an HTTP API. Work for 
-said plug-ins are looked towards in the future but would NOT be bundled by 
-default into Wintermute, but rather in the Wintermute networking plug-in.
+Call objects are the representation of action and data that's shuffled back
+and forth over a communication protocol. They serve two purposes, to list the
+valid calls available on a **Module** and to hold the proper information
+required for invocation on a remote instance of Wintermute. The implementation
+for calls are a bit tricky. They can be serialized into a format usable to
+send over the wire, yet these functors are required to handle invocation to
+begin with. Think of them as a data type with an invokable nature.
 
-## Methods
-Internally, methods are the invocable functions that a host exposes to another 
-host. Wintermute uses the QVariant system to convert QVariant-compatible 
-objects into QString and then use said raw value over the specified protocol. 
-In code, you'd typically invoke calls on a hosts in two ways; using the 
-`Wintermute::Procedure::Call` object or by using the interface named.
-`Wintermute::Procedure::Invokable` provides methods and logic for `QObject`s
-to get the capability required to handle Call events.
+## Modules
 
-### `Wintermute::Procedure::Call`
-The `Call` object gives you the ability to invoke a call manually with all of 
-the options available to you. It's the more tedious route.
+Modules are objects that hold a collection of calls under a specific namespace. 
+Multiple modules can be instantiated in the same process and in multiple
+processes at the same time; allowing for common logic to be shared in said
+processes. An example of this would be the `ProcessModule`; which would allow
+for remote control of the local process. Another would be the modules provided
+by the transports used for dispatching and receiving calls like `ZeroMQ::Module`.
 
-*TODO*: Add code sample.
+## Messaging
+
+Wintermute sends all messages using the Dispatcher system and receives using
+the Receiver system. The process is straightforward. When a call is set to be
+dispatched, it's serialized into a format appropriate for messaging and then
+sent over all of the available dispatchers to be caught by the proper process.
+Receivers then listen for these calls and then 

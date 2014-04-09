@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013, 2014 Jacky Alcine <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -16,14 +16,12 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
+option(WITH_TESTS "Incorporate the test suite for Wintermute." ON)
 
-# Include the test suite.
-include(WintermuteTesting)
+if (WITH_TESTS)
+  set(ENABLE_TESTING ON)
+  include(WintermuteTesting)
 
-## Include the extra code.
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
-                    "${CMAKE_CURRENT_BINARY_DIR}/include")
-
-## Add in subdirectories for testing.
-add_subdirectory(include)
-add_subdirectory(unit)
+  # Add in subdirectories for testing.
+  add_subdirectory(unit)
+endif()

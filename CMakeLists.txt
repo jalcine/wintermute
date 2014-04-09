@@ -1,5 +1,5 @@
-##############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+#############################################################################
+### Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -15,15 +15,20 @@
 ###
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
+#############################################################################
+cmake_minimum_required (VERSION 2.8)
+cmake_policy(SET CMP0017 NEW)
 
-cmake_minimum_required(VERSION 2.8)
-project(Wintermute)
+# Add our modules to CMake's searchable path.
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-## Include our modules in the discovery of modules and incorporate our build 
-## system's logic.
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-set(WINTERMUTE_BUILD_PREFIX "${CMAKE_INSTALL_PREFIX}")
+# By default, install only runtime.
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME Runtime)
+
+# We need to know this (for text processing purposes).
+set(WINTERMUTE_BUILD_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(WINTERMUTE_TEMPLATES_DIR ${CMAKE_SOURCE_DIR}/cmake/Templates)
+
 include(CMakeUseLocalModules)
 include(CMakeProvideUninstallTarget)
 add_subdirectory(cmake)
@@ -33,8 +38,16 @@ include(WintermuteVersioning)
 include(WintermuteVariables)
 include(WintermuteDependencies)
 include(WintermuteMacros)
+include(WintermuteDocumentation)
+
+## Enable testing.
+enable_testing()
 
 ## Include sub-directories.
 add_subdirectory(src)
+add_subdirectory(lib)
 add_subdirectory(test)
-#add_subdirectory(doc)
+add_subdirectory(doc)
+
+## Provide feature report.
+feature_summary(WHAT ALL)

@@ -1,9 +1,6 @@
 /**
- *
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
- *
- * This file is part of Wintermute, the extensible AI platform.
- *
+ * vim: ft=cpp tw=78
+ * Copyright (C) 2011 - 2013 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,72 +14,74 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ **/
 
+#include <QtCore/QSettings>
+#include <QtCore/QPluginLoader>
+#include <QtCore/QMetaClassInfo>
 #include "plugin.hpp"
 #include "version.hpp"
 #include "logging.hpp"
 #include "factory.hpp"
 #include "application.hpp"
 #include "private/plugin.hpp"
-#include <QtCore/QUuid>
-#include <QtCore/QPluginLoader>
 
 using Wintermute::Version;
 using Wintermute::Plugin;
 using Wintermute::Logging;
 using Wintermute::Logger;
 
-// TODO: Check if loading in its own space, if so, load necessary data.
-Plugin::Plugin(const QString& uuid) : QObject(Factory::instance()), d_ptr(new PluginPrivate(this,uuid)){
-}
-
-// TODO: Provide a means of obtaining a name for plug-ins.
-QString
-Plugin::name() const {
-  return QString::null;
-}
-
-// TODO: Provide a means of determining the plugin's version.
-Version
-Plugin::version() const {
-  return Version::Any;
-}
-
-// TODO: Provide a means of determining the version of Wintermute required.
-Version
-Plugin::systemVersion() const {
-  return Version::Any;
+Plugin::Plugin ( ) :
+	QObject ( wntrFactory.data() ),
+	d_ptr ( new PluginPrivate ( this ) )
+{
 }
 
 QSettings*
-Plugin::configuration() const {
-  Q_D(const Plugin);
-  return d->settings;
+Plugin::configuration() const
+{
+	Q_D ( const Plugin );
+	if ( d->settings == 0 ) {
+		QMetaClassInfo nameClass = metaObject()->classInfo (
+		                             metaObject()->indexOfClassInfo ( "Name" ) );
+		const QString name = nameClass.value();
+		d->settings = new QSettings( "Wintermute", name, parent() );
+		winfo( this, QString( "%1's settings are now found at %2." ).arg( name,
+		       d->settings->fileName() ) );
+	}
+	return d->settings;
 }
 
-Plugin::State
-Plugin::state() const {
-  return Undefined;
+Version
+Plugin::version() const
+{
+	QVariant value = configuration()->value ( "Version/Plugin" );
+	return value.isNull() ? Version() : Version::fromString ( value.toString() );
 }
 
-QUuid
-Plugin::id() const {
-  Q_D(const Plugin);
-  return d->id;
+Version
+Plugin::systemVersion() const
+{
+	QVariant value = configuration()->value ( "Version/System" );
+	return value.isNull() ? Version() : Version::fromString ( value.toString() );
+}
+
+QString
+Plugin::name() const
+{
+	QMetaClassInfo nameClass = metaObject()->classInfo (
+	                             metaObject()->indexOfClassInfo ( "Name" ) );
+	QVariant value = configuration()->value("Plugin/Name");
+	return value.isNull() ? nameClass.value() : value.toString();
 }
 
 bool
-Plugin::load() {
- return false;
+Plugin::isLoaded() const
+{
+	Q_D ( const Plugin );
+	return d->loader != 0 && d->loader->isLoaded();
 }
 
-bool
-Plugin::unload() {
-  return false;
+Plugin::~Plugin()
+{
 }
-
-Plugin::~Plugin(){
-}
-
-#include "Wintermute/plugin.moc"

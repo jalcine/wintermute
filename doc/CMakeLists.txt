@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
+### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the extensible AI platform.
 ###
@@ -17,12 +17,6 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-option(GENERATE_DOCS "Enable the act of documentation." OFF)
-
-if (GENERATE_DOCS)
-  include(WintermuteDocumentation)
-
-  get_target_property(_sources wintermute SOURCES)
-
-  wintermute_generate_documentation(SOURCES ${_sources})
-endif(GENERATE_DOCS)
+# Yeah, modularized. This is so plugins can be documented the same way the
+# core binary is.
+include(WintermuteDocumentation)

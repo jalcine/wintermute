@@ -1,10 +1,7 @@
 /**
- * vim: ft=qt.cpp
- * Copyright (C) 2013 Jacky Alcine <jacky.alcine@thesii.org>
- *
- * This file is part of Wintermute, the extensible AI platform.
- *
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -17,149 +14,133 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
-#include "application.hpp"
-#include "arguments.hpp"
-#include "logging.hpp"
-#include "factory.hpp"
-#include "version.hpp"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QDateTime>
 #include <QtCore/QSharedPointer>
+#include "application.hpp"
+#include "version.hpp"
+#include "Wintermute/private/application.hpp"
+#include "Wintermute/Procedure/module.hpp"
 
 using Wintermute::Arguments;
 using Wintermute::Logging;
 using Wintermute::Version;
-using Wintermute::Factory;
 using Wintermute::Application;
 using Wintermute::ApplicationPrivate;
+using Wintermute::Procedure::Module;
 
-namespace Wintermute {
-  class ApplicationPrivate {
-    public:
-      QSharedPointer<QCoreApplication> app;
-      QSettings* settings;
+QPointer<Application> Application::self ( nullptr );
 
-      ApplicationPrivate(int &argc, char **argv) : settings(0) {
-        app = QSharedPointer<QCoreApplication>(new QCoreApplication(argc,argv));
-      }
+Application::Application ( int& argc, char** argv ) :
+  QObject(), d_ptr ( new ApplicationPrivate ( argc, argv, this ) )
+{
+  Application::self = qobject_cast<Application*> ( this );
+  Q_D ( Application );
 
-      void initialize(){
-        // Add library paths for plug-ins.
-        app->addLibraryPath(WINTERMUTE_PLUGIN_LIBRARY_DIR);
-
-        // Allocate necessary variables for logging and arguments.
-        // TODO: Move factory initialization to separate thread.
-        Logging::instance();
-        Arguments::instance();
-        Factory::instance();
-      }
-
-      int exec(){
-        return app->exec();
-      }
-  };
-
-}
-
-Application* Application::self = 0;
-
-Application::Application(int &argc, char **argv) : QObject(), d_ptr(new ApplicationPrivate(argc,argv)){
-  Q_D(Application);
-
-  // I am self!
-  Application::self = qobject_cast<Application*>(this);
-
-  // Define the application in Qt.
-  d->app->setApplicationName("Wintermute");
-  d->app->setApplicationVersion(this->version().toString());
-  d->app->setOrganizationName("Synthetic Intellect Institute");
-  d->app->setOrganizationDomain("thesii.org");
-
-  // Grab our settings.
-  d->settings = new QSettings;
+  setParent(d->app.data());
+  d->app->setApplicationName    ( WINTERMUTE_NAME );
+  d->app->setApplicationVersion ( version().toString() );
+  d->app->setOrganizationName   ( WINTERMUTE_NAME );
+  d->app->setOrganizationDomain ( WINTERMUTE_DOMAIN );
+  d->settings.reset( new QSettings );
+  d->settings->setValue( "Timing/StartupTime" ,
+                         QDateTime::currentDateTimeUtc().toString() );
+  winfo(this, QString( "Wintermute recorded startup at %1. Hello there!" )
+        .arg( d->settings->value( "Timing/StartupTime" ).toString() ) );
+  d->installEventFilters();
 }
 
 int
-Application::run(int &argc, char **argv){
-  int returnCode = -1;
-
-  if (Application::instance() == 0){
-    // Define the application.
-    Application::self = new Application(argc,argv);
-    Logger* log = wlog(Application::self);
-
-    // Invoke the initialization code.
+Application::run ( int& argc, char** argv )
+{
+  Q_ASSERT ( Application::instance() == nullptr );
+  int returnCode = 0x0;
+  if ( Application::instance() == nullptr )
+  {
+    self = new Application ( argc, argv );
+    Logger* log = wlog ( self );
     self->d_ptr->initialize();
-    log->debug("Completed initialization phase.");
-
-    // Start thyself.
-    self->start(); 
-
-    // Begin the event loop.
-    log->debug("Beginning event loop.");
+    log->info ( QString ( "Wintermute is starting; PID %1. Let's play." ).
+                arg ( QCoreApplication::applicationPid() ) );
+    self->start();
+    log->debug ( "Starting event loop." );
     returnCode = self->d_ptr->exec();
-    log->info(QString("Event loop ended; ended with exit code %1").arg(returnCode));
+    log->info ( "Event loop ended; ended with " +
+                QString ( "exit code %1" ).arg ( returnCode ) );
+    self->deleteLater();
+    log->deleteLater();
   }
-
   return returnCode;
 }
 
 void
-Application::start(){
-  //Q_D(Application);
-  Logger* log = wlog(this);
-  log->info("Starting.");
-
-  // Privately start the Factory.
-  Factory::instance()->start();
-
-  log->info("Started.");
+Application::start()
+{
+  Q_D ( Application );
+  Logger* log = wlog ( this );
+  log->info ( "Starting Wintermute's process module..." );
+  d->loadProcessModule();
+  log->info ( "Starting Wintermute's current mode..." );
+  d->loadCurrentMode();
+  log->info ( "Invoking post-start logic..." );
+  emit this->started();
+  log->info ( "Started Wintermute." );
 }
 
 void
-Application::stop(){
-  //Q_D(Application);
+Application::stop ( int exitcode )
+{
+  Logger* log = wlog ( this );
+  log->info ( QString ( "Stopping Wintermute ..." ) );
+  QCoreApplication::quit();
+  emit this->stopped();
+  log->info ( QString ("Wintermute is stopping with exit code %1." )
+              .arg ( exitcode ) );
+  exit ( exitcode );
+  wntrApp->deleteLater();
+}
 
-  // Privately clean up the Factory.
-  Factory::instance()->stop();
+Module*
+Application::module() const
+{
+  Q_D ( const Application );
+  return d->module;
 }
 
 Version
-Application::version() const {
+Application::version() const
+{
   Version ver;
   ver.major = WINTERMUTE_VERSION_MAJOR;
   ver.minor = WINTERMUTE_VERSION_MINOR;
   ver.patch = WINTERMUTE_VERSION_PATCH;
-  ver.state = (Wintermute::Version::DevelopmentStage) WINTERMUTE_VERSION_STAGE;
-  ver.stage = QString("%1:%2").arg(WINTERMUTE_VERSION_STAGE_REF,WINTERMUTE_VERSION_STAGE_BRANCH);
-
+  ver.stage = ( Version::DevelopmentStage )
+              WINTERMUTE_VERSION_STAGE;
+  ver.hash =  WINTERMUTE_VERSION_STAGE_REF;
   return ver;
 }
 
-  QVariant
-Application::setting(const QString& path, const QVariant defaultValue)
+QVariant
+Application::setting ( const QString& path, const QVariant value )
 {
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-
-  if (d->settings->contains(path))
-    return d->settings->value(path);
-  else
-    return defaultValue;
-
-  return defaultValue;
+  return d->settings->contains ( path ) ? d->settings->value ( path ) : value;
 }
 
-  void
-Application::setSetting(const QString& path, const QVariant value)
+void
+Application::setSetting ( const QString& path, const QVariant value )
 {
+  // TODO: Should we force the sync?
   ApplicationPrivate* d = Application::instance()->d_ptr.data();
-  d->settings->setValue(path,value);
+  d->settings->setValue ( path, value );
+  d->settings->sync();
 }
 
-Application::~Application(){
-  this->deleteLater();
+Application::~Application()
+{
+  stop();
 }
-
-#include "Wintermute/application.moc"
