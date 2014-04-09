@@ -20,6 +20,7 @@
 #ifndef WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 #define WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 
+#include <functional>
 #include <Wintermute/Procedure/Call>
 
 namespace Wintermute
@@ -121,6 +122,9 @@ class MethodCall : public Call
     void setCallback( const CallbackSignature& lambda );
 
     using Message::setSender;
+
+  private:
+    CallbackSignature m_lambda;
 };
 }
 }

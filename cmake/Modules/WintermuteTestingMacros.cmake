@@ -1,4 +1,3 @@
-## TODO: Add proper CMake module definition here.
 ###############################################################################
 ### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
 ##
@@ -42,5 +41,5 @@ macro(wintermute_add_unit_test unittestname unittestsrc)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 
   # Add coverage and valgrind support.
-  gcov_generate(unittest_${unittestname} "test/unit")
+  # gcov_generate(unittest_${unittestname} "test/unit")
 endmacro(wintermute_add_unit_test unittestname unittestsrc)

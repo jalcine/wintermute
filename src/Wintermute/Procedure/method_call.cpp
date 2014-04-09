@@ -26,7 +26,7 @@ using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 
 MethodCall::MethodCall(const QString& name, const Module::Definition& receiver,
-                       const QVariant& arguments) : Call(name)
+                       const QVariant& arguments) : Call(name), m_lambda(nullptr)
 {
   setReceiver(receiver);
   QVariantMap aD = callData();
@@ -66,6 +66,13 @@ MethodCall::craftReply(const QVariant& reply) const
 {
   ReplyCall replyCall(*this, reply);
   return replyCall;
+}
+
+void
+MethodCall::setCallback(const CallbackSignature& lambda)
+{
+  Q_ASSERT( !lambda == false );
+  m_lambda = lambda;
 }
 
 MethodCall::~MethodCall()

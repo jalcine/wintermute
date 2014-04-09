@@ -51,7 +51,7 @@ class LoggingPrivate
       LogManager::startup();
       LogManager::handleQtMessages();
 #ifdef WINTERMUTE_DEBUG
-      LogManager::setThreshold ( Log4Qt::Level::ALL_INT );
+      LogManager::setThreshold ( Log4Qt::Level::TRACE_INT );
 #else
       LogManager::setThreshold ( Log4Qt::Level::WARN_INT );
 #endif

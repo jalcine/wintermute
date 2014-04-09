@@ -1,7 +1,7 @@
 /**
- * vim: ft=cpp tw=78
- * Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
- *
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -14,6 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
  **/
 
 #include <Wintermute/Application>
@@ -38,8 +39,7 @@ Module::Module ( ZeroMQ::Plugin* plugin ) :
 	Wintermute::Procedure::Module ( plugin ),
 	m_context ( new QtZeroMQ::PollingContext ( this ) )
 {
-	setDomain ( WINTERMUTE_DOMAIN );
-	setPackage ( "zeromq" );
+  setDefinition(WINTERMUTE_DOMAIN, "zeromq");
 	Receiver receiver ( this );
 	Dispatcher dispatcher ( this );
 	connect ( m_context, SIGNAL ( polled() ), this, SLOT ( pollInvoked() ) );
