@@ -20,10 +20,6 @@
 # Include the test suite.
 include ( WintermuteTesting )
 
-## Include the extra code.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  "${CMAKE_CURRENT_BINARY_DIR}/include" )
-
 ## Add in subdirectories for testing.
 add_subdirectory ( include )
 add_subdirectory ( unit )
