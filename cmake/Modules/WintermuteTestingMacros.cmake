@@ -17,29 +17,43 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+include(CTest)
 include(WintermuteMacros)
-include(GCovMacros)
 
-file(GLOB_RECURSE WINTERMUTE_TEST_CORE_SOURCES
-  "${CMAKE_SOURCE_DIR}/src/Wintermute/*.cpp")
+set(WINTERMUTE_TEST_LIBRARIES ${WINTERMUTE_LIBRARIES}
+  ${QT_QTTEST_LIBRARY})
 
-macro(wintermute_add_unit_test unittestname unittestsrc)
-  # Define sources and moc them up.
-  SET(unittest_${unittestname}_SRCS ${unittestsrc}
-    ${WINTERMUTE_TEST_CORE_SOURCES})
-  qt4_automoc(${unittest_${unittestname}_SRCS})
+include_directories(${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test/include
+  ${QT_QTTEST_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-  # Set up the test as if it was Wintermute.
-  add_executable(unittest_${unittestname} EXCLUDE_FROM_ALL
-    ${unittest_${unittestname}_SRCS})
-  wintermute_add_properties(unittest_${unittestname})
-  target_link_libraries(unittest_${unittestname} ${WINTERMUTE_TEST_LIBRARIES})
+get_target_property(_wntr_srcs wintermute SOURCES)
+set(_wntrlib_srcs )
 
-  # Add to CMake's test suite.
-  add_test(NAME ${unittestname}
-    COMMAND $<TARGET_FILE:unittest_${unittestname}> ${WINTERMUTE_TEST_ARGUMENTS}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+foreach(_file ${_wntr_srcs})
+  if (NOT ${_file} STREQUAL "main.cpp")
+    list(APPEND _wntrlib_srcs "${CMAKE_SOURCE_DIR}/src/${_file}")
+  endif()
+endforeach()
 
-  # Add coverage and valgrind support.
-  # gcov_generate(unittest_${unittestname} "test/unit")
-endmacro(wintermute_add_unit_test unittestname unittestsrc)
+add_library(wintermute-test-library STATIC ${_wntrlib_srcs})
+wintermute_add_properties(wintermute-test-library)
+add_dependencies(wintermute-test-library wintermute)
+target_link_libraries(wintermute-test-library ${WINTERMUTE_TEST_LIBRARIES})
+
+macro(wintermute_test_render)
+  set(_singleArgs )
+  set(_oneArgs   TARGET)
+  set(_multiArgs SOURCES)
+  cmake_parse_arguments(wtr "${_singleArgs}" "${_oneArgs}" "${_multiArgs}"
+    ${ARGN})
+
+  set(_test_name "test-${wtr_TARGET}")
+  set(_test_tgt "${_test_name}")
+
+  add_executable(${_test_tgt} ${wtr_SOURCES})
+  wintermute_add_properties(${_test_tgt})
+  target_link_libraries(${_test_tgt} wintermute-test-library)
+
+  add_test(NAME "${_test_name}-driver"
+    COMMAND $<TARGET_FILE_DIR:${_test_tgt}>/$<TARGET_FILE_NAME:${_test_tgt}>)
+endmacro()
