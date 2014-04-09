@@ -3,11 +3,6 @@ compiler:
   - gcc
   - clang
 
-branches:
-  only:
-    - develop
-    - testing
-
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
@@ -18,7 +13,7 @@ before_install:
 before_script:
   - export CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug; cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON; cmake ..
 
 script:
   - make wintermute
@@ -36,4 +31,4 @@ notifications:
       - https://webhooks.gitter.im/e/a032628cb25b35b52924
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: always

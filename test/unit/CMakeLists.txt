@@ -17,19 +17,21 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-## Make sure we can automoc the tests.
-include_directories ( ${CMAKE_CURRENT_BINARY_DIR} )
-
-## Produce the list of buildable tests.
-set ( WINTERMUTE_TEST_UNITS
-  command_line
-)
-
-include_directories(${CMAKE_SOURCE_DIR}/src)
-
-## Add each unit test to the test suite.
-foreach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
-  set ( _src "${CMAKE_CURRENT_SOURCE_DIR}/${WINTERMUTE_TEST_UNIT}.cpp" )
-  wintermute_add_unit_test ( ${WINTERMUTE_TEST_UNIT} ${_src} )
-endforeach ( WINTERMUTE_TEST_UNIT ${WINTERMUTE_TEST_UNITS} )
-
+wintermute_test_render ( TARGET arguments SOURCES arguments.cpp )
+wintermute_test_render ( TARGET message SOURCES message.cpp )
+wintermute_test_render ( TARGET call SOURCES call.cpp )
+wintermute_test_render ( TARGET plugin SOURCES plugin.cpp )
+wintermute_test_render ( TARGET plugin_process SOURCES plugin_process.cpp )
+wintermute_test_render ( TARGET factory SOURCES factory.cpp )
+wintermute_test_render ( TARGET logging SOURCES logging.cpp )
+wintermute_test_render ( TARGET method_call SOURCES method_call.cpp )
+wintermute_test_render ( TARGET reply_call SOURCES reply_call.cpp )
+wintermute_test_render ( TARGET module_call SOURCES module_call.cpp )
+wintermute_test_render ( TARGET lambda_call SOURCES module_call.cpp )
+wintermute_test_render ( TARGET module_def SOURCES module_def.cpp )
+wintermute_test_render ( TARGET module SOURCES module.cpp )
+wintermute_test_render ( TARGET dispatcher SOURCES dispatcher.cpp )
+wintermute_test_render ( TARGET receiver SOURCES receiver.cpp )
+wintermute_test_render ( TARGET event_message SOURCES events/message.cpp )
+wintermute_test_render ( TARGET event_filter SOURCES events/message_filter.cpp )
+wintermute_test_render ( TARGET version SOURCES version.cpp )
