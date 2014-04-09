@@ -20,12 +20,6 @@
 include(CTest)
 include(WintermuteMacros)
 
-set(WINTERMUTE_TEST_LIBRARIES ${WINTERMUTE_LIBRARIES}
-  ${QT_QTTEST_LIBRARY})
-
-include_directories(${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test/include
-  ${QT_QTTEST_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
 get_target_property(_wntr_srcs wintermute SOURCES)
 set(_wntrlib_srcs )
 
@@ -55,5 +49,6 @@ macro(wintermute_test_render)
   target_link_libraries(${_test_tgt} wintermute-test-library)
 
   add_test(NAME "${_test_name}-driver"
-    COMMAND $<TARGET_FILE_DIR:${_test_tgt}>/$<TARGET_FILE_NAME:${_test_tgt}>)
+    COMMAND $<TARGET_FILE_DIR:${_test_tgt}>/$<TARGET_FILE_NAME:${_test_tgt}>
+            ${WINTERMUTE_TEST_ARGUMENTS})
 endmacro()

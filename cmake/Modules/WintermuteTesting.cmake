@@ -32,9 +32,10 @@ endif(NOT GCOV_PATH)
 
 ## Define the core sources and libraries for testing)
 set(WINTERMUTE_TEST_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${QT_QTTEST_INCLUDE_DIR})
-set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY}
-  ${WINTERMUTE_LIBRARIES})
+  ${QT_QTTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test/include
+  ${CMAKE_CURRENT_BINARY_DIR})
+
+set(WINTERMUTE_TEST_LIBRARIES ${QT_QTTEST_LIBRARY} ${WINTERMUTE_LIBRARIES})
 set(WINTERMUTE_TEST_ARGUMENTS "-callgrind" "-random"  "-nocrashhandler"
   "-tickcounter" "-vs" "-v2" "-vb" )
 
