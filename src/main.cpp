@@ -37,23 +37,12 @@
  * regardless of location and/or speed. The basis of the RPC system is built
  * using `Dispatcher`, `Receiver` and `Message`.
  */
-/**
- * @mainpage
- *
- * [Wintermute][]'s aiming to be a pretty nifty application framework to
- * effectively make it the closest thing we have to a incarnation of Jarvis
- * from Marvel's Iron Man or at least something remotely similar.
- *
- * This serves as documentation to the source of the core binary.
- *
- * [wintermute]: http://wintermute.jalcine.me
- */
 
-#include "Wintermute/application.hpp"
+#include "Wintermute/Application"
 
 using Wintermute::Application;
 
 int main ( int argc, char** argv )
 {
-	return Application::run ( argc, argv );
+  return Application::run ( argc, argv );
 }
