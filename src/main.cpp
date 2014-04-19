@@ -30,12 +30,16 @@
  */
 /**
  * @defgroup rcp Remote Procedure Calling
+ * @addtogroup Wintermute::Procedure::Module
+ * @addtogroup Wintermute::Procedure::Dispatcher
+ * @addtogroup Wintermute::Procedure::Receiver
+ * @addtogroup Wintermute::Procedure::Message
  *
  * %Wintermute takes remote procedure calling to an interesting level. It
  * abstracts different messaging systems like D-Bus and ZeroMQ so that the
  * %Wintermute processes and its friends could send and receive information
  * regardless of location and/or speed. The basis of the RPC system is built
- * using `Dispatcher`, `Receiver` and `Message`.
+ * using `Dispatcher`, `Receiver` and `Message` classes.
  */
 
 #include "Wintermute/Application"
