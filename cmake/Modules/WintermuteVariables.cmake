@@ -51,7 +51,7 @@ set(WINTERMUTE_COMPILE_DEFINITIONS_RELEASE
 
 # Define the flags for linking and compiling.
 set(WINTERMUTE_COMPILE_FLAGS
-  "-std=c++11 -frtti -Wall -Wunused")
+  "-std=c++0x -frtti -Wall -Wunused")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE
   "-Ofast -frtti -Wunused-parameter -Wunused-function -Wunused -Wabi")
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG
