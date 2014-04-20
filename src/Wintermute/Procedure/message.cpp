@@ -21,6 +21,7 @@
 #include <qjson/serializer.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QStringList>
+#include <QtCore/QByteArray>
 #include "Wintermute/Procedure/message.hpp"
 #include "Wintermute/Procedure/dispatcher.hpp"
 #include "Wintermute/private/Procedure/message.hpp"
