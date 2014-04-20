@@ -5,7 +5,7 @@ alias db="make -C build all && sudo make -C build install; cd .."
 
 # Build qcommandline
 # TODO: Add this from a PPA instead
-git clone git://github.com/jalcine/qcommandline ~/qcommandline
+git clone git://gitorious.org/qcommandline/qcommandline.git ~/qcommandline
 cd ~/qcommandline && cm && db
 
 # Build log4qt
