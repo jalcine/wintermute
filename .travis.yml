@@ -11,9 +11,8 @@ before_install:
   - test/build_deps.sh
 
 before_script:
-  - export CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -DWITH_DOCUMENTATION=OFF
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -DWITH_DOCUMENTATION=OFF -DCMAKE_MODULE_PATH=/usr/share/apps/cmake
 
 script:
   - make wintermute
@@ -29,4 +28,3 @@ notifications:
       - https://webhooks.gitter.im/e/a032628cb25b35b52924
     on_success: change
     on_failure: always
-    on_start: always
