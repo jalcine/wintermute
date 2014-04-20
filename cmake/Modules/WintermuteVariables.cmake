@@ -61,7 +61,7 @@ set(WINTERMUTE_COMPILE_FLAGS_RELEASE
   "-Ofast -frtti -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wabi -Wempty-body")
 set(WINTERMUTE_LINK_FLAGS )
 set(WINTERMUTE_LINK_FLAGS_DEBUG
-  "-fprofile-arcs -ftest-coverage -lgcov -v")
+  "-fprofile-arcs -ftest-coverage -lgcov")
 set(WINTERMUTE_LINK_FLAGS_RELEASE
   )
 
