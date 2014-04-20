@@ -24,8 +24,6 @@ after_success:
 
 notifications:
   email: me@jalcine.me
-  on_success: change
-  on_failure: always
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/a032628cb25b35b52924
