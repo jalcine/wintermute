@@ -33,8 +33,8 @@ and upload your results for comparison!
  - Spread the word and do your part to make Wintermute an awesome app
    framework.
 
-I *strongly* recommend using tools like `[git-flow][gitflows]` and
-`[git-hooks][githooks]` to accelerate your development process on 
+I *strongly* recommend using tools like [`git-flow`][gitflow] and
+[`git-hooks`][githooks] to accelerate your development process on 
 the source control side.
 
 Also, if you're adding a new feature, try writing a test for it first! 
