@@ -21,6 +21,13 @@ script:
 after_success:
   - coveralls -r . -e .
 
+env:
+  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
+
+branches:
+  except:
+    - master
+
 notifications:
   email: me@jalcine.me
   webhooks:

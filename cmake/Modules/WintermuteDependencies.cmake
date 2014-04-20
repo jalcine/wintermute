@@ -28,9 +28,9 @@ include(FeatureSummary)
 
 ## {{{ Packages
 find_package(PkgConfig 0.26 REQUIRED)
-find_package(Log4Qt REQUIRED)
-find_package(QCommandLine 0.4.0 REQUIRED)
-find_package(QJSON 0.7.1 REQUIRED)
-find_package(Qt4 4.8.1 COMPONENTS 
+find_package(Qt4 4.8.1 COMPONENTS
   QtCore REQUIRED)
+find_package(Log4Qt REQUIRED)
+find_package(QJSON 0.7.1 REQUIRED)
+pkg_search_module(QCOMMANDLINE QCommandLine REQUIRED)
 ## }}}

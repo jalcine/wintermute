@@ -47,32 +47,42 @@ class CallUnitTest : public QObject
     aCall = new TestCall("FOO");
   }
 
-  Q_SLOT void isTheNameProvided()
+  void buildWithBoth()
   {
     aCall->setSender(senderDef);
     aCall->setReceiver(receiverDef);
+  }
+
+  Q_SLOT void isTheNameProvided()
+  {
+    buildWithBoth();
     QVERIFY(aCall->name() == "FOO");
+    QVERIFY(aCall->valid());
   }
 
   Q_SLOT void isTheSenderProvided()
   {
-    aCall->setSender(senderDef);
-    aCall->setReceiver(receiverDef);
+    buildWithBoth();
     QVERIFY(aCall->sendingModule() == senderDef);
+    QVERIFY(aCall->valid());
   }
 
   Q_SLOT void jsonHasSender()
   {
-    aCall->setSender(senderDef);
-    aCall->setReceiver(receiverDef);
-    QVERIFY(aCall->toString().contains(static_cast<QString>(senderDef)));
+    buildWithBoth();
+    const QString callStr = aCall->toString().replace("\\\"","\"");
+    qDebug() << callStr;
+    QVERIFY(aCall->valid());
+    QVERIFY(callStr.contains(static_cast<QString>(senderDef)));
   }
- 
+
   Q_SLOT void jsonHasReceiver()
   {
-    aCall->setSender(senderDef);
-    aCall->setReceiver(receiverDef);
-    QVERIFY(aCall->toString().contains(static_cast<QString>(receiverDef)));
+    buildWithBoth();
+    const QString callStr = aCall->toString().replace("\\\"","\"");
+    qDebug() << callStr;
+    QVERIFY(aCall->valid());
+    QVERIFY(callStr.contains(static_cast<QString>(receiverDef)));
   }
 
   Q_SLOT void cleanup()

@@ -17,12 +17,12 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-## Local paths in file system.
+include(GNUInstallDirs)
 
 # Set some paths to search for.
 set(CMAKE_CURRENT_PROJECT_MODULES_SOURCE_DIR
   "${CMAKE_SOURCE_DIR}/cmake/Modules")
-set(CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR 
+set(CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR
   "${CMAKE_BINARY_DIR}/cmake/Modules")
 
 # Include the project-specific modules if they exists.
@@ -31,7 +31,7 @@ if (EXISTS "${CMAKE_CURRENT_PROJECT_MODULES_SOURCE_DIR}")
   message(STATUS
     "Adding '${CMAKE_CURRENT_PROJECT_MODULES_SOURCE_DIR}' to module path.")
 else()
-  message(STATUS "No local source 'cmake/Modules' to import into the module path.") 
+  message(STATUS "No local source 'cmake/Modules' to import into the module path.")
 endif(EXISTS "${CMAKE_CURRENT_PROJECT_MODULES_SOURCE_DIR}")
 
 if (EXISTS "${CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR}")
@@ -39,7 +39,7 @@ if (EXISTS "${CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR}")
   message(STATUS
     "Adding '${CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR}' to module path.")
 else()
-  message(STATUS "No local binary 'cmake/Modules' to import into the module path.") 
+  message(STATUS "No local binary 'cmake/Modules' to import into the module path.")
 endif(EXISTS "${CMAKE_CURRENT_PROJECT_MODULES_BINARY_DIR}")
 
 ## Environment variable path inclusion.

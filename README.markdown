@@ -50,7 +50,7 @@ find me on IRC on Freenode, OFTC or the Perl servers with the nick
 
 # Licensing
 
-Wintermute is licensed under the GPLv3 license. See `[LICENSE][./LICENSE]`
+Wintermute is licensed under the GPLv3 license. See the [license](./LICENSE)
 for more details.
 
 [Kubuntu]: http://kubuntu.org
