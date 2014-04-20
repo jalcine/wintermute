@@ -30,8 +30,8 @@ include(FeatureSummary)
 find_package(PkgConfig 0.26 REQUIRED)
 find_package(Log4Qt REQUIRED)
 find_package(QCommandLine 0.4.0 REQUIRED)
-find_package(QJSON 0.8.1 REQUIRED)
+find_package(QJSON 0.7.1 REQUIRED)
 find_package(QtZeroMQ REQUIRED)
-find_package(Qt4 4.8.3 COMPONENTS 
+find_package(Qt4 4.8.1 COMPONENTS 
   QtCore REQUIRED)
 ## }}}
