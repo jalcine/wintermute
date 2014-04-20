@@ -81,10 +81,10 @@ public:
    * @param[in] optionName The short letter name of the option.
    * @param[in] description A description about this option.
    * @param[in] flags A flag detonating the kind of flag this is.
-   * @warning This doesn't throw an exception if the character or 
+   * @warning This doesn't throw an exception if the character or
    *          name collides.
    */
-	void addOption ( const QChar& optionChar, const QString& optionName, 
+	void addOption ( const QChar& optionChar, const QString& optionName,
       const QString& description, QCommandLine::Flags flags );
 
   /**
@@ -93,10 +93,10 @@ public:
    * @param[in] switchName The short letter name of the switch.
    * @param[in] description A description about this switch.
    * @param[in] flags A flag detonating the kind of flag this is.
-   * @warning This doesn't throw an exception if the character or 
+   * @warning This doesn't throw an exception if the character or
    *          name collides.
    */
-	void addSwitch ( const QChar& switchChar, const QString& switchName, 
+	void addSwitch ( const QChar& switchChar, const QString& switchName,
       const QString& description, QCommandLine::Flags flag );
 
   /**

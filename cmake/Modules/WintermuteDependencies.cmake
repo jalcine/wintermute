@@ -32,5 +32,5 @@ find_package(Qt4 4.8.1 COMPONENTS
   QtCore REQUIRED)
 find_package(Log4Qt REQUIRED)
 find_package(QJSON 0.7.1 REQUIRED)
-pkg_search_module(QCOMMANDLINE QCommandLine REQUIRED)
+find_package(QCommandLine REQUIRED)
 ## }}}

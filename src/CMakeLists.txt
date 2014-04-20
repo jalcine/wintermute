@@ -117,7 +117,7 @@ set_target_properties(wintermute PROPERTIES
 wintermute_add_properties(wintermute)
 
 # Include local directories for core binary.
-include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
+include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS} 
   ${WINTERMUTE_INCLUDE_DIRS})
 
 # Link dependencies to core binary.
@@ -129,7 +129,7 @@ configure_file(${CMAKE_SOURCE_DIR}/src/globals.hpp.in
 
 # Generate documentation.
 wintermute_generate_documentation(TARGET wintermute
-  NAME             "Wintermute Core" 
+  NAME             "Wintermute Core"
   SOURCES          ${WINTERMUTE_SOURCES}
   BRIEF            "A (hopefully) cross-platform approach to AI."
   VERSION          ${WINTERMUTE_VERSION}
