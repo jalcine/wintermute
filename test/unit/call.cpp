@@ -66,6 +66,7 @@ class CallUnitTest : public QObject
     aCall->setSender(senderDef);
     aCall->setReceiver(receiverDef);
     QVERIFY(aCall->toString().contains(static_cast<QString>(senderDef)));
+  }
  
   Q_SLOT void jsonHasReceiver()
   {
@@ -73,7 +74,6 @@ class CallUnitTest : public QObject
     aCall->setReceiver(receiverDef);
     QVERIFY(aCall->toString().contains(static_cast<QString>(receiverDef)));
   }
- }
 
   Q_SLOT void cleanup()
   {
