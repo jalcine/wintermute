@@ -22,7 +22,7 @@ after_success:
   - coveralls -r . -e .
 
 env:
-  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
+  - CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules:/usr/share/apps/cmake/modules
 
 branches:
   except:
