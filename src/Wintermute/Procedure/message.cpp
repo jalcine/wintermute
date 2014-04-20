@@ -96,12 +96,12 @@ Message::fromString(const QString& string)
   Q_ASSERT ( string.isNull() );
   Q_ASSERT ( !string.isEmpty() );
   QJson::Parser jsonParser;
-  QVariantMap map;
   Message msg;
-  map = jsonParser.parse(string.toLocal8Bit()).toMap();
-  msg.d->sender = Module::Definition::fromString(map.value("sender").toString());
-  msg.d->receiver = Module::Definition::fromString(
-                      map.value("receiver").toString());
+  QVariantMap map = jsonParser.parse(string.toLocal8Bit()).toMap();
+  const QString senderString = map.value("sender").toString();
+  const QString receiverString = map.value("receiver").toString();
+  msg.d->sender = Module::Definition::fromString(senderString);
+  msg.d->receiver = Module::Definition::fromString(receiverString);
   msg.d->dataMap = map.value("data").toMap();
   Q_ASSERT ( msg.valid() );
   return msg;

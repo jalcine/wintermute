@@ -27,7 +27,7 @@ using QJson::Serializer;
 using Wintermute::Procedure::Module;
 
 const Module::Definition Module::Definition::Null =
-  Module::Definition::Definition(-1, QString::null, QString::null);
+  Module::Definition(-1, QString::null, QString::null);
 
 const int Module::Definition::MetaTypeId =
   qRegisterMetaType<Module::Definition>("Wintermute::Procedure::Module::Definition");
