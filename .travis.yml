@@ -12,11 +12,10 @@ before_install:
 
 before_script:
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -DWITH_DOCUMENTATION=OFF -DCMAKE_MODULE_PATH=/usr/share/apps/cmake
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_DBUS=ON -DWITH_TESTS=ON -DWITH_DOCUMENTATION=OFF -DCMAKE_MODULE_PATH=/usr/share/apps/cmake
 
 script:
-  - make wintermute
-  - make Nightly
+  - make test
 
 after_success:
   - coveralls -r . -e .
