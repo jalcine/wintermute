@@ -13,7 +13,7 @@ before_install:
 before_script:
   - export CMAKE_MODULE_PATH=/usr/share/apps/cmake/Modules
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON; cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -DWITH_DOCUMENTATION=OFF; cmake ..
 
 script:
   - make wintermute
