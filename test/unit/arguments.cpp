@@ -19,6 +19,20 @@
 
 #include <WintermuteTestDriver>
 #include <Wintermute/Application>
+#include <Wintermute/Arguments>
+
+class TestArguments : public Wintermute::Arguments
+{
+  Q_OBJECT;
+  public:
+  TestArguments() : Arguments()
+  {
+  }
+
+  virtual ~TestArguments()
+  {
+  }
+};
 
 /**
  * The purpose of this test is to ensure that Wintermute's ability to parse

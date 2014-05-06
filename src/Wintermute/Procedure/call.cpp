@@ -25,6 +25,8 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Module;
 
+Call Call::Null("");
+
 Call::Call(const QString& name) : Message()
 {
   QVariantMap initialCallMap;

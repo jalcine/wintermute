@@ -34,7 +34,10 @@ class ReplyCall : public Call
 {
     friend class MethodCall;
     const MethodCall& m_methodCall;
+
+  protected:
     ReplyCall ( const MethodCall& methodCall, const QVariant& response );
+
   public:
     virtual ~ReplyCall(); ///< @brief Destructor.
 
