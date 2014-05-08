@@ -60,9 +60,9 @@ class Module : public QObject
 
     ///< @brief Defines the identify of a module.
     struct Definition {
-      quint64 pid     = 0; ///< @brief The PID at which a Module resides.
-      QString package = QString::null; ///< The package where the Module resides.
-      QString domain  = QString::null; ///< The domain where the Module resides.
+      quint64 pid; ///< @brief The PID at which a Module resides.
+      QString package; ///< The package where the Module resides.
+      QString domain; ///< The domain where the Module resides.
 
       /**
        * @brief Creates a new Definition
@@ -70,8 +70,8 @@ class Module : public QObject
        * @param[in] QString The package of the module.
        * @param[in] QString The domain of the module.
        */
-      Definition(const quint64& pid = 0, const QString& package = QString::null,
-                 const QString& domain = QString::null);
+      explicit Definition(const quint64& pid = 0, const QString& package =
+                            QString::null, const QString& domain = QString::null);
 
       /**
        * @brief Determines if this is a valid definition.

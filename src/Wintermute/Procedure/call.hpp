@@ -32,7 +32,7 @@ class Call : public Message
     virtual ~Call(); ///< @brief Destructor.
     Call(const Call& other);
     Call(const Message& other);
-    static Call Null;
+    static const Call Null;
 
     /**
      * @brief Determines if this call is valid.

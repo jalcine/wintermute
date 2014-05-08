@@ -27,7 +27,7 @@ using Wintermute::Procedure::Module;
 class TestReplyCall : public ReplyCall
 {
     friend class ReplyCallUnitTest;
-    TestReplyCall(const QString& name) : ReplyCall(Call::Null, QVariant()) { }
+    TestReplyCall(const QString& name) : ReplyCall(Call::Null) { }
 };
 
 /**
@@ -41,13 +41,17 @@ class ReplyCallUnitTest : public QObject
     Module::Definition senderDef;
     Module::Definition receiverDef;
 
-    Q_SLOT void init() {
-      aReplyCall = new TestReplyCall("FOO");
-    }
-
     void buildWithBoth() {
       aReplyCall->setSender(senderDef);
       aReplyCall->setReceiver(receiverDef);
+    }
+
+    void setWithLocalMethodCall() {}
+
+    void setWithRemoteMethodCall() {}
+
+    Q_SLOT void init() {
+      aReplyCall = new TestReplyCall("FOO");
     }
 
     Q_SLOT void cleanup() {
@@ -59,6 +63,12 @@ class ReplyCallUnitTest : public QObject
       buildWithBoth();
       QVERIFY(aReplyCall->valid());
       QVERIFY(aReplyCall->name() == "FOO");
+    }
+
+    Q_SLOT void canDetermineLocalStatus() {
+      buildWithBoth();
+      setWithLocalMethodCall();
+      QVERIFY(aReplyCall->valid());
     }
 
 

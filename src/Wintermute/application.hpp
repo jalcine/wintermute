@@ -16,7 +16,6 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  * @endif
  **/
-
 /**
  * @headerfile Wintermute/application.hpp <Wintermute/Application>
  * @brief      Definition of Wintermute::Application class.
@@ -110,7 +109,7 @@ public:
    * @note It's good practice to pass in a default value so that your code's
    *       more predictable and error-resistant.
    */
-  static QVariant setting ( const QString& path, const QVariant defaultValue 
+  static QVariant setting ( const QString& path, const QVariant defaultValue
       = QVariant() );
 
   /**

@@ -40,6 +40,8 @@ class ReplyCall : public Call
 
   public:
     virtual ~ReplyCall(); ///< @brief Destructor.
+    ///< @brief Copy constructor.
+    ReplyCall( const Call& other );
 
     /**
      * @brief Obtains the response provided by the MethodCall.

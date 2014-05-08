@@ -34,6 +34,22 @@ MethodCall::MethodCall(const QString& name, const Module::Definition& receiver,
   setCallData(aD);
 }
 
+MethodCall::MethodCall(const Call& other) : Call(other), m_lambda(nullptr)
+{
+  setReceiver(Module::Definition::Null);
+  QVariantMap aD = callData();
+  aD.insert("arugments", QVariant());
+  setCallData(aD);
+}
+
+MethodCall::MethodCall(const Message& other) : Call(other), m_lambda(nullptr)
+{
+  setReceiver(Module::Definition::Null);
+  QVariantMap aD = callData();
+  aD.insert("arugments", QVariant());
+  setCallData(aD);
+}
+
 bool
 MethodCall::valid() const
 {

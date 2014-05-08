@@ -36,6 +36,11 @@ ReplyCall::ReplyCall( const MethodCall& call, const QVariant& response ) :
   setReceiver(call.sendingModule());
 }
 
+ReplyCall::ReplyCall( const Call& other ) : Call ( other ),
+  m_methodCall ( Call::Null )
+{
+}
+
 const MethodCall&
 ReplyCall::methodCall() const
 {

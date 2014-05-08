@@ -34,13 +34,13 @@ namespace Procedure
  */
 struct MessagePrivate : public QSharedData
 {
-  MessagePrivate() : QSharedData(), sender(Module::Definition::Null), 
+  MessagePrivate() : QSharedData(), sender(Module::Definition::Null),
     receiver(Module::Definition::Null), dataMap()
   {
   }
 
-  MessagePrivate( const MessagePrivate& other ) : QSharedData ( other ), 
-    sender ( other.sender ), receiver ( other.receiver ), 
+  MessagePrivate( const MessagePrivate& other ) : QSharedData ( other ),
+    sender ( other.sender ), receiver ( other.receiver ),
     dataMap ( other.dataMap )
   {
   }

@@ -74,6 +74,12 @@ class MethodCall : public Call
     explicit MethodCall(const QString& methodName,
                         const Module::Definition& definition, const QVariant& arguments);
 
+    ///< @brief Reimplemented copy constructor.
+    MethodCall(const Call& other);
+
+    ///< @brief Reimplemented copy constructor.
+    MethodCall(const Message& other);
+
     virtual ~MethodCall(); ///< @brief Destructor.
 
     ///< @brief Signature for callback methods.
