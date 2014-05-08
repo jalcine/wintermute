@@ -1,4 +1,4 @@
-# Wintermute [![Stories in Ready][waffleimg]][wafflesrc] [![Build Status][travisimg]][travissrc] [![Gitter chat][gitterimg]][gittersrc]
+# Wintermute [![Stories in Ready][waffleimg]][wafflesrc] [![Build Status][travisimg]][travissrc] [![Gitter chat][gitterimg]][gittersrc] [![Coverage Status][coverage]][coverageimg]
 
 **Wintermute** is meant to be an application platform that aims to:
   + be extended by means of plug-ins
@@ -64,3 +64,5 @@ for more details.
 [travissrc]: https://travis-ci.org/wintermuteapp/wintermute
 [gitterimg]: https://badges.gitter.im/wintermuteapp/wintermute.png
 [gittersrc]: https://gitter.im/wintermuteapp/wintermute
+[coverageimg]: https://coveralls.io/repos/wintermuteapp/wintermute/badge.png
+[coverage]: https://coveralls.io/r/wintermuteapp/wintermute
