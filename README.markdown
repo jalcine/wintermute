@@ -1,4 +1,4 @@
-# Wintermute [![Stories in Ready][waffleimg]][wafflesrc] [![Build Status][travisimg]][travissrc] [![Gitter chat][gitterimg]][gittersrc] [![Coverage Status][coverage]][coverageimg]
+# Wintermute [![Stories in Ready][waffleimg]][wafflesrc] [![Build Status][travisimg]][travissrc] [![Gitter chat][gitterimg]][gittersrc] [![Coverage Status][coverageimg]][coverage]
 
 **Wintermute** is meant to be an application platform that aims to:
   + be extended by means of plug-ins
