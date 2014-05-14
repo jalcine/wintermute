@@ -27,13 +27,18 @@ using QJson::Serializer;
 using Wintermute::Procedure::Module;
 
 const Module::Definition Module::Definition::Null =
-  Module::Definition(-1, QString::null, QString::null);
+  Module::Definition::compose(QString::null, QString::null, -1);
 
 const int Module::Definition::MetaTypeId =
   qRegisterMetaType<Module::Definition>("Wintermute::Procedure::Module::Definition");
 
 Module::Definition::Definition(const quint64& a_pid, const QString& a_package,
                                const QString& a_domain) : pid (a_pid), package(a_package), domain(a_domain)
+{
+}
+
+Module::Definition::Definition() : pid(0), package(QString::null),
+  domain(QString::null)
 {
 }
 
@@ -51,6 +56,15 @@ Module::Definition::operator==(const Definition& definition) const
   return true;
 }
 
+void
+Module::Definition::operator=(const Definition& definition)
+{
+  package = definition.package;
+  domain = definition.domain;
+  pid = definition.pid;
+}
+
+// TODO Error checking on the JSON.
 Module::Definition::operator QString() const
 {
   Q_ASSERT ( valid() );
@@ -71,13 +85,16 @@ Module::Definition::fromString( const QString& string )
   QVariantMap map;
   QJson::Parser jsonParser;
   map = jsonParser.parse(string.toLocal8Bit(), 0).toMap();
+  Q_ASSERT ( jsonParser.errorString().isEmpty() );
+  Q_ASSERT ( jsonParser.errorString().isNull() );
 
   if (!jsonParser.errorString().isNull()) {
     return Definition::Null;
   }
 
   return compose(map.value("domain").toString(),
-                 map.value("package").toString(), map.value("pid").toUInt());
+                 map.value("package").toString(),
+                 map.value("pid").toUInt());
 }
 
 Module::Definition
@@ -85,12 +102,6 @@ Module::Definition::compose(const QString& domain, const QString& package,
                             const quint64& pid)
 {
   Definition aDef(pid, package, domain);
-  Q_ASSERT (aDef.valid());
-
-  if (!aDef.valid()) {
-    aDef = Definition::Null;
-  }
-
   return aDef;
 }
 
