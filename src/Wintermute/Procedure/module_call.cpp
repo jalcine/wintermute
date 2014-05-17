@@ -26,9 +26,8 @@ using Wintermute::Procedure::ModuleCall;
 ModuleCall::ModuleCall(const QString& name, const Module* module) : Call(name)
 {
   m_module = const_cast<Module*>(module);
-  Message::setSender(m_module->definition());
-  Message::setReceiver(Module::Definition::compose(WINTERMUTE_DOMAIN, "process",
-                       0));
+  Message::setSender(m_module->designation());
+  Message::setReceiver(Designation::compose(WINTERMUTE_DOMAIN, "process", 0));
 }
 
 bool

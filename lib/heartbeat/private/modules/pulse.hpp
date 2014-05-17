@@ -69,7 +69,7 @@ public:
 	QVariantMap
 	getModuleInfo ( const QVariant& aDef ) {
 		QPointer<Procedure::Module> module = 
-      Procedure::Module::findModule ( aDef.value<Procedure::Module::Definition>() );
+      Procedure::Module::findModule ( aDef.value<Procedure::Designation>() );
 		QVariantMap values;
 		if ( !module.isNull() ) {
 			values.insert ( "calls",   module->calls() );
@@ -81,8 +81,8 @@ public:
 	getAllModulesInfo() {
 		QVariantHash modules;
 		for (QPointer<Procedure::Module> mod: Procedure::Module::knownModules()) {
-			modules.insert ( mod->definition(), 
-          getModuleInfo ( QVariant::fromValue(mod->definition() ) ) );
+			modules.insert ( mod->designation(), 
+          getModuleInfo ( QVariant::fromValue(mod->designation() ) ) );
 		}
 		return modules;
 	}

@@ -19,7 +19,7 @@
 
 /**
  * @headerfile Wintermute/plugin_process.hpp <Wintermute/PluginProcess>
- * @brief      Definition of Wintermute::PluginProcess class.
+ * @brief      Declaration of Wintermute::PluginProcess class.
  */
 
 

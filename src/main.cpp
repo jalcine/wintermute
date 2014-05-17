@@ -18,7 +18,7 @@
  **/
 /**
  * @namespace Wintermute
- * @brief     Represents the parent namespace of Wintermute.
+ * @brief     Represents the parent namespace of Wintermute
  */
 /**
  * @namespace Wintermute::Procedure

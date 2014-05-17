@@ -22,6 +22,7 @@
 
 #include <functional>
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Designation>
 
 namespace Wintermute
 {
@@ -40,7 +41,7 @@ class ReplyCall;
  *  \code{.cpp}
  *  #include <Wintermute/Procedure/MethodCall>
  *  #include <Wintermute/Procedure/Dispatcher>
- *  #include <Wintermute/Procedure/Module>
+ *  #include <Wintermute/Procedure/Designation>
  *
  *  using Wintermute::Procedure::MethodCall;
  *  using Wintermute::Procedure::Dispatcher;
@@ -49,10 +50,10 @@ class ReplyCall;
  *  int main()
  *  {
  *    // Define the module that should be reached.
- *    Module::Definition aDef("in.wintermute.heartbeat","monitor");
+ *    Designation designation("in.wintermute.heartbeat","monitor");
  *
  *    // Define the call to use to invoke upon said module.
- *    MethodCall aCall("ping", aDef, QVariantList());
+ *    MethodCall aCall("ping", designation, QVariantList());
  *
  *    // Dispatch the call.
  *    Dispatcher::queueCall(aCall);
@@ -65,14 +66,20 @@ class MethodCall : public Call
     /**
      * @brief Crafts a new MethodCall.
      * @param[in] QString The name of the method.
-     * @param[in] Module::Definition The definition of the module.
+     * @param[in] Module::Designation The designation of the module.
      * @param[in] QVariant The variant argument sent with this method.
      *
-     * Invokes method 'methodName' on module 'definition' with 'arguments'
+     * Invokes method 'methodName' on module 'designation' with 'arguments'
      * as arguments.
      */
     explicit MethodCall(const QString& methodName,
-                        const Module::Definition& definition, const QVariant& arguments);
+                        const Designation& designation, const QVariant& arguments);
+
+    ///< @brief Reimplemented copy constructor.
+    MethodCall(const Call& other);
+
+    ///< @brief Reimplemented copy constructor.
+    MethodCall(const Message& other);
 
     virtual ~MethodCall(); ///< @brief Destructor.
 

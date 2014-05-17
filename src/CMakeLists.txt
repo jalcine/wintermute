@@ -21,7 +21,7 @@ include(WintermuteVersioning)
 include(WintermuteDocumentation)
 
 set(WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+  ${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_ITEM WINTERMUTE_BINARY_INCLUDE_DIRS ${WINTERMUTE_INCLUDE_DIR})
 
 # Grab the sources!
@@ -49,7 +49,7 @@ set(WINTERMUTE_SOURCES
 
   ## Procedure/Meta
   Wintermute/Procedure/module.cpp
-  Wintermute/Procedure/module_definition.cpp
+  Wintermute/Procedure/designation.cpp
   Wintermute/Procedure/process_module.cpp
   Wintermute/Procedure/dispatcher.cpp
   Wintermute/Procedure/receiver.cpp
@@ -117,7 +117,7 @@ set_target_properties(wintermute PROPERTIES
 wintermute_add_properties(wintermute)
 
 # Include local directories for core binary.
-include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS} 
+include_directories(${WINTERMUTE_BINARY_INCLUDE_DIRS}
   ${WINTERMUTE_INCLUDE_DIRS})
 
 # Link dependencies to core binary.

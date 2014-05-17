@@ -24,6 +24,7 @@
 #include "lambda_call.hpp"
 #include "method_call.hpp"
 #include "reply_call.hpp"
+#include "designation.hpp"
 #include "process_module.hpp"
 
 using Wintermute::Procedure::Module;
@@ -31,11 +32,12 @@ using Wintermute::Procedure::ProcessModule;
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::LambdaCall;
+using Wintermute::Procedure::Designation;
 
 ProcessModule::ProcessModule() :
   Module ( Wintermute::Application::instance() )
 {
-  setDefinition(WINTERMUTE_DOMAIN, "process");
+  setDesignation(WINTERMUTE_DOMAIN, "process");
   mountCall( new LambdaCall("stop", this,
   [&] (QVariant args, const MethodCall & call) -> void {
     winfo(this, QString("Remote stop initiated; %1.").arg(args.toString()));

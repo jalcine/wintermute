@@ -53,7 +53,7 @@ Adaptor::deregisterFromDBus()
 	bus.unregisterService ( QString ( "in.wintermute.p%1" ).arg(
 	                          QCoreApplication::applicationPid() ) );
 	for (Procedure::Module* module: Procedure::Module::knownModules() ) {
-		const QString objectName = "/" + module->definition().package;
+		const QString objectName = "/" + module->designation().package;
 		bus.unregisterObject ( objectName );
 	}
 }
@@ -74,7 +74,7 @@ bool
 Adaptor::hasModule ( const QString& name )
 {
 	return Procedure::Module::findModule ( 
-      QVariant::fromValue(name).value<Module::Definition>() ) != nullptr;
+      QVariant::fromValue(name).value<Procedure::Designation>() ) != nullptr;
 }
 
 Adaptor::~Adaptor()

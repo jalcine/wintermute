@@ -17,6 +17,7 @@
  * @endif
  **/
 
+#include <QtCore/QCoreApplication>
 #include "Wintermute/application.hpp"
 #include "Wintermute/logging.hpp"
 #include "Wintermute/Procedure/message.hpp"
@@ -41,8 +42,7 @@ Dispatcher::queueMessage ( const Message& message )
   Q_ASSERT ( message.valid() );
   wtrace("(Dispatcher::static)",
          QString("Got %1 for dispatching; but not yet implemented.").arg(message));
-  MessageEvent* event = new MessageEvent(MessageEvent::DirectionDispatch,
-                                         message);
+  MessageEvent* event = new MessageEvent(MessageEvent::DirectionDispatch, message);
   QCoreApplication::postEvent(wntrApp, event);
 }
 

@@ -25,9 +25,9 @@
 #include "Wintermute/Procedure/dispatcher.hpp"
 #include "Wintermute/private/Procedure/message.hpp"
 
-using Wintermute::Procedure::Module;
 using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Dispatcher;
+using Wintermute::Procedure::Designation;
 using Wintermute::Procedure::MessagePrivate;
 
 const int Message::MetaTypeId =
@@ -44,8 +44,8 @@ QDataStream& operator>>(QDataStream& in, Message& myObj)
 {
   QVariantList maps;
   in >> maps;
-  myObj.d->sender   = maps[0].value<Module::Definition>();
-  myObj.d->receiver = maps[1].value<Module::Definition>();
+  myObj.d->sender   = maps[0].value<Designation>();
+  myObj.d->receiver = maps[1].value<Designation>();
   myObj.d->dataMap  = maps[2].toMap();
   Q_ASSERT ( myObj.valid() );
   return in;
@@ -100,8 +100,8 @@ Message::fromString(const QString& string)
   QVariantMap map = jsonParser.parse(string.toLocal8Bit()).toMap();
   const QString senderString = map.value("sender").toString();
   const QString receiverString = map.value("receiver").toString();
-  msg.d->sender = Module::Definition::fromString(senderString);
-  msg.d->receiver = Module::Definition::fromString(receiverString);
+  msg.d->sender = Designation::fromString(senderString);
+  msg.d->receiver = Designation::fromString(receiverString);
   msg.d->dataMap = map.value("data").toMap();
   Q_ASSERT ( msg.valid() );
   return msg;
@@ -111,26 +111,17 @@ bool
 Message::valid() const
 {
   const bool isValid = d->valid();
-  Q_ASSERT ( isValid );
+  Q_ASSERT ( isValid == true );
   return isValid;
 }
 
 bool
 Message::isLocal() const
 {
-  const qint64 appId = QCoreApplication::applicationPid(),
-               recvId = d->receiver.pid, sendId = d->sender.pid;
-  Q_ASSERT ( sendId == appId );
-  Q_ASSERT ( appId != recvId || recvId == 0);
-
-  if ( sendId == appId && (appId != recvId || recvId == 0) ) {
-    return true;
-  }
-
-  return false;
+  return d->sender.isLocal();
 }
 
-const Module::Definition&
+const Designation&
 Message::receivingModule() const
 {
   Q_ASSERT ( valid() );
@@ -138,7 +129,7 @@ Message::receivingModule() const
   return d->receiver;
 }
 
-const Module::Definition&
+const Designation&
 Message::sendingModule() const
 {
   Q_ASSERT ( valid() );
@@ -155,24 +146,26 @@ Message::setData ( const QVariant& newData )
 }
 
 void
-Message::setReceiver( const Module::Definition& newReceiver )
+Message::setReceiver( const Designation& newReceiver )
 {
-  Q_ASSERT ( newReceiver.valid() );
-  Q_ASSERT ( newReceiver.pid != (quint64) QCoreApplication::applicationPid() );
+  Q_ASSERT ( newReceiver.isNull() == false );
+  Q_ASSERT ( newReceiver.valid() == true );
   d->receiver = newReceiver;
 }
 
 void
-Message::setSender( const Module::Definition& newSender )
+Message::setSender( const Designation& newSender )
 {
-  Q_ASSERT ( newSender.valid() );
+  Q_ASSERT ( newSender.isNull() == false );
+  Q_ASSERT ( newSender.valid() == true );
   d->sender = newSender;
+  qDebug() << "Set" << newSender << "to this message.";
 }
 
 void
 Message::queueForDispatch() const
 {
-  Q_ASSERT ( valid() );
+  Q_ASSERT ( valid() == true );
 
   if ( valid() && isLocal() ) {
     wtrace("(Message)", QString("Queued %1 for dispatch.").arg(*this));

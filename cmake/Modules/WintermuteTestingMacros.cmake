@@ -41,8 +41,8 @@ macro(wintermute_test_render)
   cmake_parse_arguments(wtr "${_singleArgs}" "${_oneArgs}" "${_multiArgs}"
     ${ARGN})
 
-  set(_test_name "test-${wtr_TARGET}")
-  set(_test_tgt "${_test_name}")
+  set(_test_name "${wtr_TARGET}")
+  set(_test_tgt "${_test_name}-test")
 
   add_executable(${_test_tgt} ${wtr_SOURCES})
   wintermute_add_properties(${_test_tgt})

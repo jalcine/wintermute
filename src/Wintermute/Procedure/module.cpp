@@ -27,23 +27,22 @@
 using Wintermute::Procedure::Module;
 using Wintermute::Procedure::ModuleHash;
 using Wintermute::Procedure::ModuleList;
+using Wintermute::Procedure::Designation;
 using Wintermute::Procedure::ModulePrivate;
 
 ModuleHash ModulePrivate::modules = ModuleHash();
-
-
 
 Module::Module ( QObject* parent ) : QObject ( parent ),
   d_ptr ( new ModulePrivate ( this ) )
 {
 }
 
-Module::Definition
-Module::definition() const
+Designation
+Module::designation() const
 {
   Q_D ( const Module );
-  Q_ASSERT ( d->definition.valid() );
-  return d->definition;
+  Q_ASSERT ( d->designation.valid() );
+  return d->designation;
 }
 
 QStringList
@@ -74,11 +73,11 @@ Module::invokeCall ( const MethodCall& methodCall )
 }
 
 Module*
-Module::findModule ( const Module::Definition& definition )
+Module::findModule ( const Designation& designation )
 {
   /// @todo Check if the pids match.
-  Q_ASSERT ( definition.valid() );
-  return ModulePrivate::modules.value(definition);
+  Q_ASSERT ( designation.valid() );
+  return ModulePrivate::modules.value(designation);
 }
 
 void
@@ -97,36 +96,36 @@ Module::knownModules()
 }
 
 void
-Module::setDefinition(const QString& domain, const QString& package,
-                      const quint64& pid)
+Module::setDesignation(const QString& domain, const QString& package,
+                       const quint64& pid)
 {
   Q_ASSERT ( !domain.isNull() );
   Q_ASSERT ( !domain.isEmpty() );
   Q_ASSERT ( !package.isNull() );
   Q_ASSERT ( !package.isEmpty() );
-  Module::setDefinition(Module::Definition::compose(domain,package,pid));
+  Module::setDesignation(Designation::compose(domain,package,pid));
   return;
 }
 
 void
-Module::setDefinition(const Module::Definition& aDef)
+Module::setDesignation(const Designation& aDef)
 {
   Q_ASSERT ( aDef.valid() );
   Q_D ( Module );
-  d->definition = aDef;
+  d->designation = aDef;
 }
 
 Module::~Module()
 {
 }
 
-QDataStream& operator<<(QDataStream& out, const Module::Definition& obj)
+QDataStream& operator<<(QDataStream& out, const Designation& obj)
 {
   out << obj.pid << obj.domain << obj.package;
   return out;
 }
 
-QDataStream& operator>>(QDataStream& in, Module::Definition& obj)
+QDataStream& operator>>(QDataStream& in, Designation& obj)
 {
   in >> obj.pid >> obj.domain >> obj.package;
   return in;
