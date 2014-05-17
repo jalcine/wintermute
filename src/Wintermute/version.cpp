@@ -22,16 +22,59 @@ using Wintermute::Version;
 
 Version Version::Null = Version();
 
+QString Version::toString() const
+{
+  QString versionStr;
+  versionStr += QString::number ( this->major );
+  versionStr += "." + QString::number ( this->minor );
+  versionStr += "." + QString::number ( this->patch );
+  return versionStr;
+}
+
+Version Version::fromString ( const QString& versionString )
+{
+  /// TODO Check if components of string can be converted to an integer.
+  Version version;
+  QStringList components = versionString.split ( "." );
+  version.major = components[0].toUShort();
+  version.minor = components[1].toUShort();
+  version.patch = components[2].toUShort();
+  return version;
+}
+
+bool Version::operator> ( const Version& version ) const
+{
+  if ( this->major > version.major ) return true;
+  else if ( this->minor > version.minor ) return true;
+  else if ( this->patch > version.patch ) return true;
+  return false;
+}
+
+bool Version::operator< ( const Version& version ) const
+{
+  if ( this->major < version.major ) return true;
+  else if ( this->minor < version.minor ) return true;
+  else if ( this->patch < version.patch ) return true;
+  return false;
+}
+
+bool Version::operator== ( const Version& version ) const
+{
+  return ( this->major == version.major ) &&
+    ( this->minor == version.minor ) &&
+    ( this->patch == version.patch );
+}
+
 QDataStream& operator<< ( QDataStream& out, const Wintermute::Version& version )
 {
-	out << version.toString();
-	return out;
+  out << version.toString();
+  return out;
 }
 
 QDataStream& operator>> ( QDataStream& in, Wintermute::Version& version )
 {
-	QString versionStr;
-	in >> versionStr;
-	version = Version::fromString ( versionStr );
-	return in;
+  QString versionStr;
+  in >> versionStr;
+  version = Version::fromString ( versionStr );
+  return in;
 }

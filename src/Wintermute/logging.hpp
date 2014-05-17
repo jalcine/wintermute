@@ -19,7 +19,7 @@
 
 /**
  * @headerfile Wintermute/logging.hpp <Wintermute/Logging>
- * @brief      Definition of Wintermute::Logging class.
+ * @brief      Declaration of Wintermute::Logging class.
  */
 
 #ifndef WINTERMUTE_LOGGING_HPP
@@ -40,7 +40,7 @@ typedef ::Log4Qt::Logger Logger;
 
 /**
  * @brief Auxiliary class for logging in Wintermute.
- * 
+ *
  * This class provides the provided classes and tools necessary to handle
  * logging using the [log4qt][] library in conjunction with Qt's own logging
  * facilities.

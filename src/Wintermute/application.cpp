@@ -118,9 +118,6 @@ Application::version() const
   ver.major = WINTERMUTE_VERSION_MAJOR;
   ver.minor = WINTERMUTE_VERSION_MINOR;
   ver.patch = WINTERMUTE_VERSION_PATCH;
-  ver.stage = ( Version::DevelopmentStage )
-              WINTERMUTE_VERSION_STAGE;
-  ver.hash =  WINTERMUTE_VERSION_STAGE_REF;
   return ver;
 }
 

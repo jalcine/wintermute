@@ -1,6 +1,6 @@
 /**
  * @author Jacky Alciné <me@jalcine.me>
- * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
+ * @copyright © 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
  * Wintermute is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,4 +17,7 @@
  * @endif
  **/
 
-#include <Wintermute/arguments.hpp>
+#include <Wintermute/Procedure/Dispatcher>
+#include <WintermuteTestDriver>
+
+using Wintermute::Procedure::Dispatcher;
