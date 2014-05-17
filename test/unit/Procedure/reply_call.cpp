@@ -17,17 +17,25 @@
  * @endif
  **/
 
+#include <Wintermute/Procedure/Message>
+#include <Wintermute/Procedure/MethodCall>
 #include <Wintermute/Procedure/ReplyCall>
-#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Designation>
 #include <WintermuteTestDriver>
 
+using Wintermute::Procedure::Message;
 using Wintermute::Procedure::ReplyCall;
-using Wintermute::Procedure::Module;
+using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::Designation;
+
+#define LOCAL_METHOD_NAME "localFunTime"
+#define REMOTE_METHOD_NAME "remoteFunTime"
 
 class TestReplyCall : public ReplyCall
 {
-    friend class ReplyCallUnitTest;
-    TestReplyCall(const QString& name) : ReplyCall(Call::Null) { }
+  public:
+    TestReplyCall(const MethodCall& m, const QVariant& v = QVariant()) :
+      ReplyCall(m, v) {}
 };
 
 /**
@@ -37,54 +45,88 @@ class TestReplyCall : public ReplyCall
 class ReplyCallUnitTest : public QObject
 {
     Q_OBJECT;
-    TestReplyCall* aReplyCall;
-    Module::Definition senderDef;
-    Module::Definition receiverDef;
 
-    void buildWithBoth() {
-      aReplyCall->setSender(senderDef);
-      aReplyCall->setReceiver(receiverDef);
+    void setWithLocalMethodCall() {
+      cleanup();
+      localSenderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                                            QCoreApplication::applicationPid());
+      remoteReceiverDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                          qrand());
+      Q_ASSERT ( localSenderDef.valid() == true );
+      Q_ASSERT ( remoteReceiverDef.valid() == true );
+      localMethodCall = new MethodCall(LOCAL_METHOD_NAME, remoteReceiverDef,
+                                       QVariant());
+      localMethodCall->setSender(localSenderDef);
+      Q_ASSERT ( localMethodCall->valid() == true );
+      replyCall = new TestReplyCall(*localMethodCall, QVariant());
+      Q_ASSERT ( replyCall->valid() == true );
     }
 
-    void setWithLocalMethodCall() {}
-
-    void setWithRemoteMethodCall() {}
-
-    Q_SLOT void init() {
-      aReplyCall = new TestReplyCall("FOO");
+    void setWithRemoteMethodCall() {
+      cleanup();
+      localReceiverDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                                              qrand());
+      remoteSenderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                                             QCoreApplication::applicationPid());
+      Q_ASSERT ( remoteSenderDef.valid() == true );
+      Q_ASSERT ( localReceiverDef.valid() == true );
+      remoteMethodCall = new MethodCall(REMOTE_METHOD_NAME, localReceiverDef,
+                                        QVariant());
+      remoteMethodCall->setSender(remoteSenderDef);
+      Q_ASSERT ( remoteMethodCall->valid() == true );
+      replyCall = new TestReplyCall(*remoteMethodCall, QVariant());
+      Q_ASSERT ( replyCall->valid() == true );
     }
 
     Q_SLOT void cleanup() {
-      delete aReplyCall;
-      aReplyCall = nullptr;
+      if (remoteMethodCall) {
+        delete remoteMethodCall;
+        remoteMethodCall = nullptr;
+      }
+
+      if (localMethodCall) {
+        delete localMethodCall;
+        localMethodCall = nullptr;
+      }
+
+      if (replyCall) {
+        delete replyCall;
+        replyCall = nullptr;
+      }
     }
 
-    Q_SLOT void isTheNameProvided() {
-      buildWithBoth();
-      QVERIFY(aReplyCall->valid());
-      QVERIFY(aReplyCall->name() == "FOO");
-    }
-
-    Q_SLOT void canDetermineLocalStatus() {
-      buildWithBoth();
+    Q_SLOT void isTheNameProvidedFromMethodCall() {
       setWithLocalMethodCall();
-      QVERIFY(aReplyCall->valid());
+      QVERIFY(replyCall->name() == localMethodCall->name());
     }
 
+    Q_SLOT void canDetermineLocalStatusOfCall() {
+      setWithLocalMethodCall();
+      QVERIFY(replyCall->isLocal() == true);
+    }
+
+    Q_SLOT void canDetermineRemoteStatusOfCall() {
+      setWithRemoteMethodCall();
+      QVERIFY(replyCall->isLocal() == false);
+    }
+
+    TestReplyCall* replyCall;
+    MethodCall* localMethodCall;
+    MethodCall* remoteMethodCall;
+    Designation localSenderDef;
+    Designation localReceiverDef;
+    Designation remoteSenderDef;
+    Designation remoteReceiverDef;
 
   public:
-    ReplyCallUnitTest() : QObject() {
-      senderDef = Module::Definition::compose(WINTERMUTE_DOMAIN, "testing",
-                                              QCoreApplication::applicationPid());
-      receiverDef = Module::Definition::compose(WINTERMUTE_DOMAIN".remote",
-                    "testing");
+    ReplyCallUnitTest() : QObject(), replyCall(nullptr), localMethodCall(nullptr),
+      remoteMethodCall(nullptr), localSenderDef(Designation::Null),
+      localReceiverDef(Designation::Null), remoteSenderDef(Designation::Null),
+      remoteReceiverDef(Designation::Null) {
     }
 
     virtual ~ReplyCallUnitTest() {
-      if (aReplyCall != nullptr) {
-        delete aReplyCall;
-        aReplyCall = nullptr;
-      }
+      cleanup();
     }
 };
 

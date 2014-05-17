@@ -17,18 +17,19 @@
  * @endif
  **/
 
-#include <Wintermute/Procedure/Designation>
+#include <QtCore/QStringList>
 #include <WintermuteTestDriver>
+#include <Wintermute/Procedure/Designation>
 
-using Wintermute::Procedure::Module;
+const QStringList domains = QStringList() << "google.com" << "facebook.com" << "jalcine.me";
+const QStringList packages = QStringList() << "google.com" << "facebook.com" << "jalcine.me";
 
-const QString[] domains = { "google.com", "facebook.com", "jalcine.me" };
-const QString[] packages = { "google.com", "facebook.com", "jalcine.me" };
+using Wintermute::Procedure::Designation;
 
-class TestModuleDefinition : public Module::Definition
+class TestModuleDefinition : public Designation
 {
     friend class ModuleDefinitionUnitTest;
-    TestModuleDefinition() : Module::Definition() {
+    TestModuleDefinition() : Designation() {
       this->domain = domain;
     }
 };
@@ -42,7 +43,7 @@ class ModuleDefinitionUnitTest : public QObject
     Q_OBJECT;
     TestModuleDefinition* aDefPtr;
 
-    Module::Definition aDef;
+    Designation aDef;
 
     Q_SLOT void init() {
       aDefPtr = new TestModuleDefinition();
@@ -54,7 +55,22 @@ class ModuleDefinitionUnitTest : public QObject
     }
 
     Q_SLOT void checkEquality() {
-      // FIXME: Test equality.
+      Designation dsg1 = Designation::compose("me.jalcine", "testing", 300);
+      Designation dsg2 = Designation::compose("me.jalcine", "testing", 300);
+      QVERIFY(dsg1 == dsg2);
+    }
+
+    Q_SLOT void checkInequality() {
+      Designation dsg1 = Designation::compose("me.jalcine", "testing", 300);
+      Designation dsg2 = Designation::compose("me.jalcine", "testing", 300);
+      Designation dsg3 = Designation::compose("me.jalcine", "broken", 300);
+      QVERIFY(dsg2 != dsg3);
+      QVERIFY(dsg1 != dsg3);
+    }
+
+    Q_SLOT void checkLocality() {
+      // FIXME: Test locality.
+      // FIXME: Test unlocality.
     }
 
   public:
@@ -66,4 +82,4 @@ class ModuleDefinitionUnitTest : public QObject
 };
 
 QTEST_APPLESS_MAIN ( ModuleDefinitionUnitTest )
-#include "module_def.moc"
+#include "designation.moc"

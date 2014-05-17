@@ -19,10 +19,12 @@
 
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Designation>
 #include <WintermuteTestDriver>
 
 using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Module;
+using Wintermute::Procedure::Designation;
 
 class TestCall : public Call
 {
@@ -30,17 +32,12 @@ class TestCall : public Call
     TestCall(const QString& name) : Call(name) { }
 };
 
-/**
- * The purpose of this test to render the ability to handle calls and its
- * properties with ease.
- */
 class CallUnitTest : public QObject
 {
     Q_OBJECT;
     TestCall* aCall;
-    Module::Definition senderDef;
-    Module::Definition receiverDef;
-
+    Designation senderDef;
+    Designation receiverDef;
 
     Q_SLOT void init() {
       aCall = new TestCall("FOO");
@@ -62,13 +59,12 @@ class CallUnitTest : public QObject
       QVERIFY(aCall->name() == "FOO");
     }
 
-
   public:
     CallUnitTest() : QObject() {
-      senderDef = Module::Definition::compose(WINTERMUTE_DOMAIN, "testing",
-                                              QCoreApplication::applicationPid());
-      receiverDef = Module::Definition::compose(WINTERMUTE_DOMAIN".remote",
-                    "testing");
+      senderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                                       QCoreApplication::applicationPid());
+      receiverDef = Designation::compose(WINTERMUTE_DOMAIN".remote",
+                                         "testing");
     }
 
     virtual ~CallUnitTest() {

@@ -18,11 +18,11 @@
  **/
 
 #include <Wintermute/Procedure/Message>
-#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Designation>
 #include <WintermuteTestDriver>
 
 using Wintermute::Procedure::Message;
-using Wintermute::Procedure::Module;
+using Wintermute::Procedure::Designation;
 
 class TestMessage : public Message
 {
@@ -34,11 +34,13 @@ class MessageUnitTest : public QObject
 {
     Q_OBJECT;
     TestMessage* aMessage;
-    Module::Definition senderDef;
-    Module::Definition receiverDef;
+    Designation senderDef;
+    Designation receiverDef;
 
 
     Q_SLOT void init() {
+      senderDef = Designation::compose("me.jalcine","testing",300);
+      receiverDef = Designation::compose("me.jalcine","testing.other",400);
       aMessage = new TestMessage();
     }
 
@@ -68,10 +70,10 @@ class MessageUnitTest : public QObject
 
   public:
     MessageUnitTest() : QObject() {
-      senderDef = Module::Definition::compose(WINTERMUTE_DOMAIN, "testing",
-                                              QCoreApplication::applicationPid());
-      receiverDef = Module::Definition::compose(WINTERMUTE_DOMAIN".remote",
-                    "testing");
+      senderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+                                       QCoreApplication::applicationPid());
+      receiverDef = Designation::compose(WINTERMUTE_DOMAIN".remote",
+                                         "testing");
     }
 
     virtual ~MessageUnitTest() {
