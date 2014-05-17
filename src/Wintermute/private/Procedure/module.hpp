@@ -32,37 +32,41 @@ class Module;
 class ModuleCall;
 class ModulePrivate
 {
-	Q_DECLARE_PUBLIC ( Module );
+  Q_DECLARE_PUBLIC ( Module );
 
 public:
-	static ModuleHash modules;
-	QPointer<Module> q_ptr;
-  Module::Definition definition;
-	QHash<QString, ModuleCall*> calls;
+  static ModuleHash modules;
+  QPointer<Module> q_ptr;
+  Designation designation;
+  QHash<QString, ModuleCall*> calls;
 
-	ModulePrivate ( Module* a_qPtr ) : q_ptr ( a_qPtr ), 
-    definition ( Module::Definition::Null ), calls ( )
+  ModulePrivate ( Module* a_qPtr ) : q_ptr ( a_qPtr ),
+    designation ( Designation::Null ), calls ( )
   {
-    wtrace(q_ptr, "Have yet to set a definition.");
+    wtrace(q_ptr, "Have yet to set a designation.");
   }
 
-  void setDefinition(const Module::Definition& a_definition)
+  void setDefinition(const Designation& a_designation)
   {
-		wtrace ( q_ptr, QString("Setting up...") );
-    const bool isDefTaken = ModulePrivate::modules.contains(a_definition);
+    wtrace ( q_ptr, QString("Setting up...") );
+    const bool isDefTaken = ModulePrivate::modules.contains(a_designation);
     Q_ASSERT ( !isDefTaken );
 
-    if ( !isDefTaken ) {
-      wtrace(q_ptr, QString("Registered %1.").arg(a_definition.package));
-      ModulePrivate::modules.insert ( a_definition, q_ptr );
-    } else {
-      wfatal(q_ptr, "The definition provided was already taken.");
+    if ( !isDefTaken )
+    {
+      wtrace(q_ptr, QString("Registered %1.").arg(a_designation.package));
+      ModulePrivate::modules.insert ( a_designation, q_ptr );
     }
-	}
+    else
+    {
+      wfatal(q_ptr, "The designation provided was already taken.");
+    }
+  }
 
-	virtual ~ModulePrivate () {
-		ModulePrivate::modules.remove ( definition );
-	}
+  virtual ~ModulePrivate ()
+  {
+    ModulePrivate::modules.remove ( designation );
+  }
 };
 } /* Procedure */
 } /* Wintermute  */

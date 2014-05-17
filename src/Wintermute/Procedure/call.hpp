@@ -30,9 +30,8 @@ class Call : public Message
 {
   public:
     virtual ~Call(); ///< @brief Destructor.
-    Call(const Call& other);
-    Call(const Message& other);
-    static const Call Null;
+    Call(const Call& other); ///< @brief Copy constructor.
+    Call(const Message& other); ///< @brief Inherited copy constructor.
 
     /**
      * @brief Determines if this call is valid.
@@ -70,7 +69,6 @@ class Call : public Message
      * @param[in] QVariantMap The new data for this call.
      */
     void setCallData(const QVariantMap& data);
-
 };
 }
 }

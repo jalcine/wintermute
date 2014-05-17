@@ -25,7 +25,7 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::MethodCall;
 using Wintermute::Procedure::ReplyCall;
 
-MethodCall::MethodCall(const QString& name, const Module::Definition& receiver,
+MethodCall::MethodCall(const QString& name, const Designation& receiver,
                        const QVariant& arguments) : Call(name), m_lambda(nullptr)
 {
   setReceiver(receiver);
@@ -36,7 +36,7 @@ MethodCall::MethodCall(const QString& name, const Module::Definition& receiver,
 
 MethodCall::MethodCall(const Call& other) : Call(other), m_lambda(nullptr)
 {
-  setReceiver(Module::Definition::Null);
+  setReceiver(Designation::Null);
   QVariantMap aD = callData();
   aD.insert("arugments", QVariant());
   setCallData(aD);
@@ -44,7 +44,7 @@ MethodCall::MethodCall(const Call& other) : Call(other), m_lambda(nullptr)
 
 MethodCall::MethodCall(const Message& other) : Call(other), m_lambda(nullptr)
 {
-  setReceiver(Module::Definition::Null);
+  setReceiver(Designation::Null);
   QVariantMap aD = callData();
   aD.insert("arugments", QVariant());
   setCallData(aD);

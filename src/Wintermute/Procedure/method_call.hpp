@@ -22,6 +22,7 @@
 
 #include <functional>
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/Designation>
 
 namespace Wintermute
 {
@@ -40,7 +41,7 @@ class ReplyCall;
  *  \code{.cpp}
  *  #include <Wintermute/Procedure/MethodCall>
  *  #include <Wintermute/Procedure/Dispatcher>
- *  #include <Wintermute/Procedure/Module>
+ *  #include <Wintermute/Procedure/Designation>
  *
  *  using Wintermute::Procedure::MethodCall;
  *  using Wintermute::Procedure::Dispatcher;
@@ -49,10 +50,10 @@ class ReplyCall;
  *  int main()
  *  {
  *    // Define the module that should be reached.
- *    Module::Definition aDef("in.wintermute.heartbeat","monitor");
+ *    Designation designation("in.wintermute.heartbeat","monitor");
  *
  *    // Define the call to use to invoke upon said module.
- *    MethodCall aCall("ping", aDef, QVariantList());
+ *    MethodCall aCall("ping", designation, QVariantList());
  *
  *    // Dispatch the call.
  *    Dispatcher::queueCall(aCall);
@@ -72,7 +73,7 @@ class MethodCall : public Call
      * as arguments.
      */
     explicit MethodCall(const QString& methodName,
-                        const Module::Definition& definition, const QVariant& arguments);
+                        const Designation& definition, const QVariant& arguments);
 
     ///< @brief Reimplemented copy constructor.
     MethodCall(const Call& other);

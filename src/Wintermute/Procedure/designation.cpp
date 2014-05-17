@@ -21,97 +21,33 @@
 #include <qjson/serializer.h>
 #include <qjson/parser.h>
 #include "Wintermute/logging.hpp"
-#include "Wintermute/Procedure/module.hpp"
+#include "Wintermute/Procedure/designation.hpp"
 
 using QJson::Serializer;
-using Wintermute::Procedure::Module;
+using Wintermute::Procedure::Designation;
 
-const Module::Definition Module::Definition::Null =
-  Module::Definition::compose(QString::null, QString::null, -1);
+const Designation Designation::Null =
+  Designation::compose(QString::null, QString::null, 0);
 
-const int Module::Definition::MetaTypeId =
-  qRegisterMetaType<Module::Definition>("Wintermute::Procedure::Module::Definition");
+const int Designation::MetaTypeId =
+  qRegisterMetaType<Designation>("Wintermute::Procedure::Designation");
 
-Module::Definition::Definition(const quint64& a_pid, const QString& a_package,
-                               const QString& a_domain) : pid (a_pid), package(a_package), domain(a_domain)
+Designation::Designation(const quint64& a_pid, const QString& a_package,
+                         const QString& a_domain) : pid (a_pid), package(a_package), domain(a_domain)
 {
 }
 
-Module::Definition::Definition() : pid(0), package(QString::null),
+Designation::Designation() : pid(0), package(QString::null),
   domain(QString::null)
 {
 }
 
 bool
-Module::Definition::operator==(const Definition& definition) const
+Designation::operator==(const Designation& designation) const
 {
-  if ( definition.package != this->package ) {
+  if ( designation.package != this->package ) {
     return false;
   }
-
-  if ( definition.domain  != this->domain ) {
-    return false;
-  }
-
-  return true;
-}
-
-void
-Module::Definition::operator=(const Definition& definition)
-{
-  package = definition.package;
-  domain = definition.domain;
-  pid = definition.pid;
-}
-
-// TODO Error checking on the JSON.
-Module::Definition::operator QString() const
-{
-  Q_ASSERT ( valid() );
-  QVariantMap params;
-  Serializer jsonSerializer;
-  jsonSerializer.setIndentMode(QJson::IndentCompact);
-  params.insert("pid", pid);
-  params.insert("package", package);
-  params.insert("domain", domain);
-  return jsonSerializer.serialize(params, 0);
-}
-
-Module::Definition
-Module::Definition::fromString( const QString& string )
-{
-  Q_ASSERT ( string.isNull() );
-  Q_ASSERT ( string.isEmpty() );
-  QVariantMap map;
-  QJson::Parser jsonParser;
-  map = jsonParser.parse(string.toLocal8Bit(), 0).toMap();
-  Q_ASSERT ( jsonParser.errorString().isEmpty() );
-  Q_ASSERT ( jsonParser.errorString().isNull() );
-
-  if (!jsonParser.errorString().isNull()) {
-    return Definition::Null;
-  }
-
-  return compose(map.value("domain").toString(),
-                 map.value("package").toString(),
-                 map.value("pid").toUInt());
-}
-
-Module::Definition
-Module::Definition::compose(const QString& domain, const QString& package,
-                            const quint64& pid)
-{
-  Definition aDef(pid, package, domain);
-  return aDef;
-}
-
-bool
-Module::Definition::valid() const
-{
-  Q_ASSERT ( !domain.isEmpty() );
-  Q_ASSERT ( !package.isEmpty() );
-  Q_ASSERT ( !domain.isNull() );
-  Q_ASSERT ( !package.isNull() );
 
   if ( package.isNull() ) {
     return false;
@@ -132,8 +68,77 @@ Module::Definition::valid() const
   return true;
 }
 
-uint
-qHash(const Module::Definition& definition)
+bool
+Designation::operator!=(const Designation& designation) const
 {
-  return qHash(static_cast<const QString>(definition));
+  return !(*this == designation);
+}
+
+void
+Designation::operator=(const Designation& designation)
+{
+  package = designation.package;
+  domain = designation.domain;
+  pid = designation.pid;
+  qDebug() << "Transferred" << designation.package << "~" << package
+           << ";" << designation.domain << "~" << domain
+           << ";" << designation.pid << "~" << pid;
+}
+
+// FIXME: Error checking on the JSON.
+Designation::operator QString() const
+{
+  Q_ASSERT ( valid() );
+  QVariantMap params;
+  Serializer jsonSerializer;
+  jsonSerializer.setIndentMode(QJson::IndentCompact);
+  params.insert("pid", pid);
+  params.insert("package", package);
+  params.insert("domain", domain);
+  return jsonSerializer.serialize(params, 0);
+}
+
+Designation
+Designation::fromString( const QString& string )
+{
+  Q_ASSERT ( string.isNull() );
+  Q_ASSERT ( string.isEmpty() );
+  QVariantMap map;
+  QJson::Parser jsonParser;
+  map = jsonParser.parse(string.toLocal8Bit(), 0).toMap();
+  Q_ASSERT ( jsonParser.errorString().isEmpty() );
+  Q_ASSERT ( jsonParser.errorString().isNull() );
+
+  if (!jsonParser.errorString().isNull()) {
+    return Designation::Null;
+  }
+
+  return compose(map.value("domain").toString(),
+                 map.value("package").toString(),
+                 map.value("pid").toUInt());
+}
+
+Designation
+Designation::compose(const QString& domain, const QString& package,
+                     const quint64& pid)
+{
+  Designation aDef(pid, package, domain);
+  return aDef;
+}
+
+bool
+Designation::isNull() const
+{
+  return *this == Designation::Null;
+}
+
+bool
+Designation::valid() const
+{
+  Q_ASSERT ( domain.isEmpty() == false );
+  Q_ASSERT ( package.isEmpty() == false );
+  Q_ASSERT ( domain.isNull() == false );
+  Q_ASSERT ( package.isNull() == false );
+  return !domain.isEmpty() && !domain.isNull() &&
+         !package.isEmpty() && !package.isNull();
 }

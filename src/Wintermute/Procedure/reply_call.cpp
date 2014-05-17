@@ -17,7 +17,6 @@
  **/
 
 #include "Wintermute/private/Procedure/message.hpp"
-#include "Wintermute/Procedure/method_call.hpp"
 #include "Wintermute/Procedure/reply_call.hpp"
 
 using Wintermute::Procedure::Call;
@@ -25,19 +24,22 @@ using Wintermute::Procedure::ReplyCall;
 using Wintermute::Procedure::MethodCall;
 
 ReplyCall::ReplyCall( const MethodCall& call, const QVariant& response ) :
-  Call ( call.name() ), m_methodCall (call)
+  Call ( call.name() ), m_methodCall ( call )
 {
-  /// @todo Get an identifier from MethodCall.
-  ///// @todo Get an identifier from MethodCall.
   QVariantMap replyMap;
-  replyMap.insert("value", response);
   replyMap.insert("call", QVariant());
+  replyMap.insert("value", response);
   d->dataMap.insert("reply", replyMap);
   setReceiver(call.sendingModule());
 }
 
+ReplyCall::ReplyCall( const ReplyCall& other ) : Call ( other ),
+  m_methodCall ( other.m_methodCall )
+{
+}
+
 ReplyCall::ReplyCall( const Call& other ) : Call ( other ),
-  m_methodCall ( Call::Null )
+  m_methodCall( Message() )
 {
 }
 

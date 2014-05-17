@@ -21,28 +21,31 @@
 #ifndef WINTERMUTE_PROCEDURE_DESIGNATION_HPP
 #define WINTERMUTE_PROCEDURE_DESIGNATION_HPP
 
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+
 namespace Wintermute
 {
 namespace Procedure
 {
 struct Designation {
-  quint64 pid = 0; ///< @brief The PID at which a Module resides.
-  QString package = QString::null; ///< The package where the Module resides.
-  QString domain = QString::null; ///< The domain where the Module resides.
+  quint64 pid; ///< The PID at which a Module resides.
+  QString package; ///< The package where the Module resides.
+  QString domain; ///< The domain where the Module resides.
 
-  static const Definition Null; ///< @brief Helper field for null types.
+  static const Designation Null; ///< @brief Helper field for null types.
   static const int MetaTypeId; ///< @internal
 
   /**
-   * @brief Creates a new Definition
+   * @brief Creates a new Designation
    * @param[in] quint64 The PID to use.
    * @param[in] QString The package of the module.
    * @param[in] QString The domain of the module.
    */
-  explicit Definition(const quint64&, const QString& package,
-                      const QString& domain);
+  explicit Designation(const quint64&, const QString& package,
+                       const QString& domain);
 
-  Definition(); ///< @brief Null constructor.
+  Designation(); ///< @brief Null constructor.
 
   /**
    * @brief Determines if this is a valid definition.
@@ -54,47 +57,72 @@ struct Designation {
   bool valid() const;
 
   /**
-   * @brief Casts this Definition into a QString.
-   * @retval A QString that can be used to represent this Definition.
+   * @brief Determines if this is a null definition.
+   * @retval boolean Whether or not this definition is null.
+   */
+  bool isNull() const;
+
+  /**
+   * @brief Casts this Designation into a QString.
+   * @retval A QString that can be used to represent this Designation.
    */
   operator QString() const;
 
   /**
    * @brief Equality operator.
-   * @param[in] Definition definition.
-   * @retval Determines if the provided Definition is equal to this
-   *         Definition.
+   * @param[in] Designation definition.
+   * @retval Determines if the provided Designation is equal to this
+   *         Designation.
    */
-  bool operator==(const Definition& definition) const;
+  bool operator==(const Designation& definition) const;
+
+  /**
+   * @brief Inequality operator.
+   * @param[in] Designation definition.
+   * @retval Determines if the provided Designation is not equal to this
+   *         Designation.
+   */
+  bool operator!=(const Designation& definition) const;
+
 
   /**
    * @brief Assignment operator.
-   * @param[in] Definition definition.
+   * @param[in] Designation definition.
    */
-  void operator=(const Definition& definition);
+  void operator=(const Designation& definition);
 
   /**
-   * @brief Converts a JSON string into a Definition.
+   * @brief Converts a JSON string into a Designation.
    * @param[in] QString The JSON data to be used.
-   * @retval Definition The definition to be created.
+   * @retval Designation The definition to be created.
    */
-  static Definition fromString(const QString& string);
+  static Designation fromString(const QString& string);
 
   /**
-   * @brief Creates a new, valid Definition.
+   * @brief Creates a new, valid Designation.
    * @param[in] QString The domain of the definition.
    * @param[in] QString The package of the definition.
    * @param[in] quint64 The PID of the definition.
-   * @retval Definition The new Definition, when successful.
-   * @retval Definition::Null A null, invalid Definition if invalid
+   * @retval Designation The new Designation, when successful.
+   * @retval Designation::Null A null, invalid Designation if invalid
    * parameters are used.
    */
-  static Definition compose(const QString& domain, const QString& package,
-                            const quint64& pid = 0);
+  static Designation compose(const QString& domain, const QString& package,
+                             const quint64& pid = 0);
 };
 }
 }
 
-#endif
+///< @internal Adds Designation as a Qt meta-type.
+Q_DECLARE_METATYPE(Wintermute::Procedure::Designation)
+
+///< @internal Output stream handler for Designation.
+QDataStream& operator <<(QDataStream& ,
+                         const Wintermute::Procedure::Designation& );
+
+///< @internal Input stream handler for Designation.
+QDataStream& operator >>(QDataStream& ,
+                         Wintermute::Procedure::Designation& );
+
 
 #endif

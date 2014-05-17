@@ -19,6 +19,7 @@
 #ifndef WINTERMUTE_PROCEDURE_REPLY_CALL_HPP
 #define WINTERMUTE_PROCEDURE_REPLY_CALL_HPP
 #include <Wintermute/Procedure/Call>
+#include <Wintermute/Procedure/MethodCall>
 
 namespace Wintermute
 {
@@ -33,15 +34,19 @@ class MethodCall;
 class ReplyCall : public Call
 {
     friend class MethodCall;
-    const MethodCall& m_methodCall;
+    MethodCall m_methodCall;
 
   protected:
-    ReplyCall ( const MethodCall& methodCall, const QVariant& response );
+    ///< @brief Primary constructor.
+    explicit ReplyCall ( const MethodCall& methodCall, const QVariant& response );
 
   public:
-    virtual ~ReplyCall(); ///< @brief Destructor.
+    ///< @brief Destructor.
+    virtual ~ReplyCall();
     ///< @brief Copy constructor.
     ReplyCall( const Call& other );
+    ///< @brief Copy constructor.
+    ReplyCall( const ReplyCall& other );
 
     /**
      * @brief Obtains the response provided by the MethodCall.

@@ -29,7 +29,7 @@
 #include <QtCore/QMetaType>
 #include <QtCore/QDataStream>
 #include <QtCore/QVariantMap>
-#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Designation>
 
 namespace Wintermute
 {
@@ -39,6 +39,12 @@ class Message;
 }
 }
 
+/* @internal
+ * These function signatures are here because in order to give them access to
+ * the methods that they need for serialization; they have to be declared as
+ * friends. The easiest way to do that while ensuring that they remain globals
+ * is as shown.
+ */
 QDataStream& operator>>(QDataStream&, Wintermute::Procedure::Message& );
 QDataStream& operator<<(QDataStream&, const Wintermute::Procedure::Message& );
 
@@ -65,9 +71,9 @@ class Message
     friend QDataStream& ::operator<<(QDataStream&, const Message& );
 
   public:
-    Message(); /** @brief Creates an empty Message. */
-    Message(const Message& other); /** @brief Copies an existing Message. */
-    virtual ~Message(); /** @brief Deletes this Message. */
+    Message(); ///< @brief Creates an empty Message.
+    Message(const Message& other); ///< @brief Copies an existing Message.
+    virtual ~Message(); ///< @brief Deletes this Message.
 
     /**
      * @brief Converts this Message into a QVariant.
@@ -121,13 +127,13 @@ class Message
      * @brief Obtains the module name that's sending this message.
      * @retval QString The qualified module name that's sending this message.
      */
-    const Module::Definition& sendingModule() const;
+    const Designation& sendingModule() const;
 
     /**
      * @brief Obtains the module name that's receiving this message.
      * @retval QString The qualified module name that's receiving this message.
      */
-    const Module::Definition& receivingModule() const;
+    const Designation& receivingModule() const;
 
     /**
      * @brief Determines if this message is local to this process.
@@ -154,12 +160,12 @@ class Message
      * @brief Sets the sender information with the new provided value.
      * @param[in] The new value to update the sender with.
      */
-    void setSender ( const Module::Definition& newSenderData );
+    void setSender ( const Designation& newSenderData );
     /**
      * @brief Sets the receiver information with the new provided value.
      * @param[in] The new value to update the receiver with.
      */
-    void setReceiver ( const Module::Definition& newReceiverData );
+    void setReceiver ( const Designation& newReceiverData );
     /**
      * @brief Sets the free-form data with the new provided value.
      * @param[in] The new value to update the data with.

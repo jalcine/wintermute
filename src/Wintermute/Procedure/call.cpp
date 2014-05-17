@@ -25,12 +25,10 @@ using Wintermute::Procedure::Call;
 using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Module;
 
-const Call Call::Null("");
-
 Call::Call(const QString& name) : Message()
 {
   QVariantMap initialCallMap;
-  initialCallMap.insert("name",name);
+  initialCallMap.insert("name", name);
   setCallData(initialCallMap);
 }
 
@@ -66,7 +64,9 @@ Call::setCallData(const QVariantMap& newData)
 bool
 Call::valid() const
 {
-  // If it's not valid upstream or we don't exist, forget it.
+  Q_ASSERT ( Message::valid() == true );
+  Q_ASSERT ( d->dataMap.contains("call") == true );
+
   if (!Message::valid()) {
     return false;
   }
@@ -76,6 +76,8 @@ Call::valid() const
   }
 
   QVariant callVariant = d->dataMap.value("call");
+  Q_ASSERT(callVariant.isNull() == false);
+  Q_ASSERT(callVariant.isValid() == true);
 
   if (callVariant.isNull()) {
     return false;
@@ -96,8 +98,8 @@ QVariantMap
 Call::callData() const
 {
   QVariant callData = d->dataMap.value("call");
-  Q_ASSERT ( callData.isValid() );
-  Q_ASSERT ( !callData.isNull() );
+  Q_ASSERT ( callData.isValid() == true );
+  Q_ASSERT ( callData.isNull() == false );
   return callData.value<QVariantMap>();
 }
 
