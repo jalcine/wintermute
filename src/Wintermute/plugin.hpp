@@ -19,7 +19,7 @@
 
 /**
  * @headerfile Wintermute/plugin.hpp <Wintermute/Plugin>
- * @brief      Definition of Wintermute::Plugin class.
+ * @brief      Declaration of Wintermute::Plugin class.
  */
 
 #ifndef WINTERMUTE_PLUGIN_HPP
@@ -38,7 +38,7 @@ namespace Wintermute
 class PluginPrivate;
 
 /**
- * @brief An abstract definition of a %Plugin in Wintermute.
+ * @brief An abstract designation of a %Plugin in Wintermute.
  * @sa    Wintermute::Factory
  * @sa    Wintermute::PluginProcess
  *

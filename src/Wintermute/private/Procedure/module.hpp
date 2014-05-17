@@ -46,7 +46,7 @@ public:
     wtrace(q_ptr, "Have yet to set a designation.");
   }
 
-  void setDefinition(const Designation& a_designation)
+  void setDesignation(const Designation& a_designation)
   {
     wtrace ( q_ptr, QString("Setting up...") );
     const bool isDefTaken = ModulePrivate::modules.contains(a_designation);

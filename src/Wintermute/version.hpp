@@ -18,7 +18,7 @@
  **/
 /**
  * @headerfile Wintermute/version.hpp <Wintermute/Version>
- * @brief      Definition of Wintermute::Version struct.
+ * @brief      Declaration of Wintermute::Version struct.
  */
 
 #ifndef WINTERMUTE_VERSION_HPP

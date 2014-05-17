@@ -18,7 +18,7 @@
  **/
 /**
  * @file  Wintermute/Procedure/message.hpp <Wintermute/Procedure/Message>
- * @brief Definition of `Wintermute::Procedure::Message`.
+ * @brief Declaration of `Wintermute::Procedure::Message`.
  */
 
 #ifndef WINTERMUTE_PROCEDURE_MESSAGE_HPP

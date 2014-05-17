@@ -118,16 +118,7 @@ Message::valid() const
 bool
 Message::isLocal() const
 {
-  const qint64 appId = QCoreApplication::applicationPid(),
-               recvId = d->receiver.pid, sendId = d->sender.pid;
-  Q_ASSERT ( sendId == appId );
-  Q_ASSERT ( appId != recvId || recvId == 0);
-
-  if ( sendId == appId && (appId != recvId || recvId == 0) ) {
-    return true;
-  }
-
-  return false;
+  return d->sender.isLocal();
 }
 
 const Designation&

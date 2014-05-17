@@ -30,7 +30,7 @@ MonitorModule::MonitorModule( Heartbeat::Plugin* plugin ) :
 {
   Q_D ( MonitorModule );
   winfo (this, "Getting ready to listen to the heartbeat pulse.");
-  setDefinition(WINTERMUTE_HEARTBEAT_DOMAIN, "monitor");
+  setDesignation(WINTERMUTE_HEARTBEAT_DOMAIN, "monitor");
   d->mountCalls();
   d->killOtherMonitors();
 }

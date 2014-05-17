@@ -48,19 +48,25 @@ struct Designation {
   Designation(); ///< @brief Null constructor.
 
   /**
-   * @brief Determines if this is a valid definition.
-   * @retval boolean Whether or not this definition is valid.
+   * @brief Determines if this is a valid designation.
+   * @retval boolean Whether or not this designation is valid.
    *
-   * Checks if there's a value for the package and domain of the definition.
+   * Checks if there's a value for the package and domain of the designation.
    * @note This will return true even if the PID is zero.
    */
   bool valid() const;
 
   /**
-   * @brief Determines if this is a null definition.
-   * @retval boolean Whether or not this definition is null.
+   * @brief Determines if this is a null designation.
+   * @retval boolean Whether or not this designation is null.
    */
   bool isNull() const;
+
+  /**
+   * @brief Determines if this is a local designation.
+   * @retval boolean Whether or not this designation is local.
+   */
+  bool isLocal() const;
 
   /**
    * @brief Casts this Designation into a QString.
@@ -70,39 +76,39 @@ struct Designation {
 
   /**
    * @brief Equality operator.
-   * @param[in] Designation definition.
+   * @param[in] Designation designation.
    * @retval Determines if the provided Designation is equal to this
    *         Designation.
    */
-  bool operator==(const Designation& definition) const;
+  bool operator==(const Designation& designation) const;
 
   /**
    * @brief Inequality operator.
-   * @param[in] Designation definition.
+   * @param[in] Designation designation.
    * @retval Determines if the provided Designation is not equal to this
    *         Designation.
    */
-  bool operator!=(const Designation& definition) const;
+  bool operator!=(const Designation& designation) const;
 
 
   /**
    * @brief Assignment operator.
-   * @param[in] Designation definition.
+   * @param[in] Designation designation.
    */
-  void operator=(const Designation& definition);
+  void operator=(const Designation& designation);
 
   /**
    * @brief Converts a JSON string into a Designation.
    * @param[in] QString The JSON data to be used.
-   * @retval Designation The definition to be created.
+   * @retval Designation The designation to be created.
    */
   static Designation fromString(const QString& string);
 
   /**
    * @brief Creates a new, valid Designation.
-   * @param[in] QString The domain of the definition.
-   * @param[in] QString The package of the definition.
-   * @param[in] quint64 The PID of the definition.
+   * @param[in] QString The domain of the designation.
+   * @param[in] QString The package of the designation.
+   * @param[in] quint64 The PID of the designation.
    * @retval Designation The new Designation, when successful.
    * @retval Designation::Null A null, invalid Designation if invalid
    * parameters are used.

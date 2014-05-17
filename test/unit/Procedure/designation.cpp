@@ -68,9 +68,14 @@ class ModuleDefinitionUnitTest : public QObject
       QVERIFY(dsg1 != dsg3);
     }
 
+    Q_SLOT void checkInlocality() {
+      Designation dsg1 = Designation::compose("me.jalcine", "testing", QCoreApplication::applicationPid() + 4);
+      QVERIFY(dsg1.isLocal() == false);
+    }
+
     Q_SLOT void checkLocality() {
-      // FIXME: Test locality.
-      // FIXME: Test unlocality.
+      Designation dsg1 = Designation::compose("me.jalcine", "testing", QCoreApplication::applicationPid());
+      QVERIFY(dsg1.isLocal() == true);
     }
 
   public:

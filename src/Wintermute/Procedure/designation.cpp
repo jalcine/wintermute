@@ -17,6 +17,7 @@
  * @endif
  **/
 
+#include <QtCore/QCoreApplication>
 #include <QtCore/QStringList>
 #include <qjson/serializer.h>
 #include <qjson/parser.h>
@@ -130,6 +131,12 @@ bool
 Designation::isNull() const
 {
   return *this == Designation::Null;
+}
+
+bool
+Designation::isLocal() const
+{
+  return pid == (quint64) QCoreApplication::applicationPid();
 }
 
 bool

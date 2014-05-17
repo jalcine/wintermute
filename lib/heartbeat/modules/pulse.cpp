@@ -34,7 +34,7 @@ PulseModule::PulseModule( Heartbeat::Plugin* plugin ) :
   Module ( plugin ), d_ptr ( new PulseModulePrivate(this) )
 {
   Q_D ( PulseModule );
-  setDefinition(WINTERMUTE_HEARTBEAT_DOMAIN, "pulse");
+  setDesignation(WINTERMUTE_HEARTBEAT_DOMAIN, "pulse");
   d->mountCalls();
   wtrace (this, "Ready to beat.");
 }
@@ -75,10 +75,10 @@ PulseModule::pulse( PulseType type )
 {
   Q_D ( PulseModule );
   d->timer.stop();
-  Module::Definition monitorDef = Module::Definition::compose(
-                                    WINTERMUTE_HEARTBEAT_DOMAIN, "monitor", 0);
+  Procedure::Designation monitorDef = Procedure::Designation::compose(
+                                        WINTERMUTE_HEARTBEAT_DOMAIN, "monitor", 0);
   MethodCall theCall("record", monitorDef, QVariantList() << d->count++ << type );
-  theCall.setSender(definition());
+  theCall.setSender(designation());
   theCall.setCallback ( [&] ( QVariant result ) -> void {
     // @TODO Get the ping stashed as properly recieved (record into monitor?)
     winfo ( this, QString("IS IT REAL?") + result.toString() );

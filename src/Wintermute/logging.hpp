@@ -19,7 +19,7 @@
 
 /**
  * @headerfile Wintermute/logging.hpp <Wintermute/Logging>
- * @brief      Definition of Wintermute::Logging class.
+ * @brief      Declaration of Wintermute::Logging class.
  */
 
 #ifndef WINTERMUTE_LOGGING_HPP

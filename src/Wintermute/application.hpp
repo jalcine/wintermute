@@ -18,7 +18,7 @@
  **/
 /**
  * @headerfile Wintermute/application.hpp <Wintermute/Application>
- * @brief      Definition of Wintermute::Application class.
+ * @brief      Declaration of Wintermute::Application class.
  */
 
 #ifndef WINTERMUTE_APPLICATION_HPP

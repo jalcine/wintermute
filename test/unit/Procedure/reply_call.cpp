@@ -36,6 +36,8 @@ class TestReplyCall : public ReplyCall
   public:
     TestReplyCall(const MethodCall& m, const QVariant& v = QVariant()) :
       ReplyCall(m, v) {}
+
+    using Message::setSender;
 };
 
 /**
@@ -59,15 +61,16 @@ class ReplyCallUnitTest : public QObject
       localMethodCall->setSender(localSenderDef);
       Q_ASSERT ( localMethodCall->valid() == true );
       replyCall = new TestReplyCall(*localMethodCall, QVariant());
+      replyCall->setSender(localSenderDef);
       Q_ASSERT ( replyCall->valid() == true );
     }
 
     void setWithRemoteMethodCall() {
       cleanup();
       localReceiverDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
-                                              qrand());
+                                              QCoreApplication::applicationPid());
       remoteSenderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
-                                             QCoreApplication::applicationPid());
+                                             qrand());
       Q_ASSERT ( remoteSenderDef.valid() == true );
       Q_ASSERT ( localReceiverDef.valid() == true );
       remoteMethodCall = new MethodCall(REMOTE_METHOD_NAME, localReceiverDef,
@@ -75,6 +78,7 @@ class ReplyCallUnitTest : public QObject
       remoteMethodCall->setSender(remoteSenderDef);
       Q_ASSERT ( remoteMethodCall->valid() == true );
       replyCall = new TestReplyCall(*remoteMethodCall, QVariant());
+      replyCall->setSender(remoteSenderDef);
       Q_ASSERT ( replyCall->valid() == true );
     }
 

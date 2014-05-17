@@ -18,7 +18,7 @@
  **/
 /**
  * @file  Wintermute/Procedure/module.hpp <Wintermute/Procedure/Module>
- * @brief Designation of `Wintermute::Procedure::Module`.
+ * @brief Declaration of `Wintermute::Procedure::Module`.
  */
 
 #ifndef WINTERMUTE_PROCEDURE_MODULE_HPP
@@ -41,7 +41,7 @@ class ModulePrivate;
 ///< @brief Defines a pointer-controlled list.
 typedef QList<QPointer<Module>> ModuleList;
 
-///< @brief Represents a definition-to-module mapper.
+///< @brief Represents a designation-to-module mapper.
 typedef QHash<Designation, QPointer<Module>> ModuleHash;
 
 /**
@@ -104,7 +104,7 @@ class Module : public QObject
     explicit Module ( QObject* parent = wntrApp );
 
     /**
-     * @brief Sets the definition of this Module.
+     * @brief Sets the designation of this Module.
      * @param[in] QString The domain of this module.
      * @param[in] QString The package of this module.
      * @param[in] quint64 The PID of this module..
@@ -113,8 +113,8 @@ class Module : public QObject
                         const quint64& pid = QCoreApplication::applicationPid());
 
     /**
-     * @brief Sets the definition of this Module.
-     * @param[in] Module::Designation The definition to use.
+     * @brief Sets the designation of this Module.
+     * @param[in] Module::Designation The designation to use.
      */
     void setDesignation(const Designation& aDef);
 

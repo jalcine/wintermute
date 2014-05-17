@@ -66,14 +66,14 @@ class MethodCall : public Call
     /**
      * @brief Crafts a new MethodCall.
      * @param[in] QString The name of the method.
-     * @param[in] Module::Definition The definition of the module.
+     * @param[in] Module::Designation The designation of the module.
      * @param[in] QVariant The variant argument sent with this method.
      *
-     * Invokes method 'methodName' on module 'definition' with 'arguments'
+     * Invokes method 'methodName' on module 'designation' with 'arguments'
      * as arguments.
      */
     explicit MethodCall(const QString& methodName,
-                        const Designation& definition, const QVariant& arguments);
+                        const Designation& designation, const QVariant& arguments);
 
     ///< @brief Reimplemented copy constructor.
     MethodCall(const Call& other);

@@ -19,7 +19,7 @@
 
 /**
  * @headerfile Wintermute/factory.hpp <Wintermute/Factory>
- * @brief      Definition of Wintermute::Factory class.
+ * @brief      Declaration of Wintermute::Factory class.
  */
 
 #ifndef WINTERMUTE_FACTORY_HPP
