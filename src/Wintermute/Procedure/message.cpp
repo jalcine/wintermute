@@ -159,7 +159,6 @@ Message::setSender( const Designation& newSender )
   Q_ASSERT ( newSender.isNull() == false );
   Q_ASSERT ( newSender.valid() == true );
   d->sender = newSender;
-  qDebug() << "Set" << newSender << "to this message.";
 }
 
 void

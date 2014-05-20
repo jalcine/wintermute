@@ -81,9 +81,6 @@ Designation::operator=(const Designation& designation)
   package = designation.package;
   domain = designation.domain;
   pid = designation.pid;
-  qDebug() << "Transferred" << designation.package << "~" << package
-           << ";" << designation.domain << "~" << domain
-           << ";" << designation.pid << "~" << pid;
 }
 
 // FIXME: Error checking on the JSON.
