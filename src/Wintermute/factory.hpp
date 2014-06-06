@@ -62,7 +62,7 @@ class PluginProcess;
  * [unloading]: @ref Factory::unloadPlugin
  * [auto-loading]: @ref Factory::autoloadPlugins
  */
-/// @bug Remove the need to use files to load plug-in information.
+///< @bug Remove the need to use files to load plug-in information.
 class Factory : public QObject
 {
 	friend class Application;
@@ -81,13 +81,13 @@ public:
   typedef QPointer<Factory> Ptr; ///< Pointer guard for Factory.
 	virtual ~Factory();
 
-	/**
+	/*
    * @brief Obtains the singleton instance of Factory.
    * @retval Factory* A pointer to the singleton instance.
 	 */
 	static Factory::Ptr instance();
 
-	/**
+	/*
 	 * @brief A list of all of the plugins that Wintermute can load.
    * @retval QStringList A list of the names of all of the known plugins.
    * @deprecated
@@ -96,13 +96,13 @@ public:
 	 */
 	QStringList availablePlugins() const;
 
-	/**
+	/*
 	 * @brief Obtains a list of actively loaded plugins in this process.
    * @retval QStringList A list of the names of the currently loaded plugins.
 	 */
 	QStringList activePlugins() const;
 
-	/**
+	/*
 	 * Obtains the specified plugin.
 	 * @param[in] name The name of the plugin in question.
    * @retval Plugin* A pointer to the plugin.
@@ -110,7 +110,7 @@ public:
 	 */
   Plugin::Ptr plugin ( const QString& name ) const;
 
-	/**
+	/*
 	 * @brief Loads the specified plugin into this Wintermute process.
 	 * @param[in] name The name of the plug-in.
    * @retval boolean Whether or not the plugin was loaded.
@@ -118,7 +118,7 @@ public:
 	 */
 	bool loadPlugin ( const QString& name );
 
-	/**
+	/*
 	 * @brief Unloads the specified plugin from this Wintermute process.
 	 * @param[in] name The name of the plug-in.
    * @retval boolean Whether or not the plugin was unloaded.
@@ -126,7 +126,7 @@ public:
 	 */
 	bool unloadPlugin ( const QString& name );
 
-	/**
+	/*
 	 * @brief Loads the specified plugin in a separate process.
 	 * @param[in] name The name of the plug-in.
    * @retval PluginProcess::Ptr A pointer to the newly created plugin process.
@@ -134,14 +134,14 @@ public:
 	 */
   PluginProcess::Ptr spawnPlugin ( const QString& name );
 
-	/**
+	/*
    * @brief Determines if the provided plug-in is loaded.
 	 * @param[in] plugin The name of the plugin in question.
    * @retval boolean Whether or not the plugin is loaded.
 	 */
 	bool isPluginLoaded ( const QString& plugin ) const;
 
-	/**
+	/*
    * @brief Loads the plugins corresponding to Wintermute's mode.
    * @retval boolean Whether or not this operation completely successfully.
    *
@@ -155,12 +155,13 @@ public:
 	 */
 	bool autoloadPlugins();
 
-	/**
+	/*
 	 * @brief  Unloads all of the active plugins in the process.
    * @retval boolean Whether or not this operation completely successfully.
    * @note Consider taking a output parameter to also provide error codes.
 	 */
 	bool unloadAllPlugins();
+
 private:
 	static Factory::Ptr self;
 };

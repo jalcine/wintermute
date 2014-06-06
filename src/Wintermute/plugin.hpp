@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -16,8 +16,7 @@
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  * @endif
  **/
-
-/**
+/*
  * @headerfile Wintermute/plugin.hpp <Wintermute/Plugin>
  * @brief      Declaration of Wintermute::Plugin class.
  */
@@ -37,7 +36,7 @@ namespace Wintermute
 {
 class PluginPrivate;
 
-/**
+/*
  * @brief An abstract designation of a %Plugin in Wintermute.
  * @sa    Wintermute::Factory
  * @sa    Wintermute::PluginProcess
@@ -45,77 +44,76 @@ class PluginPrivate;
  * The Plugin object is meant as a way to manage the highest of plug-ins
  * that can be mananged in the platform.
  */
-/// @note The most direct means of handling plugins is recommended to be 
-//        done through the Factory class.
-/// @note Move most of ABI determination in this class.
+/// @note The most direct means of handling plugins is recommended to be done through the Factory class.
+/// @bug  Move most of ABI determination in this class.
 class Plugin : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
   Q_DISABLE_COPY ( Plugin )
-	Q_DECLARE_PRIVATE ( Plugin )
-	QScopedPointer<PluginPrivate> d_ptr;
+  Q_DECLARE_PRIVATE ( Plugin )
+  QScopedPointer<PluginPrivate> d_ptr;
 
-  /** @brief Obtains the name of the plugin. */
-	Q_PROPERTY ( QString Name          READ name )
-  /** @brief Obtains the name of the version. */
-	Q_PROPERTY ( Version Version       READ version )
-  /** @brief Obtains the name of the system-required version. */
-	Q_PROPERTY ( Version SystemVersion READ systemVersion )
+  ///< Obtains the name of the plugin.
+  Q_PROPERTY ( QString Name          READ name )
+  ///< Obtains the name of the version.
+  Q_PROPERTY ( Version Version       READ version )
+  ///< Obtains the name of the system-required version.
+  Q_PROPERTY ( Version SystemVersion READ systemVersion )
 
   friend class Factory;
 
 protected:
-  /** @brief Default constructor for this plugin. */
-	explicit Plugin ( );
+  ///< Default constructor for this plugin.
+  explicit Plugin ( );
 
-  /** @brief Used to obtain the configuration for this plug-in. */
-	QSettings* configuration() const;
+  ///< Used to obtain the configuration for this plug-in.
+  QSettings* configuration() const;
 
 public:
   typedef QPointer<Plugin> Ptr; ///< Pointer type for Plugin.
-	virtual ~Plugin();
+  virtual ~Plugin();
 
-  /** @brief Signaled to be invoked when this plugin has started. */
-	Q_SIGNAL void started();
+  ///< Signaled to be invoked when this plugin has started.
+  Q_SIGNAL void started();
 
-  /** @brief Signaled to be invoked when this plugin has stopped. */
-	Q_SIGNAL void stopped();
+  ///< Signaled to be invoked when this plugin has stopped.
+  Q_SIGNAL void stopped();
 
-	/**
-	 * @brief Obtains the unique name of the plugin.
+  /*
+   * @brief Obtains the unique name of the plugin.
    * @retval QString The name of the plug-in.
-	 */
-	QString name() const;
+   */
+  QString name() const;
 
-	/**
-	 * @brief Obtains the versioning object for the plugin.
+  /*
+   * @brief Obtains the versioning object for the plugin.
    * @retval Version The current version of this plugin.
-	 */
-	Version version() const;
+   */
+  Version version() const;
 
-	/**
-	 * @brief Obtains the minimum running version of Wintermute required.
+  /*
+   * @brief Obtains the minimum running version of Wintermute required.
    * @retval Version The minimal version of Wintermute for this plugin.
-	 */
-	Version systemVersion() const;
+   */
+  Version systemVersion() const;
 
-	/**
-	 * @brief Determines if the plugin has been loaded.
+  /*
+   * @brief Determines if the plugin has been loaded.
    * @retval boolean Determines if the plugin's binary has been loaded.
-	 */
-	bool isLoaded() const;
+   */
+  bool isLoaded() const;
 
-	/**
-	 * @brief Defines the logic for the activation of the plugin.
+  /*
+   * @brief Defines the logic for the activation of the plugin.
    * @sa started()
-	 */
-	virtual void start() = 0;
+   */
+  virtual void start() = 0;
 
-	/**
-	 * @brief Defines the logic for the deactivation of the plugin.
+  /*
+   * @brief Defines the logic for the deactivation of the plugin.
    * @sa stopped()
-	 */
-	virtual void stop() = 0;
+   */
+  virtual void stop() = 0;
 };
 
 typedef QList<Plugin::Ptr> PluginList;        ///< Represents a list of plugins.

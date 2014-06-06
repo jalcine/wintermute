@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -44,7 +44,7 @@ typedef QList<QPointer<Module>> ModuleList;
 ///< @brief Represents a designation-to-module mapper.
 typedef QHash<Designation, QPointer<Module>> ModuleHash;
 
-/**
+/*
  * @brief Represents a collection of related actions.
  * @see   Wintermute::Procedure::ModuleCall
  * @see   Wintermute::Procedure::MethodCall

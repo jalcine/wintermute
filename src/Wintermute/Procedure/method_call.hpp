@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -21,15 +21,18 @@
 #define WINTERMUTE_PROCEDURE_METHOD_CALL_HPP
 
 #include <functional>
-#include <Wintermute/Procedure/Call>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+#include <Wintermute/Procedure/Message>
 #include <Wintermute/Procedure/Designation>
+#include <Wintermute/Procedure/Call>
 
 namespace Wintermute
 {
 namespace Procedure
 {
 class ReplyCall;
-/**
+/*
  * @brief Basis for method invocation on remote modules.
  * @sa    Dispatcher::queueCall()
  *
@@ -63,42 +66,39 @@ class ReplyCall;
 class MethodCall : public Call
 {
   public:
-    /**
+    /*
      * @brief Crafts a new MethodCall.
      * @param[in] QString The name of the method.
-     * @param[in] Module::Designation The designation of the module.
+     * @param[in] Module::Designation The designation of the module whose
+		 *   method would be invoked.
      * @param[in] QVariant The variant argument sent with this method.
      *
      * Invokes method 'methodName' on module 'designation' with 'arguments'
      * as arguments.
      */
     explicit MethodCall(const QString& methodName,
-                        const Designation& designation, const QVariant& arguments);
+			const Designation& designation, const QVariant& arguments);
 
-    ///< @brief Reimplemented copy constructor.
-    MethodCall(const Call& other);
-
-    ///< @brief Reimplemented copy constructor.
-    MethodCall(const Message& other);
-
+    MethodCall(const Call& other); ///< @brief Reimplemented copy constructor.
+    MethodCall(const Message& other); ///< @brief Reimplemented copy constructor.
     virtual ~MethodCall(); ///< @brief Destructor.
 
     ///< @brief Signature for callback methods.
     typedef std::function<void (QVariant)> CallbackSignature;
 
-    /**
+    /*
      * @brief Determines if this is a valid MethodCall.
      * @retval boolean Whether or not this is a valid MethodCall.
      */
     virtual bool valid() const;
 
-    /**
+    /*
      * @brief Obtains the arguments used for this MethodCall.
      * @retval QVariant A variant value for this MethodCall.
      */
     QVariant arguments() const;
 
-    /**
+    /*
      * @brief Crafts a ReplyCall from this MethodCall.
      * @param[in] QVariant The value to send back.
      * @retval ReplyCall The ReplyCall to use to dispatch with.
@@ -121,7 +121,7 @@ class MethodCall : public Call
      * */
     ReplyCall craftReply(const QVariant& reply) const;
 
-    /**
+    /*
      * @brief Attaches a lambda signature to this MethodCall.
      * @param[in] CallbackSignature The lambda function to use as a
      *            callback.

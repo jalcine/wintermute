@@ -57,7 +57,7 @@ namespace Wintermute
     public:
     virtual ~Arguments();
 
-    /** @brief Provides a pointer to the active Arguments instance. */
+    ///< @brief Provides a pointer to the active Arguments instance.
     static Arguments* instance();
 
     /**

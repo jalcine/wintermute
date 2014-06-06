@@ -35,7 +35,7 @@ namespace Wintermute
 class PluginProcessPrivate;
 class Factory;
 
-/**
+/*
  * @brief Provides a means of controlling sub-plugins.
  * @sa    Factory::spawnPlugin(const QString&)
  *
@@ -54,19 +54,21 @@ class PluginProcess : public QObject
 public:
   typedef QPointer<PluginProcess> Ptr; ///< Pointer for PluginProcess.
 	virtual ~PluginProcess();            ///< Destructor.
-  /**
+  /*
    * @brief Obtains the name of the plugin running in the child process.
    * @retval QString The name of the child plugin.
    * @sa PluginProcess::pid()
    */
 	QString pluginName() const;
 
-  /**
+  /*
    * @brief Obtains the PID of the child process.
    * @retval Q_PID The platform-dependent implementation of the child plugin.
    * @sa PluginProcess::name()
    */
   Q_PID pid() const;
+
+  bool running() const; ///< Checks if the plugin is running.
 
 	Q_SLOT void start();      ///< Starts the child process.
 	Q_SLOT void stop();       ///< Stops the child process.

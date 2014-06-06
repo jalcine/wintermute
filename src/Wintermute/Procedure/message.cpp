@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -21,9 +21,9 @@
 #include <qjson/serializer.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QStringList>
-#include "Wintermute/Procedure/message.hpp"
 #include "Wintermute/Procedure/dispatcher.hpp"
 #include "Wintermute/private/Procedure/message.hpp"
+#include "Wintermute/Procedure/message.hpp"
 
 using Wintermute::Procedure::Message;
 using Wintermute::Procedure::Dispatcher;

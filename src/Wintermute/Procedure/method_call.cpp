@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0

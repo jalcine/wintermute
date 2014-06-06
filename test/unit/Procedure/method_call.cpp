@@ -1,0 +1,55 @@
+/*
+ * @author Jacky Alciné <me@jalcine.me>
+ * @copyright © 2014 Jacky Alciné <me@jalcine.me>
+ * @if 0
+ * Wintermute is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
+ * @endif
+ */
+
+#include <Wintermute/Procedure/MethodCall>
+#include <Wintermute/Procedure/Module>
+#include <Wintermute/Procedure/Designation>
+#include <WintermuteTestDriver>
+
+using Wintermute::Procedure::Message;
+using Wintermute::Procedure::MethodCall;
+using Wintermute::Procedure::Module;
+using Wintermute::Procedure::Designation;
+
+class MethodCallUnitTest : public QObject
+{
+    Q_OBJECT;
+    Designation senderDef;
+    Designation receiverDef;
+
+    Q_SLOT void init() { }
+
+    Q_SLOT void cleanup() { }
+
+    Q_SLOT void properlyRepresentsAMethodCall() {}
+
+    Q_SLOT void canBeInvoked() {}
+
+  public:
+    MethodCallUnitTest() : QObject() {
+      senderDef = Designation::compose(WINTERMUTE_DOMAIN, "testing",
+        QCoreApplication::applicationPid());
+      receiverDef = Designation::compose(WINTERMUTE_DOMAIN".remote", "testing");
+    }
+
+    virtual ~MethodCallUnitTest() { }
+};
+
+QTEST_APPLESS_MAIN ( MethodCallUnitTest )
+#include "method_call.moc"

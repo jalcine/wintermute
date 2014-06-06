@@ -1,4 +1,4 @@
-/* vim: set ft=cpp tw=78 */
+/* vim: set ft=cpp tw=78 fdl=0: */
 /*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
@@ -27,3 +27,13 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtTest/QtTest>
+#include <Wintermute/Globals>
+
+// Some defaults for skipping tests.
+#define SKIP_NOT_IMPLEMENTED QSKIP("This test has not yet been implemented.",SkipSingle);
+#define SKIP_PENDING_REFACTOR QSKIP("This test requires a refactor.", SkipSingle):
+
+// Flags to {en,dis}able testing.
+#define ARGUMENTS_REFACTOR
+#define FACTORY_REFACTOR
+#define PLUGIN_REFACTOR

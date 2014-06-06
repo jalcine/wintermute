@@ -43,7 +43,9 @@ Arguments::Arguments() : QObject ( Application::instance() ),
       this, SLOT ( optionFound ( const QString&, const QVariant& ) ) );
   connect ( d->args, SIGNAL ( parseError ( const QString& ) ),
       this, SLOT ( parseError ( const QString& ) ) );
-  d->args->parse();
+  if (!d->args->parse()) {
+    wwarn(this, "Had an issue parsing.");
+  }
 }
 
 Arguments*
@@ -106,8 +108,8 @@ void
 Arguments::parseError ( const QString& error )
 {
   Q_D ( Arguments );
-  werr ( this, QString (
-        "Unrecognized command-line arguments '%1'; working on defaults." ).
+  wwarn ( this, QString (
+        "Unrecognized command-line arguments '%1', inserting default option for safety." ).
       arg ( error ) );
   d->arguments.insert ("mode", "daemon");
 }

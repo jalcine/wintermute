@@ -1,5 +1,5 @@
-/**
- * vim: ft=cpp tw=78
+/// vim: ft=cpp tw=78
+/*
  * Copyright (C) 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify

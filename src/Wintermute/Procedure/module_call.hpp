@@ -1,5 +1,5 @@
-/**
- * vim: ft=cpp tw=78
+// vim: ft=cpp tw=78 fdl=0:
+/*
  * Copyright (C) 2011 - 2014 Jacky Alciné <me@jalcine.me>
  *
  * Wintermute is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ namespace Wintermute
 namespace Procedure
 {
 class Module;
-/**
+/*
  * @brief Allows the registration of a function into a module for invocation.
  * @sa Wintermute::Procedure::Module
  *

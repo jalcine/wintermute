@@ -16,13 +16,5 @@
 ### You should have received a copy of the GNU General Public License
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-option(WITH_TESTS "Incorporate the test suite for Wintermute." ON)
 
-if (WITH_TESTS)
-  set(ENABLE_TESTING ON)
-  include(WintermuteTesting)
-
-  # Add in subdirectories for testing.
-  add_subdirectory(unit)
-  add_subdirectory(lib/sample-plugin)
-endif()
+add_library(wintermute-sample-plugin SHARED sample-plugin.cpp)

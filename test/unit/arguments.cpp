@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2011, 2012, 2013, 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -24,7 +24,7 @@
 class TestArguments : public Wintermute::Arguments
 {
   Q_OBJECT;
-  public:
+public:
   TestArguments() : Arguments()
   {
   }
@@ -42,38 +42,68 @@ class TestArguments : public Wintermute::Arguments
 class ArgumentsUnitTest : public QObject
 {
   Q_OBJECT;
+  TestArguments* argParser;
 
   Q_SLOT void init()
   {
-  }
-
-  Q_SLOT void provideFlagOptions()
-  {
-    QSKIP("Not defined yet.", SkipSingle);
-  }
-
-  Q_SLOT void provideSwitchOptions()
-  {
-    QSKIP("Not defined yet.", SkipSingle);
-  }
-
-  Q_SLOT void provideSingleOptions()
-  {
-    QSKIP("Not defined yet.", SkipSingle);
-  }
-
-  Q_SLOT void provideMultiOptions()
-  {
-    QSKIP("Not defined yet.", SkipSingle);
-  }
-
-  Q_SLOT void reparseArguments()
-  {
-    QSKIP("Not defined yet.",SkipSingle);
+    argParser = nullptr;
   }
 
   Q_SLOT void cleanup()
   {
+    if (argParser || argParser != nullptr || argParser != 0)
+    {
+      delete argParser;
+      argParser = nullptr;
+    }
+  }
+
+  Q_SLOT void provideFlagOptions()
+  {
+#ifndef ARGUMENTS_REFACTOR
+    argParser->addFlag("foobar", "f", "This is a foobaring flag.");
+    argParser->provide(QStringList() << "--foobar");
+    QVERIFY(argParser->hasArgument("foobar"));
+    QVariant theArgument = argParser->argument("foobar");
+    QVERIFY(theArgument.toBool() == true);
+#else
+    SKIP_NOT_IMPLEMENTED
+#endif
+  }
+
+  Q_SLOT void provideSingleOptions()
+  {
+#ifndef ARGUMENTS_REFACTOR
+    argParser->addOption("foobar", "f", "This is a foobaring option.");
+    argParser->provide(QStringList() << "--foobar=karate");
+    QVERIFY(argParser->hasArgument("foobar"));
+    QVariant theArgument = argParser->argument("foobar");
+    QVERIFY(theArgument.toString() == QString("karate"));
+#else
+    SKIP_NOT_IMPLEMENTED
+#endif
+  }
+
+  Q_SLOT void provideMultiOptions()
+  {
+#ifndef ARGUMENTS_REFACTOR
+    QStringList values = QStringList() << "cookie", "jazz", "karate";
+    argParser->addOptionList("foobar", "f", "This is a foobaring option list.");
+    argParser->provide(QStringList() << QString("--foobar=") + values.join(","));
+    QVERIFY(argParser->hasArgument("foobar"));
+    QStringList theArgument = argParser->argument("foobar");
+    QVERIFY(theArgument == values); 
+#else
+    SKIP_NOT_IMPLEMENTED
+#endif
+  }
+
+  Q_SLOT void reparseArguments()
+  {
+#ifndef ARGUMENTS_REFACTOR
+#else
+    SKIP_NOT_IMPLEMENTED
+#endif
   }
 };
 

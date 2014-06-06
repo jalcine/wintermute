@@ -1,5 +1,5 @@
 ###############################################################################
-### Copyright (C) 2013 Jacky Alciné <me@jalcine.me>
+### Copyright (C) 2013, 2014 Jacky Alciné <me@jalcine.me>
 ###
 ### This file is part of Wintermute, the Extensible AI platform.
 ###
@@ -17,21 +17,20 @@
 ### along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
+wintermute_test_render ( TARGET version SOURCES version.cpp )
 wintermute_test_render ( TARGET arguments SOURCES arguments.cpp )
-wintermute_test_render ( TARGET event_filter SOURCES Events/message_filter.cpp )
-wintermute_test_render ( TARGET event_message SOURCES Events/message.cpp )
+
 wintermute_test_render ( TARGET factory SOURCES factory.cpp )
-wintermute_test_render ( TARGET logging SOURCES logging.cpp )
 wintermute_test_render ( TARGET plugin SOURCES plugin.cpp )
-wintermute_test_render ( TARGET plugin_process SOURCES plugin_process.cpp )
+
+wintermute_test_render ( TARGET procedure_designation SOURCES Procedure/designation.cpp )
+wintermute_test_render ( TARGET procedure_message SOURCES Procedure/message.cpp )
 wintermute_test_render ( TARGET procedure_call SOURCES Procedure/call.cpp )
 wintermute_test_render ( TARGET procedure_dispatcher SOURCES Procedure/dispatcher.cpp )
 wintermute_test_render ( TARGET procedure_lambda_call SOURCES Procedure/module_call.cpp )
-wintermute_test_render ( TARGET procedure_message SOURCES Procedure/message.cpp )
 wintermute_test_render ( TARGET procedure_method_call SOURCES Procedure/method_call.cpp )
-wintermute_test_render ( TARGET procedure_module SOURCES Procedure/module.cpp )
 wintermute_test_render ( TARGET procedure_module_call SOURCES Procedure/module_call.cpp )
-wintermute_test_render ( TARGET procedure_designation SOURCES Procedure/designation.cpp )
+
+wintermute_test_render ( TARGET procedure_module SOURCES Procedure/module.cpp )
 wintermute_test_render ( TARGET procedure_receiver SOURCES Procedure/receiver.cpp )
 wintermute_test_render ( TARGET procedure_reply_call SOURCES Procedure/reply_call.cpp )
-wintermute_test_render ( TARGET version SOURCES version.cpp )

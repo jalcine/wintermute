@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jacky Alciné <me@jalcine.me>
  * @copyright © 2014 Jacky Alciné <me@jalcine.me>
  * @if 0
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wintermute.  If not, see <http://www.gnu.org/licenses/>.
  * @endif
- **/
+ */
 
 #include <Wintermute/Procedure/Call>
 #include <Wintermute/Procedure/Module>

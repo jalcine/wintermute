@@ -83,7 +83,6 @@ Designation::operator=(const Designation& designation)
   pid = designation.pid;
 }
 
-// FIXME: Error checking on the JSON.
 Designation::operator QString() const
 {
   Q_ASSERT ( valid() );
@@ -93,7 +92,9 @@ Designation::operator QString() const
   params.insert("pid", pid);
   params.insert("package", package);
   params.insert("domain", domain);
-  return jsonSerializer.serialize(params, 0);
+  bool ok = true;
+  const QString theJson = jsonSerializer.serialize(params, &ok);
+  return ( ok ? theJson : QString::null );
 }
 
 Designation
