@@ -17,10 +17,25 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(Wintermute)
+PROJECT(WintermuteCoreLibrary)
 
-# TODO Import our CMake directory to allow for recycling of common tooling.
-add_subdirectory(src/core)
-#add_subdirectory(src/bin)
-#add_subdirectory(test)
+# {{{ Sources
+set(CMAKE_AUTOMOC ON)
+SET(wintermute-core_sources
+  version.cpp
+  plugin.cpp
+  driver.cpp
+  )
+
+CONFIGURE_FILE(export.hpp.in export.hpp @ONLY)
+# }}}
+
+# {{{ Dependencies
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_SEARCH_MODULE(Qt REQUIRED QtCore)
+# }}}
+
+# {{{ Binary generation
+INCLUDE_DIRECTORIES(${Qt_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+ADD_LIBRARY(wintermute-core SHARED ${wintermute-core_sources})
+# }}}
