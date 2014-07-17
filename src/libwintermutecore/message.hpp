@@ -3,9 +3,11 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 using std::string;
 using std::map;
+using std::unique_ptr;
 
 namespace Wintermute
 {
@@ -15,10 +17,11 @@ class MessagePrivate;
 class Designation;
 class Message
 {
-  MessagePrivate* d;
+  unique_ptr<MessagePrivate> d;
 
 public:
   Message();
+  Message(const Message& other);
   virtual ~Message();
   bool isLocal() const;
   Message clone() const;

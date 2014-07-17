@@ -24,3 +24,7 @@ set(_srcs
 )
 
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
+
+SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
+  COMPILE_FLAGS -std=c++11
+)

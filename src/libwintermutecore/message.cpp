@@ -9,6 +9,11 @@ Message::Message() : d (new MessagePrivate)
 {
 }
 
+Message::Message(const Message& other) : d (new MessagePrivate)
+{
+  d->clone(other.d);
+}
+
 bool Message::isLocal() const
 {
   return d->sender.pid() == getpid();
