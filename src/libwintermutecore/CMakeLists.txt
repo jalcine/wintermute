@@ -18,8 +18,9 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(Wintermute)
 
-# TODO Import our CMake directory to allow for recycling of common tooling.
-add_subdirectory(src)
-#add_subdirectory(test)
+set(_srcs
+  message.cpp
+)
+
+ADD_LIBRARY(wintermutecore SHARED ${_srcs})
