@@ -51,5 +51,11 @@ bool Designation::isLocal() const
   return d->pid == getpid();
 }
 
+bool Designation::isNull() const
+{
+  W_PRV(const Designation);
+  return d->domain.empty() && d->name.empty();
+}
+
 Designation::~Designation()
 {}
