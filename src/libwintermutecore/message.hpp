@@ -34,8 +34,8 @@ public:
 
   /* Builds a new Message with the provided data. */
   explicit Message(const Message::HashType& data = Message::HashType(),
-                   const Module::Designation& sender = Module::Designation(),
-                   const Module::Designation& receiver = Module::Designation());
+                   const Module::Designation& receiver = Module::Designation(),
+                   const Module::Designation& sender = Module::Designation());
 
   /* Copy constructor. */
   Message(const Message& other);
@@ -83,6 +83,8 @@ public:
    */
   void setPayload(const Message::HashType& newData);
 
+  /// TODO Add operator==().
+  /// TODO Add operator!().
 };
 }
 

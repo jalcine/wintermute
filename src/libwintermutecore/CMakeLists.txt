@@ -21,21 +21,35 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 # Look for things this library needs/wants.
 # INCLUDE(FindBacktrace) # -- Use for debug logging.
+INCLUDE(FindPkgConfig)
 
-# Set up sources.
-CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
+PKG_SEARCH_MODULE(JSONCPP jsoncpp REQUIRED)
+
+# Set some variables we'd use a lot.
+set(LIBWNTRCORE_INCLUDE_DIRS
+  ${JSONCPP_INCLUDE_DIRS})
+
+set(LIBWNTRCORE_LIBRARIES
+  ${JSONCPP_LIBRARIES})
 
 set(_srcs
   ./module.cpp
   ./message.cpp
+  ./message_serializer.cpp
 )
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# Set up sources.
+CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}
+  ${LIBWNTRCORE_INCLUDE_DIRS})
 
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS "-std=c++11 -Wall -x c++"
+  COMPILE_FLAGS "-Wall -std=c++11"
 )
+
+TARGET_LINK_LIBRARIES(wintermutecore ${LIBWNTRCORE_LIBRARIES})
 
 GENERATE_EXPORT_HEADER(wintermutecore)

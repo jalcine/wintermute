@@ -1,14 +1,13 @@
-#include <sys/types.h>
-#include <unistd.h>
 #include "message.hh"
 #include "message.hpp"
 
 using Wintermute::Message;
-using Wintermute::Designation;
+using Wintermute::Module;
 using Wintermute::MessagePrivate;
 
-Message::Message(const Message::HashType& data, const Module::Designation& sender,
-                 const Module::Designation& receiver) : d_ptr(new MessagePrivate)
+Message::Message(const Message::HashType& data,
+                 const Module::Designation& receiver,
+                 const Module::Designation& sender) : d_ptr(new MessagePrivate)
 {
   setPayload(data);
   setSender(sender);
@@ -46,23 +45,36 @@ Message::HashType Message::payload() const
   return d->data;
 }
 
+Module::Designation Message::sender() const
+{
+  W_PRV(Message);
+  return d->sender;
+}
+
+Module::Designation Message::receiver() const
+{
+  W_PRV(Message);
+  return d->receiver;
+}
+
 void Message::setSender(const Module::Designation& newSender)
 {
-  // TODO: Use an assertion to prevent an empty sender.
   W_PRV(Message);
+  assert(!newSender.isNull() || newSender.isNull());
   d->sender = newSender;
 }
 
 void Message::setReceiver(const Module::Designation& newReceiver)
 {
-  // TODO: Use an assertion to prevent an empty receiver.
   W_PRV(Message);
+  assert(!newReceiver.isNull() || newReceiver.isNull());
   d->receiver = newReceiver;
 }
 
 void Message::setPayload(const Message::HashType& data)
 {
   W_PRV(Message);
+  assert(!data.empty() || d->data.empty());
   d->data = data;
 }
 

@@ -43,14 +43,6 @@ Module::Module::Designation::Designation(const string& name, const string& domai
   d->pid = pid;
 }
 
-Module::Designation::Designation() : d_ptr(new DesignationPrivate)
-{
-  W_PRV(Designation);
-  d->name = "";
-  d->domain = "";
-  d->pid = getpid();
-}
-
 Module::Designation::Designation(const Designation& other) : d_ptr(new DesignationPrivate)
 {
   W_PRV(Designation);

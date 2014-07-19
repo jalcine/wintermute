@@ -23,8 +23,7 @@ public:
     W_DEFINE_PRIVATE(Designation);
 
   public:
-    explicit Designation(const string& name, const string& domain, const pid_t& pid = getpid());
-    Designation();
+    explicit Designation(const string& name = "", const string& domain = "", const pid_t& pid = getpid());
     Designation(const Designation& other);
     ~Designation();
     pid_t pid() const;
@@ -34,6 +33,13 @@ public:
     bool isLocal() const;
 
     static Designation local();
+
+    inline bool operator==(const Designation& other)
+    {
+      return other.name() == name() &&
+             other.domain() == domain() &&
+             other.pid () == pid();
+    }
   };
 
   explicit Module(const Designation& designation);
