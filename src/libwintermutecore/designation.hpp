@@ -1,6 +1,7 @@
-#include <sys/types.h>
-#include <unistd.h>
+#ifndef WINTERMUTE_CORE_PROCEDURE_DESIGNATION_HPP
+#define WINTERMUTE_CORE_PROCEDURE_DESIGNATION_HPP
 #include <string>
+#include "globals.hpp"
 
 using std::string;
 
@@ -8,25 +9,25 @@ namespace Wintermute
 {
 namespace Procedure
 {
-struct Designation
+class DesignationPrivate;
+class Designation
 {
-  pid_t m_pid     = getpid();
-  string m_name   = string();
-  string m_domain = string();
+private:
+  W_DEFINE_PRIVATE(Designation);
 
 public:
-  inline pid_t pid() const
-  {
-    return m_pid;
-  }
-  inline string name() const
-  {
-    return m_name;
-  }
-  inline string domain() const
-  {
-    return m_domain;
-  }
+  explicit Designation();
+  Designation(const Designation& other);
+  ~Designation();
+  pid_t pid() const;
+  string name() const;
+  string domain() const;
+  bool isNull() const;
+  bool isLocal() const;
+
+  static Designation local();
 };
 }
 }
+
+#endif

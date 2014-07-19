@@ -20,6 +20,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(Wintermute)
 
-# TODO Import our CMake directory to allow for recycling of common tooling.
+# Include the source code for the project.
 add_subdirectory(src)
-#add_subdirectory(test)
+
+# Include the test suite.
+add_subdirectory(test)

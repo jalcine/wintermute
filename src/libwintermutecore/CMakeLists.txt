@@ -19,12 +19,18 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
+# Set up sources.
+CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
+
 set(_srcs
-  message.cpp
+  ./designation.cpp
+  ./message.cpp
 )
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS -std=c++11
+  COMPILE_FLAGS "-std=c++11 -Wall"
 )

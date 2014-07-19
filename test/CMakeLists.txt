@@ -18,6 +18,17 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-add_subdirectory(unit)
-add_subdirectory(integration)
-add_subdirectory(regression)
+include(FindCxxTest)
+
+IF (NOT CXXTEST_FOUND)
+  MESSAGE(ERROR "We need CxxTest for the test suite.")
+ENDIF(NOT CXXTEST_FOUND)
+
+INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_BINARY_DIR}/src/libwintermutecore)
+
+ENABLE_TESTING()
+
+CXXTEST_ADD_TEST(unittest_message message_test.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/unit/message.hh)
+target_link_libraries(unittest_message wintermutecore)
