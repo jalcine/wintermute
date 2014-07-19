@@ -14,4 +14,10 @@ public:
     message.setPayload(data);
     TS_ASSERT( message.payload().at("foo") == Message::HashValue("bar") );
   }
+
+  void testEmpty(void)
+  {
+    Message aMessage;
+    TS_ASSERT( aMessage.isEmpty() == true );
+  }
 };
