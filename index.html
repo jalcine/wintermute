@@ -1,98 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
     <title>Wintermute by jalcine</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/jalcine/wintermute">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/jalcine/wintermute/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/jalcine/wintermute/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <a id="forkme_banner" href="https://github.com/jalcine/libwintermutecore">View on GitHub</a>
+    <div class="shell">
 
-    <div class="wrapper">
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Wintermute</h1>
+            <h2>The core of an artificial intelligence application framework.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
 
-      <section>
-        <div id="title">
-          <h1>Wintermute</h1>
-          <p>The core of an artificial intelligence application framework.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/jalcine">jalcine</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
-        <h1>
-<a name="wintermute---" class="anchor" href="#wintermute---"><span class="octicon octicon-link"></span></a>Wintermute <a href="http://waffle.io/jalcine/wintermute"><img src="https://badge.waffle.io/jalcine/wintermute.png" alt="Stories in Ready"></a> <a href="https://coveralls.io/r/jalcine/wintermute?branch=develop"><img src="https://coveralls.io/repos/jalcine/wintermute/badge.png?branch=develop" alt="Coverage Status"></a> <a href="https://travis-ci.org/jalcine/wintermute"><img src="https://travis-ci.org/jalcine/wintermute.png" alt="Build Status"></a>
-</h1>
-
-<p>Wintermute is an extensible application that aims to become the foundation of 
-an <strong>artificial intelligence framework</strong>. The application is written in C++ at 
-its core but hopes are made to extend the platform to work with <strong>Ruby</strong>, 
-<strong>Python</strong>, <strong>JavaScript</strong>, <strong>Java</strong>, <strong>Scala</strong>, <strong>Lua</strong>, <strong>Haskell</strong> and
-<strong>Go</strong> (not in that exact order!). It'd be awesome!</p>
-
-<h2>
-<a name="installing" class="anchor" href="#installing"><span class="octicon octicon-link"></span></a>Installing</h2>
-
-<p>Installing? <strong>Easy</strong>. We use <a href="http://cmake.org">CMake</a>; we gotcha. But read
-<a href="./INSTALL.md">INSTALL.md</a> for more information.</p>
-
-<h2>
-<a name="tested-operating-systems" class="anchor" href="#tested-operating-systems"><span class="octicon octicon-link"></span></a>Tested Operating Systems</h2>
-
-<p>So far, Wintermute has only been built and tested on a Linux operating system,
-more precisely, running <a href="http://kubuntu.org">Kubuntu</a> Raring Ringtail 13.04.
-Please build, test and upload your results for comparsion!</p>
-
-<h2>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
-
-<ul>
-<li>Fork, make a topic branch and propose your changes! <strong>Bonus points for using Waffle</strong>
-</li>
-<li>Build and test Wintermute on a foreign, untested system!</li>
-<li>Spread the word and do your part to make Wintermute an awesome app!</li>
-</ul><p>I <em>strongly</em> recommend using tools like
-<a href="https://github.com/nvie/gitflow"><code>git-flow</code></a> and
-<a href="https://github.com/icefox/git-hooks"><code>git-hooks</code></a> to accelerate your
-development process.</p>
-
-<p>Also, if you're adding a new feature, try writing a test
-for it first!</p>
-
-<h2>
-<a name="support" class="anchor" href="#support"><span class="octicon octicon-link"></span></a>Support</h2>
-
-<p>I (the project maintainer, Jacky Alcine) do my best to answer any and all 
-questions pertaining to Wintermute. You can e-mail me at <a href="mailto:me@jalcine.me">me@jalcine.me</a> or 
-find me on IRC on Freenode, OFTC or the Perl servers with the nick
-<code>jalcine</code> or <code>Jacky</code>.</p>
-
-<h2>
-<a name="licensing" class="anchor" href="#licensing"><span class="octicon octicon-link"></span></a>Licensing</h2>
-
-<p>Wintermute is licensed under the GPLv2 license. See <code>LICENSE</code> for more details.</p>
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/jalcine/libwintermutecore/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/jalcine/libwintermutecore/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
       </section>
 
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a name="wintermute" class="anchor" href="#wintermute"><span class="octicon octicon-link"></span></a>Wintermute</h1>
+
+<p>Wintermute's a weird project. Describing it in a single line would be unfair
+for the project too, so I <a href="http://jalcine.me">wrote a blog post about it</a>. This project
+is the maintained sources for <code>libwintermutecore</code>and <code>wintermute-driver</code>.
+See the <a href="./doc/LibraryAsCore.markdown">docs about this</a> For installation 
+instructions, view the <a href="./INSTALLING.markdown">INSTALLING</a> file. Instructions for <a href="./TESTING.markdown">testing</a> 
+and <a href="./CONTRIBUTING.markdown">contributing</a> are also provided. Wintermute currently depends on 
+<a href="http://qt-project.org/downloads">Qt 4.8.4</a> and <a href="http://cmake.org">CMake</a>.</p>
+
+<p><strong>This is alpha software, so alpha that it does nothing.</strong></p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/jalcine">jalcine</a> can be found on <a href="https://github.com/jalcine/libwintermutecore">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
     
   </body>
 </html>
