@@ -19,6 +19,7 @@
 ###############################################################################
 
 include(FindCxxTest)
+include(CTest)
 
 IF (NOT CXXTEST_FOUND)
   MESSAGE(ERROR "We need CxxTest for the test suite.")
@@ -27,12 +28,10 @@ ENDIF(NOT CXXTEST_FOUND)
 INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_BINARY_DIR}/src/libwintermutecore)
 
-ENABLE_TESTING()
+macro(ADD_A_TEST _name _hdr)
+  CXXTEST_ADD_TEST(unittest_${_name} ${_name}_test.cc ${_hdr})
+  target_link_libraries(unittest_${_name} wintermutecore)
+endmacro(ADD_A_TEST)
 
-CXXTEST_ADD_TEST(unittest_message message_test.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/unit/message.hh)
-target_link_libraries(unittest_message wintermutecore)
-
-CXXTEST_ADD_TEST(unittest_designation designation_test.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/unit/designation.hh)
-target_link_libraries(unittest_designation wintermutecore)
+add_a_test(message ${CMAKE_SOURCE_DIR}/test/unit/message.hh)
+add_a_test(designation ${CMAKE_SOURCE_DIR}/test/unit/designation.hh)

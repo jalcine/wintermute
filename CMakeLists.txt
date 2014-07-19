@@ -27,4 +27,5 @@ INCLUDE(GenerateExportHeader)
 ADD_SUBDIRECTORY(src)
 
 # Include the test suite.
+ENABLE_TESTING()
 ADD_SUBDIRECTORY(test)
