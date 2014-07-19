@@ -9,6 +9,9 @@
 # include <${Backtrace_HEADER}>
 #endif
 
+#define UniquePtr  ::std::unique_ptr
+#define SharedPtr  ::std::tr1::shared_ptr
+
 #define W_DEFINE_PRIVATE(Class) \
   inline Class##Private* d_func() const { return d_ptr.get(); } \
   inline Class##Private* d_func() { return d_ptr.get(); } \
@@ -25,8 +28,14 @@
 
 #define W_PUB(Class) Class* const d = q_func();
 
-#define UniquePtr  ::std::tr1::unique_ptr
-#define SharedPtr  ::std::tr1::shared_ptr
+#define W_DEFINE_SINGLETON(Class) \
+  private: \
+    static SharedPtr<Class> _instance; \
+  public: \
+    static inline SharedPtr<Class> instance() { return _instance; }
+
+#define W_DECLARE_SINGLETON(Class) \
+  SharedPtr<Class> Class::_instance(new Class());
 
 namespace Wintermute
 {
