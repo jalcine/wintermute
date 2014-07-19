@@ -32,10 +32,12 @@ public:
   /* A type mapping used to handle the data hash's value. */
   typedef string HashValue;
   /* A type mapping used to handle the data hash. */
-  typedef map<HashKey,HashValue> HashType;
+  typedef map<HashKey, HashValue> HashType;
 
   /* Builds a new Message with the provided data. */
-  Message(const Message::HashType& data = Message::HashType());
+  explicit Message(const Message::HashType& data = Message::HashType(),
+          const Designation& sender = Designation(),
+          const Designation& receiver = Designation());
 
   /* Copy constructor. */
   Message(const Message& other);
@@ -76,7 +78,7 @@ public:
    * @param Designation The designation of the new receiver.
    * NOTE: This methods asserts if newReciever.null() == true
    */
-  void setReciever(const Designation& newReciever);
+  void setReceiver(const Designation& newReceiver);
 
   /* Changes the payload data that this Message contains.
    * @param HashType The data that this Message would contain.

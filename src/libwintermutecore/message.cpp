@@ -4,12 +4,15 @@
 #include "message.hpp"
 
 using Wintermute::Procedure::Message;
+using Wintermute::Procedure::Designation;
 using Wintermute::Procedure::MessagePrivate;
 
-Message::Message(const Message::HashType& data) : d_ptr (new MessagePrivate)
+Message::Message(const Message::HashType& data, const Designation& sender,
+                 const Designation& receiver) : d_ptr(new MessagePrivate)
 {
-  W_PRV(Message);
-  d->data = data;
+  setPayload(data);
+  setSender(sender);
+  setReceiver(receiver);
 }
 
 Message::Message(const Message& other) : d_ptr (new MessagePrivate)
@@ -46,9 +49,19 @@ Message::HashType Message::payload() const
 void Message::setSender(const Designation& newSender)
 {
   // TODO: Use an assertion to prevent an empty sender.
+  W_PRV(Message);
+  d->sender = newSender;
 }
 
-void Message::setPayload(const Message::HashType& data){
+void Message::setReceiver(const Designation& newReceiver)
+{
+  // TODO: Use an assertion to prevent an empty receiver.
+  W_PRV(Message);
+  d->receiver = newReceiver;
+}
+
+void Message::setPayload(const Message::HashType& data)
+{
   W_PRV(Message);
   d->data = data;
 }
@@ -61,7 +74,7 @@ void MessagePrivate::clone(const SharedPtr<MessagePrivate>& d)
 {
   this->data = d->data;
   this->sender = d->sender;
-  this->reciever = d->reciever;
+  this->receiver = d->receiver;
 }
 
 bool MessagePrivate::isEmpty() const

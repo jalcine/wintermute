@@ -14,7 +14,7 @@ class MessagePrivate
 public:
   Message::HashType data = Message::HashType();
   Designation sender;
-  Designation reciever;
+  Designation receiver;
 
   void clone(const SharedPtr<MessagePrivate>& d);
   bool isEmpty() const;
