@@ -4,14 +4,12 @@
 #include <string>
 #include <map>
 #include "globals.hpp"
-#include "designation.hpp"
+#include "module.hpp"
 
 using std::string;
 using std::map;
 
 namespace Wintermute
-{
-namespace Procedure
 {
 class MessagePrivate;
 
@@ -36,8 +34,8 @@ public:
 
   /* Builds a new Message with the provided data. */
   explicit Message(const Message::HashType& data = Message::HashType(),
-          const Designation& sender = Designation(),
-          const Designation& receiver = Designation());
+                   const Module::Designation& sender = Module::Designation(),
+                   const Module::Designation& receiver = Module::Designation());
 
   /* Copy constructor. */
   Message(const Message& other);
@@ -64,21 +62,21 @@ public:
   HashType payload() const;
 
   /* Obtains the designation of the sending module. */
-  Designation sender() const;
+  Module::Designation sender() const;
 
   /* Obtains the designation of the receiving module. */
-  Designation receiver() const;
+  Module::Designation receiver() const;
 
   /* Changes the sender of this message.
    * @param Designation The designation of the new sender.
    */
-  void setSender(const Designation& newSender = Designation::local());
+  void setSender(const Module::Designation& newSender = Module::Designation::local());
 
   /* Changes the receiver of this message.
    * @param Designation The designation of the new receiver.
    * NOTE: This methods asserts if newReciever.null() == true
    */
-  void setReceiver(const Designation& newReceiver);
+  void setReceiver(const Module::Designation& newReceiver);
 
   /* Changes the payload data that this Message contains.
    * @param HashType The data that this Message would contain.
@@ -86,7 +84,6 @@ public:
   void setPayload(const Message::HashType& newData);
 
 };
-}
 }
 
 #endif

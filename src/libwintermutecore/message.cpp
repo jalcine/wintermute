@@ -3,12 +3,12 @@
 #include "message.hh"
 #include "message.hpp"
 
-using Wintermute::Procedure::Message;
-using Wintermute::Procedure::Designation;
-using Wintermute::Procedure::MessagePrivate;
+using Wintermute::Message;
+using Wintermute::Designation;
+using Wintermute::MessagePrivate;
 
-Message::Message(const Message::HashType& data, const Designation& sender,
-                 const Designation& receiver) : d_ptr(new MessagePrivate)
+Message::Message(const Message::HashType& data, const Module::Designation& sender,
+                 const Module::Designation& receiver) : d_ptr(new MessagePrivate)
 {
   setPayload(data);
   setSender(sender);
@@ -46,14 +46,14 @@ Message::HashType Message::payload() const
   return d->data;
 }
 
-void Message::setSender(const Designation& newSender)
+void Message::setSender(const Module::Designation& newSender)
 {
   // TODO: Use an assertion to prevent an empty sender.
   W_PRV(Message);
   d->sender = newSender;
 }
 
-void Message::setReceiver(const Designation& newReceiver)
+void Message::setReceiver(const Module::Designation& newReceiver)
 {
   // TODO: Use an assertion to prevent an empty receiver.
   W_PRV(Message);

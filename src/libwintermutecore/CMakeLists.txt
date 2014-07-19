@@ -26,7 +26,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
 
 set(_srcs
-  ./designation.cpp
+  ./module.cpp
   ./message.cpp
 )
 
