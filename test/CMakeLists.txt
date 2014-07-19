@@ -34,4 +34,4 @@ macro(ADD_A_TEST _name _hdr)
 endmacro(ADD_A_TEST)
 
 add_a_test(message ${CMAKE_SOURCE_DIR}/test/unit/message.hh)
-add_a_test(designation ${CMAKE_SOURCE_DIR}/test/unit/designation.hh)
+add_a_test(module ${CMAKE_SOURCE_DIR}/test/unit/module.hh)

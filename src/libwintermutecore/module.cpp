@@ -12,6 +12,28 @@ Module::Module(const Designation& designation) : d_ptr(new ModulePrivate)
   d->designation = designation;
 }
 
+Module::Designation Module::designation() const
+{
+  W_PRV(Module);
+  return d->designation;
+}
+
+bool Module::sendMessage(const Message& message) const
+{
+  // TODO Send a message using the MessageTunnel.
+  return true;
+}
+
+bool Module::receiveMessage(const Message& message) const
+{
+  // TODO Send a message using the MessageTunnel.
+  return true;
+}
+
+Module::~Module()
+{
+}
+
 Module::Module::Designation::Designation(const string& name, const string& domain, const pid_t& pid) :
   d_ptr (new DesignationPrivate)
 {

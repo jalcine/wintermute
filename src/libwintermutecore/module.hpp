@@ -37,10 +37,11 @@ public:
   };
 
   explicit Module(const Designation& designation);
+  virtual ~Module();
 
   Designation designation() const;
-  virtual bool receiveMessage(const Message& message);
-  virtual bool sendMessage(const Message& message);
+  virtual bool receiveMessage(const Message& message) const;
+  virtual bool sendMessage(const Message& message) const;
 };
 }
 

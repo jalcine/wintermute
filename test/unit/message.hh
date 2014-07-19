@@ -1,7 +1,7 @@
 #include "libwintermutecore/message.hpp"
 #include <cxxtest/TestSuite.h>
 
-using Wintermute::Procedure::Message;
+using Wintermute::Message;
 
 class MessageTestSuite : public CxxTest::TestSuite
 {
