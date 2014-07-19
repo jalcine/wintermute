@@ -20,4 +20,10 @@ public:
     Message aMessage;
     TS_ASSERT( aMessage.isEmpty() == true );
   }
+
+  void testLocalByDefault(void)
+  {
+    Message aMessage;
+    TS_ASSERT( aMessage.isLocal() == true );
+  }
 };
