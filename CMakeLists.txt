@@ -20,8 +20,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(Wintermute)
 
+INCLUDE(GNUInstallDirs)
+INCLUDE(GenerateExportHeader)
+
 # Include the source code for the project.
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)
 
 # Include the test suite.
-add_subdirectory(test)
+ADD_SUBDIRECTORY(test)

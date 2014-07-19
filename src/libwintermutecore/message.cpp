@@ -48,6 +48,11 @@ void Message::setSender(const Designation& newSender)
   // TODO: Use an assertion to prevent an empty sender.
 }
 
+void Message::setPayload(const Message::HashType& data){
+  W_PRV(Message);
+  d->data = data;
+}
+
 Message::~Message()
 {
 }

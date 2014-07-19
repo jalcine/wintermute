@@ -4,6 +4,11 @@
 #include <unistd.h>
 #include <tr1/memory>
 
+#cmakedefine01 Backtrace_FOUND
+#if Backtrace_FOUND
+# include <${Backtrace_HEADER}>
+#endif
+
 #define W_DEFINE_PRIVATE(Class) \
   inline Class##Private* d_func() const { return d_ptr.get(); } \
   inline Class##Private* d_func() { return d_ptr.get(); } \
@@ -27,5 +32,7 @@ namespace Wintermute
 {
 typedef ::pid_t PID;
 }
+
+#include "wintermutecore_export.h"
 
 #endif

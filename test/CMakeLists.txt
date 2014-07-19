@@ -32,3 +32,7 @@ ENABLE_TESTING()
 CXXTEST_ADD_TEST(unittest_message message_test.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/unit/message.hh)
 target_link_libraries(unittest_message wintermutecore)
+
+CXXTEST_ADD_TEST(unittest_designation designation_test.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/unit/designation.hh)
+target_link_libraries(unittest_designation wintermutecore)

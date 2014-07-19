@@ -1,5 +1,6 @@
 #ifndef WINTERMUTE_CORE_PROCEDURE_DESIGNATION_HPP
 #define WINTERMUTE_CORE_PROCEDURE_DESIGNATION_HPP
+
 #include <string>
 #include "globals.hpp"
 
@@ -16,7 +17,8 @@ private:
   W_DEFINE_PRIVATE(Designation);
 
 public:
-  explicit Designation();
+  explicit Designation(const string& name, const string& domain, const pid_t& pid = getpid());
+  Designation();
   Designation(const Designation& other);
   ~Designation();
   pid_t pid() const;

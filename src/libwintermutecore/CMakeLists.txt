@@ -19,6 +19,9 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
+# Look for things this library needs/wants.
+# INCLUDE(FindBacktrace) # -- Use for debug logging.
+
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
 
@@ -32,5 +35,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS "-std=c++11 -Wall"
+  COMPILE_FLAGS "-std=c++11 -Wall -x c++"
 )
+
+GENERATE_EXPORT_HEADER(wintermutecore)

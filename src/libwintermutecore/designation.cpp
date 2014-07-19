@@ -4,8 +4,21 @@
 using Wintermute::Procedure::DesignationPrivate;
 using Wintermute::Procedure::Designation;
 
-Designation::Designation() : d_ptr (new DesignationPrivate)
+Designation::Designation(const string& name, const string& domain, const pid_t& pid) : 
+  d_ptr (new DesignationPrivate)
 {
+  W_PRV(Designation);
+  d->name = name;
+  d->domain = domain;
+  d->pid = pid;
+}
+
+Designation::Designation() : d_ptr(new DesignationPrivate)
+{
+  W_PRV(Designation);
+  d->name = "";
+  d->domain = "";
+  d->pid = getpid();
 }
 
 Designation::Designation(const Designation& other) : d_ptr(new DesignationPrivate)
@@ -30,6 +43,12 @@ pid_t Designation::pid() const
 {
   W_PRV(const Designation);
   return d->pid;
+}
+
+bool Designation::isLocal() const
+{
+  W_PRV(const Designation);
+  return d->pid == getpid();
 }
 
 Designation::~Designation()

@@ -1,12 +1,17 @@
 #include "libwintermutecore/message.hpp"
 #include <cxxtest/TestSuite.h>
 
+using Wintermute::Procedure::Message;
+
 class MessageTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testAddition(void)
+  void testClone(void)
   {
-    TS_ASSERT( 1 + 1 > 1 );
-    TS_ASSERT_EQUALS( 1 + 1, 2 );
+    Message::HashType data;
+    data.insert(std::make_pair("foo", "bar"));
+    Message message;
+    message.setPayload(data);
+    TS_ASSERT( message.payload().at("foo") == Message::HashValue("bar") );
   }
 };

@@ -22,10 +22,11 @@ class MessagePrivate;
  * @see Wintermute::Procedure::Dispatcher
  * @see Wintermute::Procedure::Receiver
  */
-class Message
+class WINTERMUTECORE_EXPORT Message
 {
   W_DEFINE_PRIVATE(Message);
 
+public:
   /* A type mapping used to handle the data hash's key. */
   typedef string HashKey;
   /* A type mapping used to handle the data hash's value. */
@@ -33,7 +34,6 @@ class Message
   /* A type mapping used to handle the data hash. */
   typedef map<HashKey,HashValue> HashType;
 
-public:
   /* Builds a new Message with the provided data. */
   Message(const Message::HashType& data = Message::HashType());
 
