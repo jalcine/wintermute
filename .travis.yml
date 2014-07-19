@@ -5,7 +5,7 @@ compiler:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq pkg-config cmake dev-tools python-pip python lcov valgrind
+  - sudo apt-get install -qq pkg-config cmake
   - sudo pip install cpp-coveralls
   - test/build_dependencies.bash
 
