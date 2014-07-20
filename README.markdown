@@ -1,5 +1,7 @@
 # Wintermute
 
+[![Build Status](https://travis-ci.org/jalcine/libwintermutecore.svg?branch=develop)](https://travis-ci.org/jalcine/libwintermutecore)
+
 Wintermute's a weird project. Describing it in a single line would be unfair
 for the project too, so I [wrote a blog post about it][blogpost]. This project
 is the maintained sources for `libwintermutecore`and `wintermute-driver`.
