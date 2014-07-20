@@ -70,7 +70,7 @@ public:
   /* Changes the sender of this message.
    * @param Designation The designation of the new sender.
    */
-  void setSender(const Module::Designation& newSender = Module::Designation::local());
+  void setSender(const Module::Designation& newSender = Module::Designation());
 
   /* Changes the receiver of this message.
    * @param Designation The designation of the new receiver.

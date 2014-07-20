@@ -31,9 +31,13 @@ INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src
 macro(ADD_A_TEST _name _hdr)
   CXXTEST_ADD_TEST(unittest_${_name} ${_name}_test.cc ${_hdr})
   target_link_libraries(unittest_${_name} wintermutecore)
+  SET_TARGET_PROPERTIES(unittest_${_name} PROPERTIES
+    COMPILE_FLAGS "-Wall -std=c++11"
+ )
 endmacro(ADD_A_TEST)
 
 add_a_test(globals ${CMAKE_SOURCE_DIR}/test/unit/globals.hh)
 add_a_test(message ${CMAKE_SOURCE_DIR}/test/unit/message.hh)
 add_a_test(module ${CMAKE_SOURCE_DIR}/test/unit/module.hh)
+add_a_test(module_pool ${CMAKE_SOURCE_DIR}/test/unit/module_pool.hh)
 add_a_test(message_serializer ${CMAKE_SOURCE_DIR}/test/unit/message_serializer.hh)

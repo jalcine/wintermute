@@ -21,4 +21,5 @@ public:
 
   void clone(const SharedPtr<DesignationPrivate>& other);
 };
+
 }

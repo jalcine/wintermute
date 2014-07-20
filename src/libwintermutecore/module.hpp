@@ -17,6 +17,7 @@ protected:
   W_DEFINE_PRIVATE(Module);
 
 public:
+  typedef SharedPtr<Module> Ptr;
   class Designation
   {
   private:
@@ -31,15 +32,8 @@ public:
     string domain() const;
     bool isNull() const;
     bool isLocal() const;
-
-    static Designation local();
-
-    inline bool operator==(const Designation& other)
-    {
-      return other.name() == name() &&
-             other.domain() == domain() &&
-             other.pid () == pid();
-    }
+    operator string() const;
+    bool operator==(const Designation& other) const;
   };
 
   explicit Module(const Designation& designation);
@@ -48,6 +42,7 @@ public:
   Designation designation() const;
   virtual bool receiveMessage(const Message& message) const;
   virtual bool sendMessage(const Message& message) const;
+
 };
 }
 

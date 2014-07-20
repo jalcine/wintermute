@@ -79,8 +79,21 @@ bool Module::Designation::isNull() const
   return d->domain.empty() && d->name.empty();
 }
 
+Module::Designation::operator string() const
+{
+  return string( domain() + "." + name() + ":" + std::to_string(pid()) );
+}
+
+bool Module::Designation::operator==(const Designation& other) const
+{
+  return other.name() == name() &&
+         other.domain() == domain() &&
+         other.pid () == pid();
+}
+
 Module::Designation::~Designation()
-{}
+{
+}
 
 void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
 {
