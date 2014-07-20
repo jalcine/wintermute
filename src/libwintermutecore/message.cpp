@@ -82,6 +82,10 @@ Message::~Message()
 {
 }
 
+MessagePrivate::MessagePrivate() : data(Message::HashType())
+{
+}
+
 void MessagePrivate::clone(const SharedPtr<MessagePrivate>& d)
 {
   this->data = d->data;

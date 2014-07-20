@@ -10,11 +10,13 @@ class Designation;
 class MessagePrivate
 {
 public:
-  Message::HashType data = Message::HashType();
+  Message::HashType;
   Module::Designation sender;
   Module::Designation receiver;
 
   void clone(const SharedPtr<MessagePrivate>& d);
   bool isEmpty() const;
+
+  MessagePrivate();
 };
 }
