@@ -24,15 +24,20 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 INCLUDE(FindPkgConfig)
 
 PKG_SEARCH_MODULE(JSONCPP jsoncpp REQUIRED)
+PKG_SEARCH_MODULE(LOG4CXX liblog4cxx REQUIRED)
 
 # Set some variables we'd use a lot.
 set(LIBWNTRCORE_INCLUDE_DIRS
-  ${JSONCPP_INCLUDE_DIRS})
+  ${JSONCPP_INCLUDE_DIRS}
+  ${LOG4CXX_INCLUDE_DIRS})
 
 set(LIBWNTRCORE_LIBRARIES
-  ${JSONCPP_LIBRARIES})
+  ${JSONCPP_LIBRARIES}
+  ${LOG4CXX_LIBRARIES})
 
 set(_srcs
+  ./globals.cpp
+  ./logging.cpp
   ./module.cpp
   ./module_designation.cpp
   ./module_pool.cpp

@@ -21,12 +21,12 @@
 #define W_PRV(Class) Class##Private* const d = d_func();
 
 #define W_DEFINE_PUBLIC(Class) \
-  inline Class* d_func() const { return q_ptr.get(); } \
-  inline Class* d_func() { return q_ptr.get(); } \
+  inline Class* q_func() const { return q_ptr.get(); } \
+  inline Class* q_func() { return q_ptr.get(); } \
   friend class Class; \
   SharedPtr<Class> q_ptr;
 
-#define W_PUB(Class) Class* const d = q_func();
+#define W_PUB(Class) Class* const q = q_func();
 
 #define W_DEFINE_SINGLETON(Class) \
   private: \
@@ -41,6 +41,8 @@ namespace Wintermute
 {
 typedef ::pid_t PID;
 }
+
+void w_noop(void);
 
 #include "wintermutecore_export.h"
 
