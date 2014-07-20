@@ -1,4 +1,5 @@
 #include "libwintermutecore/module.hpp"
+#include "sample_module.hpp"
 #include <cxxtest/TestSuite.h>
 
 using Wintermute::Module;
@@ -19,7 +20,6 @@ public:
 
     TS_ASSERT ( aDesignation.isNull() == true );
     TS_ASSERT ( anotherDesignation.isNull() == false );
-
   }
 };
 

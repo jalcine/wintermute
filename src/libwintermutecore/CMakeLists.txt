@@ -34,6 +34,7 @@ set(LIBWNTRCORE_LIBRARIES
 
 set(_srcs
   ./module.cpp
+  ./module_designation.cpp
   ./module_pool.cpp
   ./message.cpp
   ./message_serializer.cpp
