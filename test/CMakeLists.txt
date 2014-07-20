@@ -32,7 +32,7 @@ macro(ADD_A_TEST _name _hdr)
   CXXTEST_ADD_TEST(unittest_${_name} ${_name}_test.cc ${_hdr})
   target_link_libraries(unittest_${_name} wintermutecore)
   SET_TARGET_PROPERTIES(unittest_${_name} PROPERTIES
-    COMPILE_FLAGS "-Wall -std=c++11"
+    COMPILE_FLAGS "-Wall -std=c++0x"
  )
 endmacro(ADD_A_TEST)
 

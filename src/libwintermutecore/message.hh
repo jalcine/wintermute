@@ -10,7 +10,7 @@ class Designation;
 class MessagePrivate
 {
 public:
-  Message::HashType;
+  Message::HashType data;
   Module::Designation sender;
   Module::Designation receiver;
 
