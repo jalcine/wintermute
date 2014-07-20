@@ -2,19 +2,15 @@
 
 [![Build Status](https://travis-ci.org/jalcine/libwintermutecore.svg?branch=develop)](https://travis-ci.org/jalcine/libwintermutecore)
 
-Wintermute's a weird project. Describing it in a single line would be unfair
-for the project too, so I [wrote a blog post about it][blogpost]. This project
-is the maintained sources for `libwintermutecore`and `wintermute-driver`.
-See the [docs about this](./doc/LibraryAsCore.markdown) For installation 
-instructions, view the [INSTALLING][] file. Instructions for [testing][] 
-and [contributing][] are also provided. Wintermute currently depends on 
-[Qt 4.8.4][qt] and [CMake][].
+Wintermute's a pet project (for about four years now). Describing it in a
+single concise sentence would be unfair to it so [I wrote a incomplete
+post][blogpost] about it. This repository holds the sources for just the core
+library, `libwintermutecore`but I plan to add the driver executable in the
+future, as soon as the library's down and tested.
+
+This project just needs `jsoncpp`, `log4cxx`, `cmake` and a C++ compiler that
+supports and implements the C+11 standards.
 
 **This is alpha software, so alpha that it does nothing.**
 
-[blogpost]: http://jalcine.me
-[installing]: ./INSTALLING.markdown
-[testing]: ./TESTING.markdown
-[contributing]: ./CONTRIBUTING.markdown
-[qt]: http://qt-project.org/downloads
-[cmake]: http://cmake.org
+[blogpost]: http://jalcine.me/weblog/the-idea-behind-wintermute/
