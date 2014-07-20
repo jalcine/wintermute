@@ -10,7 +10,7 @@ Module::Module(const Designation& designation) : d_ptr(new ModulePrivate)
 {
   W_PRV(Module);
   d->designation = designation;
-  wtrace("Module " + static_cast<string>(designation()) + " started.");
+  wtrace("Module " + static_cast<string>(designation) + " started.");
 }
 
 Module::Designation Module::designation() const
@@ -22,12 +22,14 @@ Module::Designation Module::designation() const
 bool Module::sendMessage(const Message& message) const
 {
   wtrace("Module " + static_cast<string>(designation()) + " sending a message.");
+  // TODO Send a message using the MessageTunnel.
   return true;
 }
 
 bool Module::receiveMessage(const Message& message) const
 {
   wtrace("Module " + static_cast<string>(designation()) + " receiving a message.");
+  // TODO a message using the MessageTunnel.
   return true;
 }
 
