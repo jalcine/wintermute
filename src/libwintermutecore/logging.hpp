@@ -40,27 +40,27 @@ public:
   Level level() const;
 
   /* Outputs a Level::Debug message into Wintermute's logger. */
-  void debug(const string& message, const string& name);
+  void debug(const string& message, const string& name = "root");
 
   /* Outputs a Level::Error message into Wintermute's logger. */
-  void error(const string& message, const string& name);
+  void error(const string& message, const string& name = "root");
 
   /* Outputs a Level::Info message into Wintermute's logger. */
-  void info(const string& message, const string& name);
+  void info(const string& message, const string& name = "root");
 
   /* Outputs a Level::Warn message into Wintermute's logger. */
-  void warn(const string& message, const string& name);
+  void warn(const string& message, const string& name = "root");
 
   /* Outputs a Level::Trace message into Wintermute's logger. */
-  void trace(const string& message, const string& name);
+  void trace(const string& message, const string& name = "root");
 
 };
 }
 
-#define winfo(msg)  Wintermute::Logging->instance()->info(msg);
-#define werror(msg) Wintermute::Logging->instance()->error(msg);
-#define wwarn(msg)  Wintermute::Logging->instance()->warn(msg);
-#define wtrace(msg) Wintermute::Logging->instance()->trace(msg);
-#define wdebug(msg) Wintermute::Logging->instance()->debug(msg);
+#define winfo(msg)  Wintermute::Logging::instance()->info(msg);
+#define werror(msg) Wintermute::Logging::instance()->error(msg);
+#define wwarn(msg)  Wintermute::Logging::instance()->warn(msg);
+#define wtrace(msg) Wintermute::Logging::instance()->trace(msg);
+#define wdebug(msg) Wintermute::Logging::instance()->debug(msg);
 
 #endif

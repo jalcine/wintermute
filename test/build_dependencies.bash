@@ -1,6 +1,14 @@
 #!/usr/bin/env sh
 
-alias cm="mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr; cd .."
-alias db="make -C build all && sudo make -C build install; cd .."
+alias addpkg="sudo apt-get install -qq"
+
+# Install CMake and pkg-config
+addpkg cmake pkg-config
+
+# Install CxxTest.
+addpkg cxxtest
+
+# Install app dependecies.
+addpkg libjsoncpp-dev liblog4cxx10-dev
 
 echo "Done loading dependencies."
