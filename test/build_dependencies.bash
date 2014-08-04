@@ -9,6 +9,6 @@ addpkg cmake pkg-config
 addpkg cxxtest
 
 # Install app dependecies.
-addpkg libjsoncpp-dev liblog4cxx10-dev
+addpkg libjsoncpp-dev liblog4cxx10-dev libboost-dev
 
 echo "Done loading dependencies."
