@@ -15,17 +15,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "module.hpp"
 #include <map>
+#include <string>
+#include <stack>
+#include "dispatcher.hpp"
+#include "receiver.hpp"
 
 using std::map;
+using std::stack;
+using std::string;
 
 namespace Wintermute
 {
-class ModulePoolPrivate
+class TunnelPrivate
 {
-public:
-  typedef map < Module::Designation, Module::Ptr, std::equal_to<Module::Designation> > Map;
-  Map modules;
+  public:
+    typedef map<string, Dispatcher::Ptr> DispatcherMap;
+    typedef map<string, Receiver::Ptr> ReceiverMap;
+    typedef stack<Message> MessageQueue;
+    explicit TunnelPrivate();
+    virtual ~TunnelPrivate();
+    DispatcherMap dispatchers;
+    ReceiverMap receivers;
+    MessageQueue obtainedMessages;
 };
 }

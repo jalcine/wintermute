@@ -13,35 +13,36 @@ public:
     data.insert(std::make_pair("foo", "bar"));
     Message message;
     message.setPayload(data);
-    TS_ASSERT( message.payload().at("foo") == Message::HashValue("bar") );
+    TS_ASSERT_EQUALS( message.payload().at("foo"), Message::HashValue("bar") );
 
     Message clonedMessage = message.clone();
-    TS_ASSERT( clonedMessage.payload().at("foo") == Message::HashValue("bar") );
+    TS_ASSERT_EQUALS( clonedMessage.payload().at("foo"), Message::HashValue("bar") );
   }
 
   void testEmpty(void)
   {
     Message aMessage;
-    TS_ASSERT( aMessage.isEmpty() == true );
+    TS_ASSERT_EQUALS( aMessage.isEmpty(), true );
   }
 
-  void testLocalByDefault(void)
+  void testIsntLocalByDefault(void)
   {
     Message aMessage;
-    TS_ASSERT( aMessage.isLocal() == true );
+    TS_ASSERT ( aMessage.isLocal() == false );
   }
 
-  void testABICheck(void)
+  void testSchemaCheck(void)
   {
-    Module::Designation sender("input");
-    Module::Designation receiver("output");
+    Module::Designation sender("input", "in.wintermute.test");
+    Module::Designation receiver("output", "in.wintermute.test");
     Message::HashType data;
-    data.insert(std::make_pair("foo", "bar"));
+    data.insert(std::make_pair("foo", std::to_string(100)));
 
     Message message(data, receiver, sender);
 
-    TS_ASSERT ( message.sender() == sender );
-    TS_ASSERT ( message.receiver() == receiver );
-    TS_ASSERT ( message.payload() == data );
+    TS_ASSERT_EQUALS ( message.sender() , sender );
+    TS_ASSERT_EQUALS ( message.receiver() , receiver );
+    TS_ASSERT_EQUALS ( message.payload() , data );
+    TS_ASSERT_EQUALS ( message.isLocal() , true );
   }
 };

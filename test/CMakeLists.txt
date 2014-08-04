@@ -18,6 +18,7 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
+# We use CxxTest extensively.
 include(FindCxxTest)
 include(CTest)
 
@@ -36,8 +37,12 @@ macro(ADD_A_TEST _name _hdr)
  )
 endmacro(ADD_A_TEST)
 
-add_a_test(globals ${CMAKE_SOURCE_DIR}/test/unit/globals.hh)
+add_a_test(singleton ${CMAKE_SOURCE_DIR}/test/unit/singleton.hh)
 add_a_test(message ${CMAKE_SOURCE_DIR}/test/unit/message.hh)
+add_a_test(module_designation ${CMAKE_SOURCE_DIR}/test/unit/module_designation.hh)
 add_a_test(module ${CMAKE_SOURCE_DIR}/test/unit/module.hh)
 add_a_test(module_pool ${CMAKE_SOURCE_DIR}/test/unit/module_pool.hh)
-add_a_test(message_serializer ${CMAKE_SOURCE_DIR}/test/unit/message_serializer.hh)
+add_a_test(tunnel ${CMAKE_SOURCE_DIR}/test/unit/tunnel.hh)
+add_a_test(util_serializer ${CMAKE_SOURCE_DIR}/test/unit/util/serializable.hh)
+add_a_test(dispatcher ${CMAKE_SOURCE_DIR}/test/unit/dispatcher.hh)
+#add_a_test(receiver ${CMAKE_SOURCE_DIR}/test/unit/receiver.hh)

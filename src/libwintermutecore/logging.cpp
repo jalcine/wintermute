@@ -1,3 +1,20 @@
+/*
+ * Wintermute is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with Wintermute; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 #include "logging.hpp"
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
@@ -16,24 +33,19 @@ LoggerPtr obtain_logger(const string& name)
   {
     return log4cxx::Logger::getRootLogger();
   }
+
   return log4cxx::Logger::getLogger(name);
 }
 
 Logging::Logging()
 {
   log4cxx::BasicConfigurator::configure();
-  log4cxx::PatternLayout patternLayout;
-  log4cxx::FileAppender fileAppender;
-  log4cxx::ConsoleAppender consoleAppender;
   LoggerPtr rootLogger = obtain_logger("root");
+  log4cxx::LayoutPtr layoutPtr(new log4cxx::PatternLayout);
+  log4cxx::ConsoleAppender* consoleAppender = new log4cxx::ConsoleAppender(layoutPtr);
+  consoleAppender->setTarget(log4cxx::ConsoleAppender::getSystemOut());
+  log4cxx::AppenderPtr consoleAppenderPtr(consoleAppender);
 
-  fileAppender.setFile("/var/log/wintermute.log");
-  consoleAppender.setTarget(log4cxx::ConsoleAppender::getSystemOut());
-
-  log4cxx::AppenderPtr fileAppenderPtr(&fileAppender);
-  log4cxx::AppenderPtr consoleAppenderPtr(&consoleAppender);
-
-  rootLogger->addAppender(fileAppenderPtr);
   rootLogger->addAppender(consoleAppenderPtr);
 
   info("Started logging service", "in.wintermute.logging");
@@ -69,7 +81,7 @@ void Logging::debug(const string& message, const string& name)
 }
 
 void Logging::info(const string& message, const string& name)
-{
+{ 
   LoggerPtr logger = obtain_logger(name);
   logger->info(message);
 }

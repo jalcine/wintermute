@@ -15,17 +15,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "module.hpp"
-#include <map>
+#include "receiver.hpp"
 
-using std::map;
+using Wintermute::Receiver;
 
-namespace Wintermute
+Receiver::Receiver()
 {
-class ModulePoolPrivate
+}
+
+Receiver::~Receiver()
 {
-public:
-  typedef map < Module::Designation, Module::Ptr, std::equal_to<Module::Designation> > Map;
-  Map modules;
-};
 }

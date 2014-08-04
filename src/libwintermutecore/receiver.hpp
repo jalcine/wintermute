@@ -15,17 +15,29 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "module.hpp"
-#include <map>
+#ifndef WINTERMUTE_CORE_RECEIVER_HPP
+#define WINTERMUTE_CORE_RECEIVER_HPP
 
-using std::map;
+#include "globals.hpp"
+
+using std::string;
 
 namespace Wintermute
 {
-class ModulePoolPrivate
+class Message;
+class ReceiverPrivate;
+class Receiver
 {
+  W_DEFINE_PRIVATE(Receiver);
+
 public:
-  typedef map < Module::Designation, Module::Ptr, std::equal_to<Module::Designation> > Map;
-  Map modules;
+  W_DECLARE_PTR_TYPE(Receiver);
+  explicit Receiver();
+  virtual ~Receiver();
+
+  virtual string name() const = 0;
+  virtual Message receive() = 0;
 };
 }
+
+#endif

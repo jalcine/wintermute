@@ -15,17 +15,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "module.hpp"
-#include <map>
+#ifndef WINTERMUTE_CORE_DISPATCHER_HPP
+#define WINTERMUTE_CORE_DISPATCHER_HPP
 
-using std::map;
+#include <string>
+#include "globals.hpp"
+
+using std::string;
 
 namespace Wintermute
 {
-class ModulePoolPrivate
+class DispatcherPrivate;
+class Message;
+/* Serves as an abstract basis for sending messages. */
+class Dispatcher
 {
+
 public:
-  typedef map < Module::Designation, Module::Ptr, std::equal_to<Module::Designation> > Map;
-  Map modules;
+  W_DECLARE_PTR_TYPE(Dispatcher);
+  explicit Dispatcher();
+  virtual ~Dispatcher();
+
+  virtual string name() const = 0;
+  virtual bool send(const Message& message) = 0;
 };
 }
+
+#endif

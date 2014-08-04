@@ -17,50 +17,18 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(WintermuteCore CXX)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# Set some variables we'd use a lot.
-set(LIBWNTRCORE_INCLUDE_DIRS
-  ${Boost_INCLUDE_DIRS}
-  ${JSONCPP_INCLUDE_DIRS}
-  ${LOG4CXX_INCLUDE_DIRS})
+# == Variables we'd use.
+SET(CMAKE_COLOR_MAKEFILE ON)
+set(BUILD_SHARED_LIBRARIES ON)
 
-set(LIBWNTRCORE_LIBRARIES
-  ${Boost_LIBRARIES}
-  ${JSONCPP_LIBRARIES}
-  ${LOG4CXX_LIBRARIES})
+# == Imports we'd use.
+# Include a means of picking up the proper paths on a machine.)
+INCLUDE(GNUInstallDirs)
 
-set(_srcs
-  # Natives
-  ./globals.cpp
-  ./logging.cpp
-  ./util/serializable.cpp
+# Build a header file we can use to include into other projects.
+INCLUDE(GenerateExportHeader)
 
-  # Procedural
-  ./message.cpp
-  ./module.cpp
-  ./module_designation.cpp
-  ./module_pool.cpp
-  ./dispatcher.cpp
-  ./receiver.cpp
-  ./tunnel.cpp
-
-  # Plugins
-)
-
-# Set up sources.
-CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}
-  ${LIBWNTRCORE_INCLUDE_DIRS})
-
-ADD_LIBRARY(wintermutecore SHARED ${_srcs})
-
-SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS "-Wall -std=c++11 -O0"
-)
-
-TARGET_LINK_LIBRARIES(wintermutecore ${LIBWNTRCORE_LIBRARIES})
-
-GENERATE_EXPORT_HEADER(wintermutecore)
+# == Our CMake files.
+INCLUDE(WintermuteDependencies)

@@ -17,50 +17,8 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(WintermuteCore CXX)
 
-# Set some variables we'd use a lot.
-set(LIBWNTRCORE_INCLUDE_DIRS
-  ${Boost_INCLUDE_DIRS}
-  ${JSONCPP_INCLUDE_DIRS}
-  ${LOG4CXX_INCLUDE_DIRS})
+# Internal dependencies
+INCLUDE(defaults)
 
-set(LIBWNTRCORE_LIBRARIES
-  ${Boost_LIBRARIES}
-  ${JSONCPP_LIBRARIES}
-  ${LOG4CXX_LIBRARIES})
-
-set(_srcs
-  # Natives
-  ./globals.cpp
-  ./logging.cpp
-  ./util/serializable.cpp
-
-  # Procedural
-  ./message.cpp
-  ./module.cpp
-  ./module_designation.cpp
-  ./module_pool.cpp
-  ./dispatcher.cpp
-  ./receiver.cpp
-  ./tunnel.cpp
-
-  # Plugins
-)
-
-# Set up sources.
-CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}
-  ${LIBWNTRCORE_INCLUDE_DIRS})
-
-ADD_LIBRARY(wintermutecore SHARED ${_srcs})
-
-SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS "-Wall -std=c++11 -O0"
-)
-
-TARGET_LINK_LIBRARIES(wintermutecore ${LIBWNTRCORE_LIBRARIES})
-
-GENERATE_EXPORT_HEADER(wintermutecore)
+# External dependencies
