@@ -26,4 +26,4 @@ PKG_SEARCH_MODULE(JSONCPP jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(LOG4CXX liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
-FIND_PACKAGE(Boost 1.55 REQUIRED)
+FIND_PACKAGE(Boost 1.50 REQUIRED)
