@@ -36,6 +36,9 @@ set(_srcs
   ./dispatcher.cpp
   ./receiver.cpp
   ./tunnel.cpp
+
+  # Plugins
+  ./plugin.cpp
 )
 
 # Set up sources.
@@ -47,6 +50,6 @@ WINTERMUTE_LINK_LIBRARIES(wintermutecore)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  DEFINE_SYMBOL WINTERMUTE_EXPORT
+  DEFINE_SYMBOL "WINTERMUTE_EXPORT"
 )
 GENERATE_EXPORT_HEADER(wintermutecore)

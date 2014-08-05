@@ -25,8 +25,10 @@ else()
   return()
 endif()
 
+# == Look up manual dependencies.
+INCLUDE(WintermuteHeaderDependencies)
 
-# Look for things this library needs/wants via pkgconfig.
+# == Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
@@ -48,10 +50,10 @@ set(WINTERMUTE_LIBRARIES
   ${Boost_LIBRARIES}
 )
 
-if (EXISTS WINTERMUTE_COMPILE_FLAGS)
+if (DEFINED WINTERMUTE_COMPILE_FLAGS)
   set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
     ${JsonCpp_CFLAGS}
     ${Log4Cxx_CFLAGS}
     ${Boost_CFLAGS}
   )
-endif(EXISTS WINTERMUTE_COMPILE_FLAGS)
+endif(DEFINED WINTERMUTE_COMPILE_FLAGS)

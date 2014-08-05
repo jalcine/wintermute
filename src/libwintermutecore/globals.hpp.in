@@ -28,12 +28,13 @@
 #include <sys/types.h>
 #include <type_traits>
 #include <unistd.h>
+#include "wintermutecore_export.h"
 
 #cmakedefine01 CMAKE_BUILD_TYPE
 
-#include "wintermutecore_export.h"
-
 using std::string;
+
+#define WINTERMUTE_ENTRY_FUNCTION "w_entry_point"
 
 // {{{ Private + Public Accessors
 
