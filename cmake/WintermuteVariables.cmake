@@ -19,17 +19,13 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# == Variables we'd use.
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(BUILD_SHARED_LIBRARIES ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
+if (NOT DEFINED _wntr_vars)
+  set(_wntr_vars ON)
+else()
+  return()
+endif()
 
-# == Imports we'd use.
-# Include a means of picking up the proper paths on a machine.)
-INCLUDE(GNUInstallDirs)
-
-# Build a header file we can use to include into other projects.
-INCLUDE(GenerateExportHeader)
-
-# == Our CMake files.
-INCLUDE(WintermuteDependencies)
+SET(WINTERMUTE_COMPILE_FLAGS "-std=c++11")
+SET(WINTERMUTE_COMPILE_FLAGS_DEBUG "-Wall -O0")
+SET(WINTERMUTE_COMPILE_DEFINITIONS "")
+SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "Wintermute_DEBUG")

@@ -16,5 +16,3 @@ Message craftRandomMessage()
   aMsg.setReceiver(craftRandomDesignation());
   return aMsg;
 }
-
-

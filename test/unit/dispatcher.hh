@@ -1,7 +1,7 @@
 #include "libwintermutecore/dispatcher.hpp"
 #include "libwintermutecore/message.hpp"
 #include <cxxtest/TestSuite.h>
-#include "includes.hpp"
+#include "include/fixtures.hpp"
 
 using Wintermute::Message;
 using Wintermute::Dispatcher;

@@ -18,31 +18,36 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-# We use CxxTest extensively.
-include(FindCxxTest)
-include(CTest)
+#== Include things we'll need.
+INCLUDE(FindCxxTest)
+INCLUDE(CTest)
+INCLUDE(WintermuteMacros)
 
+#== CxxTest: Search and bail.
 IF (NOT CXXTEST_FOUND)
   MESSAGE(ERROR "We need CxxTest for the test suite.")
+  RETURN()
 ENDIF(NOT CXXTEST_FOUND)
 
-INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_BINARY_DIR}/src/libwintermutecore)
+SET(WINTERMUTE_TEST_INCLUDE_DIRS 
+  ${CXXTEST_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/test
+  ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_BINARY_DIR}/src
+  ${CMAKE_BINARY_DIR}/src/libwintermutecore
+)
 
-macro(ADD_A_TEST _name _hdr)
-  CXXTEST_ADD_TEST(unittest_${_name} ${_name}_test.cc ${_hdr})
-  target_link_libraries(unittest_${_name} wintermutecore)
-  SET_TARGET_PROPERTIES(unittest_${_name} PROPERTIES
-    COMPILE_FLAGS "-Wall -std=c++0x"
- )
-endmacro(ADD_A_TEST)
+MACRO(ADD_A_TEST _prefix _name _hdr)
+  set(_target ${_prefix}_${_name})
 
-add_a_test(singleton ${CMAKE_SOURCE_DIR}/test/unit/singleton.hh)
-add_a_test(message ${CMAKE_SOURCE_DIR}/test/unit/message.hh)
-add_a_test(module_designation ${CMAKE_SOURCE_DIR}/test/unit/module_designation.hh)
-add_a_test(module ${CMAKE_SOURCE_DIR}/test/unit/module.hh)
-add_a_test(module_pool ${CMAKE_SOURCE_DIR}/test/unit/module_pool.hh)
-add_a_test(tunnel ${CMAKE_SOURCE_DIR}/test/unit/tunnel.hh)
-add_a_test(util_serializer ${CMAKE_SOURCE_DIR}/test/unit/util/serializable.hh)
-add_a_test(dispatcher ${CMAKE_SOURCE_DIR}/test/unit/dispatcher.hh)
-#add_a_test(receiver ${CMAKE_SOURCE_DIR}/test/unit/receiver.hh)
+  CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
+
+  WINTERMUTE_LINK_LIBRARIES(${_target})
+  WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
+  TARGET_LINK_LIBRARIES(${_target} wintermutecore)
+
+  SET_PROPERTY(TARGET ${_target} APPEND_STRING
+    PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
+ENDMACRO(ADD_A_TEST)
+
+ADD_SUBDIRECTORY(unit)

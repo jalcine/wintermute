@@ -19,11 +19,39 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+if (NOT DEFINED _wntr_deps)
+  set(_wntr_deps ON)
+else()
+  return()
+endif()
+
+
 # Look for things this library needs/wants via pkgconfig.
 INCLUDE(FindPkgConfig)
 
-PKG_SEARCH_MODULE(JSONCPP jsoncpp REQUIRED)
-PKG_SEARCH_MODULE(LOG4CXX liblog4cxx REQUIRED)
+PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
+PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
 FIND_PACKAGE(Boost 1.53 REQUIRED)
+
+# == Exported variables
+set(WINTERMUTE_INCLUDE_DIRS
+  ${JsonCpp_INCLUDE_DIRS}
+  ${Log4Cxx_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
+
+set(WINTERMUTE_LIBRARIES
+  ${JsonCpp_LIBRARIES}
+  ${Log4Cxx_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+if (EXISTS WINTERMUTE_COMPILE_FLAGS)
+  set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
+    ${JsonCpp_CFLAGS}
+    ${Log4Cxx_CFLAGS}
+    ${Boost_CFLAGS}
+  )
+endif(EXISTS WINTERMUTE_COMPILE_FLAGS)

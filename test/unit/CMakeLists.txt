@@ -17,19 +17,16 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# == Variables we'd use.
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(BUILD_SHARED_LIBRARIES ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
+macro(add_a_unit_test _name)
+  add_a_test(unit "${_name}" "${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh")
+endmacro(add_a_unit_test)
 
-# == Imports we'd use.
-# Include a means of picking up the proper paths on a machine.)
-INCLUDE(GNUInstallDirs)
-
-# Build a header file we can use to include into other projects.
-INCLUDE(GenerateExportHeader)
-
-# == Our CMake files.
-INCLUDE(WintermuteDependencies)
+add_a_unit_test(singleton)
+add_a_unit_test(message)
+add_a_unit_test(module_designation)
+add_a_unit_test(module)
+add_a_unit_test(module_pool)
+add_a_unit_test(tunnel)
+add_a_unit_test(util_serializable)
+add_a_unit_test(dispatcher)

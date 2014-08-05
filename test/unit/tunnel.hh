@@ -5,7 +5,7 @@
 #include "libwintermutecore/dispatcher.hpp"
 #include "libwintermutecore/receiver.hpp"
 #include "libwintermutecore/module.hpp"
-#include "includes.hpp"
+#include "include/fixtures.hpp"
 
 using std::string;
 using std::list;

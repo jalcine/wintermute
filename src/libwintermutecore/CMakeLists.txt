@@ -20,16 +20,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(WintermuteCore CXX)
 
-# Set some variables we'd use a lot.
-set(LIBWNTRCORE_INCLUDE_DIRS
-  ${Boost_INCLUDE_DIRS}
-  ${JSONCPP_INCLUDE_DIRS}
-  ${LOG4CXX_INCLUDE_DIRS})
-
-set(LIBWNTRCORE_LIBRARIES
-  ${Boost_LIBRARIES}
-  ${JSONCPP_LIBRARIES}
-  ${LOG4CXX_LIBRARIES})
+include(WintermuteMacros)
 
 set(_srcs
   # Natives
@@ -45,22 +36,17 @@ set(_srcs
   ./dispatcher.cpp
   ./receiver.cpp
   ./tunnel.cpp
-
-  # Plugins
 )
 
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}
-  ${LIBWNTRCORE_INCLUDE_DIRS})
-
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
+WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutecore)
+WINTERMUTE_LINK_LIBRARIES(wintermutecore)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
-  COMPILE_FLAGS "-Wall -std=c++11 -O0"
+  DEFINE_SYMBOL WINTERMUTE_EXPORT
 )
-
-TARGET_LINK_LIBRARIES(wintermutecore ${LIBWNTRCORE_LIBRARIES})
-
 GENERATE_EXPORT_HEADER(wintermutecore)
