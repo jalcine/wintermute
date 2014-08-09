@@ -1,3 +1,6 @@
+#ifndef WINTERMUTE_TEST_SAMPLE_MODULE
+#define WINTERMUTE_TEST_SAMPLE_MODULE
+
 #include "libwintermutecore/module.hpp"
 
 class SampleModule : public Wintermute::Module
@@ -8,3 +11,5 @@ public:
   {
   }
 };
+
+#endif

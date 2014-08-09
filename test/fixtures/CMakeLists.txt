@@ -17,46 +17,12 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-if (NOT DEFINED _wntr_deps)
-	set(_wntr_deps ON)
-else()
-	return()
-endif()
+ADD_LIBRARY(wintermutesample SHARED ./wintermute_sample.cc)
+TARGET_LINK_LIBRARIES(wintermutesample wintermutecore)
+WINTERMUTE_LINK_LIBRARIES(wintermutesample)
+WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutesample)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/libwintermutecore
+  ${CMAKE_BINARY_DIR}/src/libwintermutecore)
 
-# == Look up manual dependencies.
-INCLUDE(WintermuteHeaderDependencies)
-
-# == Look up package-level dependencies.
-INCLUDE(FindPkgConfig)
-
-PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
-PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
-
-# Look for Boost and the aspects we'd like from it.
-FIND_PACKAGE(Boost 1.54 EXACT REQUIRED
-	COMPONENTS filesystem system)
-
-# == Exported variables
-set(WINTERMUTE_INCLUDE_DIRS
-	${Boost_FILE_SYSTEM_INCLUDE_DIRS}
-	${Boost_SYSTEM_INCLUDE_DIRS}
-	${JsonCpp_INCLUDE_DIRS}
-	${Log4Cxx_INCLUDE_DIRS}
-	)
-
-set(WINTERMUTE_LIBRARIES
-	dl
-	${Boost_FILESYSTEM_LIBRARY_RELEASE}
-	${Boost_SYSTEM_LIBRARY_RELEASE}
-	${JsonCpp_LIBRARIES}
-	${Log4Cxx_LIBRARIES}
-	)
-
-if (DEFINED WINTERMUTE_COMPILE_FLAGS)
-	set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
-		${JsonCpp_CFLAGS}
-		${Log4Cxx_CFLAGS}
-		)
-endif(DEFINED WINTERMUTE_COMPILE_FLAGS)
+# TODO Export file path to the library.

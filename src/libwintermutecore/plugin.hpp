@@ -22,42 +22,62 @@
 #include <list>
 #include <map>
 #include <string>
+#include <functional>
+
+using std::map;
+using std::list;
+using std::string;
+using std::function;
 
 namespace Wintermute
 {
 class PluginPrivate;
 class Plugin
 {
-  W_DEFINE_PRIVATE(Plugin);
+	W_DEFINE_PRIVATE(Plugin);
 
 public:
-  W_DECLARE_PTR_TYPE(Plugin);
-  typedef std::list<Plugin::Ptr> List;
-  typedef std::map<string, Plugin::Ptr> Map;
-  typedef std::function<Plugin::Ptr(void)> EntryFunction;
-  typedef void Handle;
-  typedef SharedPtr<Handle> HandlePtr;
+	virtual ~Plugin();
+	W_DECLARE_PTR_TYPE(Plugin);
 
-  string name() const;
-  bool loaded() const;
-  static Plugin::Ptr loadByName(const string& name);
-  static Plugin::Ptr loadByFilePath(const string& filePath);
-  static bool unload(const string& name);
-  static Plugin::List plugins();
+	// Represents a list of Plugin pointers.
+	typedef list<Plugin::Ptr> List;
+
+	// Represents a sorted map of Plugin pointers.
+	typedef map<string, Plugin::Ptr> Map;
+
+	// The signature of the function in question.
+	typedef Plugin::Ptr (EntryFunctionSignature)(void);
+
+	// Represents the signature of the entry method expected in plugin libraries.
+	typedef function<EntryFunctionSignature> EntryFunction;
+
+	// A typedef to hold the handle used to manipulate the library.
+	typedef SharedPtr<void> HandlePtr;
+
+	string name() const;
+
+	static Plugin::Ptr loadByName(const string& libraryName);
+	static Plugin::Ptr loadByFilePath(const string& filepath);
+	static bool unload(const string& name);
+	static Plugin::List plugins();
 
 protected:
-  explicit Plugin(const std::string& name);
+	explicit Plugin(const string& name);
 };
 }
 
-Wintermute::Plugin::Ptr w_resolve_plugin_ptr(Wintermute::Plugin::HandlePtr handle);
+Wintermute::Plugin::Ptr w_resolve_plugin_ptr(Wintermute::Plugin::HandlePtr& handle);
 Wintermute::Plugin::HandlePtr w_open_plugin_library(const string& fileName);
+bool w_close_plugin_library(Wintermute::Plugin::HandlePtr& handle);
 
 #define W_DECLARE_PLUGIN(Class) \
-  Wintermute::Plugin::Ptr WINTERMUTE_ENTRY_FUNCTION() { \
+	extern "C" Wintermute::Plugin::Ptr WINTERMUTE_ENTRY_FUNCTION(); \
+
+#define W_EXPOSE_PLUGIN(Class) \
+  extern "C" Wintermute::Plugin::Ptr WINTERMUTE_ENTRY_FUNCTION() \
+  { \
     return Wintermute::Plugin::Ptr(new Class); \
   }
-
-#define W_EXPOSE_PLUGIN(Class) w_noop();
 
 #endif

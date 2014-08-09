@@ -16,37 +16,122 @@
  */
 
 #include <dlfcn.h>
+#include <sys/stat.h>
 #include <system_error>
+#include <boost/filesystem.hpp>
 #include "plugin.hh"
 #include "plugin.hpp"
+#include "logging.hpp"
 
 using Wintermute::Plugin;
+using Wintermute::PluginPrivate;
+namespace bfs = boost::filesystem;
 
+// NOTE: RTLD_DEEPBIND only available in glibc 2.3.4.
 Plugin::HandlePtr w_open_plugin_library(const string& filepath)
 {
-  Plugin::HandlePtr pluginHandlePtr(dlopen(filepath.c_str(), RTLD_LAZY));
-  assert(pluginHandlePtr);
-  return pluginHandlePtr;
+	Plugin::HandlePtr handlePtr(nullptr);
+	const int ld_flags = RTLD_NOW | RTLD_GLOBAL | RTLD_DEEPBIND;
+	dlerror();
+
+	if (bfs::exists(filepath))
+	{
+		handlePtr.reset(dlopen(filepath.c_str(), ld_flags));
+		const string potentialError(dlerror());
+
+		if (!potentialError.empty())
+		{
+			werror("Failed to load the plugin at " + filepath + "; error message: " + potentialError);
+			//throw new std::runtime_error("Failed to load library for plugin at " + filepath);
+		}
+	}
+	else
+	{
+		werror("Could not find library at " + filepath + ".");
+	}
+
+	return handlePtr;
 }
 
-Plugin::Ptr w_resolve_plugin_ptr(Plugin::HandlePtr handle)
+Plugin::Ptr w_resolve_plugin_ptr(Plugin::HandlePtr& handle)
 {
-  Plugin::Ptr pluginPtr;
-  pluginPtr.reset(
-    static_cast<Plugin::Ptr::element_type*>(
-      dlsym(handle.get(), WINTERMUTE_ENTRY_FUNCTION)));
-  assert(pluginPtr);
+	dlerror();
+	assert(handle);
 
-  const string libError = dlerror();
-  assert(libError.empty());
-  if (!libError.empty()) {
-    throw new std::system_error(EADDRNOTAVAIL, std::system_category(), "Failed to load library.");
-  }
+	Plugin::EntryFunction entryFunction(
+	    (Plugin::EntryFunctionSignature*) dlsym(handle.get(), WINTERMUTE_ENTRY_FUNCTION_STR));
 
-  return pluginPtr;
+	assert(entryFunction);
+
+	Plugin::Ptr pluginPtr(entryFunction());
+	assert(pluginPtr);
+
+	const char* libError = dlerror();
+	if (libError)
+	{
+		const string fullMsg("Failed to load library: " + string(libError));
+		werror(fullMsg);
+		//throw new std::system_error(EADDRNOTAVAIL, std::system_category(), fullMsg);
+		return Plugin::Ptr(nullptr);
+	}
+
+	assert(pluginPtr);
+	assert(sizeof (pluginPtr.get()) == sizeof (Wintermute::Plugin*));
+
+	// Check for a invalid pointer.
+	if (!pluginPtr || sizeof (pluginPtr.get()) == sizeof (Wintermute::Plugin*))
+	{
+		pluginPtr.reset();
+	}
+
+	return pluginPtr;
 }
 
-bool w_close_plugin(Plugin::HandlePtr handle)
+bool w_close_plugin_library(Plugin::HandlePtr& handle)
 {
-  return false;
+	dlclose(handle.get());
+	return false;
 }
+
+Plugin::Plugin(const string& name) : d_ptr(new PluginPrivate)
+{
+	W_PRV(Plugin);
+	d->name = name;
+}
+
+string Plugin::name() const
+{
+	W_PRV(const Plugin);
+	return d->name;
+}
+
+// TODO Pass in the handle to the pimpl of the Plugin for future releasing.
+Plugin::Ptr Plugin::loadByFilePath(const string& filePath)
+{
+	assert(!filePath.empty());
+
+	Plugin::HandlePtr handle = w_open_plugin_library(filePath);
+	assert(handle);
+
+	Plugin::Ptr plugin = w_resolve_plugin_ptr(handle);
+	assert(plugin);
+
+	return plugin;
+}
+
+Plugin::Ptr Plugin::loadByName(const string& libraryName)
+{}
+
+bool Plugin::unload(const string& name)
+{
+}
+
+Plugin::~Plugin()
+{
+}
+
+PluginPrivate::PluginPrivate()
+{}
+
+PluginPrivate::~PluginPrivate()
+{}

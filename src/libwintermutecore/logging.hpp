@@ -57,19 +57,19 @@ public:
   Level level() const;
 
   /* Outputs a Level::Debug message into Wintermute's logger. */
-  void debug(const string& message, const string& name = "root");
+  void debug(const string& message, const string& name = WINTERMUTE_ROOT_LOGGER_NAME);
 
   /* Outputs a Level::Error message into Wintermute's logger. */
-  void error(const string& message, const string& name = "root");
+  void error(const string& message, const string& name = WINTERMUTE_ROOT_LOGGER_NAME);
 
   /* Outputs a Level::Info message into Wintermute's logger. */
-  void info(const string& message, const string& name = "root");
+  void info(const string& message, const string& name = WINTERMUTE_ROOT_LOGGER_NAME);
 
   /* Outputs a Level::Warn message into Wintermute's logger. */
-  void warn(const string& message, const string& name = "root");
+  void warn(const string& message, const string& name = WINTERMUTE_ROOT_LOGGER_NAME);
 
   /* Outputs a Level::Trace message into Wintermute's logger. */
-  void trace(const string& message, const string& name = "root");
+  void trace(const string& message, const string& name = WINTERMUTE_ROOT_LOGGER_NAME);
 
 };
 }

@@ -34,7 +34,9 @@
 
 using std::string;
 
-#define WINTERMUTE_ENTRY_FUNCTION "w_entry_point"
+#define WINTERMUTE_ENTRY_FUNCTION w_entry_point
+#define WINTERMUTE_ENTRY_FUNCTION_STR "#WINTERMUTE_ENTRY_FUNCTION#"
+#define WINTERMUTE_ROOT_LOGGER_NAME "root"
 
 // {{{ Private + Public Accessors
 
@@ -64,10 +66,14 @@ using std::string;
   private: \
     static SharedPtr<Class> _instance; \
   public: \
-    static inline SharedPtr<Class> instance() { return _instance; }
+    static inline SharedPtr<Class> instance() { \
+      if (!_instance) { \
+        _instance.reset(new Class()); \
+      } \
+      return _instance;  \
+    }
 
-#define W_DECLARE_SINGLETON(Class) \
-  SharedPtr<Class> Class::_instance(new Class());
+#define W_DECLARE_SINGLETON(Class) SharedPtr<Class> Class::_instance(nullptr);
 
 // }}}
 

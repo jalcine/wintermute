@@ -41,6 +41,11 @@ MACRO(wintermute_add_target_properties _target)
     COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
     COMPILE_DEFINITIONS_DEBUG "${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}"
   )
+
+  if (CMAKE_BUILD_TYPE EQUAL Debug)
+    SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
+      COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
+  endif()
 ENDMACRO(wintermute_add_target_properties)
 
 #==============================================================================

@@ -15,21 +15,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_PLUGINPRIVATE_HPP
-#define WINTERMUTE_PLUGINPRIVATE_HPP
-
-#include <string>
-
-using std::string;
+#include "plugin.hpp"
 
 namespace Wintermute
 {
-class PluginPrivate {
-  public:
-		explicit PluginPrivate();
-		virtual ~PluginPrivate();
-    string name;
-};
+  class SamplePlugin : public Plugin
+  {
+    public:
+      explicit SamplePlugin();
+      virtual ~SamplePlugin();
+  };
 }
 
-#endif
+W_DECLARE_PLUGIN(Wintermute::SamplePlugin);

@@ -12,6 +12,9 @@ class SingletonTestSuite : public CxxTest::TestSuite
 public:
   void testIsASingleton(void)
   {
-    TS_ASSERT ( SingletonClass::instance().get() != nullptr );
+    auto ptr = SingletonClass::instance();
+    TS_ASSERT ( ptr.get() != nullptr );
+    auto otherPtr = SingletonClass::instance();
+    TS_ASSERT ( ptr == otherPtr );
   }
 };
