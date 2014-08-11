@@ -28,10 +28,10 @@ class Message;
 class ReceiverPrivate;
 class Receiver
 {
-  W_DEFINE_PRIVATE(Receiver);
+  W_DEFINE_PRIVATE(Receiver)
 
 public:
-  W_DECLARE_PTR_TYPE(Receiver);
+  W_DECLARE_PTR_TYPE(Receiver)
   explicit Receiver();
   virtual ~Receiver();
 

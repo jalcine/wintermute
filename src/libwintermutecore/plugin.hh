@@ -19,6 +19,9 @@
 #define WINTERMUTE_PLUGINPRIVATE_HPP
 
 #include <string>
+#include <functional>
+#include "globals.hpp"
+#include "plugin.hpp"
 
 using std::string;
 
@@ -26,9 +29,13 @@ namespace Wintermute
 {
 class PluginPrivate {
   public:
+		typedef std::function<Wintermute::Plugin* (void)> CtorFunction;
+		typedef std::function<bool (Wintermute::Plugin* const)> DtorFunction;
 		explicit PluginPrivate();
 		virtual ~PluginPrivate();
     string name;
+		SharedPtr<Plugin::Library> libraryPtr;
+		Plugin::Ptr attemptLoad();
 };
 }
 

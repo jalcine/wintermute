@@ -25,7 +25,15 @@ else()
   return()
 endif()
 
-SET(WINTERMUTE_COMPILE_FLAGS "-std=c++11 -fstrict-aliasing")
-SET(WINTERMUTE_COMPILE_FLAGS_DEBUG "-Wall -Wctor-dtor-privacy -Weffc++ -Wpedantic -Wno-deprecated -Waggressive-loop-optimizations -O0")
+SET(WINTERMUTE_COMPILE_FLAGS "-std=c++11 -fstrict-aliasing -Wall -Wpedantic")
+SET(WINTERMUTE_COMPILE_FLAGS_DEBUG 
+	-Wctor-dtor-privacy
+	-Wno-deprecated
+	-Waggressive-loop-optimizations
+	-O0
+	-g
+	-Wstrict-prototypes
+	-Wno-unused-parameter)
+SET(WINTERMUTE_COMPILE_FLAGS_RELEASE "-O3")
 SET(WINTERMUTE_COMPILE_DEFINITIONS "")
-SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "Wintermute_DEBUG")
+SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")

@@ -30,5 +30,3 @@ add_a_unit_test(tunnel)
 add_a_unit_test(util)
 add_a_unit_test(dispatcher)
 add_a_unit_test(plugin)
-
-add_dependencies(unit_plugin wintermutesample)

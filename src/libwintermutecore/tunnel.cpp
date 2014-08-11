@@ -28,7 +28,7 @@ using Wintermute::Message;
 using Wintermute::Tunnel;
 using Wintermute::TunnelPrivate;
 
-W_DECLARE_SINGLETON(Tunnel);
+W_DECLARE_SINGLETON(Tunnel)
 
 Tunnel::Tunnel() : d_ptr(new TunnelPrivate)
 {

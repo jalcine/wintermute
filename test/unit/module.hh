@@ -7,7 +7,9 @@ using Wintermute::Module;
 class ModuleTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testHaveFun(void) {}
+  void testRegisterCall(void) {}
+  void testDeregisterCall(void) {}
+  void testInvokeCall(void) {}
 };
 
 class ModulePoolTestSuite : public CxxTest::TestSuite

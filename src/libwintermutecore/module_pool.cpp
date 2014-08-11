@@ -22,7 +22,7 @@
 using Wintermute::Module;
 using Wintermute::ModulePoolPrivate;
 
-W_DECLARE_SINGLETON(Module::Pool);
+W_DECLARE_SINGLETON(Module::Pool)
 
 Module::Pool::Pool() : d_ptr(new ModulePoolPrivate)
 {

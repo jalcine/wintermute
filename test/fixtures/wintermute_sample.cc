@@ -17,9 +17,10 @@
 
 #include "wintermute_sample.hh"
 
+using Wintermute::Plugin;
 using Wintermute::SamplePlugin;
 
-SamplePlugin::SamplePlugin() : Wintermute::Plugin("sample")
+SamplePlugin::SamplePlugin() : Plugin("sample")
 {
 }
 
@@ -27,4 +28,4 @@ SamplePlugin::~SamplePlugin()
 {
 }
 
-W_EXPOSE_PLUGIN(Wintermute::SamplePlugin);
+W_EXPOSE_PLUGIN(Wintermute::SamplePlugin)

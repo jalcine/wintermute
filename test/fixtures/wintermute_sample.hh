@@ -19,12 +19,12 @@
 
 namespace Wintermute
 {
-  class SamplePlugin : public Plugin
-  {
-    public:
-      explicit SamplePlugin();
-      virtual ~SamplePlugin();
-  };
+class SamplePlugin : public Plugin
+{
+public:
+	explicit SamplePlugin();
+	virtual ~SamplePlugin();
+};
 }
 
-W_DECLARE_PLUGIN(Wintermute::SamplePlugin);
+W_DEFINE_PLUGIN(Wintermute::SamplePlugin)

@@ -15,30 +15,22 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_CORE_DISPATCHER_HPP
-#define WINTERMUTE_CORE_DISPATCHER_HPP
-
-#include <string>
 #include "globals.hpp"
-
-using std::string;
+#include "plugin.hpp"
 
 namespace Wintermute
 {
-class DispatcherPrivate;
-class Message;
-/* Serves as an abstract basis for sending messages. */
-class Dispatcher
+class LibraryPrivate
 {
-
+protected:
 public:
-  W_DECLARE_PTR_TYPE(Dispatcher)
-  explicit Dispatcher();
-  virtual ~Dispatcher();
+	typedef void Handle;
+	typedef SharedPtr<Handle> HandlePtr;
 
-  virtual string name() const = 0;
-  virtual bool send(const Message& message) = 0;
+	HandlePtr handlePtr;
+	string filePath;
+
+	explicit LibraryPrivate();
+	virtual ~LibraryPrivate();
 };
 }
-
-#endif

@@ -2,10 +2,10 @@
 #include <cxxtest/TestSuite.h>
 
 class SingletonClass {
-  W_DEFINE_SINGLETON(SingletonClass);
+  W_DEFINE_SINGLETON(SingletonClass)
 };
 
-W_DECLARE_SINGLETON(SingletonClass);
+W_DECLARE_SINGLETON(SingletonClass)
 
 class SingletonTestSuite : public CxxTest::TestSuite
 {

@@ -30,7 +30,7 @@
 using Wintermute::Logging;
 using log4cxx::LoggerPtr;
 
-W_DECLARE_SINGLETON(Logging);
+W_DECLARE_SINGLETON(Logging)
 
 string get_current_time_as_string()
 {
@@ -100,7 +100,7 @@ void Logging::error(const string& message, const string& name)
 
 void Logging::debug(const string& message, const string& name)
 {
-#ifdef Wintermute_DEBUG
+#ifdef WINTERMUTE_DEBUG 
 	obtain_logger(name)->debug(message);
 #endif
 }
@@ -117,7 +117,7 @@ void Logging::warn(const string& message, const string& name)
 
 void Logging::trace(const string& message, const string& name)
 {
-#ifdef Wintermute_DEBUG
+#ifdef WINTERMUTE_DEBUG
 	obtain_logger(name)->trace(message);
 #endif
 }

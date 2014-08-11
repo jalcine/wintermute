@@ -40,7 +40,7 @@ class MessagePrivate;
  */
 class WINTERMUTECORE_EXPORT Message : public Util::Serializable
 {
-  W_DEFINE_PRIVATE(Message);
+  W_DEFINE_PRIVATE(Message)
 
 public:
   /* A type mapping used to handle the data hash's key. */

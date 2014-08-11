@@ -56,7 +56,7 @@ public:
   class Designation : public Wintermute::Util::Serializable
   {
   private:
-    W_DEFINE_PRIVATE(Designation);
+    W_DEFINE_PRIVATE(Designation)
 
   public:
     /// Default constructor for Designation objects.
@@ -107,7 +107,7 @@ public:
 
   class Pool
   {
-    W_DEFINE_PRIVATE(ModulePool);
+    W_DEFINE_PRIVATE(ModulePool)
     explicit Pool();
 
   public:
@@ -118,7 +118,7 @@ public:
     bool registerModule(Module& module);
     bool deregisterModule(const Module::Designation& designation);
 
-    W_DEFINE_SINGLETON(Pool);
+    W_DEFINE_SINGLETON(Pool)
 
   };
 
@@ -129,7 +129,7 @@ public:
   Designation designation() const;
 
 protected:
-  W_DEFINE_PRIVATE(Module);
+  W_DEFINE_PRIVATE(Module)
 
 protected:
   /// Default constructor.
