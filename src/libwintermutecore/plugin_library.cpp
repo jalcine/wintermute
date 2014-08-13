@@ -44,15 +44,14 @@ bool Plugin::Library::unload()
 	return !! d->handlePtr;
 }
 
-template<typename FunctionSignature>
-function<FunctionSignature> Plugin::Library::resolveMethod(const string& methodName)
+Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName)
 {
-	function<FunctionSignature> resolvedFunction;
-	return resolvedFunction;
+	return Library::FunctionHandlePtr(nullptr);
 }
 
 Plugin::Library::~Library()
 {
+	// TODO Consider some cleanup work here.
 }
 
 LibraryPrivate::LibraryPrivate() : filePath()
@@ -60,4 +59,5 @@ LibraryPrivate::LibraryPrivate() : filePath()
 }
 
 LibraryPrivate::~LibraryPrivate()
-{}
+{
+}

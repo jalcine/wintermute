@@ -41,6 +41,12 @@ public:
   // Represents the internal string-to-string mapping of data.
   typedef std::map<std::string, std::string> Map;
 
+  // Takes a map and makes it into a deserializable string.
+  static std::string toString(const Serializable::Map& data);
+
+  // Takes a map and makes it into a deserializable string.
+  static Serializable::Map fromString(const std::string& res);
+
 protected:
 
   // Populates this serializable data with the provided map.
@@ -57,12 +63,6 @@ protected:
 
   // Takes a map and expands the data stored into this working instance.
   virtual void deserialize(const Serializable::Map& data) = 0;
-
-  // Takes a map and makes it into a deserializable string.
-  static std::string toString(const Serializable::Map& data);
-
-  // Takes a map and makes it into a deserializable string.
-  static Serializable::Map fromString(const std::string& res);
 };
 
 }

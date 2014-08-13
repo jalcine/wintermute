@@ -63,6 +63,9 @@ public:
 		explicit Library(const string& libraryPath);
 		virtual ~Library();
 
+		// Represents a raw function pointer.
+		typedef SharedPtr<void> FunctionHandlePtr;
+
 		// Obtains the path to the library in question.
 		string filePath() const;
 
@@ -75,14 +78,13 @@ public:
 		bool isLoaded();
 
 		// Attempts to obtain a function from the library.
-		template<typename FunctionSignature>
-		function<FunctionSignature> resolveMethod(const string& methodName);
+		Library::FunctionHandlePtr resolveMethod(const string& methodName);
 	};
 
 	static Plugin::Ptr load(const string& filepath);
 	static Plugin::Ptr load(Plugin::Library::Ptr& library);
 	static bool unload(const string& name);
-	static Plugin::List loadedPlugins();
+	static list<string> loadedPlugins();
 
 protected:
 	explicit Plugin(const string& name);

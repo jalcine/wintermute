@@ -18,6 +18,7 @@
 #ifndef WINTERMUTE_PLUGINPRIVATE_HPP
 #define WINTERMUTE_PLUGINPRIVATE_HPP
 
+#include <unordered_map>
 #include <string>
 #include <functional>
 #include "globals.hpp"
@@ -29,13 +30,16 @@ namespace Wintermute
 {
 class PluginPrivate {
   public:
-		typedef std::function<Wintermute::Plugin* (void)> CtorFunction;
-		typedef std::function<bool (Wintermute::Plugin* const)> DtorFunction;
+		typedef std::function<Wintermute::Plugin::Ptr (void)> CtorFunction;
+		typedef std::function<bool (Wintermute::Plugin::Ptr const)> DtorFunction;
+		typedef std::unordered_map<string, Wintermute::Plugin::Ptr> PluginMap;
+
 		explicit PluginPrivate();
 		virtual ~PluginPrivate();
     string name;
-		SharedPtr<Plugin::Library> libraryPtr;
+		Plugin::Library::Ptr libraryPtr;
 		Plugin::Ptr attemptLoad();
+		static PluginMap plugins;
 };
 }
 

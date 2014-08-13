@@ -17,12 +17,15 @@
 
 #include <dlfcn.h>
 #include <sys/stat.h>
+#include <algorithm>
 #include "plugin.hh"
 #include "plugin.hpp"
 #include "logging.hpp"
 
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
+
+PluginPrivate::PluginMap PluginPrivate::plugins;
 
 Plugin::Plugin(const string& name) : d_ptr(new PluginPrivate)
 {
@@ -44,29 +47,51 @@ Plugin::Ptr Plugin::load(Library::Ptr& library)
 
 	Plugin::Ptr pluginPtr;
 
-	if (library->load()){
+	if (library->load())
+	{
 		wtrace("Library successfully loaded.");
-		//auto pluginCtorFunc = library->resolveMethod<Plugin* (void)>("w_create_plugin");
-	} else {
+		auto pluginCtorFunc = library->resolveMethod("w_create_plugin");
+	}
+	else
+	{
 		werror("Failed to load plugin library.");
 	}
 
 	return pluginPtr;
 }
 
+list<string> Plugin::loadedPlugins()
+{
+	list<string> pluginList;
+	std::for_each(PluginPrivate::plugins.cbegin(),
+	              PluginPrivate::plugins.cend(),
+	              [&](const Plugin::Map::value_type & pair)
+	{
+		pluginList.insert(pluginList.end(), pair.first);
+	});
+
+	return pluginList;
+}
+
 Plugin::Ptr Plugin::load(const string& filepath)
 {
 	assert(!filepath.empty());
-	Library::Ptr libraryPtr(new Library(filepath));
-	return load(libraryPtr);
+	return Plugin::Ptr(nullptr);
 }
 
-void Plugin::start() 
+void Plugin::start()
 {
 }
 
 void Plugin::stop()
-{}
+{
+}
+
+bool Plugin::unload(const string& name)
+{
+	auto pluginItr = PluginPrivate::plugins.find(name);
+	return pluginItr != std::end(PluginPrivate::plugins);
+}
 
 Plugin::~Plugin()
 {

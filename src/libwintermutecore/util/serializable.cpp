@@ -63,7 +63,24 @@ Serializable::Map Serializable::fromString(const string& jsonString)
 
   for (const string name : incomingJson.getMemberNames()) {
     wdebug("Deserializing JSON key: " + name + " for " + jsonString);
-    theMap.insert(std::make_pair(name, incomingJson[name].asString()));
+		const Json::Value currentValue = incomingJson[name];
+		string currentStringValue;
+
+		switch (currentValue.type()) {
+			case Json::intValue:
+				currentStringValue = std::to_string(currentValue.asInt());
+				break;
+
+			case Json::realValue:
+				currentStringValue = std::to_string(currentValue.asDouble());
+				break;
+
+			default:
+				currentStringValue = currentValue.asString();
+			break;
+		}
+
+    theMap.insert(std::make_pair(name, currentStringValue));
   }
 
   return theMap;
