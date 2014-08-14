@@ -49,6 +49,12 @@ Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& 
 	return Library::FunctionHandlePtr(nullptr);
 }
 
+string Plugin::Library::lastErrorMessage() const
+{
+	W_PRV(const Library);
+	return string();
+}
+
 Plugin::Library::~Library()
 {
 	// TODO Consider some cleanup work here.

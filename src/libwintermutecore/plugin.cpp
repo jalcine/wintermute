@@ -17,6 +17,7 @@
 
 #include <dlfcn.h>
 #include <sys/stat.h>
+#include <cstdio>
 #include <algorithm>
 #include "plugin.hh"
 #include "plugin.hpp"
@@ -41,20 +42,74 @@ string Plugin::name() const
 	return d->name;
 }
 
-Plugin::Ptr Plugin::load(Library::Ptr& library)
+Plugin::LoadState Plugin::start()
 {
-	assert(library);
+	W_PRV ( Plugin );
+	wtrace("Starting up plugin " + name() + "...");
 
-	Plugin::Ptr pluginPtr;
-
-	if (library->load())
+	if ( state() == Plugin::Loaded )
 	{
-		wtrace("Library successfully loaded.");
-		auto pluginCtorFunc = library->resolveMethod("w_create_plugin");
+		winfo("Plugin " + name() + "already loaded; attempt at double-load?");
+		return Plugin::Loaded;
+	}
+
+	try
+	{
+		d->loadState = this->startup() ? Plugin::Loaded : Plugin::LoadingFailed;
+	}
+	catch ( std::exception& e )
+	{
+		d->loadState = Plugin::LoadingFailed;
+		d->loadFailure = Plugin::FailureABIException;
+		wwarn("Failed to load plugin '" + name() + "' due to " + e.what() + ".");
+	}
+
+	return d->loadState;
+}
+
+Plugin::Ptr Plugin::load(Library::Ptr& libraryPtr)
+{
+	assert(libraryPtr);
+	Plugin::Ptr pluginPtr(nullptr);
+	const bool wasLibraryLoaded = libraryPtr->load();
+
+	if (!wasLibraryLoaded)
+	{
+		/*d->loadState = Plugin::LoadingFailed;
+		 *d->loadFailure = Plugin::FailureMissingLibrary;*/
+		werror("Failed to load library! " + libraryPtr->lastErrorMessage());
 	}
 	else
 	{
-		werror("Failed to load plugin library.");
+		auto funcCtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
+
+		if (!funcCtorHandle)
+		{
+			/*d->loadState = Plugin::LoadingFailed;
+			 *d->loadFailure = Plugin::FailureMissingSymbol;*/
+			werror("Failed to resolve the ctor function for the plugin from the library.");
+			return pluginPtr;
+		}
+
+		PluginPrivate::CtorSignaturePtr funcCtor(static_cast<PluginPrivate::CtorSignature*>(funcCtorHandle.get()));
+		assert (funcCtor);
+
+		try
+		{
+			pluginPtr = (*funcCtor)();
+		}
+		catch (std::exception &e)
+		{
+			/*d->loadState = Plugin::LoadingFailed;
+			 *d->loadFailure = Plugin::FailureABIMissingSymbol;*/
+			werror(string("Failed to load library for plugin; e: %s") + e.what());
+
+			return pluginPtr;
+		}
+
+		/*d->loadState = Plugin::Loaded;
+		 *d->loadFailure = Plugin::FailureNone;*/
+		winfo("Plugin successfully loaded!");
 	}
 
 	return pluginPtr;
@@ -63,9 +118,11 @@ Plugin::Ptr Plugin::load(Library::Ptr& library)
 list<string> Plugin::loadedPlugins()
 {
 	list<string> pluginList;
-	std::for_each(PluginPrivate::plugins.cbegin(),
-	              PluginPrivate::plugins.cend(),
-	              [&](const Plugin::Map::value_type & pair)
+
+	std::for_each(
+	    PluginPrivate::plugins.cbegin(),
+	    PluginPrivate::plugins.cend(),
+	    [&](const Plugin::Map::value_type & pair)
 	{
 		pluginList.insert(pluginList.end(), pair.first);
 	});
@@ -73,24 +130,10 @@ list<string> Plugin::loadedPlugins()
 	return pluginList;
 }
 
-Plugin::Ptr Plugin::load(const string& filepath)
+Plugin::LoadState Plugin::state() const
 {
-	assert(!filepath.empty());
-	return Plugin::Ptr(nullptr);
-}
-
-void Plugin::start()
-{
-}
-
-void Plugin::stop()
-{
-}
-
-bool Plugin::unload(const string& name)
-{
-	auto pluginItr = PluginPrivate::plugins.find(name);
-	return pluginItr != std::end(PluginPrivate::plugins);
+	W_PRV(const Plugin);
+	return d->loadState;
 }
 
 Plugin::~Plugin()

@@ -34,9 +34,9 @@
 
 using std::string;
 
-#define WINTERMUTE_ENTRY_FUNCTION w_entry_point
-#define WINTERMUTE_ENTRY_FUNCTION_STR "#WINTERMUTE_ENTRY_FUNCTION#"
 #define WINTERMUTE_ROOT_LOGGER_NAME "root"
+#define WINTERMUTE_PLUGIN_METHOD_CTOR_NAME "w_plugin_create"
+#define WINTERMUTE_PLUGIN_METHOD_DTOR_NAME "w_plugin_destroy"
 
 // {{{ Private + Public Accessors
 

@@ -24,6 +24,8 @@ class SamplePlugin : public Plugin
 public:
 	explicit SamplePlugin();
 	virtual ~SamplePlugin();
+	virtual bool startup(); 
+	virtual bool shutdown(); 
 };
 }
 
