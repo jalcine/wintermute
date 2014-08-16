@@ -71,46 +71,42 @@ Plugin::Ptr Plugin::load(Library::Ptr& libraryPtr)
 {
 	assert(libraryPtr);
 	Plugin::Ptr pluginPtr(nullptr);
-	const bool wasLibraryLoaded = libraryPtr->load();
-
-	if (!wasLibraryLoaded)
+	if (!libraryPtr->isLoaded())
 	{
-		/*d->loadState = Plugin::LoadingFailed;
-		 *d->loadFailure = Plugin::FailureMissingLibrary;*/
-		werror("Failed to load library! " + libraryPtr->lastErrorMessage());
-	}
-	else
-	{
-		auto funcCtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
+		const bool wasLibraryLoaded = libraryPtr->load();
 
-		if (!funcCtorHandle)
+		if (!wasLibraryLoaded)
 		{
-			/*d->loadState = Plugin::LoadingFailed;
-			 *d->loadFailure = Plugin::FailureMissingSymbol;*/
-			werror("Failed to resolve the ctor function for the plugin from the library.");
+			werror("Failed to load library! " + libraryPtr->lastErrorMessage());
 			return pluginPtr;
 		}
-
-		PluginPrivate::CtorSignaturePtr funcCtor(static_cast<PluginPrivate::CtorSignature*>(funcCtorHandle.get()));
-		assert (funcCtor);
-
-		try
-		{
-			pluginPtr = (*funcCtor)();
-		}
-		catch (std::exception &e)
-		{
-			/*d->loadState = Plugin::LoadingFailed;
-			 *d->loadFailure = Plugin::FailureABIMissingSymbol;*/
-			werror(string("Failed to load library for plugin; e: %s") + e.what());
-
-			return pluginPtr;
-		}
-
-		/*d->loadState = Plugin::Loaded;
-		 *d->loadFailure = Plugin::FailureNone;*/
-		winfo("Plugin successfully loaded!");
 	}
+
+	auto funcCtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
+
+	if (!funcCtorHandle)
+	{
+		werror("Failed to resolve the ctor function for the plugin from the library.");
+		return pluginPtr;
+	}
+
+	PluginPrivate::CtorSignaturePtr funcCtor(static_cast<PluginPrivate::CtorSignature*>(funcCtorHandle.get()));
+	assert (funcCtor);
+
+	try
+	{
+		pluginPtr = (*funcCtor)();
+	}
+	catch (std::exception &e)
+	{
+		werror(string("Failed to load library for plugin; e: %s") + e.what());
+
+		return pluginPtr;
+	}
+
+	pluginPtr->d_ptr->loadState = Plugin::Loaded;
+	pluginPtr->d_ptr->loadFailure = Plugin::FailureNone;
+	winfo("Plugin successfully loaded!");
 
 	return pluginPtr;
 }
@@ -134,6 +130,17 @@ Plugin::LoadState Plugin::state() const
 {
 	W_PRV(const Plugin);
 	return d->loadState;
+}
+
+Plugin::Ptr Plugin::load(const string& filepath)
+{
+	Plugin::Library::Ptr libraryPtr = Plugin::Library::find(filepath);
+	return load(libraryPtr);
+}
+
+bool Plugin::unload(const string& name)
+{
+	return false;
 }
 
 Plugin::~Plugin()

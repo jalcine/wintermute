@@ -41,18 +41,51 @@ bool Plugin::Library::load()
 bool Plugin::Library::unload()
 {
 	W_PRV(const Library);
+
+	if (isLoaded()) {
+		const int closeCode = dlclose(d->handlePtr.get());
+		d->handlePtr.reset(0);
+
+		return closeCode == 0;
+	}
+
+	return true;
+}
+
+bool Plugin::Library::isLoaded()
+{
+	W_PRV(const Library);
 	return !! d->handlePtr;
 }
 
-Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName)
+Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
 {
-	return Library::FunctionHandlePtr(nullptr);
+	W_PRV(const Library);
+	Library::FunctionHandlePtr functionHandlePtr;
+	functionHandlePtr.reset(dlsym(d->handlePtr.get(), methodName.c_str()));
+	assert(functionHandlePtr);
+	return functionHandlePtr;
 }
 
 string Plugin::Library::lastErrorMessage() const
 {
-	W_PRV(const Library);
-	return string();
+	W_PRV(Library);
+	const string theMessage = d->errorMessage;
+	d->errorMessage.clear();
+	return theMessage;
+}
+
+Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
+{
+	Plugin::Library::Ptr libraryPtr;
+	libraryPtr.reset(new Plugin::Library(filepath));
+
+	if (libraryPtr->load()) {
+		return libraryPtr;
+	}
+
+	libraryPtr.reset();
+	return libraryPtr;
 }
 
 Plugin::Library::~Library()

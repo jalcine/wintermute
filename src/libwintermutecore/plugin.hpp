@@ -105,12 +105,17 @@ public:
 		// Unloads the library from this application's memory.
 		bool unload();
 
+		// Whether or not this library has been lazily loaded into the process.
 		bool isLoaded() const;
 
+		// Obtains and clears the last error message.
 		string lastErrorMessage() const;
 
 		// Attempts to obtain a function from the library.
-		Library::FunctionHandlePtr resolveMethod(const string& methodName);
+		Library::FunctionHandlePtr resolveMethod(const string& methodName) const;
+
+		// Find a library with the provided file path.
+		static Library::Ptr find(const string& filepath);
 	};
 
 	static Plugin::Ptr load(const string& filepath);

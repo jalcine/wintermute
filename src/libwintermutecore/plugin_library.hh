@@ -29,6 +29,7 @@ public:
 
 	HandlePtr handlePtr;
 	string filePath;
+	string errorMessage;
 
 	explicit LibraryPrivate();
 	virtual ~LibraryPrivate();

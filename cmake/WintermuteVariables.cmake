@@ -25,15 +25,24 @@ else()
   return()
 endif()
 
-SET(WINTERMUTE_COMPILE_FLAGS "-std=c++11 -fstrict-aliasing -Wall -Wpedantic")
+SET(WINTERMUTE_COMPILE_FLAGS
+	-Wall
+	-Wpedantic
+	-fstrict-aliasing
+	-std=c++11
+	-Wabi-flag
+)
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG 
+	-O0
+	-Waggressive-loop-optimizations
 	-Wctor-dtor-privacy
 	-Wno-deprecated
-	-Waggressive-loop-optimizations
-	-O0
-	-g
+	-Wno-unused-parameter
 	-Wstrict-prototypes
-	-Wno-unused-parameter)
-SET(WINTERMUTE_COMPILE_FLAGS_RELEASE "-O3")
+	-g
+)
+SET(WINTERMUTE_COMPILE_FLAGS_RELEASE 
+	-O3
+)
 SET(WINTERMUTE_COMPILE_DEFINITIONS "")
 SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
