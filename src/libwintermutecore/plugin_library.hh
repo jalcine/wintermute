@@ -16,24 +16,36 @@
  */
 
 #include "globals.hpp"
+#include "logging.hpp"
 #include "plugin.hpp"
+#include <dlfcn.h>
 
 struct SoHandleImpl /* undefined */;
 
 namespace Wintermute
 {
-class LibraryPrivate
-{
-protected:
-public:
-  typedef SoHandleImpl Handle;
-	typedef SharedPtr<Handle> HandlePtr;
+	class LibraryHandle;
+	class LibraryPrivate
+	{
+		public:
+			typedef SharedPtr<LibraryHandle> HandlePtr;
 
-	HandlePtr handlePtr;
-	string filePath;
+			string filePath;
+			HandlePtr handlePtr;
 
-	explicit LibraryPrivate();
-	virtual ~LibraryPrivate();
-  bool unload();
-};
+			explicit LibraryPrivate();
+			~LibraryPrivate();
+			bool unload();
+	};
+
+	class LibraryHandle
+	{
+		public:
+			typedef SoHandleImpl Handle;
+			explicit LibraryHandle(Handle* a_ptr);
+			~LibraryHandle();
+		private:
+			Handle* ptr;
+	};
+
 }

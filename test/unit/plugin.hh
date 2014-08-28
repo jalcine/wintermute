@@ -28,7 +28,7 @@ public:
   void testLoadBinaryFromDisk()
   {
     Plugin::Ptr plugin = Plugin::load(SAMPLE_PLUGIN_PATH);
-    TS_ASSERT ( plugin );
+    TS_ASSERT ( plugin->state() == Plugin::Loaded );
 
     // We don't have to clean up; the pointer itself will be destroyed when we
     // leave this scope.

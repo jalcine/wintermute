@@ -23,8 +23,9 @@
 
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
+using Wintermute::LibraryHandle;
 
-#define DLOPEN_FLAGS RTLD_NOW | RTLD_GLOBAL | RTLD_DEEPBIND
+#define DLOPEN_FLAGS RTLD_NOW
 
 Plugin::Library::Library(const string& filePath) : d_ptr(new LibraryPrivate)
 {
@@ -39,7 +40,11 @@ bool Plugin::Library::load()
 	assert(!d->filePath.empty());
 	dlerror(); // empty out the error queue
 
-	d->handlePtr = LibraryPrivate::HandlePtr(static_cast<LibraryPrivate::Handle*>(dlopen(d->filePath.c_str(), DLOPEN_FLAGS)), &::dlclose);
+	winfo("Opening library " + d->filePath + " ...");
+	d->handlePtr = LibraryPrivate::HandlePtr(
+	                   static_cast<LibraryHandle*>(
+	                       dlopen(d->filePath.c_str(), DLOPEN_FLAGS))
+	               );
 	assert(d->handlePtr);
 
 	const string theMessage = errorMessage();
@@ -49,6 +54,10 @@ bool Plugin::Library::load()
 	{
 		werror("Error loading the library: " + theMessage);
 		d->handlePtr = nullptr;
+	}
+
+	if (d->handlePtr) {
+		winfo("Opened library " + d->filePath + ".");
 	}
 
 	return (bool) d->handlePtr;
@@ -130,14 +139,7 @@ LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
 
 bool LibraryPrivate::unload()
 {
-	if (handlePtr)
-	{
-		wdebug("Attempting to unload library " + filePath);
-		handlePtr.reset();
-		wdebug("Freed library handle pointer.");
-	}
-
-	return (bool) handlePtr;
+	return false;
 }
 
 LibraryPrivate::~LibraryPrivate()
@@ -145,7 +147,39 @@ LibraryPrivate::~LibraryPrivate()
 	if (handlePtr)
 	{
 		unload();
+		handlePtr = nullptr;
 	}
 
 	assert(!handlePtr);
+}
+
+LibraryHandle::LibraryHandle(Handle* a_ptr) : ptr()
+{
+	if (a_ptr)
+	{
+		ptr = a_ptr;
+	}
+	ptr = nullptr;
+}
+
+LibraryHandle::~LibraryHandle()
+{
+	int exitcode;
+	winfo("Attempting to free the library handle...");
+	try
+	{
+		wdebug("We have a library handle? " + std::to_string(ptr != nullptr));
+		if (ptr != nullptr)
+		{
+			wdebug("Free up the library handle..");
+			exitcode = dlclose(ptr);
+		}
+		ptr = nullptr;
+	}
+	catch ( std::exception& e )
+	{
+		winfo("Failed to free the library handle: " + std::string(e.what()));
+	}
+
+	winfo("Freed the library handle? " + std::to_string(exitcode));
 }

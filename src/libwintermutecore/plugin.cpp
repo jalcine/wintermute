@@ -33,156 +33,185 @@ PluginPrivate::PluginMap PluginPrivate::plugins;
 
 Plugin::Plugin(const string& name) : d_ptr(new PluginPrivate)
 {
-  W_PRV(Plugin);
-  assert ( name.empty() == false );
-  d->name = name;
+	W_PRV(Plugin);
+	assert ( name.empty() == false );
+	d->name = name;
 }
 
 string Plugin::name() const
 {
-  W_PRV ( const Plugin );
-  assert ( d->name.empty() == false );
-  return d->name;
+	W_PRV ( const Plugin );
+	assert ( d->name.empty() == false );
+	return d->name;
 }
 
 Plugin::LoadState Plugin::start()
 {
-  W_PRV ( Plugin );
-  wtrace("Starting up plugin " + name() + "...");
+	W_PRV ( Plugin );
+	wtrace("Starting up plugin " + name() + "...");
 
-  if ( state() == Plugin::Loaded )
-  {
-    winfo("Plugin " + name() + " already loaded; attempt at double-load?");
-    return Plugin::Loaded;
-  }
+	if ( state() == Plugin::Loaded )
+	{
+		winfo("Plugin " + name() + " already loaded; attempt at double-load?");
+		return Plugin::Loaded;
+	}
 
-  try
-  {
-    d->loadState = startup() ? Plugin::Loaded : Plugin::LoadingFailed;
-  }
-  catch ( std::exception& e )
-  {
-    d->loadState = Plugin::LoadingFailed;
-    d->loadFailure = Plugin::FailureABIException;
-    wwarn("Failed to load plugin '" + name() + "' due to " + e.what() + ".");
-  }
+	try
+	{
+		d->loadState = startup() ? Plugin::Loaded : Plugin::LoadingFailed;
+	}
+	catch ( std::exception& e )
+	{
+		d->loadState = Plugin::LoadingFailed;
+		d->loadFailure = Plugin::FailureABIException;
+		wwarn("Failed to load plugin '" + name() + "' due to " + e.what() + ".");
+	}
 
-  PluginPrivate::plugins.insert(std::make_pair(name(), Plugin::Ptr(const_cast<Plugin*>(this))));
+	PluginPrivate::plugins.insert(std::make_pair(name(), Plugin::Ptr(const_cast<Plugin*>(this))));
 
-  return d->loadState;
+	return d->loadState;
 }
 
 Plugin::LoadState Plugin::stop()
 {
-  W_PRV ( Plugin );
-  wtrace("Shutting down plugin " + name() + "...");
+	W_PRV ( Plugin );
+	wtrace("Shutting down plugin " + name() + "...");
 
-  if ( state() == Plugin::Unloaded )
-  {
-    winfo("Plugin " + name() + "already unloaded.");
-    return Plugin::Unloaded;
-  } else {
-    d->libraryPtr->unload();
-  }
+	if ( state() == Plugin::Unloaded )
+	{
+		wdebug("Plugin " + name() + "already unloaded.");
+		return Plugin::Unloaded;
+	}
+	else
+	{
+		wdebug("Unloading plugin...");
+		d->libraryPtr->unload();
+		wdebug("Plugin unloaded.");
+	}
 
-
-  PluginPrivate::plugins.erase(name());
-
-  return d->loadState;
+	PluginPrivate::plugins.erase(name());
+	return d->loadState;
 }
 
 Plugin::Ptr Plugin::load(Library::Ptr& libraryPtr)
 {
-  assert(libraryPtr);
-  Plugin::Ptr pluginPtr = { nullptr };
-  if (!libraryPtr->isLoaded())
-  {
-    const bool wasLibraryLoaded = libraryPtr->load();
-    assert(wasLibraryLoaded);
+	assert(libraryPtr);
+	Plugin::Ptr pluginPtr = { nullptr };
+	if (!libraryPtr->isLoaded())
+	{
+		const bool wasLibraryLoaded = libraryPtr->load();
+		assert(wasLibraryLoaded);
 
-    if (!wasLibraryLoaded)
-    {
-      werror("Failed to load library! " + libraryPtr->errorMessage());
-      return pluginPtr;
-    }
-  }
+		if (!wasLibraryLoaded)
+		{
+			werror("Failed to load library! " + libraryPtr->errorMessage());
+			return pluginPtr;
+		}
+		else
+		{
+			wdebug("Loaded library for plugin.");
+		}
+	}
 
-  auto funcCtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
-  assert(funcCtorHandle);
+	wdebug("Resolving the '" + string(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME) + "' function from the library...");
+	auto funcCtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
+	assert(funcCtorHandle);
 
-  if (!funcCtorHandle)
-  {
-    werror("Failed to resolve the ctor function for the plugin from the library.");
-    return pluginPtr;
-  }
+	if (!funcCtorHandle)
+	{
+		werror("Failed to resolve the ctor function for the plugin from the library.");
+		return pluginPtr;
+	}
+	else
+	{
+		winfo("Resolved ctor for plugin.");
+	}
 
-  Plugin::Ptr (*pluginCtorFunction)(void);
-  *(void **)(&pluginCtorFunction) = funcCtorHandle;
-  assert (pluginCtorFunction);
+	Plugin::Ptr (*pluginCtorFunction)(void);
+	*(void **)(&pluginCtorFunction) = funcCtorHandle;
+	assert (pluginCtorFunction);
 
-  try
-  {
-    pluginPtr = pluginCtorFunction();
-  }
-  catch (std::exception &e)
-  {
-    werror(string("Failed to load library for plugin; e: %s") + e.what());
+	try
+	{
+		winfo("Invoking ctor function for plugin...");
+		pluginPtr = pluginCtorFunction();
+		winfo("Invoked ctor function for plugin.");
+	}
+	catch (std::exception &e)
+	{
+		werror(string("Failed to load library for plugin; e: %s") + e.what());
+		pluginPtr = nullptr;
+		return pluginPtr;
+	}
 
-    return pluginPtr;
-  }
+	pluginPtr->d_ptr->loadState = Plugin::Loaded;
+	pluginPtr->d_ptr->loadFailure = Plugin::FailureNone;
+	pluginPtr->d_ptr->libraryPtr = libraryPtr;
+	winfo("Plugin successfully loaded!");
 
-  pluginPtr->d_ptr->loadState = Plugin::Loaded;
-  pluginPtr->d_ptr->loadFailure = Plugin::FailureNone;
-  pluginPtr->d_ptr->libraryPtr = libraryPtr;
-  winfo("Plugin successfully loaded!");
+	funcCtorHandle = nullptr;
 
-  funcCtorHandle = nullptr;
-
-  return pluginPtr;
+	return pluginPtr;
 }
 
 list<string> Plugin::loadedPlugins()
 {
-  list<string> pluginList;
+	list<string> pluginList;
 
-  std::for_each(
-    PluginPrivate::plugins.cbegin(),
-    PluginPrivate::plugins.cend(),
-    [&](const Plugin::Map::value_type & pair)
-  {
-    pluginList.insert(pluginList.end(), pair.first);
-  });
+	std::for_each(
+	    PluginPrivate::plugins.cbegin(),
+	    PluginPrivate::plugins.cend(),
+	    [&](const Plugin::Map::value_type & pair)
+	{
+		pluginList.insert(pluginList.end(), pair.first);
+	});
 
-  return pluginList;
+	return pluginList;
 }
 
 Plugin::LoadState Plugin::state() const
 {
-  W_PRV(const Plugin);
-  return d->loadState;
+	W_PRV(const Plugin);
+	return d->loadState;
 }
 
 Plugin::Ptr Plugin::load(const string& filepath)
 {
-  Plugin::Library::Ptr libraryPtr = Plugin::Library::find(filepath);
-  assert(libraryPtr);
-  return load(libraryPtr);
+	assert(!filepath.empty());
+	Plugin::Library::Ptr libraryPtr = Plugin::Library::find(filepath);
+	assert(libraryPtr);
+	return load(libraryPtr);
 }
 
 bool Plugin::unload(const string& name)
 {
-  // Grab the plugin pointer from the list.
-  // Unload the library.
-  // Destroy the plugin pointer (free memory).
-  return false;
+	const auto pluginItr = PluginPrivate::plugins.find(name);
+
+	if (pluginItr != PluginPrivate::plugins.cend())
+	{
+		Plugin::Ptr plugin = pluginItr->second;
+		auto unloadedLibrary = plugin->d_func()->libraryPtr->unload();
+		if (unloadedLibrary)
+		{
+			PluginPrivate::plugins.erase(pluginItr);
+			return true;
+		}
+	}
+	// Grab the plugin pointer from the list.
+	// Unload the library.
+	// Destroy the plugin pointer (free memory).
+	return false;
 }
 
 Plugin::~Plugin()
 {
-  if (state() != LoadState::Unloaded)
-  {
-    stop();
-  }
+	if (state() != Plugin::Unloaded)
+	{
+		winfo("Unloading plugin since we're destroying this instance...");
+		if (stop()) {
+			winfo("Successfully unloaded the plugin.");
+		}
+	}
 }
 
 PluginPrivate::PluginPrivate() : name(), libraryPtr()
@@ -191,25 +220,21 @@ PluginPrivate::PluginPrivate() : name(), libraryPtr()
 
 Plugin::Ptr PluginPrivate::attemptLoad()
 {
-  Plugin::Ptr pluginPtr;
+	Plugin::Ptr pluginPtr;
 
-  if (libraryPtr->load())
-  {
-    wtrace("Resolved the plugin's ctor function.");
-    winfo("Created the plugin " + pluginPtr->name() + ".");
-  }
-  else
-  {
-    werror("The plugin's library failed to load.");
-  }
+	if (libraryPtr->load())
+	{
+		wtrace("Resolved the plugin's ctor function.");
+		winfo("Created the plugin " + pluginPtr->name() + ".");
+	}
+	else
+	{
+		werror("The plugin's library failed to load.");
+	}
 
-  return pluginPtr;
+	return pluginPtr;
 }
 
 PluginPrivate::~PluginPrivate()
 {
-  if (libraryPtr->isLoaded())
-  {
-    libraryPtr->unload();
-  }
 }
