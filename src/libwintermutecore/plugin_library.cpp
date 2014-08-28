@@ -18,33 +18,57 @@
 #include "plugin_library.hh"
 #include "plugin.hpp"
 #include "logging.hpp"
+#include <stdexcept>
 #include <dlfcn.h>
 
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
 
+#define DLOPEN_FLAGS RTLD_NOW | RTLD_GLOBAL | RTLD_DEEPBIND
+
 Plugin::Library::Library(const string& filePath) : d_ptr(new LibraryPrivate)
 {
+	W_PRV(Library);
+	d->filePath = filePath;
 }
 
 bool Plugin::Library::load()
 {
 	W_PRV(Library);
 	assert(!d->handlePtr);
+	assert(!d->filePath.empty());
+	dlerror(); // empty out the error queue
 
-	d->handlePtr.reset(dlopen(d->filePath.c_str(), RTLD_LAZY));
+	d->handlePtr = LibraryPrivate::HandlePtr(static_cast<LibraryPrivate::Handle*>(dlopen(d->filePath.c_str(), DLOPEN_FLAGS)), &::dlclose);
+	assert(d->handlePtr);
 
-	// TODO Do some error handling.
+	const string theMessage = errorMessage();
+	assert(theMessage.empty());
+
+	if (!theMessage.empty())
+	{
+		werror("Error loading the library: " + theMessage);
+		d->handlePtr = nullptr;
+	}
+
 	return (bool) d->handlePtr;
 }
 
 bool Plugin::Library::unload()
 {
-	W_PRV(const Library);
+	W_PRV(Library);
+	dlerror();
 
-	if (isLoaded()) {
-		const int closeCode = dlclose(d->handlePtr.get());
-		d->handlePtr.reset(0);
+	if (isLoaded())
+	{
+		const int closeCode = d->unload();
+		const string error = errorMessage();
+
+		if (!error.empty())
+		{
+			werror("Error unloading the library: " + error);
+			return false;
+		}
 
 		return closeCode == 0;
 	}
@@ -52,7 +76,7 @@ bool Plugin::Library::unload()
 	return true;
 }
 
-bool Plugin::Library::isLoaded()
+bool Plugin::Library::isLoaded() const
 {
 	W_PRV(const Library);
 	return !! d->handlePtr;
@@ -61,42 +85,67 @@ bool Plugin::Library::isLoaded()
 Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
 {
 	W_PRV(const Library);
-	Library::FunctionHandlePtr functionHandlePtr;
-	functionHandlePtr.reset(dlsym(d->handlePtr.get(), methodName.c_str()));
-	assert(functionHandlePtr);
+	Library::FunctionHandlePtr functionHandlePtr(dlsym(d->handlePtr.get(), methodName.c_str()));
+
+	if (!functionHandlePtr)
+	{
+		functionHandlePtr = nullptr;
+		throw new std::domain_error("Failed to load library's handle: " + errorMessage());
+	}
+
 	return functionHandlePtr;
 }
 
-string Plugin::Library::lastErrorMessage() const
+string Plugin::Library::errorMessage() const
 {
-	W_PRV(Library);
-	const string theMessage = d->errorMessage;
-	d->errorMessage.clear();
-	return theMessage;
+	const char* msg = dlerror();
+	return msg == nullptr ? "" : std::string(msg);
 }
 
 Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 {
-	Plugin::Library::Ptr libraryPtr;
-	libraryPtr.reset(new Plugin::Library(filepath));
+	Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(filepath);
 
-	if (libraryPtr->load()) {
+	if (libraryPtr->load())
+	{
 		return libraryPtr;
 	}
 
-	libraryPtr.reset();
+	libraryPtr = nullptr;
 	return libraryPtr;
 }
 
 Plugin::Library::~Library()
 {
-	// TODO Consider some cleanup work here.
+	if (isLoaded())
+	{
+		wdebug("Unloading library on call to destructor...");
+		unload();
+	}
 }
 
-LibraryPrivate::LibraryPrivate() : filePath()
+LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
 {
+}
+
+bool LibraryPrivate::unload()
+{
+	if (handlePtr)
+	{
+		wdebug("Attempting to unload library " + filePath);
+		handlePtr.reset();
+		wdebug("Freed library handle pointer.");
+	}
+
+	return (bool) handlePtr;
 }
 
 LibraryPrivate::~LibraryPrivate()
 {
+	if (handlePtr)
+	{
+		unload();
+	}
+
+	assert(!handlePtr);
 }

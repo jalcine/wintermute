@@ -33,7 +33,8 @@ Module::Module::Designation::Designation(const string& name, const string& domai
   d->pid = pid;
 }
 
-Module::Designation::Designation(const Designation& other) : d_ptr(new DesignationPrivate)
+Module::Designation::Designation(const Designation& other) : Serializable(other),
+	d_ptr(new DesignationPrivate)
 {
   W_PRV(Designation);
   d->clone(other.d_ptr);

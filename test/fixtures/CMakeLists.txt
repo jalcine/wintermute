@@ -22,7 +22,9 @@ ADD_LIBRARY(wintermutesample SHARED ./wintermute_sample.cc)
 TARGET_LINK_LIBRARIES(wintermutesample wintermutecore)
 WINTERMUTE_LINK_LIBRARIES(wintermutesample)
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutesample)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/libwintermutecore
+TARGET_INCLUDE_DIRECTORIES(wintermutesample PUBLIC
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/test/include
   ${CMAKE_BINARY_DIR}/src/libwintermutecore)
 
 # TODO Export file path to the library.

@@ -20,9 +20,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 if (NOT DEFINED _wntr_mcrs)
-  set(_wntr_mcrs ON)
+	set(_wntr_mcrs ON)
 else()
-  return()
+	return()
 endif()
 
 include(WintermuteVariables)
@@ -35,17 +35,22 @@ include(WintermuteDependencies)
 #== includes things that can vary on an environmental level as well.
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES
-    INCLUDE_DIRECTORIES "${WINTERMUTE_INCLUDE_DIRS}"
-    COMPILE_FLAGS "${WINTERMUTE_COMPILE_FLAGS}"
-    COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
-    COMPILE_DEFINITIONS_DEBUG "${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}"
-  )
+	# Add inclusion directories to target.
+	target_include_directories(${_target} BEFORE PUBLIC ${WINTERMUTE_INCLUDE_DIRS})
 
-  if (CMAKE_BUILD_TYPE EQUAL Debug)
-    SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
-			COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
-  endif()
+	# Add compilation flags for target.
+	target_compile_options(${_target} BEFORE PUBLIC ${WINTERMUTE_COMPILE_FLAGS})
+
+	# Add compilation definitions for target.
+	target_compile_definitions(${_target} PUBLIC
+		"${WINTERMUTE_COMPILE_DEFINITIONS}")
+
+	if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+		target_compile_definitions(${_target} PRIVATE
+			${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG})
+		target_compile_options(${_target} PRIVATE
+			${WINTERMUTE_COMPILE_FLAGS_DEBUG})
+	endif()
 ENDMACRO(wintermute_add_target_properties)
 
 #==============================================================================
@@ -56,5 +61,5 @@ ENDMACRO(wintermute_add_target_properties)
 #== header information of Wintermute.
 #==============================================================================
 macro(wintermute_link_libraries _target)
-  target_link_libraries(${_target} ${WINTERMUTE_LIBRARIES})
+	target_link_libraries(${_target} ${WINTERMUTE_LIBRARIES})
 endmacro(wintermute_link_libraries _target)

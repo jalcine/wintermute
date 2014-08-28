@@ -61,14 +61,14 @@ Logging::Logging()
 	LoggerPtr rootLogger = obtain_logger("root");
 
 	log4cxx::LayoutPtr layoutPtr(new log4cxx::TTCCLayout);
-	log4cxx::ConsoleAppender* consoleAppender = new log4cxx::ConsoleAppender(layoutPtr);
+	//log4cxx::ConsoleAppender* consoleAppender = new log4cxx::ConsoleAppender(layoutPtr);
 	log4cxx::FileAppender* fileAppender = new log4cxx::FileAppender(layoutPtr, "wintermute.log");
 
-	consoleAppender->setTarget(log4cxx::ConsoleAppender::getSystemOut());
+	//consoleAppender->setTarget(log4cxx::ConsoleAppender::getSystemOut());
 
-	log4cxx::AppenderPtr consoleAppenderPtr(consoleAppender);
+	//log4cxx::AppenderPtr consoleAppenderPtr(consoleAppender);
 	log4cxx::AppenderPtr fileAppenderPtr(fileAppender);
-	rootLogger->addAppender(consoleAppenderPtr);
+	//rootLogger->addAppender(consoleAppenderPtr);
 	rootLogger->addAppender(fileAppenderPtr);
 
 	info("Started logging session at " + get_current_time_as_string());

@@ -58,7 +58,7 @@ bool Tunnel::unregisterReceiver(const Receiver::Ptr& receiver)
 
 bool Tunnel::sendMessage(const Message& message)
 {
-  wdebug("Sending message '" + static_cast<string>(message) + "'...")
+  wdebug("Sending message '" + static_cast<string>(message) + "'...");
   for (auto itr : dPtr->dispatchers)
   {
     const string name = itr.first;
@@ -66,7 +66,7 @@ bool Tunnel::sendMessage(const Message& message)
     wdebug("Sending the message using the '" + name + "' dispatcher...");
     if (!dispatcher->send(message))
     {
-      werror("Failed to send out a message using the '" + name + "' dispatcher!")
+      werror("Failed to send out a message using the '" + name + "' dispatcher!");
       return false;
     }
   };

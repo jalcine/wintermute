@@ -34,7 +34,7 @@ Message::Message(const Message::HashType& data,
   setReceiver(receiver);
 }
 
-Message::Message(const Message& other) : d_ptr (new MessagePrivate)
+Message::Message(const Message& other) : Serializable(), d_ptr (new MessagePrivate)
 {
   W_PRV(Message);
   d->clone(other.d_ptr);

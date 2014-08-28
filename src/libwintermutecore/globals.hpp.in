@@ -38,6 +38,15 @@ using std::string;
 #define WINTERMUTE_PLUGIN_METHOD_CTOR_NAME "w_plugin_create"
 #define WINTERMUTE_PLUGIN_METHOD_DTOR_NAME "w_plugin_destroy"
 
+#ifdef WINTERMUTE_EXPORT
+# undef WINTERMUTE_EXPORT
+# define WINTERMUTE_EXPORT         __attribute__ ((visibility ("default")))
+# define WINTERMUTE_EXPORT_PRIVATE __attribute__ ((visibility ("hidden")))
+#else
+# define WINTERMUTE_EXPORT
+# define WINTERMUTE_EXPORT_PRIVATE
+#endif
+
 // {{{ Private + Public Accessors
 
 #define UniquePtr  ::std::unique_ptr
@@ -89,6 +98,10 @@ typedef ::pid_t PID;
 // {{{ Functions to help the process
 void w_noop(void);
 // }}}
+
+#define __pure __attribute__((pure))
+#define __hot __attribute__((hot))
+#define __cold __attribute__((cold))
 
 #endif // end globaldef
 

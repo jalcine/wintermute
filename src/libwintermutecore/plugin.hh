@@ -28,23 +28,25 @@ using std::string;
 
 namespace Wintermute
 {
-	class PluginPrivate {
-		public:
-			typedef Plugin::Ptr (*CtorSignature)(void);
-			typedef bool (*DtorSignature)(Plugin::Ptr& );
-			typedef UniquePtr<CtorSignature> CtorSignaturePtr;
-			typedef UniquePtr<DtorSignature> DtorSignaturePtr;
-			typedef std::unordered_map<string, Wintermute::Plugin::Ptr> PluginMap;
+class PluginPrivate
+{
+public:
+  typedef Plugin::Ptr (*CtorSignature)(void);
+  typedef bool (*DtorSignature)(Plugin::Ptr& );
+  typedef std::function<CtorSignature> CtorFunction;
+  typedef std::function<DtorSignature> DtorFunction;
+  typedef std::unordered_map<string, Wintermute::Plugin::Ptr> PluginMap;
 
-			explicit PluginPrivate();
-			virtual ~PluginPrivate();
-			string name;
-			Plugin::Library::Ptr libraryPtr;
-			Plugin::Ptr attemptLoad();
-			Plugin::LoadFailure loadFailure;
-			Plugin::LoadState loadState;
-			static PluginMap plugins;
-	};
+  string name;
+  Plugin::Library::Ptr libraryPtr;
+  Plugin::LoadFailure loadFailure;
+  Plugin::LoadState loadState;
+  static PluginMap plugins;
+
+  explicit PluginPrivate();
+  ~PluginPrivate();
+  Plugin::Ptr attemptLoad();
+};
 }
 
 #endif

@@ -74,10 +74,11 @@ public:
 };
 }
 
-#define winfo(msg)  Wintermute::Logging::instance()->info(msg);
-#define werror(msg) Wintermute::Logging::instance()->error(msg);
-#define wwarn(msg)  Wintermute::Logging::instance()->warn(msg);
-#define wtrace(msg) Wintermute::Logging::instance()->trace(msg);
-#define wdebug(msg) Wintermute::Logging::instance()->debug(msg);
+#define wlog        Wintermute::Logging::instance()
+#define winfo(msg)  wlog->info(msg);
+#define werror(msg) wlog->error(msg);
+#define wwarn(msg)  wlog->warn(msg);
+#define wtrace(msg) wlog->trace(msg);
+#define wdebug(msg) wlog->debug(msg);
 
 #endif

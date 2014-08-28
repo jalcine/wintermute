@@ -15,25 +15,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "globals.hpp"
-#include "plugin.hpp"
+#ifndef WINTERMUTE_TEST_SUITE_HPP
+#define WINTERMUTE_TEST_SUITE_HPP
 
-struct SoHandleImpl /* undefined */;
+#define SAMPLE_PLUGIN_NAME "sample"
+#define SAMPLE_PLUGIN_PATH "@CMAKE_BINARY_DIR@/test/fixtures/libwintermutesample.so"
 
-namespace Wintermute
-{
-class LibraryPrivate
-{
-protected:
-public:
-  typedef SoHandleImpl Handle;
-	typedef SharedPtr<Handle> HandlePtr;
+#include "fixtures.hpp"
 
-	HandlePtr handlePtr;
-	string filePath;
-
-	explicit LibraryPrivate();
-	virtual ~LibraryPrivate();
-  bool unload();
-};
-}
+#endif

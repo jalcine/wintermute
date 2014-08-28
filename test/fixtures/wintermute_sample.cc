@@ -16,11 +16,13 @@
  */
 
 #include "wintermute_sample.hh"
+#include "libwintermutecore/logging.hpp"
+#include "test_suite.hpp"
 
 using Wintermute::Plugin;
 using Wintermute::SamplePlugin;
 
-SamplePlugin::SamplePlugin() : Plugin("sample")
+SamplePlugin::SamplePlugin() : Plugin(SAMPLE_PLUGIN_NAME)
 {
 }
 
@@ -28,4 +30,15 @@ SamplePlugin::~SamplePlugin()
 {
 }
 
-W_EXPOSE_PLUGIN(Wintermute::SamplePlugin)
+bool SamplePlugin::startup()
+{
+	wdebug("I'm tweaking, ho!");
+  return true;
+}
+
+bool SamplePlugin::shutdown()
+{
+  return true;
+}
+
+W_DEFINE_PLUGIN(Wintermute::SamplePlugin)
