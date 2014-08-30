@@ -22,8 +22,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # == Variables we'd use.
 SET(CMAKE_COLOR_MAKEFILE ON)
 SET(BUILD_SHARED_LIBRARIES ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-SET(BUILD_SHARED_LIBRARIES ON)
+SET(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # == Imports we'd use.
 # Include a means of picking up the proper paths on a machine.)
