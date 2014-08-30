@@ -25,8 +25,7 @@ using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
 using Wintermute::LibraryHandle;
 
-#define DLOPEN_FLAGS_OPEN RTLD_NOW | RTLD_GLOBAL
-#define DLOPEN_FLAGS_FIND RTLD_LAZY | RTLD_NOLOAD
+#define DLOPEN_FLAGS RTLD_NOW | RTLD_GLOBAL
 
 Plugin::Library::Library(const string& filePath) : d_ptr(new LibraryPrivate)
 {
@@ -42,7 +41,7 @@ bool Plugin::Library::load()
   dlerror(); // empty out the error queue
 
   winfo("Opening library " + d->filePath + " ...");
-  d->handlePtr = d->obtainHandle(DLOPEN_FLAGS_OPEN);
+  d->handlePtr = d->obtainHandle(DLOPEN_FLAGS);
 
   const string theMessage = errorMessage();
   assert(theMessage.empty());
@@ -57,37 +56,29 @@ bool Plugin::Library::load()
   {
     winfo("Opened library " + d->filePath + ".");
   }
-
-  return (bool) d->handlePtr;
-}
-
-bool Plugin::Library::exists() const
-{
-  W_PRV(Library);
-  auto handlePtr = d->obtainHandle(DLOPEN_FLAGS_FIND);
-  const bool isLoadable = (bool) handlePtr;
-
-  if (isLoadable)
+  else
   {
-    d->closeHandle(handlePtr);
+    wwarn("Failed to open library " + d->filePath);
   }
 
-  handlePtr.reset();
-
-  return isLoadable;
+  return (bool) d->handlePtr;
 }
 
 LibraryPrivate::HandlePtr LibraryPrivate::obtainHandle(const int& flags)
 {
   auto rawHandle = dlopen(filePath.c_str(), flags);
   LibraryPrivate::HandlePtr handlePtr(static_cast<LibraryHandle*>(rawHandle));
+  assert(handlePtr);
+  wdebug("Was handle obtained? " + std::to_string((bool) handlePtr));
+
   return handlePtr;
 }
 
 bool LibraryPrivate::closeHandle(LibraryPrivate::HandlePtr& handlePtr)
 {
   const int exitcode = dlclose(handlePtr.get());
-  return exitcode;
+  wdebug("Return code from dlclose() " + std::to_string(exitcode));
+  return exitcode == 0;
 }
 
 bool Plugin::Library::unload()
@@ -97,8 +88,10 @@ bool Plugin::Library::unload()
 
   if (isLoaded())
   {
-    const int closeCode = d->unload();
+    const bool wasClosed = d->unload();
     const string error = errorMessage();
+
+    wdebug("Was the library internally closed? " + std::to_string(wasClosed));
 
     if (!error.empty())
     {
@@ -106,7 +99,7 @@ bool Plugin::Library::unload()
       return false;
     }
 
-    return closeCode == 0;
+    return wasClosed;
   }
 
   return true;
@@ -115,7 +108,7 @@ bool Plugin::Library::unload()
 bool Plugin::Library::isLoaded() const
 {
   W_PRV(const Library);
-  return d->handlePtr == nullptr;
+  return (bool) d->handlePtr;
 }
 
 Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
@@ -140,9 +133,12 @@ string Plugin::Library::errorMessage() const
 
 Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 {
-  Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(filepath);
+  wdebug("Searching for library at " + filepath + "...");
+  Plugin::Library::Ptr libraryPtr(std::make_shared<Plugin::Library>(filepath));
+  assert(libraryPtr->load());
 
-  if (!libraryPtr->exists())
+  wdebug("Was the library loaded? " + std::to_string(libraryPtr->isLoaded()));
+  if (!libraryPtr->isLoaded())
   {
     libraryPtr = nullptr;
   }
@@ -152,6 +148,7 @@ Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 
 Plugin::Library::~Library()
 {
+  // d_ptr handles the unloading already.
 }
 
 LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
@@ -160,15 +157,30 @@ LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
 
 bool LibraryPrivate::unload()
 {
-  return false;
+  if (!handlePtr)
+  {
+    wdebug("Library already unloaded.");
+    return true;
+  }
+
+  const bool wasReleased = closeHandle(handlePtr);
+  wdebug("Was the handle closed? " + std::to_string(wasReleased));
+
+  return wasReleased;
 }
 
 LibraryPrivate::~LibraryPrivate()
 {
   if (handlePtr)
   {
-    unload();
-    handlePtr = nullptr;
+    wdebug("Unloading library " + filePath + "...");
+    if (unload()) {
+      wdebug("Unloaded library " + filePath + "; dereferencing pointer...");
+      handlePtr = nullptr;
+      wdebug("Pointer redeferened.");
+    } else {
+      werror("Failed to unload library.");
+    }
   }
 
   assert(!handlePtr);

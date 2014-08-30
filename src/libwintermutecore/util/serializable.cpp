@@ -32,7 +32,6 @@ Serializable::Serializable(const string& jsonString)
 {
   // TODO How do we attempt deserialization when we can't use the
   // deserialization method?
-
 }
 
 string Serializable::toString(const Serializable::Map& data)

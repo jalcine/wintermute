@@ -39,8 +39,10 @@ set(_srcs
 
   # Plugins
   ./plugin.cpp
-	./plugin_library.cpp
-	./plugin_version.cpp
+  ./plugin/private.cpp
+	./plugin/library.cpp
+	./plugin/library_private.cpp
+	./plugin/version.cpp
 )
 
 # Set up sources.

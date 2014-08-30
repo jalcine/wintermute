@@ -41,6 +41,8 @@ public:
 	virtual ~Plugin();
 	W_DECLARE_PTR_TYPE(Plugin)
 
+  class Library;
+
 	// Provides the known load states for a particular plugin.
 	enum LoadState
 	{
@@ -85,6 +87,10 @@ public:
 	LoadState state() const;
 	LoadFailure loadFailure() const;
 
+	static Plugin::Ptr __hot load(const string& filepath);
+	static bool __cold unload(const string& name);
+	static list<string> __hot loadedPlugins();
+
 	class Library
 	{
 	private:
@@ -126,15 +132,16 @@ public:
 		static Library::Ptr __cold find(const string& filepath);
 	};
 
-	static Plugin::Ptr __hot load(const string& filepath);
+  // Loads the plugin stored in a provided library.
 	static Plugin::Ptr __cold load(Plugin::Library::Ptr& library);
-	static bool __cold unload(const string& name);
-	static list<string> __hot loadedPlugins();
 
 protected:
+  // Default constructor.
 	explicit __cold Plugin(const string& name);
-	virtual bool shutdown() = 0;
-	virtual bool startup() = 0;
+
+  // Handles the work to be done when this plugin is stopped.
+	virtual __cold bool shutdown() = 0;
+	virtual __cold bool startup() = 0;
 
 };
 }
