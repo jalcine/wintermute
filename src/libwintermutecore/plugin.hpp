@@ -104,17 +104,20 @@ public:
 		// Obtains the path to the library in question.
 		string __hot filePath() const;
 
-		// Loads the library from disk.
-		bool __hot load();
-
-		// Unloads the library from this application's memory.
-		bool __hot unload();
-
 		// Whether or not this library has been lazily loaded into the process.
 		bool __hot isLoaded() const;
 
+		// Checks if the library exists (for even loading).
+		bool __hot exists() const;
+
 		// Obtains and clears the last error message.
 		string __hot errorMessage() const;
+
+		// Loads the library from disk.
+		bool __cold load();
+
+		// Unloads the library from this application's memory.
+		bool __cold unload();
 
 		// Attempts to obtain a function from the library.
 		Library::FunctionHandlePtr __hot resolveMethod(const string& methodName) const;

@@ -24,28 +24,32 @@ struct SoHandleImpl /* undefined */;
 
 namespace Wintermute
 {
-	class LibraryHandle;
-	class LibraryPrivate
-	{
-		public:
-			typedef SharedPtr<LibraryHandle> HandlePtr;
+class LibraryHandle;
+class LibraryPrivate
+{
+public:
+  typedef SharedPtr<LibraryHandle> HandlePtr;
 
-			string filePath;
-			HandlePtr handlePtr;
+  string filePath;
+  HandlePtr handlePtr;
 
-			explicit LibraryPrivate();
-			~LibraryPrivate();
-			bool unload();
-	};
+  explicit LibraryPrivate();
+  ~LibraryPrivate();
+  bool unload();
+  bool exists() const;
 
-	class LibraryHandle
-	{
-		public:
-			typedef SoHandleImpl Handle;
-			explicit LibraryHandle(Handle* a_ptr);
-			~LibraryHandle();
-		private:
-			Handle* ptr;
-	};
+  HandlePtr obtainHandle(const int& flags);
+  bool closeHandle(HandlePtr& theHandlePtr);
+};
+
+class LibraryHandle
+{
+public:
+  typedef SoHandleImpl Handle;
+  explicit LibraryHandle(Handle* a_ptr);
+  ~LibraryHandle();
+private:
+  Handle* ptr;
+};
 
 }

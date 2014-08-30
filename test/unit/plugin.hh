@@ -25,24 +25,29 @@ class PluginLibraryTestSuite : public CxxTest::TestSuite
 {
 public:
   // Test loading a binary from disk.
-  void testLoadBinaryFromDisk()
+  void testUnloadsWhenOutOfScope()
   {
     Plugin::Ptr plugin = Plugin::load(SAMPLE_PLUGIN_PATH);
-    TS_ASSERT ( plugin->state() == Plugin::Loaded );
+		TSM_ASSERT_EQUALS ( "Was plugin created?", !!plugin, true );
+
+		if (plugin) {
+			TSM_ASSERT ( "Was Plugin loaded successfully?", plugin->state() == Plugin::Loaded );
+		}
 
     // We don't have to clean up; the pointer itself will be destroyed when we
     // leave this scope.
   }
-  // Test loading a binary from the LD_LIBRARY_PATH.
-  // Test loading a binary from our prepopulated paths.
-  // Test unloading a binary.
-  // Test resolving symbols from the binary.
+
+  // TODO: Test loading a binary from the LD_LIBRARY_PATH.
+  // TODO: Test loading a binary from our prepopulated paths.
+  // TODO: Test unloading a binary.
+  // TODO: Test resolving symbols from the binary.
 };
 
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  // Test starting the plugin.
-  // Test stopping the plugin.
-  // Test grabbing the plugin's instance.
+  // TODO: Test starting the plugin.
+  // TODO: Test stopping the plugin.
+  // TODO: Test grabbing the plugin's instance.
 };
