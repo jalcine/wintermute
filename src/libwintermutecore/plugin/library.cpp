@@ -64,23 +64,6 @@ bool Plugin::Library::load()
   return (bool) d->handlePtr;
 }
 
-LibraryPrivate::HandlePtr LibraryPrivate::obtainHandle(const int& flags)
-{
-  auto rawHandle = dlopen(filePath.c_str(), flags);
-  LibraryPrivate::HandlePtr handlePtr(static_cast<LibraryHandle*>(rawHandle));
-  assert(handlePtr);
-  wdebug("Was handle obtained? " + std::to_string((bool) handlePtr));
-
-  return handlePtr;
-}
-
-bool LibraryPrivate::closeHandle(LibraryPrivate::HandlePtr& handlePtr)
-{
-  const int exitcode = dlclose(handlePtr.get());
-  wdebug("Return code from dlclose() " + std::to_string(exitcode));
-  return exitcode == 0;
-}
-
 bool Plugin::Library::unload()
 {
   W_PRV(Library);
