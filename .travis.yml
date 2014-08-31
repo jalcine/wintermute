@@ -7,9 +7,8 @@ before_install:
   - sudo apt-add-repository ppa:dhart/ppa -y
   - sudo apt-add-repository ppa:boost-latest/ppa -y
   - sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-add-repository ppa:andykimpe/cmake3 -y
+  - sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   - sudo apt-get update -qq
-  - sudo apt-get remove g++ cmake pkg-config
   - sudo apt-get install -qq g++-4.7 build-essential
   - test/build_dependencies.bash
 
