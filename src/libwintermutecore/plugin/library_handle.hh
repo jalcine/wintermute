@@ -15,27 +15,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "library_handle.hh"
-#include "globals.hpp"
+struct SoHandleImpl /* undefined */;
 
 namespace Wintermute
 {
-class LibraryPrivate
+class LibraryHandle
 {
 public:
-  typedef SharedPtr<LibraryHandle> HandlePtr;
-
-  string filePath;
-  HandlePtr handlePtr;
-
-  explicit LibraryPrivate();
-  ~LibraryPrivate();
-  bool unload();
-  bool exists() const;
-
-  HandlePtr obtainHandle(const int& flags);
-  bool closeHandle(HandlePtr& theHandlePtr);
+  typedef SoHandleImpl Handle;
+  explicit LibraryHandle(Handle* a_ptr);
+  ~LibraryHandle();
+private:
+  Handle* ptr;
 };
-
-
 }

@@ -15,13 +15,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <dlfcn.h>
 #include "logging.hpp"
 #include "plugin.hpp"
-#include "plugin_library.hh"
+#include "plugin/library.hh"
 
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
 using Wintermute::LibraryHandle;
+
 LibraryPrivate::HandlePtr LibraryPrivate::obtainHandle(const int& flags)
 {
   auto rawHandle = dlopen(filePath.c_str(), flags);

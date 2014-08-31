@@ -15,7 +15,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "plugin_library.hh"
+#include "plugin/library.hh"
 #include "plugin.hpp"
 #include "logging.hpp"
 #include <stdexcept>
@@ -149,70 +149,4 @@ Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 Plugin::Library::~Library()
 {
   // d_ptr handles the unloading already.
-}
-
-LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
-{
-}
-
-bool LibraryPrivate::unload()
-{
-  if (!handlePtr)
-  {
-    wdebug("Library already unloaded.");
-    return true;
-  }
-
-  const bool wasReleased = closeHandle(handlePtr);
-  wdebug("Was the handle closed? " + std::to_string(wasReleased));
-
-  return wasReleased;
-}
-
-LibraryPrivate::~LibraryPrivate()
-{
-  if (handlePtr)
-  {
-    wdebug("Unloading library " + filePath + "...");
-    if (unload()) {
-      wdebug("Unloaded library " + filePath + "; dereferencing pointer...");
-      handlePtr = nullptr;
-      wdebug("Pointer redeferened.");
-    } else {
-      werror("Failed to unload library.");
-    }
-  }
-
-  assert(!handlePtr);
-}
-
-LibraryHandle::LibraryHandle(Handle* a_ptr) : ptr(nullptr)
-{
-  if (a_ptr)
-  {
-    ptr = a_ptr;
-  }
-}
-
-LibraryHandle::~LibraryHandle()
-{
-  return;
-  int exitcode;
-  winfo("Attempting to free the library handle...");
-  try
-  {
-    wdebug("We have a library handle? " + std::to_string(ptr != nullptr));
-    if (ptr != nullptr)
-    {
-      wdebug("Free up the library handle..");
-      exitcode = dlclose(ptr);
-    }
-    ptr = nullptr;
-  }
-  catch ( std::exception& e )
-  {
-    winfo("Failed to free the library handle: " + std::string(e.what()));
-  }
-
-  winfo("Freed the library handle? " + std::to_string(exitcode));
 }

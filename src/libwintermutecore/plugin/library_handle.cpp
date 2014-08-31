@@ -15,6 +15,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <dlfcn.h>
+#include "library_handle.hh"
+#include "../logging.hpp"
+
+using Wintermute::LibraryHandle;
+
 LibraryHandle::LibraryHandle(Handle* a_ptr) : ptr(nullptr)
 {
   if (a_ptr)
@@ -23,9 +29,9 @@ LibraryHandle::LibraryHandle(Handle* a_ptr) : ptr(nullptr)
   }
 }
 
+// TODO: Move the dlclose out of here if possible.
 LibraryHandle::~LibraryHandle()
 {
-  return;
   int exitcode;
   winfo("Attempting to free the library handle...");
   try

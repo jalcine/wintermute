@@ -41,6 +41,7 @@ set(_srcs
   ./plugin.cpp
   ./plugin/private.cpp
 	./plugin/library.cpp
+  ./plugin/library_handle.cpp
 	./plugin/library_private.cpp
 	./plugin/version.cpp
 )
@@ -52,7 +53,7 @@ ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutecore)
 WINTERMUTE_LINK_LIBRARIES(wintermutecore)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
 )

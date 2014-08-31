@@ -141,6 +141,8 @@ protected:
 
   // Handles the work to be done when this plugin is stopped.
 	virtual __cold bool shutdown() = 0;
+
+  // Handles the work to be done when this plugin is started.
 	virtual __cold bool startup() = 0;
 
 };

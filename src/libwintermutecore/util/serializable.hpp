@@ -35,11 +35,11 @@ namespace Util
 class Serializable
 {
 public:
-  // Converts this serializable data into a JSON string.
-  operator std::string() const;
-
-  // Represents the internal string-to-string mapping of data.
+  typedef std::string PlainType;
   typedef std::map<std::string, std::string> Map;
+
+  // Converts this serializable data into a JSON string.
+  operator PlainType() const;
 
   // Takes a map and makes it into a deserializable string.
   static std::string toString(const Serializable::Map& data);
