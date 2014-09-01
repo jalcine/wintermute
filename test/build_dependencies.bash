@@ -19,6 +19,6 @@ addpkg libjsoncpp-dev
 addpkg liblog4cxx10-dev
 addpkg libboost1.54-dev
 addpkg libboost-filesystem1.54-dev
-addpkg libclang-*-common-dev
+addpkg libclang-3.4-common-dev
 
 echo "Done loading dependencies."
