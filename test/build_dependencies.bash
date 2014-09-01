@@ -12,7 +12,7 @@ addpkg cxxtest
 
 # Install memory and coverage tools.
 addpkg valgrind
-addpkg gcov lcov
+addpkg lcov
 
 # Install app dependecies.
 addpkg libjsoncpp-dev
