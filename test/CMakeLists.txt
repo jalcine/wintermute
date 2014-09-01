@@ -18,9 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
+#== Enable testing.
+ENABLE_TESTING()
+
 #== Include things we'll need.
 INCLUDE(FindCxxTest)
 INCLUDE(CTest)
+INCLUDE(Dart)
 INCLUDE(WintermuteMacros)
 
 #== CxxTest: Search and bail.
@@ -31,11 +35,11 @@ ENDIF(NOT CXXTEST_FOUND)
 
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
   ${CXXTEST_INCLUDE_DIR}
-	${CMAKE_SOURCE_DIR}/test/include
+  ${CMAKE_SOURCE_DIR}/test/include
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/src/libwintermutecore
-)
+  )
 
 MACRO(ADD_A_TEST _prefix _name _hdr)
   set(_target ${_prefix}_${_name})
@@ -51,7 +55,10 @@ MACRO(ADD_A_TEST _prefix _name _hdr)
 ENDMACRO(ADD_A_TEST)
 
 CONFIGURE_FILE(include/test_suite.hpp.in
-	${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
+
+FILE(RENAME ${CMAKE_BINARY_DIR}/DartConfiguration.tcl
+  ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl)
 
 ADD_SUBDIRECTORY(fixtures)
 ADD_SUBDIRECTORY(unit)

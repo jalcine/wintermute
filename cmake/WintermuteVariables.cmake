@@ -20,33 +20,45 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 if (NOT DEFINED _wntr_vars)
-	set(_wntr_vars ON)
+  set(_wntr_vars ON)
 else()
-	return()
+  return()
 endif()
 
 SET(WINTERMUTE_COMPILE_FLAGS
-	-Wabi
-	-Wall
-	-Wpedantic
-	-fstrict-aliasing
-	-std=c++11
-	-Wc++11-compat
-)
+  -W
+  -Wabi
+  -Wall
+  -Wpedantic
+  -fstrict-aliasing
+  -std=c++11
+  -Wc++11-compat
+  )
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
-	-O0
-	-Wctor-dtor-privacy
-	-Wno-deprecated
-	-Wno-unused-parameter
-	-g3
-	-Wenum-compare
-	-Wextra
-	-Wno-conversion-null
-)
+  -O0
+  -Wctor-dtor-privacy
+  -Wno-deprecated
+  -Wno-unused-parameter
+  -g3
+  -Wenum-compare
+  -Wextra
+  -Wno-conversion-null
+  -Wshadow
+  -Wunused-variable
+  -Wunused-parameter
+  -Wunused-function
+  -Wunused
+  -Wno-system-headers
+  -Wno-deprecated
+  -Woverloaded-virtual
+  -Wwrite-strings
+  -fprofile-arcs
+  -ftest-coverage
+  )
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
-	-O3
-)
+  -O3
+  )
 
 set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")

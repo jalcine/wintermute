@@ -20,9 +20,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 if (NOT DEFINED _wntr_deps)
-	set(_wntr_deps ON)
+  set(_wntr_deps ON)
 else()
-	return()
+  return()
 endif()
 
 # == Look up manual dependencies.
@@ -36,27 +36,32 @@ PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
 FIND_PACKAGE(Boost 1.54 EXACT REQUIRED
-	COMPONENTS filesystem system)
+  COMPONENTS filesystem system)
 
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
-	${Boost_FILE_SYSTEM_INCLUDE_DIRS}
-	${Boost_SYSTEM_INCLUDE_DIRS}
-	${JsonCpp_INCLUDE_DIRS}
-	${Log4Cxx_INCLUDE_DIRS}
-	)
+  ${Boost_FILE_SYSTEM_INCLUDE_DIRS}
+  ${Boost_SYSTEM_INCLUDE_DIRS}
+  ${JsonCpp_INCLUDE_DIRS}
+  ${Log4Cxx_INCLUDE_DIRS}
+  )
 
 set(WINTERMUTE_LIBRARIES
-	dl
-	${Boost_FILESYSTEM_LIBRARY_RELEASE}
-	${Boost_SYSTEM_LIBRARY_RELEASE}
-	${JsonCpp_LIBRARIES}
-	${Log4Cxx_LIBRARIES}
-	)
+  dl
+  ${Boost_FILESYSTEM_LIBRARY_RELEASE}
+  ${Boost_SYSTEM_LIBRARY_RELEASE}
+  ${JsonCpp_LIBRARIES}
+  ${Log4Cxx_LIBRARIES}
+  )
 
 if (DEFINED WINTERMUTE_COMPILE_FLAGS)
-	set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
-		${JsonCpp_CFLAGS}
-		${Log4Cxx_CFLAGS}
-		)
-endif(DEFINED WINTERMUTE_COMPILE_FLAGS)
+  set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
+    ${JsonCpp_CFLAGS}
+    ${Log4Cxx_CFLAGS}
+    )
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(WINTERMUTE_LIBRARIES gcov ${WINTERMUTE_LIBRARIES})
+  message(STATUS "Added `-gcov` to the libraries to be used.")
+endif()
