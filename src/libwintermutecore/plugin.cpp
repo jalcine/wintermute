@@ -31,6 +31,10 @@ Plugin::Plugin(const string& name) : d_ptr(new PluginPrivate)
   d->name = name;
 }
 
+Plugin::Plugin(Plugin& plugin) : d_ptr(plugin.d_ptr)
+{
+}
+
 string Plugin::name() const
 {
   W_PRV ( const Plugin );
@@ -205,7 +209,6 @@ bool Plugin::unload(const string& name)
     if (unloadedLibrary)
     {
       wdebug("Unloaded library for plugin " + name + " successfully.");
-      PluginPrivate::plugins.erase(name);
       return true;
     }
     else
@@ -223,7 +226,5 @@ bool Plugin::unload(const string& name)
 
 Plugin::~Plugin()
 {
-  wdebug("Destroying plugin " + name() + "...");
-  d_ptr = nullptr;
   wdebug("Destroyed plugin " + name() + ".");
 }

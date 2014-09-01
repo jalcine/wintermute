@@ -15,17 +15,36 @@
  * Boston, MA 02111-1307, USA.
  */
 
-struct SoHandleImpl /* undefined */;
+#include "test_suite.hpp"
+#include "libwintermutecore/module.hpp"
 
-namespace Wintermute
-{
-class LibraryHandle
+using Wintermute::Module;
+
+class ModulePoolTestSuite : public CxxTest::TestSuite
 {
 public:
-  typedef SoHandleImpl Handle;
-  explicit LibraryHandle(Handle* a_ptr);
-  ~LibraryHandle();
-private:
-  Handle* ptr;
+	void testRegisterModules(void)
+	{
+		SampleModule theModule;
+		TS_ASSERT( Module::Pool::instance()->registerModule(theModule) == true );
+	}
+
+	void testUnregisterModules(void)
+	{
+		SampleModule theModule;
+		TS_ASSERT( Module::Pool::instance()->registerModule(theModule) == true );
+		TS_ASSERT_EQUALS ( Module::Pool::instance()->deregisterModule(theModule.designation()), true );
+	}
+
+	void testModules(void)
+	{
+		for (int i = 1; i < 9; ++i)
+		{
+			SampleModule theModule;
+			Module::Pool::instance()->registerModule(theModule);
+		}
+		TS_ASSERT_EQUALS ( Module::Pool::instance()->modules().size(), 10 );
+	}
 };
-}
+
+

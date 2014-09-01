@@ -4,8 +4,8 @@ alias addpkg="sudo apt-get install -qq"
 
 echo -en "Running tests on $(uname -a)."
 
-# Install CMake and pkg-config
-addpkg cmake pkg-config
+# Install pkg-config.
+addpkg pkg-config
 
 # Install CxxTest.
 addpkg cxxtest

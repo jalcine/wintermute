@@ -22,28 +22,63 @@
 
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
-using Wintermute::LibraryHandle;
-
-LibraryPrivate::HandlePtr LibraryPrivate::obtainHandle(const int& flags)
-{
-  auto rawHandle = dlopen(filePath.c_str(), flags);
-  LibraryPrivate::HandlePtr handlePtr(static_cast<LibraryHandle*>(rawHandle));
-  assert(handlePtr);
-  wdebug("Was handle obtained? " + std::to_string((bool) handlePtr));
-
-  return handlePtr;
-}
-
-bool LibraryPrivate::closeHandle(LibraryPrivate::HandlePtr& handlePtr)
-{
-  const int exitcode = dlclose(handlePtr.get());
-  wdebug("Return code from dlclose() " + std::to_string(exitcode));
-  return exitcode == 0;
-}
-
 
 LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
 {
+}
+
+LibraryPrivate::Handle LibraryPrivate::obtainHandle(const int& flags)
+{
+  LibraryPrivate::Handle handle = nullptr;
+
+  // Use the flags with `dlopen` to open the handle.
+  handle = dlopen(filePath.c_str(), flags);
+
+  if (!handle)
+  {
+    werror("Failed to open the handle from disk: " + std::string(dlerror()));
+    dlerror();
+    return nullptr;
+  }
+  else
+  {
+    winfo("Opened handle from disk " + filePath + "!");
+  }
+
+  // OPTIONAL: Assert said handle.
+#if WINTERMUTE_DEBUG
+  assert(handle);
+#endif
+
+  // Return the handle.
+  return handle;
+}
+
+bool LibraryPrivate::closeHandle(LibraryPrivate::Handle& handle)
+{
+  bool wasClosed = false;
+
+  // Check that the provided handle isn't null.
+  if (!handle || handle == nullptr)
+  {
+    wwarn("Provided a null handle to work with.");
+    return true;
+  }
+
+  // Close the handle provided using `dlclose`.
+  // Determine the code returned by `dlclose`.
+  const int dlCloseCode = dlclose(handle);
+  wasClosed = (dlCloseCode == 0);
+  wdebug("Was the handle closed successfully? " + std::to_string(wasClosed) + \
+         " with code " + std::to_string(dlCloseCode));
+
+  if (wasClosed)
+  {
+    handle = nullptr;
+  }
+
+  // Return true if code == 0, false otherwise.
+  return wasClosed;
 }
 
 bool LibraryPrivate::unload()
@@ -62,19 +97,16 @@ bool LibraryPrivate::unload()
 
 LibraryPrivate::~LibraryPrivate()
 {
+  wdebug("Deleting private data for library...");
   if (handlePtr)
   {
-    wdebug("Unloading library " + filePath + "...");
-    if (unload()) {
-      wdebug("Unloaded library " + filePath + "; dereferencing pointer...");
-      handlePtr = nullptr;
-      wdebug("Pointer redeferened.");
-    } else {
-      werror("Failed to unload library.");
-    }
+    wdebug("Clearing handle to library...");
+    closeHandle(handlePtr);
+    handlePtr = nullptr;
   }
-
-  assert(!handlePtr);
+  else
+  {
+    wdebug("Handle already cleared.");
+  }
+  wdebug("Deleted private data for library? " + std::to_string(!(bool) handlePtr));
 }
-
-

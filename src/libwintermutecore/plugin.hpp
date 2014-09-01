@@ -39,6 +39,7 @@ class WINTERMUTE_EXPORT Plugin
 
 public:
 	virtual ~Plugin();
+  Plugin(Plugin& other);
 	W_DECLARE_PTR_TYPE(Plugin)
 
   class Library;

@@ -41,7 +41,6 @@ set(_srcs
   ./plugin.cpp
   ./plugin/private.cpp
 	./plugin/library.cpp
-  ./plugin/library_handle.cpp
 	./plugin/library_private.cpp
 	./plugin/version.cpp
 )

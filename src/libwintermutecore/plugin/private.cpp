@@ -52,7 +52,6 @@ PluginPrivate::~PluginPrivate()
     if (libraryPtr->unload())
     {
       wwarn("Unloaded library for plugin " + name + "!");
-      libraryPtr = nullptr;
     }
     else
     {

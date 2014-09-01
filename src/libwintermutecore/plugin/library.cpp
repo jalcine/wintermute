@@ -23,7 +23,6 @@
 
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
-using Wintermute::LibraryHandle;
 
 #define DLOPEN_FLAGS RTLD_NOW | RTLD_GLOBAL
 
@@ -97,7 +96,7 @@ bool Plugin::Library::isLoaded() const
 Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
 {
   W_PRV(const Library);
-  Library::FunctionHandlePtr functionHandlePtr(dlsym(d->handlePtr.get(), methodName.c_str()));
+  Library::FunctionHandlePtr functionHandlePtr(dlsym(d->handlePtr, methodName.c_str()));
 
   if (!functionHandlePtr)
   {

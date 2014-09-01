@@ -68,7 +68,7 @@ Logging::Logging()
   log4cxx::AppenderPtr fileAppenderPtr(fileAppender);
   rootLogger->addAppender(fileAppenderPtr);
 
-  info("Started logging session at " + get_current_time_as_string(), __PRETTY_FUNCTION__);
+  info("Started logging session at " + get_current_time_as_string(), "root");
 
 #ifdef WINTERMUTE_DEBUG
   setLevel(Logging::Level::Trace);
@@ -79,7 +79,7 @@ Logging::Logging()
 
 Logging::~Logging()
 {
-  info("Terminated logging session at " + get_current_time_as_string(), __PRETTY_FUNCTION__);
+  obtain_logger("root")->debug("Terminated logging session at " + get_current_time_as_string());
 }
 
 void Logging::setLevel(const Logging::Level& level)

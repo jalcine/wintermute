@@ -15,39 +15,32 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <cxxtest/TestSuite.h>
-#include "libwintermutecore/plugin.hpp"
 #include "test_suite.hpp"
+#include "libwintermutecore/plugin.hpp"
 
 using Wintermute::Plugin;
-
-class PluginLibraryTestSuite : public CxxTest::TestSuite
-{
-public:
-  // Test loading a binary from disk.
-  void testUnloadsWhenOutOfScope()
-  {
-    Plugin::Ptr plugin = Plugin::load(SAMPLE_PLUGIN_PATH);
-		TSM_ASSERT_EQUALS ( "Was plugin created?", !!plugin, true );
-
-		if (plugin) {
-			TSM_ASSERT ( "Was Plugin loaded successfully?", plugin->state() == Plugin::Loaded );
-		}
-
-    // We don't have to clean up; the pointer itself will be destroyed when we
-    // leave this scope.
-  }
-
-  // TODO: Test loading a binary from the LD_LIBRARY_PATH.
-  // TODO: Test loading a binary from our prepopulated paths.
-  // TODO: Test unloading a binary.
-  // TODO: Test resolving symbols from the binary.
-};
 
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  // TODO: Test starting the plugin.
-  // TODO: Test stopping the plugin.
-  // TODO: Test grabbing the plugin's instance.
+  void testCreatePlugin(void)
+  {
+    // Check the ABI version of the plugin against this instance.
+  }
+
+  void testDestroyPlugin(void)
+  {
+    // Ensure plugin is not discoverable via lookup.
+  }
+
+  void testStartPlugin(void)
+  {
+    // Ensure that plugin's startup code is run after internal work.
+  }
+
+  void testStopPlugin(void)
+  {
+    // Ensure that plugin's shutdown code is run before internal work.
+  }
+
 };
