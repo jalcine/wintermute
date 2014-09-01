@@ -19,43 +19,46 @@
 ###############################################################################
 
 #== Include things we'll need.
-INCLUDE(FindCxxTest)
 INCLUDE(CTest)
-INCLUDE(Dart)
-INCLUDE(WintermuteMacros)
+
+if (BUILD_TESTING)
+  INCLUDE(Dart)
+  INCLUDE(WintermuteMacros)
 
 #== CxxTest: Search and bail.
-IF (NOT CXXTEST_FOUND)
-  MESSAGE(ERROR "We need CxxTest for the test suite.")
-  RETURN()
-ENDIF(NOT CXXTEST_FOUND)
+  INCLUDE(FindCxxTest)
+  IF (NOT CXXTEST_FOUND)
+    MESSAGE(ERROR "We need CxxTest for the test suite.")
+    RETURN()
+  ENDIF()
 
-SET(WINTERMUTE_TEST_INCLUDE_DIRS
-  ${CXXTEST_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}/test/include
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_BINARY_DIR}/src/libwintermutecore
-  )
+  SET(WINTERMUTE_TEST_INCLUDE_DIRS
+    ${CXXTEST_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/test/include
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_BINARY_DIR}/src/libwintermutecore
+    )
 
-set(WINTERMUTE_TEST_LIBRARIES
-  )
+  MACRO(ADD_A_TEST _prefix _name _hdr)
+    set(_target ${_prefix}_${_name})
 
-MACRO(ADD_A_TEST _prefix _name _hdr)
-  set(_target ${_prefix}_${_name})
+    CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
 
-  CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
+    WINTERMUTE_LINK_LIBRARIES(${_target})
+    WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
+    TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
 
-  WINTERMUTE_LINK_LIBRARIES(${_target})
-  WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-  TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
+    SET_PROPERTY(TARGET ${_target} APPEND_STRING
+      PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
+  ENDMACRO(ADD_A_TEST)
 
-  SET_PROPERTY(TARGET ${_target} APPEND_STRING
-    PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
-ENDMACRO(ADD_A_TEST)
+  CONFIGURE_FILE(include/test_suite.hpp.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
 
-CONFIGURE_FILE(include/test_suite.hpp.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
+  CONFIGURE_FILE(CTestConfig.cmake.in ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
+    @ONLY)
 
-ADD_SUBDIRECTORY(fixtures)
-ADD_SUBDIRECTORY(unit)
+  ADD_SUBDIRECTORY(fixtures)
+  ADD_SUBDIRECTORY(unit)
+endif()
