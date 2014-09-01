@@ -18,7 +18,7 @@ before_script:
 
 script:
   - make all
-  - make test
+  - make Experimental
 
 os:
   - linux
