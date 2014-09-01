@@ -32,11 +32,10 @@ SET(WINTERMUTE_COMPILE_FLAGS
 	-fstrict-aliasing
 	-std=c++11
 	-Wc++11-compat
-	)
+)
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
 	-O0
-	-Waggressive-loop-optimizations
 	-Wctor-dtor-privacy
 	-Wno-deprecated
 	-Wno-unused-parameter
@@ -44,11 +43,10 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
 	-Wenum-compare
 	-Wextra
 	-Wno-conversion-null
-	-Wuseless-cast
-	)
+)
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
 	-O3
-	)
+)
 
 set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
