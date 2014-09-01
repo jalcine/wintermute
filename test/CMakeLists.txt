@@ -18,9 +18,6 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-#== Enable testing.
-ENABLE_TESTING()
-
 #== Include things we'll need.
 INCLUDE(FindCxxTest)
 INCLUDE(CTest)
@@ -41,6 +38,9 @@ SET(WINTERMUTE_TEST_INCLUDE_DIRS
   ${CMAKE_BINARY_DIR}/src/libwintermutecore
   )
 
+set(WINTERMUTE_TEST_LIBRARIES
+  )
+
 MACRO(ADD_A_TEST _prefix _name _hdr)
   set(_target ${_prefix}_${_name})
 
@@ -48,7 +48,7 @@ MACRO(ADD_A_TEST _prefix _name _hdr)
 
   WINTERMUTE_LINK_LIBRARIES(${_target})
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-  TARGET_LINK_LIBRARIES(${_target} wintermutecore)
+  TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
 
   SET_PROPERTY(TARGET ${_target} APPEND_STRING
     PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
@@ -56,9 +56,6 @@ ENDMACRO(ADD_A_TEST)
 
 CONFIGURE_FILE(include/test_suite.hpp.in
   ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
-
-FILE(RENAME ${CMAKE_BINARY_DIR}/DartConfiguration.tcl
-  ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl)
 
 ADD_SUBDIRECTORY(fixtures)
 ADD_SUBDIRECTORY(unit)

@@ -61,5 +61,15 @@ ENDMACRO(wintermute_add_target_properties)
 #== header information of Wintermute.
 #==============================================================================
 macro(wintermute_link_libraries _target)
-	target_link_libraries(${_target} ${WINTERMUTE_LIBRARIES})
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_COMPILER_IS_GNUCXX)
+      set(WINTERMUTE_TEST_LIBRARIES gcov)
+    elseif(CMAKE_CXX_COMPILER STREQUAL "Clang")
+      set(WINTERMUTE_TEST_LIBRARIES profile_rt)
+    endif()
+  endif()
+
+  target_link_libraries(${_target}
+    ${WINTERMUTE_LIBRARIES}
+    ${WINTERMUTE_TEST_LIBRARIES})
 endmacro(wintermute_link_libraries _target)
