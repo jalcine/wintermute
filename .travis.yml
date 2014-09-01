@@ -10,7 +10,7 @@ before_install:
   - sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq g++-4.7 build-essential
-  - sudo apt-get purge -qq g++-4.6
+  - sudo apt-get purge -qq g*-4.6
   - test/build_dependencies.bash
 
 before_script:
