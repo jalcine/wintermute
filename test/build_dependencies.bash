@@ -10,6 +10,10 @@ addpkg pkg-config cmake
 # Install CxxTest.
 addpkg cxxtest
 
+# Install memory and coverage tools.
+addpkg valgrind
+addpkg gcov lcov
+
 # Install app dependecies.
 addpkg libjsoncpp-dev
 addpkg liblog4cxx10-dev
