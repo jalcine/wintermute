@@ -15,6 +15,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdlib.h>
 #include "test_suite.hpp"
 #include "libwintermutecore/plugin.hpp"
 
@@ -25,22 +26,32 @@ class PluginTestSuite : public CxxTest::TestSuite
 public:
   void testCreatePlugin(void)
   {
-    // Check the ABI version of the plugin against this instance.
+    Plugin::Ptr pluginPtr = Plugin::loadFromFilepath(SAMPLE_PLUGIN_PATH);
+    TSM_ASSERT ( "Loads plugins with provided absolute file paths.", pluginPtr );
+
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, getenv("PWD"), 1);
+    pluginPtr = Plugin::loadFromFilepath("test/fixtures/" + std::string(SAMPLE_PLUGIN_FILE_NAME));
+    TSM_ASSERT ( "Loads plugins with provided relative file paths.", pluginPtr );
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+
+    pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
+    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
   }
 
   void testDestroyPlugin(void)
   {
-    // Ensure plugin is not discoverable via lookup.
+    Plugin::Ptr pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
+    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
+    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
+    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
   }
 
-  void testStartPlugin(void)
+  void testStartAndStopPlugin(void)
   {
-    // Ensure that plugin's startup code is run after internal work.
-  }
-
-  void testStopPlugin(void)
-  {
-    // Ensure that plugin's shutdown code is run before internal work.
+    Plugin::Ptr pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
+    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
+    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts up.", pluginPtr->start(), Plugin::Loaded );
+    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts up.", pluginPtr->stop(), Plugin::Unloaded );
   }
 
 };

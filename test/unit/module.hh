@@ -5,4 +5,9 @@
 using Wintermute::Module;
 class ModuleTestSuite : public CxxTest::TestSuite
 {
+public:
+  void testSample(void)
+  {
+    TS_ASSERT(1, 1);
+  }
 };

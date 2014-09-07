@@ -26,9 +26,7 @@ public:
   // Test loading a binary from disk.
   void testLoad()
   {
-    // TODO: Test loading a binary from the LD_LIBRARY_PATH.
-    // TODO: Test loading a binary from our prepopulated paths.
-    Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH);
+    Plugin::Library::Ptr libraryPtr(new Plugin::Library(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT_EQUALS ( "Was library created?", (bool) libraryPtr, true );
     TSM_ASSERT_EQUALS ( "Was library loaded?", libraryPtr->load(), true );
   }
@@ -40,7 +38,6 @@ public:
     TS_ASSERT ( libraryPtr->unload() );
   }
 
-  // TODO: Test resolving symbols from the binary.
   void testResolveFunction()
   {
     Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH);
