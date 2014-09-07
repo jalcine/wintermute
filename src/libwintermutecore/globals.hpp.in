@@ -103,6 +103,9 @@ void w_noop(void);
 #define __hot __attribute__((hot))
 #define __cold __attribute__((cold))
 
+#define WINTERMUTE_ENV_PLUGIN_PATH "WINTERMUTE_PLUGIN_PATH"
+#define WINTERMUTE_ENV_LOG_LEVEL   "WINTERMUTE_LOG_LEVEL"
+
 #endif // end globaldef
 
 // vim: set fdm=syntax :

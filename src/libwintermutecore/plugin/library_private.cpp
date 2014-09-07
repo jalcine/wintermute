@@ -16,6 +16,8 @@
  */
 
 #include <dlfcn.h>
+#include <libgen.h>
+#include <stdlib.h>
 #include "logging.hpp"
 #include "plugin.hpp"
 #include "plugin/library.hh"
@@ -31,24 +33,68 @@ LibraryPrivate::Handle LibraryPrivate::obtainHandle(const int& flags)
 {
   LibraryPrivate::Handle handle = nullptr;
 
-  // Use the flags with `dlopen` to open the handle.
-  handle = dlopen(filePath.c_str(), flags);
+  // TODO: Build up a list of file paths to check.
+  //  - $WINTERMUTE_PLUGIN_PATH could be a comma-separated list.
+  //  - dlopen() already tries to use a few tactics to look up file paths.
+  const string baseFilePath = { basename(const_cast<char*>(filePath.c_str())) };
+  const char* envWintermutePluginPath = getenv(WINTERMUTE_ENV_PLUGIN_PATH);
+  const string ourPathFromEnv = (envWintermutePluginPath) ? envWintermutePluginPath : "";
 
-  if (!handle)
+  list<string> prefixes;
+  // Compile a list of paths where this thing can be at.
+  list<string> filePaths =
   {
-    werror("Failed to open the handle from disk: " + std::string(dlerror()));
-    dlerror();
-    return nullptr;
+    filePath,
+    "../" + baseFilePath,
+    "../" + filePath,
+    baseFilePath + ".so",
+    filePath + ".so",
+    "lib" + baseFilePath + ".so",
+    "libwintermute" + baseFilePath + ".so",
+  };
+  list<string> originalPaths = filePaths;
+
+  const bool hasAList = ourPathFromEnv.find(";") != string::npos;
+
+  wdebug("Environment provided 'WINTERMUTE_PLUGIN_PATH' " + ourPathFromEnv);
+
+  if (!hasAList)
+  {
+    prefixes.push_back(ourPathFromEnv);
+    wdebug("Only one path provided.");
   }
   else
   {
-    winfo("Opened handle from disk " + filePath + "!");
+    wdebug("Number of prefixes to use: " + std::to_string(prefixes.size()));
   }
 
-  // OPTIONAL: Assert said handle.
-#if WINTERMUTE_DEBUG
-  assert(handle);
-#endif
+  for (string path : originalPaths)
+  {
+    for (string prefix : prefixes)
+    {
+      const string thePrefixedPath = prefix + "/" + path;
+      filePaths.insert(filePaths.end(), thePrefixedPath);
+    }
+  }
+
+  for ( string aPath : filePaths )
+  {
+    wdebug("Attempting to open library handle from file '" + aPath + "'...");
+    handle = dlopen(aPath.c_str(), flags);
+
+    if (!handle)
+    {
+      werror("Failed to open the handle from disk: " + std::string(dlerror()));
+      dlerror();
+      continue;
+    }
+    else
+    {
+      filePath = aPath;
+      winfo("Opened handle from disk " + aPath + "!");
+      break;
+    }
+  }
 
   // Return the handle.
   return handle;

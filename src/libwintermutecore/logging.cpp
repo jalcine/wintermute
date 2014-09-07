@@ -82,9 +82,9 @@ Logging::~Logging()
   obtain_logger("root")->debug("Terminated logging session at " + get_current_time_as_string());
 }
 
-void Logging::setLevel(const Logging::Level& level)
+void Logging::setLevel(const Logging::Level& newLevel)
 {
-  const int log4cxx_level = (uint) level * 1000;
+  const int log4cxx_level = (uint) newLevel * 1000;
   LoggerPtr logger = obtain_root_logger();
   logger->setLevel(log4cxx::Level::toLevel(log4cxx_level));
 }

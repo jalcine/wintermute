@@ -26,10 +26,10 @@ using Wintermute::LibraryPrivate;
 
 #define DLOPEN_FLAGS RTLD_NOW | RTLD_GLOBAL
 
-Plugin::Library::Library(const string& filePath) : d_ptr(new LibraryPrivate)
+Plugin::Library::Library(const string& newFilePath) : d_ptr(new LibraryPrivate)
 {
   W_PRV(Library);
-  d->filePath = filePath;
+  d->filePath = newFilePath;
 }
 
 bool Plugin::Library::load()

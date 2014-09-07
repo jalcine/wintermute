@@ -24,11 +24,11 @@
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
 
-Plugin::Plugin(const string& name) : d_ptr(new PluginPrivate)
+Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate)
 {
   W_PRV(Plugin);
-  assert ( name.empty() == false );
-  d->name = name;
+  assert ( pluginName.empty() == false );
+  d->name = pluginName;
 }
 
 Plugin::Plugin(Plugin& plugin) : d_ptr(plugin.d_ptr)
@@ -89,25 +89,52 @@ Plugin::LoadState Plugin::stop()
   return d->loadState;
 }
 
-Plugin::Ptr Plugin::load(const string& filepath)
+Plugin::Ptr Plugin::loadByName(const string& name)
+{
+  assert(!name.empty());
+  Plugin::Ptr pluginPtr;
+  // NOTE: There *has* to be a better way of doing this.
+  const list<string> libraryFileNames =
+  {
+    name,
+    name + ".so",
+    "lib" + name + ".so",
+    "libwintermute" + name + ".so"
+  };
+
+  for (string fileName : libraryFileNames)
+  {
+    wdebug("Testing out the filename " + fileName + " in place of " + name + "...");
+    pluginPtr = Plugin::loadFromFilepath(fileName);
+    if (pluginPtr)
+    {
+      wdebug(fileName + " works!");
+      break;
+    }
+  }
+
+  return pluginPtr;
+}
+
+Plugin::Ptr Plugin::loadFromFilepath(const string& filepath)
 {
   assert(!filepath.empty());
 
-  wdebug("Attempting to load library " + filepath + " for plugin...");
+  wdebug("Attempting to load library '" + filepath + "' for plugin...");
   Plugin::Library::Ptr libraryPtr = Plugin::Library::find(filepath);
 
   wdebug("Was library " + filepath + " found on `ld`? " + (libraryPtr ? "YES" : "NO"));
 
   if (libraryPtr)
   {
-    return load(libraryPtr);
+    return loadFromLibrary(libraryPtr);
   }
 
   wwarn("Failed to load plugin " + filepath + ".");
   return nullptr;
 }
 
-Plugin::Ptr Plugin::load(Library::Ptr& libraryPtr)
+Plugin::Ptr Plugin::loadFromLibrary(Library::Ptr& libraryPtr)
 {
   Plugin::Ptr pluginPtr = { nullptr };
   if (!libraryPtr->isLoaded())
@@ -170,6 +197,19 @@ Plugin::Ptr Plugin::load(Library::Ptr& libraryPtr)
 
   funcCtorHandle = nullptr;
   return pluginPtr;
+}
+
+bool Plugin::isCurrentlyLoaded(const string& name)
+{
+  auto nameItr = std::find_if(
+                   PluginPrivate::plugins.cbegin(),
+                   PluginPrivate::plugins.cend(),
+                   [&](const Plugin::Map::value_type & pair)
+  {
+    return pair.first == name;
+  });
+
+  return nameItr == PluginPrivate::plugins.cend();
 }
 
 list<string> Plugin::loadedPlugins()
