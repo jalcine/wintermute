@@ -43,7 +43,7 @@ public:
   W_DECLARE_PTR_TYPE(Plugin)
 
   // Provides the known load states for a particular plugin.
-  enum LoadState
+  enum WINTERMUTE_EXPORT LoadState
   {
     LoadUnknown   = 0x000,
     Unloaded      = 0x100,
@@ -52,7 +52,7 @@ public:
   };
 
   // Represents all of the possible failure states for a plugin.
-  enum LoadFailure
+  enum WINTERMUTE_EXPORT LoadFailure
   {
     FailureUnknown        = 0x0000,
     FailureNone           = FailureUnknown,
@@ -108,7 +108,7 @@ public:
   // Determines if there's a loaded plugin with the provided name.
   static bool __hot isCurrentlyLoaded(const string& name);
 
-  class Library
+  class WINTERMUTE_EXPORT Library
   {
   private:
     W_DEFINE_PRIVATE(Library)
@@ -177,3 +177,4 @@ protected:
   }
 
 #endif
+>>>>>>> Stashed changes

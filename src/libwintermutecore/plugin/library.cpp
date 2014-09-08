@@ -90,7 +90,7 @@ bool Plugin::Library::unload()
 bool Plugin::Library::isLoaded() const
 {
   W_PRV(const Library);
-  return (bool) d->handlePtr;
+  return !!d->handlePtr;
 }
 
 Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
@@ -117,11 +117,13 @@ Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 {
   wdebug("Searching for library at " + filepath + "...");
   Plugin::Library::Ptr libraryPtr(std::make_shared<Plugin::Library>(filepath));
-  assert(libraryPtr->load());
+  libraryPtr->load();
 
   wdebug("Was the library loaded? " + std::to_string(libraryPtr->isLoaded()));
   if (!libraryPtr->isLoaded())
   {
+    wdebug("Failed to load library: " + libraryPtr->errorMessage());
+    assert(libraryPtr->isLoaded());
     libraryPtr = nullptr;
   }
 
@@ -130,5 +132,6 @@ Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 
 Plugin::Library::~Library()
 {
-  // d_ptr handles the unloading already.
+  wdebug("Unloading the library...");
 }
+>>>>>>> Stashed changes

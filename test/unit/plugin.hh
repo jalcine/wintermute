@@ -21,37 +21,44 @@
 
 using Wintermute::Plugin;
 
+void checkLoadAndHandleUnloadOfPlugin(Plugin::Ptr pluginPtr)
+{
+  TSM_ASSERT ( "Loads plugins with provided absolute file paths.", pluginPtr );
+  TSM_ASSERT ( "Reports loaded status.", pluginPtr->state() == Plugin::Loaded );
+  TSM_ASSERT ( "Plugin is discoverable at run-time.", Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+  TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
+  TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+}
+
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testCreatePlugin(void)
+  void testCreateAndDestroyPlugin(void)
   {
     Plugin::Ptr pluginPtr = Plugin::loadFromFilepath(SAMPLE_PLUGIN_PATH);
-    TSM_ASSERT ( "Loads plugins with provided absolute file paths.", pluginPtr );
+    checkLoadAndHandleUnloadOfPlugin(pluginPtr);
 
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, getenv("PWD"), 1);
     pluginPtr = Plugin::loadFromFilepath("test/fixtures/" + std::string(SAMPLE_PLUGIN_FILE_NAME));
-    TSM_ASSERT ( "Loads plugins with provided relative file paths.", pluginPtr );
+    checkLoadAndHandleUnloadOfPlugin(pluginPtr);
     unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
 
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
     pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
-    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
-  }
-
-  void testDestroyPlugin(void)
-  {
-    Plugin::Ptr pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
-    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
-    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
-    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+    checkLoadAndHandleUnloadOfPlugin(pluginPtr);
+    //unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   }
 
   void testStartAndStopPlugin(void)
   {
     Plugin::Ptr pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
     TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
-    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts up.", pluginPtr->start(), Plugin::Loaded );
-    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts up.", pluginPtr->stop(), Plugin::Unloaded );
+    TSM_ASSERT ( "Reports loaded status.", pluginPtr->state() == Plugin::Loaded );
+    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts.", pluginPtr->start(), Plugin::Loaded );
+    TSM_ASSERT_EQUALS ( "Ensures that the plugin stops.", pluginPtr->stop(), Plugin::Unloaded );
+    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
+    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
   }
 
 };
+>>>>>>> Stashed changes

@@ -25,13 +25,13 @@ using Wintermute::MessagePrivate;
 using Wintermute::Util::Serializable;
 
 Message::Message(const Message::HashType& data,
-                 const Module::Designation& receiver,
-                 const Module::Designation& sender) :
+                 const Module::Designation& aReceiver,
+                 const Module::Designation& aSender) :
   Serializable(), d_ptr(new MessagePrivate)
 {
   setPayload(data);
-  setSender(sender);
-  setReceiver(receiver);
+  setSender(aSender);
+  setReceiver(aReceiver);
 }
 
 Message::Message(const Message& other) : Serializable(), d_ptr (new MessagePrivate)

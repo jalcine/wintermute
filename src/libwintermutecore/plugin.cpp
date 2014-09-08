@@ -208,8 +208,9 @@ bool Plugin::isCurrentlyLoaded(const string& name)
   {
     return pair.first == name;
   });
+  auto endOfList = PluginPrivate::plugins.cend();
 
-  return nameItr == PluginPrivate::plugins.cend();
+  return nameItr != endOfList;
 }
 
 list<string> Plugin::loadedPlugins()
@@ -238,33 +239,38 @@ bool Plugin::unload(const string& name)
   wdebug("Attempting to unload plugin " + name + "...");
   auto pluginItr = PluginPrivate::plugins.find(name);
 
-  if (pluginItr != PluginPrivate::plugins.end())
+  if (pluginItr == PluginPrivate::plugins.end())
   {
-    wdebug("Found plugin " + pluginItr->first + " to unload.");
-    Plugin::Ptr plugin = pluginItr->second;
-    wdebug("Unloading library for plugin " + name);
+    wdebug("Couldn't find plugin named " + name + ".");
+    return false;
+  }
+
+  wdebug("Found plugin " + pluginItr->first + " to unload.");
+  Plugin::Ptr plugin = pluginItr->second;
+  wdebug("Unloading library for plugin " + name + "...");
+
+  if (plugin->d_func()->libraryPtr->isLoaded())
+  {
     const bool unloadedLibrary = plugin->d_func()->libraryPtr->unload();
     wdebug("Was library for plugin " + name + " unloaded? " + std::to_string(unloadedLibrary));
 
     if (unloadedLibrary)
     {
       wdebug("Unloaded library for plugin " + name + " successfully.");
-      return true;
     }
     else
     {
-      wwarn("Failed to unload library for plugin " + name + ".");
+      wwarn("Failed to unload library for plugin " + name + ": "
+          + plugin->d_func()->libraryPtr->errorMessage());
     }
   }
-  else
-  {
-    wdebug("Couldn't find plugin named " + name + ".");
-  }
 
-  return false;
+  PluginPrivate::plugins.erase(pluginItr);
+  return true;
 }
 
 Plugin::~Plugin()
 {
   wdebug("Destroyed plugin " + name() + ".");
 }
+>>>>>>> Stashed changes

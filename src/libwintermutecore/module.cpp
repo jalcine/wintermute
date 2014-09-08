@@ -23,11 +23,11 @@ using Wintermute::Module;
 using Wintermute::Module;
 using Wintermute::ModulePrivate;
 
-Module::Module(const Designation& designation) : d_ptr(new ModulePrivate)
+Module::Module(const Designation& aDesignation) : d_ptr(new ModulePrivate)
 {
   W_PRV(Module);
-  d->designation = designation;
-  wtrace("Module " + static_cast<string>(designation) + " started.");
+  d->designation = aDesignation;
+  wtrace("Module " + static_cast<string>(aDesignation) + " started.");
 }
 
 Module::Designation Module::designation() const
@@ -52,5 +52,10 @@ Module::~Module()
 {
 }
 
-ModulePrivate::ModulePrivate() {}
-ModulePrivate::~ModulePrivate() {}
+ModulePrivate::ModulePrivate()
+{
+}
+
+ModulePrivate::~ModulePrivate()
+{
+}

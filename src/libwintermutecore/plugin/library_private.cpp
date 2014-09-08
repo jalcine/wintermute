@@ -25,14 +25,8 @@
 using Wintermute::Plugin;
 using Wintermute::LibraryPrivate;
 
-LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
+list<string> collectFilePaths(const string& filePath)
 {
-}
-
-LibraryPrivate::Handle LibraryPrivate::obtainHandle(const int& flags)
-{
-  LibraryPrivate::Handle handle = nullptr;
-
   // TODO: Build up a list of file paths to check.
   //  - $WINTERMUTE_PLUGIN_PATH could be a comma-separated list.
   //  - dlopen() already tries to use a few tactics to look up file paths.
@@ -76,6 +70,18 @@ LibraryPrivate::Handle LibraryPrivate::obtainHandle(const int& flags)
       filePaths.insert(filePaths.end(), thePrefixedPath);
     }
   }
+
+  return filePaths;
+}
+
+LibraryPrivate::LibraryPrivate() : filePath(), handlePtr(nullptr)
+{
+}
+
+LibraryPrivate::Handle LibraryPrivate::obtainHandle(const int& flags)
+{
+  LibraryPrivate::Handle handle = nullptr;
+  list<string> filePaths = collectFilePaths(filePath);
 
   for ( string aPath : filePaths )
   {
@@ -148,11 +154,12 @@ LibraryPrivate::~LibraryPrivate()
   {
     wdebug("Clearing handle to library...");
     closeHandle(handlePtr);
-    handlePtr = nullptr;
   }
   else
   {
     wdebug("Handle already cleared.");
   }
-  wdebug("Deleted private data for library? " + std::to_string(!(bool) handlePtr));
+
+  wdebug("Deleted private data for library? " + std::to_string(!!handlePtr));
 }
+>>>>>>> Stashed changes

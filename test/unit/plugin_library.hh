@@ -24,26 +24,25 @@ class PluginLibraryTestSuite : public CxxTest::TestSuite
 {
 public:
   // Test loading a binary from disk.
-  void testLoad()
+  void testLoadAndUnload()
   {
     Plugin::Library::Ptr libraryPtr(new Plugin::Library(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT_EQUALS ( "Was library created?", (bool) libraryPtr, true );
     TSM_ASSERT_EQUALS ( "Was library loaded?", libraryPtr->load(), true );
-  }
-
-  void testUnload()
-  {
-    Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH);
-    TS_ASSERT ( libraryPtr->load() );
-    TS_ASSERT ( libraryPtr->unload() );
+    TSM_ASSERT ( "Reports accurate status", libraryPtr->isLoaded() );
+    TSM_ASSERT ( "Was library unloaded?",  libraryPtr->unload() );
+    TSM_ASSERT ( "Reports accurate status", !libraryPtr->isLoaded() );
   }
 
   void testResolveFunction()
   {
     Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH);
-    TS_ASSERT ( libraryPtr->load() );
+    TSM_ASSERT ( "Was library loaded?", libraryPtr->load() );
+    TSM_ASSERT ( "Reports proper status.", libraryPtr->isLoaded() );
     Plugin::Library::FunctionHandlePtr funcPtr = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
-    TS_ASSERT ( funcPtr );
-    TS_ASSERT ( libraryPtr->unload() );
+    TSM_ASSERT ( "Valid function pointer?", funcPtr );
+    TSM_ASSERT ( "Unloads the library.", libraryPtr->unload() );
+    TSM_ASSERT ( "Reports proper status.", !libraryPtr->isLoaded() );
   }
 };
+>>>>>>> Stashed changes
