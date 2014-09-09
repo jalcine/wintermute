@@ -30,6 +30,7 @@ Serializable::Serializable()
 
 Serializable::Serializable(const string& jsonString)
 {
+  assert(!jsonString.empty());
   // TODO How do we attempt deserialization when we can't use the
   // deserialization method?
 }

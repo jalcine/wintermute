@@ -45,4 +45,3 @@ public:
     TSM_ASSERT ( "Reports proper status.", !libraryPtr->isLoaded() );
   }
 };
->>>>>>> Stashed changes

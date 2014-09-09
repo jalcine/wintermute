@@ -162,4 +162,3 @@ LibraryPrivate::~LibraryPrivate()
 
   wdebug("Deleted private data for library? " + std::to_string(!!handlePtr));
 }
->>>>>>> Stashed changes

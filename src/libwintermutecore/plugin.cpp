@@ -273,4 +273,3 @@ Plugin::~Plugin()
 {
   wdebug("Destroyed plugin " + name() + ".");
 }
->>>>>>> Stashed changes

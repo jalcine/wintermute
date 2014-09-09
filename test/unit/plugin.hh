@@ -21,13 +21,14 @@
 
 using Wintermute::Plugin;
 
-void checkLoadAndHandleUnloadOfPlugin(Plugin::Ptr pluginPtr)
+void checkLoadAndHandleUnloadOfPlugin(Plugin::Ptr& pluginPtr)
 {
   TSM_ASSERT ( "Loads plugins with provided absolute file paths.", pluginPtr );
   TSM_ASSERT ( "Reports loaded status.", pluginPtr->state() == Plugin::Loaded );
   TSM_ASSERT ( "Plugin is discoverable at run-time.", Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
   TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
   TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+  pluginPtr = nullptr;
 }
 
 class PluginTestSuite : public CxxTest::TestSuite
@@ -46,12 +47,14 @@ public:
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
     pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
     checkLoadAndHandleUnloadOfPlugin(pluginPtr);
-    //unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   }
 
   void testStartAndStopPlugin(void)
   {
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
     Plugin::Ptr pluginPtr = Plugin::loadByName(SAMPLE_PLUGIN_NAME);
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
     TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
     TSM_ASSERT ( "Reports loaded status.", pluginPtr->state() == Plugin::Loaded );
     TSM_ASSERT_EQUALS ( "Ensures that the plugin starts.", pluginPtr->start(), Plugin::Loaded );
@@ -61,4 +64,3 @@ public:
   }
 
 };
->>>>>>> Stashed changes

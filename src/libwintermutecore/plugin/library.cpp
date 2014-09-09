@@ -134,4 +134,3 @@ Plugin::Library::~Library()
 {
   wdebug("Unloading the library...");
 }
->>>>>>> Stashed changes
