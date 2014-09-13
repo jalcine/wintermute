@@ -24,17 +24,17 @@ using Wintermute::ModulePrivate;
 using Wintermute::DesignationPrivate;
 using Wintermute::Util::Serializable;
 
-Module::Module::Designation::Designation(const string& name, const string& domain, const pid_t& pid) :
+Module::Module::Designation::Designation(const string& aName, const string& aDomain, const pid_t& aPid) :
   Serializable(""), d_ptr (new DesignationPrivate)
 {
   W_PRV(Designation);
-  d->name = name;
-  d->domain = domain;
-  d->pid = pid;
+  d->name = aName;
+  d->domain = aDomain;
+  d->pid = aPid;
 }
 
 Module::Designation::Designation(const Designation& other) : Serializable(other),
-	d_ptr(new DesignationPrivate)
+  d_ptr(new DesignationPrivate)
 {
   W_PRV(Designation);
   d->clone(other.d_ptr);

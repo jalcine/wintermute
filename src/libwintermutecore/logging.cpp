@@ -105,6 +105,8 @@ void Logging::debug(const string & message, const string& name)
 {
 #ifdef WINTERMUTE_DEBUG
   obtain_logger(name)->debug(message);
+#else
+  w_noop();
 #endif
 }
 
@@ -122,5 +124,7 @@ void Logging::trace(const string & message, const string& name)
 {
 #ifdef WINTERMUTE_DEBUG
   obtain_logger(name)->trace(message);
+#else
+  w_noop();
 #endif
 }

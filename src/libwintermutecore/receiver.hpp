@@ -26,7 +26,8 @@ namespace Wintermute
 {
 class Message;
 class ReceiverPrivate;
-class Receiver
+class Receiver :
+  W_DECLARE_SHAREABLE(Receiver)
 {
   W_DEFINE_PRIVATE(Receiver)
 

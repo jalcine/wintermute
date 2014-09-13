@@ -27,26 +27,9 @@ PluginPrivate::PluginPrivate() : name(), libraryPtr()
 {
 }
 
-Plugin::Ptr PluginPrivate::attemptLoad()
-{
-  Plugin::Ptr pluginPtr;
-
-  if (libraryPtr->load())
-  {
-    wtrace("Resolved the plugin's ctor function.");
-    winfo("Created the plugin " + pluginPtr->name() + ".");
-  }
-  else
-  {
-    werror("The plugin's library failed to load.");
-  }
-
-  return pluginPtr;
-}
-
 PluginPrivate::~PluginPrivate()
 {
-  if (libraryPtr->isLoaded())
+  if (libraryPtr && libraryPtr->isLoaded())
   {
     wwarn("Unloading plugin " + name + "'s library...");
     if (libraryPtr->unload())
@@ -57,7 +40,9 @@ PluginPrivate::~PluginPrivate()
     {
       werror("Failed to unload library for " + name + ": " + libraryPtr->errorMessage());
     }
-  } else {
+  }
+  else
+  {
     winfo("No library loaded for this plugin; no need to unload anything.");
   }
 }

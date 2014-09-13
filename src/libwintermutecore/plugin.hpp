@@ -19,6 +19,7 @@
 #define WINTERMUTE_PLUGIN_HPP
 
 #include "globals.hpp"
+#include "logging.hpp"
 #include <list>
 #include <map>
 #include <string>
@@ -33,43 +34,70 @@ namespace Wintermute
 {
 class PluginPrivate;
 class LibraryPrivate;
-class WINTERMUTE_EXPORT Plugin
+class WINTERMUTE_EXPORT Plugin :
+  W_DECLARE_SHAREABLE(Plugin)
 {
   W_DEFINE_PRIVATE(Plugin)
 
 public:
   virtual ~Plugin();
-  Plugin(Plugin& other);
+  explicit Plugin(Plugin& other);
   W_DECLARE_PTR_TYPE(Plugin)
 
   // Provides the known load states for a particular plugin.
   enum WINTERMUTE_EXPORT LoadState
   {
-    LoadUnknown   = 0x000,
+    // Represents an undefined state.
+    LoadUndefined = 0x000,
+
+    // Represents the state of an unloaded plugin.
     Unloaded      = 0x100,
+
+    // Represents the state of a failed plugin load.
     LoadingFailed = 0x200,
+
+    // Represents the state of a successfully loaded plugin.
     Loaded        = 0x400
   };
 
   // Represents all of the possible failure states for a plugin.
   enum WINTERMUTE_EXPORT LoadFailure
   {
-    FailureUnknown        = 0x0000,
-    FailureNone           = FailureUnknown,
+    // Represents an undefined failure state.
+    FailureUndefined      = 0x0000,
 
+    // Represents a state of no failure.
+    FailureNone           = FailureUndefined,
+
+    // Defines a failing load state that relates to the library.
     FailureLibrary        = 0x0001,
+    // Defines a failing load state that relates to the failure to resolve a
+    // symbol.
     FailureSymbol         = 0x0002,
 
+    // Defines a failing load state that relates an incompatible binary
+    // version.
     FailureABI            = 0x1000,
+
+    // Defines a failing load state that relates to a failure in interacting
+    // with the library due to a ABI issue.
     FailureABIException   = 0x1100,
+
+    // Defines a failing load state that relates to the loss of a particular
+    // symbol or object.
     FailureMissing        = 0x2000,
 
+    // Defines a failing load state to the inability to find the library in
+    // question.
     FailureMissingLibrary = FailureMissing | FailureLibrary,
+
+    // Defines a failing load state to the inability to resolve a particular
+    // symbol from the library in question.
     FailureMissingSymbol  = FailureMissing | FailureSymbol,
 
     // Anything defined over this is considered to be a user-defined error for
     // plugins.
-    FailureUser           = 0x9999
+    FailureUser           = 0x9000
   };
 
   // Represents a list of Plugin pointers.
@@ -108,7 +136,7 @@ public:
   // Determines if there's a loaded plugin with the provided name.
   static bool __hot isCurrentlyLoaded(const string& name);
 
-  class WINTERMUTE_EXPORT Library
+  class WINTERMUTE_EXPORT Library : W_DECLARE_SHAREABLE(Library)
   {
   private:
     W_DEFINE_PRIVATE(Library)
@@ -169,11 +197,13 @@ protected:
  */
 #define W_DEFINE_PLUGIN(Class) \
   extern "C" WINTERMUTE_EXPORT Wintermute::Plugin::Ptr w_plugin_create () { \
-    return Wintermute::Plugin::Ptr(new Class); \
+    Wintermute::Plugin::Ptr pluginPtr = std::make_shared<Class>(); \
+    return pluginPtr; \
   } \
   extern "C" WINTERMUTE_EXPORT bool w_plugin_destroy (Wintermute::Plugin::Ptr& pluginPtr) { \
-    delete pluginPtr.get(); \
-    return (bool) pluginPtr; \
+    wdebug( #Class " count: " + std::to_string(pluginPtr.use_count())); \
+    delete pluginPtr->getptr().get(); \
+    return (bool) !pluginPtr; \
   }
 
 #endif

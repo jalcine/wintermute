@@ -28,7 +28,8 @@ namespace Wintermute
 class DispatcherPrivate;
 class Message;
 /* Serves as an abstract basis for sending messages. */
-class Dispatcher
+class Dispatcher :
+  W_DECLARE_SHAREABLE(Dispatcher)
 {
 
 public:

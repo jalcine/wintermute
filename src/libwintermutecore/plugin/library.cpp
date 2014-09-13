@@ -90,7 +90,7 @@ bool Plugin::Library::unload()
 bool Plugin::Library::isLoaded() const
 {
   W_PRV(const Library);
-  return !!d->handlePtr;
+  return d->handlePtr;
 }
 
 Plugin::Library::FunctionHandlePtr Plugin::Library::resolveMethod(const string& methodName) const
@@ -133,4 +133,6 @@ Plugin::Library::Ptr Plugin::Library::find(const string& filepath)
 Plugin::Library::~Library()
 {
   wdebug("Unloading the library...");
+  d_ptr = nullptr;
+  wdebug("Flushed out internal ref to private data (should have released handle).");
 }

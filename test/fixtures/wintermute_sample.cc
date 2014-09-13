@@ -24,10 +24,12 @@ using Wintermute::SamplePlugin;
 
 SamplePlugin::SamplePlugin() : Plugin(SAMPLE_PLUGIN_NAME)
 {
+  wdebug("Created the sample plugin!");
 }
 
 SamplePlugin::~SamplePlugin()
 {
+  wdebug("Killed the sample plugin!");
 }
 
 bool SamplePlugin::startup()
@@ -38,6 +40,7 @@ bool SamplePlugin::startup()
 
 bool SamplePlugin::shutdown()
 {
+  wdebug("I'm sleep, tho");
   return true;
 }
 

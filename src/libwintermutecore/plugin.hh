@@ -31,7 +31,7 @@ namespace Wintermute
 class PluginPrivate
 {
 public:
-  typedef Plugin::Ptr (*CtorSignature)(void);
+  typedef Plugin* (*CtorSignature)(void);
   typedef bool (*DtorSignature)(Plugin::Ptr& );
   typedef std::function<CtorSignature> CtorFunction;
   typedef std::function<DtorSignature> DtorFunction;
@@ -44,8 +44,7 @@ public:
   static PluginMap plugins;
 
   explicit PluginPrivate();
-  ~PluginPrivate();
-  Plugin::Ptr attemptLoad();
+  virtual ~PluginPrivate();
 };
 }
 

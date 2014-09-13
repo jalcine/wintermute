@@ -44,10 +44,9 @@ Module::List Module::Pool::modules() const
   return knownModules;
 }
 
-bool Module::Pool::registerModule(Module& module)
+bool Module::Pool::registerModule(Module& newModule)
 {
-  auto ptr = std::make_shared<Module>(module);
-  return this->registerModule(ptr);
+  return registerModule(std::make_shared<Module>(newModule));
 }
 
 bool Module::Pool::registerModule(Module::Ptr module)

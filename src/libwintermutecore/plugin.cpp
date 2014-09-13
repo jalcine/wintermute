@@ -24,15 +24,16 @@
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
 
+Plugin::Plugin(Plugin& plugin) : d_ptr(plugin.d_ptr)
+{
+  wdebug("Plugin " + plugin.name() + " was copied.");
+}
+
 Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate)
 {
   W_PRV(Plugin);
   assert ( pluginName.empty() == false );
   d->name = pluginName;
-}
-
-Plugin::Plugin(Plugin& plugin) : d_ptr(plugin.d_ptr)
-{
 }
 
 string Plugin::name() const
@@ -64,13 +65,11 @@ Plugin::LoadState Plugin::start()
     wwarn("Failed to load plugin '" + name() + "' due to " + e.what() + ".");
   }
 
-
   return d->loadState;
 }
 
 Plugin::LoadState Plugin::stop()
 {
-  W_PRV ( Plugin );
   wtrace("Shutting down plugin " + name() + "...");
   const string pluginName = name();
 
@@ -79,20 +78,19 @@ Plugin::LoadState Plugin::stop()
     wdebug("Plugin " + pluginName + "already unloaded.");
     return Plugin::Unloaded;
   }
-  else
-  {
-    wdebug("Stopping plugin " + pluginName + "...");
-    this->shutdown();
-    wdebug("Plugin " + pluginName + " stopped.");
-  }
 
-  return d->loadState;
+  wdebug("Stopping plugin " + pluginName + "...");
+  // TODO Catch any errors that'd happen here.
+  this->shutdown();
+  wdebug("Plugin " + pluginName + " stopped.");
+  return Plugin::Unloaded;
 }
 
 Plugin::Ptr Plugin::loadByName(const string& name)
 {
   assert(!name.empty());
   Plugin::Ptr pluginPtr;
+
   // NOTE: There *has* to be a better way of doing this.
   const list<string> libraryFileNames =
   {
@@ -105,12 +103,15 @@ Plugin::Ptr Plugin::loadByName(const string& name)
   for (string fileName : libraryFileNames)
   {
     wdebug("Testing out the filename " + fileName + " in place of " + name + "...");
-    pluginPtr = Plugin::loadFromFilepath(fileName);
+    pluginPtr = W_CLAIM_SHARED_PTR(Plugin::loadFromFilepath(fileName));
+
     if (pluginPtr)
     {
       wdebug(fileName + " works!");
       break;
     }
+
+    assert(pluginPtr);
   }
 
   return pluginPtr;
@@ -122,7 +123,6 @@ Plugin::Ptr Plugin::loadFromFilepath(const string& filepath)
 
   wdebug("Attempting to load library '" + filepath + "' for plugin...");
   Plugin::Library::Ptr libraryPtr = Plugin::Library::find(filepath);
-
   wdebug("Was library " + filepath + " found on `ld`? " + (libraryPtr ? "YES" : "NO"));
 
   if (libraryPtr)
@@ -136,8 +136,16 @@ Plugin::Ptr Plugin::loadFromFilepath(const string& filepath)
 
 Plugin::Ptr Plugin::loadFromLibrary(Library::Ptr& libraryPtr)
 {
+  assert(libraryPtr);
+
   Plugin::Ptr pluginPtr = { nullptr };
-  if (!libraryPtr->isLoaded())
+  if (!libraryPtr)
+  {
+    wwarn("No library provided, so no plugin loaded.");
+    return pluginPtr;
+  }
+
+  if (libraryPtr && !libraryPtr->isLoaded())
   {
     const bool wasLibraryLoaded = libraryPtr->load();
     assert(wasLibraryLoaded);
@@ -174,7 +182,7 @@ Plugin::Ptr Plugin::loadFromLibrary(Library::Ptr& libraryPtr)
   try
   {
     winfo("Invoking ctor function for plugin...");
-    pluginPtr = pluginCtorFunction();
+    pluginPtr = W_CLAIM_SHARED_PTR(pluginCtorFunction());
     winfo("Invoked ctor function for plugin.");
   }
   catch (std::exception &e)
@@ -184,6 +192,7 @@ Plugin::Ptr Plugin::loadFromLibrary(Library::Ptr& libraryPtr)
     return pluginPtr;
   }
 
+  assert(pluginPtr);
   winfo("Plugin " + pluginPtr->name()  + " successfully loaded!");
 
   pluginPtr->d_ptr->loadState = Plugin::Loaded;
@@ -246,12 +255,44 @@ bool Plugin::unload(const string& name)
   }
 
   wdebug("Found plugin " + pluginItr->first + " to unload.");
-  Plugin::Ptr plugin = pluginItr->second;
-  wdebug("Unloading library for plugin " + name + "...");
+  Plugin::Ptr plugin = W_CLAIM_SHARED_PTR(pluginItr->second);
+  auto libraryPtr = W_CLAIM_SHARED_PTR( plugin->d_func()->libraryPtr);
+  wdebug("Destroying plugin " + name + "...");
 
-  if (plugin->d_func()->libraryPtr->isLoaded())
+  wdebug("Resolving the '" + string(WINTERMUTE_PLUGIN_METHOD_DTOR_NAME) + "' function from the library...");
+  auto funcDtorHandle = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_DTOR_NAME);
+  assert(funcDtorHandle);
+
+  if (!funcDtorHandle)
   {
-    const bool unloadedLibrary = plugin->d_func()->libraryPtr->unload();
+    werror("Failed to resolve the dtor function for the plugin from the library.");
+    return false;
+  }
+  else
+  {
+    winfo("Resolved dtor for plugin.");
+  }
+
+  bool (*pluginDtorFunction)(Plugin::Ptr&);
+  bool wasDestroyed = false;
+  *(void **)(&pluginDtorFunction) = funcDtorHandle;
+  assert (pluginDtorFunction);
+
+  try
+  {
+    winfo("Invoking dtor function for plugin...");
+    wasDestroyed = pluginDtorFunction(plugin);
+    winfo("Invoked dtor function for plugin.");
+  }
+  catch (std::exception &e)
+  {
+    werror(string("Failed to kill plugin; e: %s") + e.what());
+    return false;
+  }
+
+  if (libraryPtr->isLoaded())
+  {
+    const bool unloadedLibrary = libraryPtr->unload();
     wdebug("Was library for plugin " + name + " unloaded? " + std::to_string(unloadedLibrary));
 
     if (unloadedLibrary)
@@ -261,15 +302,15 @@ bool Plugin::unload(const string& name)
     else
     {
       wwarn("Failed to unload library for plugin " + name + ": "
-          + plugin->d_func()->libraryPtr->errorMessage());
+            + libraryPtr->errorMessage());
     }
   }
 
   PluginPrivate::plugins.erase(pluginItr);
-  return true;
+  return wasDestroyed;
 }
 
 Plugin::~Plugin()
 {
   wdebug("Destroyed plugin " + name() + ".");
-}
+}  

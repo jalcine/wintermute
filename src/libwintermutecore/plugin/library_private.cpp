@@ -111,7 +111,7 @@ bool LibraryPrivate::closeHandle(LibraryPrivate::Handle& handle)
   bool wasClosed = false;
 
   // Check that the provided handle isn't null.
-  if (!handle || handle == nullptr)
+  if (!handle)
   {
     wwarn("Provided a null handle to work with.");
     return true;
@@ -141,6 +141,7 @@ bool LibraryPrivate::unload()
     return true;
   }
 
+  wdebug("Releasing handle for library...");
   const bool wasReleased = closeHandle(handlePtr);
   wdebug("Was the handle closed? " + std::to_string(wasReleased));
 

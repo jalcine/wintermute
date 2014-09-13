@@ -26,7 +26,7 @@ public:
   // Test loading a binary from disk.
   void testLoadAndUnload()
   {
-    Plugin::Library::Ptr libraryPtr(new Plugin::Library(SAMPLE_PLUGIN_PATH));
+    Plugin::Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT_EQUALS ( "Was library created?", (bool) libraryPtr, true );
     TSM_ASSERT_EQUALS ( "Was library loaded?", libraryPtr->load(), true );
     TSM_ASSERT ( "Reports accurate status", libraryPtr->isLoaded() );
@@ -36,7 +36,7 @@ public:
 
   void testResolveFunction()
   {
-    Plugin::Library::Ptr libraryPtr = std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH);
+    Plugin::Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT ( "Was library loaded?", libraryPtr->load() );
     TSM_ASSERT ( "Reports proper status.", libraryPtr->isLoaded() );
     Plugin::Library::FunctionHandlePtr funcPtr = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);

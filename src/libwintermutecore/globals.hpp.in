@@ -18,8 +18,10 @@
 #ifndef WINTERMUTE_CORE_GLOBALS_HPP
 #define WINTERMUTE_CORE_GLOBALS_HPP
 
+#include "wintermutecore_export.h"
 #include <cassert>
 #include <cstdlib>
+#include <cstdio>
 #include <cxxabi.h>
 #include <initializer_list>
 #include <memory>
@@ -28,12 +30,10 @@
 #include <sys/types.h>
 #include <type_traits>
 #include <unistd.h>
-#include "wintermutecore_export.h"
-
-#cmakedefine01 CMAKE_BUILD_TYPE
 
 using std::string;
 
+// Variables we'd use
 #define WINTERMUTE_LOGGER_ROOT_NAME "root"
 #define WINTERMUTE_PLUGIN_METHOD_CTOR_NAME "w_plugin_create"
 #define WINTERMUTE_PLUGIN_METHOD_DTOR_NAME "w_plugin_destroy"
@@ -51,7 +51,14 @@ using std::string;
 
 #define UniquePtr  ::std::unique_ptr
 #define SharedPtr  ::std::shared_ptr
-#define W_DECLARE_PTR_TYPE(Class) typedef SharedPtr<Class> Ptr;
+
+#define W_DECLARE_SHAREABLE(Class) public std::enable_shared_from_this<Class>
+
+#define W_DECLARE_PTR_TYPE(Class) \
+  typedef SharedPtr<Class> Ptr; \
+  inline Ptr getptr() { return shared_from_this(); }
+
+#define W_CLAIM_SHARED_PTR(Statement) (Statement)->getptr()
 
 #define W_DEFINE_PRIVATE(Class) \
   friend class Class##Private; \
