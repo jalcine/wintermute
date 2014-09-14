@@ -293,16 +293,13 @@ bool Plugin::unload(const string& name)
   if (libraryPtr->isLoaded())
   {
     const bool unloadedLibrary = libraryPtr->unload();
+    auto errMsg = libraryPtr->errorMessage();
     wdebug("Was library for plugin " + name + " unloaded? " + std::to_string(unloadedLibrary));
 
-    if (unloadedLibrary)
+    wdebug("Unloaded library for plugin " + name + " successfully? " + wbool2str(unloadedLibrary));
+    if (errMsg.empty())
     {
-      wdebug("Unloaded library for plugin " + name + " successfully.");
-    }
-    else
-    {
-      wwarn("Failed to unload library for plugin " + name + ": "
-            + libraryPtr->errorMessage());
+      wwarn("Failed to unload library for plugin " + name + ": ");
     }
   }
 
@@ -313,4 +310,4 @@ bool Plugin::unload(const string& name)
 Plugin::~Plugin()
 {
   wdebug("Destroyed plugin " + name() + ".");
-}  
+}

@@ -42,6 +42,7 @@ public:
     TSM_ASSERT_EQUALS ( "Ensures that the plugin stops.", pluginPtr->stop(), Plugin::Unloaded );
     TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
     TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+    wdebug("Damn son, where'd you find this?");
   }
 
 };

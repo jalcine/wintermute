@@ -91,7 +91,7 @@ using std::string;
     }
 
 #define W_DECLARE_SINGLETON(Class) SharedPtr<Class> Class::_instance(nullptr);
-#define W_BOOL_TO_STR(booleanExpr) booleanExpr ? "true" : "false"
+#define wbool2str(booleanExpr) (booleanExpr ? "true" : "false")
 
 // }}}
 
