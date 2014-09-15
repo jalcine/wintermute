@@ -16,32 +16,35 @@
  */
 
 #include "test_suite.hpp"
-#include "libwintermutecore/plugin.hpp"
+#include "libwintermutecore/library.hpp"
 
-using Wintermute::Plugin;
+using Wintermute::Library;
 
-class PluginLibraryTestSuite : public CxxTest::TestSuite
+class LibraryTestSuite : public CxxTest::TestSuite
 {
 public:
   // Test loading a binary from disk.
   void testLoadAndUnload()
   {
-    Plugin::Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH));
+    Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Library>(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT_EQUALS ( "Was library created?", (bool) libraryPtr, true );
     TSM_ASSERT_EQUALS ( "Was library loaded?", libraryPtr->load(), true );
     TSM_ASSERT ( "Reports accurate status", libraryPtr->isLoaded() );
     TSM_ASSERT ( "Was library unloaded?",  libraryPtr->unload() );
     TSM_ASSERT ( "Reports accurate status", !libraryPtr->isLoaded() );
+    TSM_ASSERT ( "Pointer is freed", !libraryPtr );
   }
 
   void testResolveFunction()
   {
-    Plugin::Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Plugin::Library>(SAMPLE_PLUGIN_PATH));
+    Library::Ptr libraryPtr = W_CLAIM_SHARED_PTR(std::make_shared<Library>(SAMPLE_PLUGIN_PATH));
     TSM_ASSERT ( "Was library loaded?", libraryPtr->load() );
     TSM_ASSERT ( "Reports proper status.", libraryPtr->isLoaded() );
-    Plugin::Library::FunctionHandlePtr funcPtr = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
+
+    Library::FunctionHandlePtr funcPtr = libraryPtr->resolveMethod(WINTERMUTE_PLUGIN_METHOD_CTOR_NAME);
     TSM_ASSERT ( "Valid function pointer?", funcPtr );
     TSM_ASSERT ( "Unloads the library.", libraryPtr->unload() );
     TSM_ASSERT ( "Reports proper status.", !libraryPtr->isLoaded() );
+    TSM_ASSERT ( "Pointer is freed", !libraryPtr );
   }
 };

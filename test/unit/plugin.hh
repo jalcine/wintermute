@@ -15,18 +15,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdlib.h>
 #include "test_suite.hpp"
 #include "libwintermutecore/plugin.hpp"
 
 using Wintermute::Plugin;
-
-void checkLoadAndHandleUnloadOfPlugin()
-{
-  TSM_ASSERT ( "Plugin is discoverable at run-time.", Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
-  TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
-  TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
-}
 
 class PluginTestSuite : public CxxTest::TestSuite
 {
@@ -34,15 +26,17 @@ public:
   void testStartAndStopPlugin(void)
   {
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
-    Plugin::Ptr pluginPtr = W_CLAIM_SHARED_PTR(Plugin::loadByName(SAMPLE_PLUGIN_NAME));
-    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+    Plugin::Ptr pluginPtr = W_CLAIM_SHARED_PTR(Plugin::load(SAMPLE_PLUGIN_NAME));
+
     TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
     TSM_ASSERT_EQUALS ( "Reports loaded status.", pluginPtr->state(), Plugin::Loaded );
     TSM_ASSERT_EQUALS ( "Ensures that the plugin starts.", pluginPtr->start(), Plugin::Loaded );
     TSM_ASSERT_EQUALS ( "Ensures that the plugin stops.", pluginPtr->stop(), Plugin::Unloaded );
     TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
-    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isCurrentlyLoaded(SAMPLE_PLUGIN_NAME));
+    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isLoaded(SAMPLE_PLUGIN_NAME));
     wdebug("Damn son, where'd you find this?");
+
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   }
 
 };
