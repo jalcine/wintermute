@@ -18,24 +18,23 @@
 #ifndef WINTERMUTE_CORE_LOGGING_HPP
 #define WINTERMUTE_CORE_LOGGING_HPP
 
-#include "globals.hpp"
 #include <string>
+#include <wintermutecore/globals.hpp>
 
 using std::string;
 
 namespace Wintermute
 {
 
-/* Basis of logging in Wintermute.
+/*
+ * @brief Basis of logging in Wintermute.
  * This class holds the foundational aspects of Wintermute's logging and
  * abstracts it out so that the logging service can be swapped to and fro
  * without much discomfort to the codebase.
- * */
+ */
 class Logging
 {
-  W_DEFINE_SINGLETON(Logging);
   explicit Logging();
-
 public:
   virtual ~Logging();
   /* Levels at which Wintermute is capable of reporting its log messages. */
@@ -71,6 +70,7 @@ public:
   /* Outputs a Level::Trace message into Wintermute's logger. */
   void trace(const string& message, const string& name);
 
+  W_DEF_SINGLETON(Logging);
 };
 }
 
@@ -78,7 +78,13 @@ public:
 #define winfo(msg)  wlog->info(msg, WINTERMUTE_LOGGER_ROOT_NAME);
 #define werror(msg) wlog->error(msg, WINTERMUTE_LOGGER_ROOT_NAME);
 #define wwarn(msg)  wlog->warn(msg, WINTERMUTE_LOGGER_ROOT_NAME);
-#define wtrace(msg) wlog->trace(msg, WINTERMUTE_LOGGER_ROOT_NAME);
-#define wdebug(msg) wlog->debug(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+
+#ifdef WINTERMUTE_DEBUG
+# define wtrace(msg) wlog->trace(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+# define wdebug(msg) wlog->debug(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+#else
+# define wdebug(msg) w_noop();
+# define wtrace(msg) w_noop();
+#endif
 
 #endif

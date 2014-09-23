@@ -15,16 +15,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/plugin.hpp>
+#ifndef WINTERMUTE_CORE_RECEIVER_HPP
+#define WINTERMUTE_CORE_RECEIVER_HPP
+
+#include "globals.hpp"
+
+using std::string;
 
 namespace Wintermute
 {
-class SamplePlugin : public Plugin
+class Message;
+class ReceiverPrivate;
+class Receiver :
+  W_DEF_SHAREABLE(Receiver)
 {
+  W_DEF_PRIVATE(Receiver)
+
 public:
-	explicit SamplePlugin();
-	virtual ~SamplePlugin();
-	virtual bool startup();
-	virtual bool shutdown();
+  W_DECL_PTR_TYPE(Receiver)
+  explicit Receiver();
+  virtual ~Receiver();
+
+  virtual string name() const = 0;
+  virtual Message receive() = 0;
 };
 }
+
+#endif

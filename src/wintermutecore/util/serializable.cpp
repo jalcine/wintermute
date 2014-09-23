@@ -55,29 +55,32 @@ Serializable::Map Serializable::fromString(const string& jsonString)
   Json::Value incomingJson;
 
   Json::Reader jsonReader;
-  if (!jsonReader.parse(jsonString, incomingJson)){
+  if (!jsonReader.parse(jsonString, incomingJson))
+  {
     wdebug("Failed to deserialize JSON: " + jsonString);
     return theMap;
   }
 
-  for (const string name : incomingJson.getMemberNames()) {
+  for (const string name : incomingJson.getMemberNames())
+  {
     wdebug("Deserializing JSON key: " + name + " for " + jsonString);
-		const Json::Value currentValue = incomingJson[name];
-		string currentStringValue;
+    const Json::Value currentValue = incomingJson[name];
+    string currentStringValue;
 
-		switch (currentValue.type()) {
-			case Json::intValue:
-				currentStringValue = std::to_string(currentValue.asInt());
-				break;
+    switch (currentValue.type())
+    {
+      case Json::intValue:
+        currentStringValue = std::to_string(currentValue.asInt());
+        break;
 
-			case Json::realValue:
-				currentStringValue = std::to_string(currentValue.asDouble());
-				break;
+      case Json::realValue:
+        currentStringValue = std::to_string(currentValue.asDouble());
+        break;
 
-			default:
-				currentStringValue = currentValue.asString();
-			break;
-		}
+      default:
+        currentStringValue = currentValue.asString();
+        break;
+    }
 
     theMap.insert(std::make_pair(name, currentStringValue));
   }

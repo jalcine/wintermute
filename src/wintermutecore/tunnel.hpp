@@ -40,8 +40,8 @@ class TunnelPrivate;
 class Tunnel
 {
   friend class Receiver;
-  W_DEFINE_PRIVATE(Tunnel)
-  W_DEFINE_SINGLETON(Tunnel)
+  W_DEF_PRIVATE(Tunnel)
+  W_DEF_SINGLETON(Tunnel)
 
   explicit Tunnel();
   virtual ~Tunnel();

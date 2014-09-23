@@ -23,5 +23,6 @@
 #define SAMPLE_PLUGIN_PATH "/home/jacky/Development/Projects/Wintermute/core/build/test/fixtures/libwintermutesample.so"
 
 #include "fixtures.hpp"
+#include <cstdlib>
 
 #endif

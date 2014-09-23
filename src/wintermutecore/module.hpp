@@ -33,7 +33,8 @@ class ModulePrivate;
 class ModulePoolPrivate;
 class Message;
 
-/* Represents the basis of all functional interfaces for Wintermute.
+/* 
+ * @brief Represents the basis of all functional interfaces for Wintermute.
  * Modules are programmatic objects that are meant to receive & invoke calls
  * and invoke signals. They allow for the flexibility one would expect from
  * Wintermute.
@@ -47,7 +48,8 @@ public:
   // Serves a means of holding a list of modules.
   typedef std::list<Module::Ptr> List;
 
-  /* Serves as a means of naming a Module.
+  /* 
+   * @brief Serves as a means of naming a Module.
    * Provides a means of naming Module instances. This is accurate to a
    * individual name, a shared domain (or collective realm of Module objects)
    * and the PID at which this specific Module instance can be found to be
@@ -55,9 +57,6 @@ public:
    */
   class Designation : public Wintermute::Util::Serializable
   {
-  private:
-    W_DEFINE_PRIVATE(Designation)
-
   public:
     /// Default constructor for Designation objects.
     explicit Designation(const string& name, const string& domain, const pid_t& pid = getpid());
@@ -103,11 +102,12 @@ public:
     /// Virtual method from Serializable.
     /// @internal
     void deserialize(const Serializable::Map& data);
+
+    W_DEF_PRIVATE(Designation)
   };
 
   class Pool
   {
-    W_DEFINE_PRIVATE(ModulePool)
     explicit Pool();
 
   public:
@@ -118,8 +118,8 @@ public:
     bool registerModule(Module& module);
     bool deregisterModule(const Module::Designation& designation);
 
-    W_DEFINE_SINGLETON(Pool)
-
+    W_DEF_SINGLETON(Pool)
+    W_DEF_PRIVATE(ModulePool)
   };
 
   /// Default destructor.
@@ -129,7 +129,7 @@ public:
   Designation designation() const;
 
 protected:
-  W_DEFINE_PRIVATE(Module)
+  W_DEF_PRIVATE(Module)
 
 protected:
   /// Default constructor.

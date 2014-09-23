@@ -19,5 +19,4 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-# Include the directory that'll hold the files for `libwintermutecore
-ADD_SUBDIRECTORY(libwintermutecore)
+ADD_SUBDIRECTORY(wintermutecore)

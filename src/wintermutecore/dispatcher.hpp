@@ -29,11 +29,11 @@ class DispatcherPrivate;
 class Message;
 /* Serves as an abstract basis for sending messages. */
 class Dispatcher :
-  W_DECLARE_SHAREABLE(Dispatcher)
+  W_DEF_SHAREABLE(Dispatcher)
 {
 
 public:
-  W_DECLARE_PTR_TYPE(Dispatcher)
+  W_DECL_PTR_TYPE(Dispatcher)
   explicit Dispatcher();
   virtual ~Dispatcher();
 

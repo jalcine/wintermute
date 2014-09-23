@@ -30,11 +30,12 @@ public:
 
     TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
     TSM_ASSERT_EQUALS ( "Reports loaded status.", pluginPtr->state(), Plugin::Loaded );
+
     TSM_ASSERT_EQUALS ( "Ensures that the plugin starts.", pluginPtr->start(), Plugin::Loaded );
     TSM_ASSERT_EQUALS ( "Ensures that the plugin stops.", pluginPtr->stop(), Plugin::Unloaded );
-    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME));
-    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isLoaded(SAMPLE_PLUGIN_NAME));
-    wdebug("Damn son, where'd you find this?");
+
+    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME) );
+    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isLoaded(SAMPLE_PLUGIN_NAME) );
 
     unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   }

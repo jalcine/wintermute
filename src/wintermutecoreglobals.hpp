@@ -1,4 +1,4 @@
-/*
+/* vim: set ft=cpp fdm=marker :
  * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -33,10 +33,12 @@
 
 using std::string;
 
-// Variables we'd use
 #define WINTERMUTE_LOGGER_ROOT_NAME "root"
 #define WINTERMUTE_PLUGIN_METHOD_CTOR_NAME "w_plugin_create"
 #define WINTERMUTE_PLUGIN_METHOD_DTOR_NAME "w_plugin_destroy"
+
+#define WINTERMUTE_ENV_PLUGIN_PATH "WINTERMUTE_PLUGIN_PATH"
+#define WINTERMUTE_ENV_LOG_LEVEL   "WINTERMUTE_LOG_LEVEL"
 
 #ifdef WINTERMUTE_EXPORT
 # undef WINTERMUTE_EXPORT
@@ -47,39 +49,53 @@ using std::string;
 # define WINTERMUTE_EXPORT_PRIVATE
 #endif
 
-// {{{ Private + Public Accessors
-
+// TODO Move this to be under the `Wintermute` namespace.
 #define UniquePtr  ::std::unique_ptr
 #define SharedPtr  ::std::shared_ptr
 
-#define W_DECLARE_SHAREABLE(Class) public std::enable_shared_from_this<Class>
+// {{{ Private + Public Accessors
 
-#define W_DECLARE_PTR_TYPE(Class) \
-  typedef SharedPtr<Class> Ptr; \
-  inline Ptr getptr() { return shared_from_this(); }
-
-#define W_CLAIM_SHARED_PTR(Statement) (Statement)->getptr()
-
-#define W_DEFINE_PRIVATE(Class) \
+/* Defines inline instance-level methods to handle private instance data. */
+#define W_DEF_PRIVATE(Class) \
   friend class Class##Private; \
+  SharedPtr<Class##Private> d_ptr = nullptr; \
   inline Class##Private* d_func() const { return d_ptr.get(); } \
-  inline Class##Private* d_func() { return d_ptr.get(); } \
-  SharedPtr<Class##Private> d_ptr = nullptr;
+  inline Class##Private* d_func() { return d_ptr.get(); }
 
-#define W_PRV(Class) Class##Private* const d = d_func();
-
-#define W_DEFINE_PUBLIC(Class) \
+/* Defines inline instance-level methods to handle public instance data. */
+#define W_DEF_PUBLIC(Class) \
+  friend class Class; \
+  SharedPtr<Class> q_ptr; \
   inline Class* q_func() const { return q_ptr.get(); } \
   inline Class* q_func() { return q_ptr.get(); } \
-  friend class Class; \
-  SharedPtr<Class> q_ptr;
 
+/* Provides a shortcut to grab private data for an object with private data. */
+#define W_PRV(Class) Class##Private* const d = d_func();
+
+/* Provides a shortcut to grab public data for an object with public data. */
 #define W_PUB(Class) Class* const q = q_func();
 
 // }}}
 
+// {{{ Sharable Data
+
+/* Provides a definition for sharable classes. */
+#define W_DEF_SHAREABLE(Class) public std::enable_shared_from_this<Class>
+
+/* Provides a declaration for sharable classes. */
+#define W_DECL_PTR_TYPE(Class) \
+  typedef SharedPtr<Class> Ptr; \
+  inline Ptr getptr() { return shared_from_this(); }
+
+/* Handles the act of pulling a shared instance while maintaing ref counting. */
+#define W_CLAIM_SHARED_PTR(Statement) (Statement)->getptr()
+
+// }}}
+
 // {{{ Singleton class access
-#define W_DEFINE_SINGLETON(Class) \
+
+/* Defines the logic needed to handle a singleton. */
+#define W_DEF_SINGLETON(Class) \
   private: \
     static SharedPtr<Class> _instance; \
   public: \
@@ -90,12 +106,13 @@ using std::string;
       return _instance;  \
     }
 
+/* Declares the instance of the singleton as a nullptr. */
 #define W_DECLARE_SINGLETON(Class) SharedPtr<Class> Class::_instance(nullptr);
-#define wbool2str(booleanExpr) (booleanExpr ? "true" : "false")
 
 // }}}
 
 // {{{ Platform-specific types
+
 namespace Wintermute
 {
 typedef ::pid_t PID;
@@ -104,16 +121,13 @@ typedef ::pid_t PID;
 // }}}
 
 // {{{ Functions to help the process
+
 void w_noop(void);
+
 // }}}
 
 #define __pure __attribute__((pure))
 #define __hot __attribute__((hot))
 #define __cold __attribute__((cold))
 
-#define WINTERMUTE_ENV_PLUGIN_PATH "WINTERMUTE_PLUGIN_PATH"
-#define WINTERMUTE_ENV_LOG_LEVEL   "WINTERMUTE_LOG_LEVEL"
-
-#endif // end globaldef
-
-// vim: set fdm=syntax :
+#endif

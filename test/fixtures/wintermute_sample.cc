@@ -15,8 +15,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <wintermutecore/logging.hpp>
 #include "wintermute_sample.hh"
-#include "libwintermutecore/logging.hpp"
 #include "test_suite.hpp"
 
 using Wintermute::Plugin;

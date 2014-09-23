@@ -38,22 +38,24 @@ set(_srcs
   ./tunnel.cpp
 
   # Plugins
+  ./plugin.cc
   ./plugin.cpp
-  ./plugin/private.cpp
-	./plugin/library.cpp
-	./plugin/library_private.cpp
-	./plugin/version.cpp
-)
+  ./library.cc
+  ./library.cpp
+  )
 
 # Set up sources.
-CONFIGURE_FILE(./globals.hpp.in globals.hpp @ONLY)
+CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}globals.hpp @ONLY)
 
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutecore)
 WINTERMUTE_LINK_LIBRARIES(wintermutecore gcov)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  )
+
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
-)
+  )
 GENERATE_EXPORT_HEADER(wintermutecore)

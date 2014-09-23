@@ -15,30 +15,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_CORE_RECEIVER_HPP
-#define WINTERMUTE_CORE_RECEIVER_HPP
+#ifndef WINTERMUTE_LIBRARY_HPP
+#define WINTERMUTE_LIBRARY_HPP
 
-#include "globals.hpp"
+#include <wintermutecore/globals.hpp>
 
-using std::string;
-
-namespace Wintermute
-{
-class Message;
-class ReceiverPrivate;
-class Receiver :
-  W_DECLARE_SHAREABLE(Receiver)
-{
-  W_DEFINE_PRIVATE(Receiver)
-
-public:
-  W_DECLARE_PTR_TYPE(Receiver)
-  explicit Receiver();
-  virtual ~Receiver();
-
-  virtual string name() const = 0;
-  virtual Message receive() = 0;
-};
-}
 
 #endif
