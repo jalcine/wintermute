@@ -15,16 +15,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/plugin.hpp>
+//#include <wintermutecore/plugin.hpp>
 
-namespace Wintermute
-{
-class SamplePlugin : public Plugin
-{
-public:
-	explicit SamplePlugin();
-	virtual ~SamplePlugin();
-	virtual bool startup();
-	virtual bool shutdown();
-};
-}
+/*namespace Wintermute
+ *{
+ *class SamplePlugin : public Plugin
+ *{
+ *public:
+ *  explicit SamplePlugin();
+ *  virtual ~SamplePlugin();
+ *  virtual bool startup();
+ *  virtual bool shutdown();
+ *};
+ *}*/

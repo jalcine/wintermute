@@ -1,0 +1,4 @@
+namespace Wintermute {
+  class LibraryPrivate {
+  };
+}

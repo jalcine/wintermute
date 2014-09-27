@@ -15,33 +15,33 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/logging.hpp>
-#include "wintermute_sample.hh"
-#include "test_suite.hpp"
-
-using Wintermute::Plugin;
-using Wintermute::SamplePlugin;
-
-SamplePlugin::SamplePlugin() : Plugin(SAMPLE_PLUGIN_NAME)
-{
-  wdebug("Created the sample plugin!");
-}
-
-SamplePlugin::~SamplePlugin()
-{
-  wdebug("Killed the sample plugin!");
-}
-
-bool SamplePlugin::startup()
-{
-	wdebug("I'm tweaking, ho!");
-  return true;
-}
-
-bool SamplePlugin::shutdown()
-{
-  wdebug("I'm sleep, tho");
-  return true;
-}
-
-W_DEFINE_PLUGIN(Wintermute::SamplePlugin)
+/*#include <wintermutecore/logging.hpp>
+ *#include "wintermute_sample.hh"
+ *#include "test_suite.hpp"
+ *
+ *using Wintermute::Plugin;
+ *using Wintermute::SamplePlugin;
+ *
+ *SamplePlugin::SamplePlugin() : Plugin(SAMPLE_PLUGIN_NAME)
+ *{
+ *  wdebug("Created the sample plugin!");
+ *}
+ *
+ *SamplePlugin::~SamplePlugin()
+ *{
+ *  wdebug("Killed the sample plugin!");
+ *}
+ *
+ *bool SamplePlugin::startup()
+ *{
+ *  wdebug("I'm tweaking, ho!");
+ *  return true;
+ *}
+ *
+ *bool SamplePlugin::shutdown()
+ *{
+ *  wdebug("I'm sleep, tho");
+ *  return true;
+ *}
+ *
+ *W_DEFINE_PLUGIN(Wintermute::SamplePlugin)*/

@@ -49,12 +49,12 @@ bool Module::Pool::registerModule(Module& newModule)
   return registerModule(std::make_shared<Module>(newModule));
 }
 
-bool Module::Pool::registerModule(Module::Ptr module)
+bool Module::Pool::registerModule(Module::Ptr modulePtr)
 {
   W_PRV(ModulePool);
-  if (d->modules.count(module->designation()) == 0)
+  if (d->modules.count(modulePtr->designation()) == 0)
   {
-    auto the_value = std::make_pair(module->designation(), module);
+    auto the_value = std::make_pair(modulePtr->designation(), modulePtr);
     return d->modules.insert(the_value).second == true;
   }
 

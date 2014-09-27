@@ -15,8 +15,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "libwintermutecore/module.hpp"
-#include "libwintermutecore/message.hpp"
+#include "wintermutecore/module.hpp"
+#include "wintermutecore/message.hpp"
 
 using Wintermute::Message;
 using Wintermute::Module;

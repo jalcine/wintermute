@@ -4,3 +4,4 @@ build/*
 CTestConfig.cmake
 *.orig
 CTestConfig.cmake
+src/wintermutecore/globals.hpp
