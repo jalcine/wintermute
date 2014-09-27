@@ -29,23 +29,21 @@ set(_srcs
   ./util/serializable.cpp
 
   # Procedural
-  ./message.cpp
-  ./module.cpp
-  ./module_designation.cpp
-  ./module_pool.cpp
-  ./dispatcher.cpp
-  ./receiver.cpp
-  ./tunnel.cpp
+  #./message.cpp
+  #./module.cpp
+  #./module_designation.cpp
+  #./module_pool.cpp
+  #./dispatcher.cpp
+  #./receiver.cpp
+  #./tunnel.cpp
 
   # Plugins
-  ./plugin.cc
-  ./plugin.cpp
   ./library.cc
   ./library.cpp
   )
 
 # Set up sources.
-CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}globals.hpp @ONLY)
+CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
 ADD_LIBRARY(wintermutecore SHARED ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutecore)
@@ -53,6 +51,7 @@ WINTERMUTE_LINK_LIBRARIES(wintermutecore gcov)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_BINARY_DIR}
   )
 
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
