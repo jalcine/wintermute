@@ -33,7 +33,7 @@ if (BUILD_TESTING)
   ENDIF()
 
   SET(CXXTEST_TESTGEN_ARGS
-    --xunit-printer --have-eh --have-std
+    --runner=XUnitPrinter --have-eh --have-std
     )
 
   SET(WINTERMUTE_TEST_INCLUDE_DIRS
@@ -60,7 +60,8 @@ if (BUILD_TESTING)
   CONFIGURE_FILE(include/test_suite.hpp.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
 
-  CONFIGURE_FILE(CTestConfig.cmake.in ${CMAKE_SOURCE_DIR}/CTestConfig.cmake)
+  CONFIGURE_FILE(CTestConfig.cmake.in ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
+    @ONLY)
 
   ADD_SUBDIRECTORY(fixtures)
   ADD_SUBDIRECTORY(unit)

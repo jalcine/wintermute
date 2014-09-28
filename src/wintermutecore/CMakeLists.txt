@@ -37,9 +37,11 @@ set(_srcs
   #./receiver.cpp
   #./tunnel.cpp
 
-  # Plugins
+  # == Plugin related.
   ./library.cc
+  ./plugin.cc
   ./library.cpp
+  ./plugin.cpp
   )
 
 # Set up sources.

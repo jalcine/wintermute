@@ -25,4 +25,9 @@
 #include "fixtures.hpp"
 #include <cstdlib>
 
+#ifndef WINTERMUTE_LOGGING_HPP
+# define DISABLE_LOGGING Logging::instance()->setLevel(Logging::Disabled)
+# define ENABLE_LOGGING  Logging::instance()->setLevel(Logging::Debug)
+#endif
+
 #endif

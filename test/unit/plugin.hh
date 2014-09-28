@@ -16,28 +16,42 @@
  */
 
 #include "test_suite.hpp"
-#include "libwintermutecore/plugin.hpp"
+#include <wintermutecore/plugin.hpp>
 
 using Wintermute::Plugin;
+
+Plugin::Ptr fetchWorkingPlugin() {
+  setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
+  Plugin::Ptr pluginPtr = Plugin::find(SAMPLE_PLUGIN_NAME);
+  unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+
+  TSM_ASSERT ( "Plugin allocated.", pluginPtr );
+  return pluginPtr;
+}
 
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testStartAndStopPlugin(void)
+  void testObtainNoPluginWithNoName()
   {
-    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
-    Plugin::Ptr pluginPtr = W_CLAIM_SHARED_PTR(Plugin::load(SAMPLE_PLUGIN_NAME));
+    Plugin::Ptr pluginPtrWithNoPlugin = Plugin::find("");
+    TSM_ASSERT ( "No plugin allocated.", !pluginPtrWithNoPlugin);
+  }
 
-    TSM_ASSERT ( "Loads plugins with provided name.", pluginPtr );
-    TSM_ASSERT_EQUALS ( "Reports loaded status.", pluginPtr->state(), Plugin::Loaded );
+  void testObtainPlugin()
+  {
+    Plugin::Ptr pluginPtr = fetchWorkingPlugin();
+    // Checking done in helper function.
+  }
 
-    TSM_ASSERT_EQUALS ( "Ensures that the plugin starts.", pluginPtr->start(), Plugin::Loaded );
-    TSM_ASSERT_EQUALS ( "Ensures that the plugin stops.", pluginPtr->stop(), Plugin::Unloaded );
+  void testFindLoadedPlugins()
+  {
+    Plugin::Ptr pluginPtr = fetchWorkingPlugin();
+    TSM_ASSERT ( "Plugin '" SAMPLE_PLUGIN_NAME "' found in listing.",
+        Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == true);
 
-    TSM_ASSERT ( "Unloads the provided plugin.", Plugin::unload(SAMPLE_PLUGIN_NAME) );
-    TSM_ASSERT ( "Plugin isn't discoverable at run-time.", !Plugin::isLoaded(SAMPLE_PLUGIN_NAME) );
-
-    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+    TSM_ASSERT ( "Plugin 'foobar' not found in listing.",
+        Plugin::hasPlugin("foobar") == false);
   }
 
 };

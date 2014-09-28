@@ -22,67 +22,69 @@
 
 namespace Wintermute
 {
-  class LibraryPrivate;
-  /* A class to load libraries and their function symbols.
-   * Represents a portable wrapper over the facilities required to load
-   * dynamically loadable libraries.
-   */
-  class Library : W_DEF_SHAREABLE(Library) {
-    public:
-      W_DECL_PTR_TYPE(Library);
-      typedef void* FunctionPtr;
+class LibraryPrivate;
+/* A class to load libraries and their function symbols.
+ * Represents a portable wrapper over the facilities required to load
+ * dynamically loadable libraries.
+ */
+class Library : W_DEF_SHAREABLE(Library)
+{
+public:
+  W_DECL_PTR_TYPE(Library);
+  typedef void* FunctionPtr;
 
-      /* Default destructor. */
-      virtual ~Library();
+  /* Default destructor. */
+  virtual ~Library();
 
-      /* Load a plugin with the provided filename. */
-      explicit Library(const string& filename);
+  /* Load a plugin with the provided filename. */
+  explicit Library(const string & filename);
 
-      enum LoadState {
-        LoadUndefined    = 0x000,
-        LoadNotLoaded    = 0x100,
-        LoadIsLoaded     = 0x200,
-        LoadStateSuccess = LoadIsLoaded,
-        LoadStateFailure = LoadNotLoaded,
-      };
-
-      /* Loads a library into memory.
-       * Using the provided 'filename', loads a library into memory. If the
-       * load is successful ( a return value of LoadSuccess ), then filename()
-       * will match the one provided. Otherwise, filename() != filename and the
-       * return value will LoadSuccess != return_value.
-       */
-      LoadState load(const string& filename);
-
-      /* Unloads a library from memory. */
-      LoadState unload();
-
-      /* Obtains the filename for the library. */
-      string filename() const;
-
-      /* Determine the current load status of the plugin. */
-      LoadState loadedStatus() const;
-
-      /* Resolves a function from the library. */
-      FunctionPtr resolveFunction(const string& functionName) const;
-
-      /* Finds a plugin through a varity of means.
-       *  - '<name>'
-       *  - 'lib<name>'
-       *  - 'lib<name>.so'
-       *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>'
-       *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>.so'
-       *  - '$WINTERMUTE_PLUGIN_PATH[i]/lib<name>.so'
-       * */
-      static Ptr find(const string& libraryQuery);
-
-    protected:
-      /* Default constructor. */
-      explicit Library();
-
-    private:
-      W_DEF_PRIVATE(Library);
+  enum LoadState
+  {
+    LoadUndefined    = 0x000,
+    LoadNotLoaded    = 0x100,
+    LoadIsLoaded     = 0x200,
+    LoadStateSuccess = LoadIsLoaded,
+    LoadStateFailure = LoadNotLoaded,
   };
+
+  /* Loads a library into memory.
+   * Using the provided 'filename', loads a library into memory. If the
+   * load is successful ( a return value of LoadSuccess ), then filename()
+   * will match the one provided. Otherwise, filename() != filename and the
+   * return value will LoadSuccess != return_value.
+   */
+  LoadState load(const string & filename);
+
+  /* Unloads a library from memory. */
+  LoadState unload();
+
+  /* Obtains the filename for the library. */
+  string filename() const;
+
+  /* Determine the current load status of the plugin. */
+  LoadState loadedStatus() const;
+
+  /* Resolves a function from the library. */
+  FunctionPtr resolveFunction(const string & functionName) const;
+
+  /* Finds a plugin through a varity of means.
+   *  - '<name>'
+   *  - 'lib<name>'
+   *  - 'lib<name>.so'
+   *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>'
+   *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>.so'
+   *  - '$WINTERMUTE_PLUGIN_PATH[i]/lib<name>.so'
+   * */
+  static Ptr find(const string & libraryQuery);
+
+protected:
+  /* Default constructor. */
+  explicit Library();
+
+private:
+  W_DEF_PRIVATE(Library);
+};
 }
 
 #endif

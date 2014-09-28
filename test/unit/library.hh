@@ -23,9 +23,6 @@
 using Wintermute::Logging;
 using Wintermute::Library;
 
-#define DISABLE_LOGGING Logging::instance()->setLevel(Logging::Disabled)
-#define ENABLE_LOGGING  Logging::instance()->setLevel(Logging::Debug)
-
 Library::Ptr fetchWorkingLibrary()
 {
   Library::Ptr libraryPtr = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
@@ -147,7 +144,7 @@ public:
     int (*aFunction)(void);
     *(void **)(&aFunction) = okFunctionPtr;
     TSM_ASSERT_EQUALS ( "Function invoked with expected return value.",
-        aFunction(), 2014);
+                        aFunction(), 2014);
   }
 
 };
