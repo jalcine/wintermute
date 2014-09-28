@@ -84,9 +84,16 @@ Logging::~Logging()
 
 void Logging::setLevel(const Logging::Level& newLevel)
 {
-  const int log4cxx_level = (uint) newLevel * 1000;
   LoggerPtr logger = obtain_root_logger();
-  logger->setLevel(log4cxx::Level::toLevel(log4cxx_level));
+  if (newLevel != Disabled)
+  {
+    const int log4cxx_level = (uint) newLevel * 1000;
+    logger->setLevel(log4cxx::Level::toLevel(log4cxx_level));
+  }
+  else
+  {
+    logger->setLevel(log4cxx::Level::toLevel(INT_MAX));
+  }
 }
 
 Logging::Level Logging::level() const

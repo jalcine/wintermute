@@ -26,7 +26,7 @@ set(_srcs
   # Natives
   ./globals.cpp
   ./logging.cpp
-  ./util/serializable.cpp
+  #./util/serializable.cpp
 
   # Procedural
   #./message.cpp

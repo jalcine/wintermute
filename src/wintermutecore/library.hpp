@@ -29,23 +29,52 @@ namespace Wintermute
    */
   class Library : W_DEF_SHAREABLE(Library) {
     public:
-      virtual ~Library();
-      W_DECL_PTR_TYPE(Library)
+      W_DECL_PTR_TYPE(Library);
 
-      /* Load statuses for the library. */
-      enum LoadStatus {
-        LoadUndefined = 0x000,
-        LoadSuccess   = 0x100,
-        LoadFailure   = 0x200
+      /* Default destructor. */
+      virtual ~Library();
+
+      /* Load a plugin with the provided filename. */
+      explicit Library(const string& filename);
+
+      enum LoadState {
+        LoadUndefined    = 0x000,
+        LoadNotLoaded    = 0x100,
+        LoadIsLoaded     = 0x200,
+        LoadStateSuccess = LoadIsLoaded,
+        LoadStateFailure = LoadNotLoaded,
       };
 
       /* Loads a library into memory.
-       * Using the provided 'filename', loads a library into memory.
+       * Using the provided 'filename', loads a library into memory. If the
+       * load is successful ( a return value of LoadSuccess ), then filename()
+       * will match the one provided. Otherwise, filename() != filename and the
+       * return value will LoadSuccess != return_value.
        */
-      static Ptr load(const string& filename);
+      LoadState load(const string& filename);
+
+      /* Unloads a library from memory. */
+      LoadState unload();
+
+      /* Obtains the filename for the library. */
+      string filename() const;
+
+      /* Determine the current load status of the plugin. */
+      LoadState loadedStatus() const;
+
+      /* Finds a plugin through a varity of means.
+       *  - '<name>'
+       *  - 'lib<name>'
+       *  - 'lib<name>.so'
+       *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>'
+       *  - '$WINTERMUTE_PLUGIN_PATH[i]/<name>.so'
+       *  - '$WINTERMUTE_PLUGIN_PATH[i]/lib<name>.so'
+       * */
+      static Ptr find(const string& libraryQuery);
 
     protected:
-      Library();
+      /* Default constructor. */
+      explicit Library();
 
     private:
       W_DEF_PRIVATE(Library);

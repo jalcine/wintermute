@@ -15,21 +15,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "wintermutecore/module.hpp"
-#include "wintermutecore/message.hpp"
+//#include "wintermutecore/module.hpp"
+//#include "wintermutecore/message.hpp"
 
-using Wintermute::Message;
-using Wintermute::Module;
+//using Wintermute::Message;
+//using Wintermute::Module;
 
-Module::Designation craftRandomDesignation()
-{
-  return Module::Designation("local", "me.jalcine");
-}
+//Module::Designation craftRandomDesignation()
+//{
+  //return Module::Designation("local", "me.jalcine");
+//}
 
-Message craftRandomMessage()
-{
-  Message aMsg;
-  aMsg.setSender(craftRandomDesignation());
-  aMsg.setReceiver(craftRandomDesignation());
-  return aMsg;
-}
+//Message craftRandomMessage()
+//{
+  //Message aMsg;
+  //aMsg.setSender(craftRandomDesignation());
+  //aMsg.setReceiver(craftRandomDesignation());
+  //return aMsg;
+//}

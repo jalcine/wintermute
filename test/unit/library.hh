@@ -15,28 +15,117 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdlib.h>
 #include "test_suite.hpp"
+#include "wintermutecore/logging.hpp"
 #include "wintermutecore/library.hpp"
 
+using Wintermute::Logging;
 using Wintermute::Library;
+
+Library::Ptr fetchWorkingLibrary()
+{
+  Library::Ptr libraryPtr = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
+  TSM_ASSERT ( "Library pointer allocated",
+               libraryPtr);
+
+  return libraryPtr;
+}
 
 class LibraryTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testLoadFromDisk()
+  void setUp()
   {
-    Library::Ptr library = Library::load("");
-    TSM_ASSERT ( "Library pointer allocated.",
-        library );
-    //TSM_ASSERT_EQUALS ( "Library loaded successfully.",
-        //library->loaded(), Library::LoadSuccess );
+    Logging::instance()->setLevel(Logging::Disabled);
   }
 
-  void testResolveFunction()
+  void tearDown()
   {
-    Library::Ptr library = Library::load("");
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+  }
+
+  void testLoadLibraryWithNoName()
+  {
+    Library::Ptr libraryWithNoName = std::make_shared<Library>("");
     TSM_ASSERT ( "Library pointer allocated.",
-        library );
-    //TSM_ASSERT_EQUALS ( "Library loaded successfully.",
-        //library->loaded(), Library::LoadSuccess );
+                 libraryWithNoName );
+    TSM_ASSERT_EQUALS ( "Library not loaded.",
+                        libraryWithNoName->loadedStatus(),
+                        Library::LoadUndefined );
+  }
+
+  void testLoadLibraryWithFullFilePath()
+  {
+    Library::Ptr libraryWithFullFilePath = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
+    TSM_ASSERT ( "Library pointer allocated with full file path.",
+                 libraryWithFullFilePath );
+    TSM_ASSERT_EQUALS ( "Library reports proper status.",
+                        libraryWithFullFilePath->loadedStatus(),
+                        Library::LoadIsLoaded );
+    TSM_ASSERT_EQUALS ( "Library reports provided file name;.",
+                        libraryWithFullFilePath->filename(),
+                        SAMPLE_PLUGIN_PATH );
+  }
+
+  void testResolveFunctionFromLibrary()
+  {
+    Library::Ptr libraryPtr = fetchWorkingLibrary();
+  }
+
+  void testUnloadingLibrary()
+  {
+    Library::Ptr libraryPtr = fetchWorkingLibrary();
+    TSM_ASSERT_EQUALS ( "Library unloaded successfully.",
+                        libraryPtr->unload(),
+                        Library::LoadNotLoaded );
+    TSM_ASSERT_EQUALS ( "Library status = LoadNotLoaded",
+                        libraryPtr->loadedStatus(),
+                        Library::LoadNotLoaded );
+    TSM_ASSERT ( "Wipe filename on unload.",
+                 libraryPtr->filename().empty() );
+  }
+
+  void testDiscoverLibraryByName()
+  {
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
+    Library::Ptr libraryByNamePtr = Library::find(SAMPLE_PLUGIN_FILE_NAME);
+    TSM_ASSERT ( "Library pointer allocated with full file path.",
+                 libraryByNamePtr );
+    TSM_ASSERT_EQUALS ( "Library reports proper status.",
+                        libraryByNamePtr->loadedStatus(),
+                        Library::LoadIsLoaded );
+    TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+                        libraryByNamePtr->filename(),
+                        SAMPLE_PLUGIN_PATH );
+  }
+
+  void testDiscoverLibraryByFullFilePath()
+  {
+    Library::Ptr libraryByFullFilePathPtr = Library::find(SAMPLE_PLUGIN_PATH);
+    TSM_ASSERT ( "Library pointer allocated with name.",
+                 libraryByFullFilePathPtr );
+    TSM_ASSERT_EQUALS ( "Library reports proper status.",
+                        libraryByFullFilePathPtr->loadedStatus(),
+                        Library::LoadIsLoaded );
+    TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+                        libraryByFullFilePathPtr->filename(),
+                        SAMPLE_PLUGIN_PATH );
+  }
+
+  void testDiscoverLibraryByRelativeFileName()
+  {
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, getenv("PWD"), 1);
+    Library::Ptr libraryByRelativeFileNamePtr = Library::find("test/fixtures/" SAMPLE_PLUGIN_FILE_NAME);
+    TSM_ASSERT ( "Library pointer allocated with full file path.",
+                 libraryByRelativeFileNamePtr );
+    TSM_ASSERT_EQUALS ( "Library reports proper status.",
+                        libraryByRelativeFileNamePtr->loadedStatus(),
+                        Library::LoadIsLoaded );
+    TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+                        libraryByRelativeFileNamePtr->filename(),
+                        "test/fixtures/" SAMPLE_PLUGIN_FILE_NAME );
+  }
+
+
 };
