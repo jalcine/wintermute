@@ -28,3 +28,5 @@
  *  virtual bool shutdown();
  *};
  *}*/
+
+extern "C" int w_sample_test();

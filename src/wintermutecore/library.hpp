@@ -30,6 +30,7 @@ namespace Wintermute
   class Library : W_DEF_SHAREABLE(Library) {
     public:
       W_DECL_PTR_TYPE(Library);
+      typedef void* FunctionPtr;
 
       /* Default destructor. */
       virtual ~Library();
@@ -61,6 +62,9 @@ namespace Wintermute
 
       /* Determine the current load status of the plugin. */
       LoadState loadedStatus() const;
+
+      /* Resolves a function from the library. */
+      FunctionPtr resolveFunction(const string& functionName) const;
 
       /* Finds a plugin through a varity of means.
        *  - '<name>'

@@ -23,12 +23,20 @@
 using Wintermute::Logging;
 using Wintermute::Library;
 
+#define DISABLE_LOGGING Logging::instance()->setLevel(Logging::Disabled)
+#define ENABLE_LOGGING  Logging::instance()->setLevel(Logging::Debug)
+
 Library::Ptr fetchWorkingLibrary()
 {
   Library::Ptr libraryPtr = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
-  TSM_ASSERT ( "Library pointer allocated",
-               libraryPtr);
-
+  TSM_ASSERT ( "Library pointer allocated with full file path.",
+               libraryPtr );
+  TSM_ASSERT_EQUALS ( "Library reports proper status.",
+                      libraryPtr->loadedStatus(),
+                      Library::LoadIsLoaded );
+  TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+                      libraryPtr->filename(),
+                      SAMPLE_PLUGIN_PATH );
   return libraryPtr;
 }
 
@@ -37,7 +45,7 @@ class LibraryTestSuite : public CxxTest::TestSuite
 public:
   void setUp()
   {
-    Logging::instance()->setLevel(Logging::Disabled);
+    DISABLE_LOGGING;
   }
 
   void tearDown()
@@ -66,11 +74,6 @@ public:
     TSM_ASSERT_EQUALS ( "Library reports provided file name;.",
                         libraryWithFullFilePath->filename(),
                         SAMPLE_PLUGIN_PATH );
-  }
-
-  void testResolveFunctionFromLibrary()
-  {
-    Library::Ptr libraryPtr = fetchWorkingLibrary();
   }
 
   void testUnloadingLibrary()
@@ -127,5 +130,24 @@ public:
                         "test/fixtures/" SAMPLE_PLUGIN_FILE_NAME );
   }
 
+  void testResolveNoFunctionFromLibrary()
+  {
+    Library::Ptr libraryPtr = fetchWorkingLibrary();
+    Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("");
+    TSM_ASSERT ( "Didn't resolved empty function name from library.",
+                 !okFunctionPtr );
+  }
+
+  void testResolveFunctionFromLibrary()
+  {
+    Library::Ptr libraryPtr = fetchWorkingLibrary();
+    Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("w_sample_test");
+    TSM_ASSERT ( "Resolved function 'w_sample_test' from library.",
+                 okFunctionPtr );
+    int (*aFunction)(void);
+    *(void **)(&aFunction) = okFunctionPtr;
+    TSM_ASSERT_EQUALS ( "Function invoked with expected return value.",
+        aFunction(), 2014);
+  }
 
 };

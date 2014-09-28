@@ -17,6 +17,7 @@
 #include <list>
 #include <string>
 #include <libgen.h>
+#include <dlfcn.h>
 #include "logging.hpp"
 #include "library.hpp"
 #include "library.hh"
@@ -172,4 +173,27 @@ Library::Ptr Library::find(const string& libraryQuery)
     }
   }
   return std::make_shared<Library>("");
+}
+
+Library::FunctionPtr Library::resolveFunction(const string& functionName) const
+{
+  W_PRV(const Library);
+  wdebug("Resolving function " + functionName + " from " + d->filename);
+
+  if (functionName.empty())
+  {
+    return 0;
+  }
+
+  dlerror();
+  Library::FunctionPtr functionPtr = dlsym(d->handlePtr, functionName.c_str());
+
+  if (!functionPtr)
+  {
+    string errorMessage = dlerror();
+    wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);
+    return 0;
+  }
+
+  return functionPtr;
 }

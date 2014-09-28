@@ -15,8 +15,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*#include <wintermutecore/logging.hpp>
- *#include "wintermute_sample.hh"
+#include <wintermutecore/logging.hpp>
+#include "wintermute_sample.hh"
+
+int w_sample_test()
+{
+  winfo("Invoking a function from beyond.");
+  return 2014;
+}
+
+/*
  *#include "test_suite.hpp"
  *
  *using Wintermute::Plugin;
