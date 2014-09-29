@@ -14,3 +14,27 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#include "plugin.hpp"
+#include "logging.hpp"
+#include "plugin.hh"
+
+using Wintermute::Plugin;
+using Wintermute::PluginPrivate;
+
+PluginPrivate::PluginList PluginPrivate::plugins;
+
+PluginPrivate::PluginPrivate(const string& pluginName) :
+  library(nullptr), name(pluginName)
+{
+}
+
+PluginPrivate::~PluginPrivate()
+{
+}
+
+void PluginPrivate::registerPlugin(Plugin::Ptr& plugin)
+{
+  wdebug("Inserted " + plugin->name() + " into the namespace.");
+  PluginPrivate::plugins.insert(std::make_pair(plugin->name(), plugin));
+}

@@ -41,7 +41,7 @@ if (BUILD_TESTING)
     ${CMAKE_SOURCE_DIR}/test/include
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_BINARY_DIR}/src/libwintermutecore
+    ${CMAKE_BINARY_DIR}/src/wintermutecore
     )
 
   MACRO(ADD_A_TEST _prefix _name _hdr)

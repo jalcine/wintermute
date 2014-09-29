@@ -18,6 +18,7 @@
 #ifndef WINTERMUTE_TEST_SUITE_HPP
 #define WINTERMUTE_TEST_SUITE_HPP
 
+#define TEST_BASE_DIR "/home/jacky/Development/Projects/Wintermute/core/build/test"
 #define SAMPLE_PLUGIN_NAME "sample"
 #define SAMPLE_PLUGIN_FILE_NAME "libwintermutesample.so"
 #define SAMPLE_PLUGIN_PATH "/home/jacky/Development/Projects/Wintermute/core/build/test/fixtures/libwintermutesample.so"

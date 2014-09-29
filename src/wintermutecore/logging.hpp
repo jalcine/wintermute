@@ -16,7 +16,7 @@
  */
 
 #ifndef WINTERMUTE_CORE_LOGGING_HPP
-#define WINTERMUTE_CORE_LOGGING_HPP
+# define WINTERMUTE_CORE_LOGGING_HPP
 
 #include <string>
 #include <wintermutecore/globals.hpp>

@@ -23,7 +23,7 @@ macro(add_a_unit_test _name)
 endmacro(add_a_unit_test)
 
 # == Define the root tests.
-add_a_unit_test(singleton)
+#add_a_unit_test(singleton)
 #add_a_unit_test(message)
 #add_a_unit_test(module)
 #add_a_unit_test(module_pool)

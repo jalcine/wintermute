@@ -14,3 +14,34 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#ifndef WINTERMUTE_PRIVATE_PLUGIN_HPP
+#define WINTERMUTE_PRIVATE_PLUGIN_HPP
+
+#include <unordered_map>
+#include <string>
+#include "library.hpp"
+#include "plugin.hpp"
+
+using std::unordered_map;
+using std::string;
+
+namespace Wintermute
+{
+class PluginPrivate
+{
+  public:
+    typedef void(*CtorFunctionPtr)(Plugin::Ptr&);
+    typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
+    typedef unordered_map<string, Plugin::Ptr> PluginList;
+
+    static PluginList plugins;
+    Library::Ptr library;
+    string name;
+
+    explicit PluginPrivate(const string& pluginName);
+    virtual ~PluginPrivate();
+    static void registerPlugin(Plugin::Ptr& plugin);
+};
+}
+#endif

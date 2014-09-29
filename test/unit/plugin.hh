@@ -16,15 +16,17 @@
  */
 
 #include "test_suite.hpp"
+#include <wintermutecore/logging.hpp>
 #include <wintermutecore/plugin.hpp>
 
+using Wintermute::Logging;
 using Wintermute::Plugin;
 
-Plugin::Ptr fetchWorkingPlugin() {
-  setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(getenv("PWD") + string("/test/fixtures")).c_str(), 1);
-  Plugin::Ptr pluginPtr = Plugin::find(SAMPLE_PLUGIN_NAME);
+Plugin::Ptr fetchWorkingPlugin()
+{
+  setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
+  Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_NAME));
   unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
-
   TSM_ASSERT ( "Plugin allocated.", pluginPtr );
   return pluginPtr;
 }
@@ -32,26 +34,27 @@ Plugin::Ptr fetchWorkingPlugin() {
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testObtainNoPluginWithNoName()
+  void setUp()
   {
-    Plugin::Ptr pluginPtrWithNoPlugin = Plugin::find("");
-    TSM_ASSERT ( "No plugin allocated.", !pluginPtrWithNoPlugin);
-  }
-
-  void testObtainPlugin()
-  {
-    Plugin::Ptr pluginPtr = fetchWorkingPlugin();
-    // Checking done in helper function.
+    //DISABLE_LOGGING;
   }
 
   void testFindLoadedPlugins()
   {
-    Plugin::Ptr pluginPtr = fetchWorkingPlugin();
+
+    TSM_ASSERT ( "Plugin 'sample' not found in listing.",
+                 Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == false);
+
+    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
+    Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_NAME));
+    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+
     TSM_ASSERT ( "Plugin '" SAMPLE_PLUGIN_NAME "' found in listing.",
-        Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == true);
+                 Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == true);
 
     TSM_ASSERT ( "Plugin 'foobar' not found in listing.",
-        Plugin::hasPlugin("foobar") == false);
-  }
+                 Plugin::hasPlugin("foobar") == false);
 
+    Plugin::release(SAMPLE_PLUGIN_NAME);
+  }
 };

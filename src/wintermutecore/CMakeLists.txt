@@ -39,8 +39,8 @@ set(_srcs
 
   # == Plugin related.
   ./library.cc
-  ./plugin.cc
   ./library.cpp
+  ./plugin.cc
   ./plugin.cpp
   )
 
@@ -59,4 +59,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
   )
-GENERATE_EXPORT_HEADER(wintermutecore)
+
+# Define symbols for deprecation.
+GENERATE_EXPORT_HEADER(wintermutecore
+  PREFIX_NAME WNTR
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/wintermute_export.hpp
+  )

@@ -18,7 +18,7 @@
 #ifndef WINTERMUTE_CORE_GLOBALS_HPP
 #define WINTERMUTE_CORE_GLOBALS_HPP
 
-#include "wintermutecore_export.h"
+#include "wintermute_export.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
