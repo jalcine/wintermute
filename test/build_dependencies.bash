@@ -22,3 +22,5 @@ addpkg libboost-filesystem1.54-dev
 addpkg libclang-3.4-common-dev
 
 echo "Done loading dependencies."
+
+sudo ln -s /usr/lib/llvm-3.4/lib/libprofile_rt.a /usr/lib/libprofile_rt.a

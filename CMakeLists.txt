@@ -29,4 +29,5 @@ ADD_SUBDIRECTORY(src)
 
 # Include the test suite.
 ENABLE_TESTING()
+INCLUDE(CTest)
 ADD_SUBDIRECTORY(test)
