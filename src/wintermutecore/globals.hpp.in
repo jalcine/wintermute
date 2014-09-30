@@ -33,9 +33,8 @@
 
 using std::string;
 
+#define WINTERMUTE_VERSION "0.0.1"
 #define WINTERMUTE_LOGGER_ROOT_NAME "root"
-#define WINTERMUTE_PLUGIN_METHOD_CTOR_NAME "w_plugin_create"
-#define WINTERMUTE_PLUGIN_METHOD_DTOR_NAME "w_plugin_destroy"
 
 #define WINTERMUTE_ENV_PLUGIN_PATH "WINTERMUTE_PLUGIN_PATH"
 #define WINTERMUTE_ENV_LOG_LEVEL   "WINTERMUTE_LOG_LEVEL"
@@ -129,5 +128,7 @@ void w_noop(void);
 #define __pure __attribute__((pure))
 #define __hot __attribute__((hot))
 #define __cold __attribute__((cold))
+
+typedef unsigned int uint;
 
 #endif

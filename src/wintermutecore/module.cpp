@@ -52,10 +52,4 @@ Module::~Module()
 {
 }
 
-ModulePrivate::ModulePrivate()
-{
-}
 
-ModulePrivate::~ModulePrivate()
-{
-}

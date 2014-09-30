@@ -26,13 +26,18 @@ set(_srcs
   # Natives
   ./globals.cpp
   ./logging.cpp
-  #./util/serializable.cpp
+  ./util/serializable.cpp
+  ./version.cpp
 
   # Procedural
-  #./message.cpp
-  #./module.cpp
-  #./module_designation.cpp
-  #./module_pool.cpp
+  ./message.cc
+  ./message.cpp
+  ./module.cpp
+  ./module.cc
+  ./module_designation.cc
+  ./module_designation.cpp
+  ./module_pool.cc
+  ./module_pool.cpp
   #./dispatcher.cpp
   #./receiver.cpp
   #./tunnel.cpp

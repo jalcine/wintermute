@@ -49,3 +49,8 @@ bool SamplePlugin::shutdown()
   wdebug("Sample plugin killed.");
   return true;
 }
+
+Plugin::PluginType SamplePlugin::type() const
+{
+  return Plugin::PluginTypeSupport;
+}

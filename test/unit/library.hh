@@ -42,7 +42,7 @@ class LibraryTestSuite : public CxxTest::TestSuite
 public:
   void setUp()
   {
-    DISABLE_LOGGING;
+    //DISABLE_LOGGING;
   }
 
   void tearDown()

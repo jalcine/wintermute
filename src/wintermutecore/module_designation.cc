@@ -15,21 +15,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/plugin.hpp>
+#include "module_designation.hh"
 
-namespace Wintermute
+using Wintermute::DesignationPrivate;
+
+void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
 {
-class SamplePlugin : public Plugin
-{
-public:
-  explicit SamplePlugin();
-  virtual ~SamplePlugin();
-  virtual bool startup();
-  virtual bool shutdown();
-  virtual Plugin::PluginType type() const;
-};
+  this->pid = other->pid;
+  this->name = other->name;
+  this->domain = other->domain;
 }
-
-W_DECL_PLUGIN(Wintermute::SamplePlugin, "0.0.0");
-
-extern "C" int w_sample_test();

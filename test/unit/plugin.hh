@@ -45,16 +45,35 @@ public:
     TSM_ASSERT ( "Plugin 'sample' not found in listing.",
                  Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == false);
 
-    setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
-    Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_NAME));
-    unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+    {
+      setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
+      Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_NAME));
+      unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+    }
 
     TSM_ASSERT ( "Plugin '" SAMPLE_PLUGIN_NAME "' found in listing.",
                  Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == true);
 
+    Plugin::release(SAMPLE_PLUGIN_NAME);
+  }
+
+  void testDontFindMissingPlugins()
+  {
     TSM_ASSERT ( "Plugin 'foobar' not found in listing.",
                  Plugin::hasPlugin("foobar") == false);
+  }
 
-    Plugin::release(SAMPLE_PLUGIN_NAME);
+  void testRetainsNameOfPlugin()
+  {
+    Plugin::Ptr pluginPtr(fetchWorkingPlugin());
+    TS_ASSERT ( pluginPtr );
+    TSM_ASSERT_EQUALS ( "Has the correct name", pluginPtr->name(), SAMPLE_PLUGIN_NAME);
+  }
+
+  void testExposesTypeOfPlugin()
+  {
+    Plugin::Ptr pluginPtr(fetchWorkingPlugin());
+    TS_ASSERT ( pluginPtr );
+    TSM_ASSERT ( "Isn't an undefined value.", pluginPtr->type() != Plugin::PluginTypeUndefined );
   }
 };

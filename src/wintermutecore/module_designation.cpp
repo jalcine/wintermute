@@ -121,10 +121,3 @@ Serializable::Map Module::Designation::serialize() const
 Module::Designation::~Designation()
 {
 }
-
-void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
-{
-  this->pid = other->pid;
-  this->name = other->name;
-  this->domain = other->domain;
-}

@@ -30,18 +30,19 @@ namespace Wintermute
 {
 class PluginPrivate
 {
-  public:
-    typedef Plugin*(*CtorFunctionPtr)(void);
-    typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
-    typedef unordered_map<string, Plugin::Ptr> PluginList;
+public:
+  typedef Plugin*(*CtorFunctionPtr)(void);
+  typedef const char*(*VersionFunctionPtr)(void);
+  typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
+  typedef unordered_map<string, Plugin::Ptr> PluginList;
 
-    static PluginList plugins;
-    Library::Ptr library;
-    string name;
+  static PluginList plugins;
+  Library::Ptr library;
+  string name;
 
-    explicit PluginPrivate(const string& pluginName);
-    virtual ~PluginPrivate();
-    static void registerPlugin(Plugin::Ptr& plugin);
+  explicit PluginPrivate(const string& pluginName);
+  virtual ~PluginPrivate();
+  static void registerPlugin(Plugin::Ptr& plugin);
 };
 }
 #endif

@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include "libwintermutecore/module.hpp"
+#include <wintermutecore/module.hpp>
 
 using Wintermute::Module;
 

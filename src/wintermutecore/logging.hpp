@@ -87,4 +87,7 @@ public:
 # define wtrace(msg) w_noop();
 #endif
 
+#define DISABLE_LOGGING Wintermute::Logging::instance()->setLevel(Logging::Disabled)
+#define ENABLE_LOGGING(Level)  Wintermute::Logging::instance()->setLevel(Logging::#Level)
+
 #endif

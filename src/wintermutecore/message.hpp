@@ -38,7 +38,7 @@ class MessagePrivate;
  * @see Wintermute::Procedure::Dispatcher
  * @see Wintermute::Procedure::Receiver
  */
-class WINTERMUTECORE_EXPORT Message : public Util::Serializable
+class WINTERMUTE_EXPORT Message : public Util::Serializable
 {
 
 public:

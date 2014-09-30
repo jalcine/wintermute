@@ -14,3 +14,19 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#include <wintermutecore/module.hpp>
+
+#ifndef WINTERMUTE_TEST_SAMPLE_MODULE
+# define WINTERMUTE_TEST_SAMPLE_MODULE
+
+class SampleModule : public Wintermute::Module
+{
+public:
+  explicit SampleModule() :
+    Wintermute::Module(Wintermute::Module::Designation("input", "test01.wintermute.in", 3001))
+  {
+  }
+};
+
+#endif

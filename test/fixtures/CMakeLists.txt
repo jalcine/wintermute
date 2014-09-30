@@ -18,11 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-ADD_LIBRARY(wintermutesample SHARED ./wintermute_sample.cc)
-TARGET_LINK_LIBRARIES(wintermutesample wintermutecore)
-WINTERMUTE_LINK_LIBRARIES(wintermutesample)
-WINTERMUTE_ADD_TARGET_PROPERTIES(wintermutesample)
-TARGET_INCLUDE_DIRECTORIES(wintermutesample PUBLIC
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_SOURCE_DIR}/test/include
-  ${CMAKE_CURRENT_BINARY_DIR}/../../src/wintermutecore)
+wintermute_define_plugin(
+  TARGET
+    wintermutesample
+  SOURCES
+    ./wintermute_sample.cc
+  INCLUDE_DIRECTORIES
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/test/include
+    ${CMAKE_CURRENT_BINARY_DIR}/../../src/wintermutecore
+  )

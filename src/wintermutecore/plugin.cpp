@@ -20,8 +20,53 @@
 #include "plugin.hh"
 #include "logging.hpp"
 
+using Wintermute::Version;
+using Wintermute::Library;
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
+
+bool isLibraryCompatible(Library::Ptr& libraryPtr)
+{
+  PluginPrivate::VersionFunctionPtr versionFunction;
+  W_RESOLVE_FUNCTION(versionFunction,
+                     libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_VERSION_FUNCTION_NAME));
+
+  if (!versionFunction)
+  {
+    wwarn("Failed to resolve function for plugin library version.");
+    return nullptr;
+  }
+
+  const Version libraryVersion(versionFunction());
+  const Version systemVersion(WINTERMUTE_VERSION);
+  wdebug("System " + (string) systemVersion + " >= library min " + (string) libraryVersion);
+  return systemVersion >= libraryVersion;
+}
+
+void loadPluginFromLibrary(Library::Ptr& libraryPtr, Plugin::Ptr& pluginPtr)
+{
+  PluginPrivate::CtorFunctionPtr ctorFunction;
+  W_RESOLVE_FUNCTION(ctorFunction,
+                     libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME));
+
+  if (!ctorFunction)
+  {
+    wwarn("Failed to resolve function for plugin ctor.");
+    return;
+  }
+
+  pluginPtr.reset(ctorFunction());
+
+  if (!pluginPtr || pluginPtr == nullptr)
+  {
+    werror("Failed to create a instance of the plugin.");
+    return;
+  }
+
+  pluginPtr->d_func()->library = libraryPtr;
+  PluginPrivate::registerPlugin(pluginPtr);
+
+}
 
 Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate(pluginName))
 {
@@ -35,6 +80,7 @@ Plugin::~Plugin()
 
 Plugin::Ptr Plugin::find(const string& pluginQuery)
 {
+  Plugin::Ptr pluginPtr;
   wdebug("Searching for a plugin identified by " + pluginQuery + " ...");
   if (pluginQuery.empty())
   {
@@ -53,29 +99,18 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
 
   assert(pluginLibrary);
 
-  PluginPrivate::CtorFunctionPtr ctorFunction;
-  W_RESOLVE_FUNCTION(ctorFunction,
-                     pluginLibrary->resolveFunction(WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME));
-
-  if (!ctorFunction)
+  if (isLibraryCompatible(pluginLibrary))
   {
-    wwarn("Failed to resolve function for plugin ctor.");
-    return nullptr;
+    loadPluginFromLibrary(pluginLibrary, pluginPtr);
+    if (pluginPtr)
+    {
+      winfo("PLugin loaded, starting...");
+      pluginPtr->startup();
+    } else {
+      werror("Failed to start plugin.");
+    }
   }
 
-  Plugin::Ptr pluginPtr;
-  pluginPtr.reset(ctorFunction());
-
-  if (!pluginPtr || pluginPtr == nullptr)
-  {
-    werror("Failed to create a instance of the plugin.");
-    return nullptr;
-  }
-
-  pluginPtr->d_func()->library = pluginLibrary;
-  PluginPrivate::registerPlugin(pluginPtr);
-
-  pluginPtr->startup();
 
   return pluginPtr;
 }
@@ -98,7 +133,8 @@ bool Plugin::release(const string& pluginName)
 
     const bool freedPlugin = dtorFunction(plugin);
 
-    if (!freedPlugin) {
+    if (!freedPlugin)
+    {
       werror("Failed to free plugin " + name + " from memory.");
     }
   }

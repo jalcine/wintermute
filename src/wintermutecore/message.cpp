@@ -1,5 +1,6 @@
 /*
- * Wintermute is free software; you can redistribute it and/or * modify it under the terms of the GNU Library General Public
+ * Wintermute is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
  *
@@ -157,22 +158,4 @@ bool Message::operator==(const Message& other) const
 
 Message::~Message()
 {
-}
-
-MessagePrivate::MessagePrivate() : data(Message::HashType())
-{
-}
-
-void MessagePrivate::clone(const SharedPtr<MessagePrivate>& d)
-{
-  this->data = d->data;
-  this->sender = d->sender;
-  this->receiver = d->receiver;
-}
-
-bool MessagePrivate::isEmpty() const
-{
-  /// TODO This needs a better check. If anything, check only if the sender AND
-  //payload are empty/null.
-  return !sender.isNull() && !receiver.isNull() && !data.empty();
 }

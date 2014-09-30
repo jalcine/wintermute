@@ -19,8 +19,7 @@
 #include "module.hpp"
 #include <algorithm>
 
-using Wintermute::Module;
-using Wintermute::ModulePoolPrivate;
+using Wintermute::Module; using Wintermute::ModulePoolPrivate;
 
 W_DECLARE_SINGLETON(Module::Pool)
 
