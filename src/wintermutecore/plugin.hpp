@@ -40,19 +40,22 @@ public:
   static Ptr find(const string & pluginQuery);
   static bool release(const string & pluginName);
   static bool hasPlugin(const string & pluginName);
+  bool start();
+  bool stop();
 
 protected:
   explicit Plugin(const string & name);
+  virtual bool startup() = 0;
+  virtual bool shutdown() = 0;
 
 };
 }
 
 #define W_DECL_PLUGIN(PluginClass) \
-  extern "C" WINTERMUTE_EXPORT void w_plugin_ctor(Wintermute::Plugin::Ptr& pluginPtr) { \
-    pluginPtr = std::make_shared<PluginClass>(); \
+  extern "C" WINTERMUTE_EXPORT PluginClass* w_plugin_ctor() { \
+    return new PluginClass();\
   } \
   extern "C" WINTERMUTE_EXPORT bool w_plugin_dtor(Wintermute::Plugin::Ptr& pluginPtr) { \
-    delete pluginPtr.get(); \
     return (bool) pluginPtr; \
   }
 

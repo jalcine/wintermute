@@ -31,7 +31,7 @@ namespace Wintermute
 class PluginPrivate
 {
   public:
-    typedef void(*CtorFunctionPtr)(Plugin::Ptr&);
+    typedef Plugin*(*CtorFunctionPtr)(void);
     typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
     typedef unordered_map<string, Plugin::Ptr> PluginList;
 

@@ -25,8 +25,9 @@ using Wintermute::PluginPrivate;
 PluginPrivate::PluginList PluginPrivate::plugins;
 
 PluginPrivate::PluginPrivate(const string& pluginName) :
-  library(nullptr), name(pluginName)
+  library(), name(pluginName)
 {
+  wdebug("Defined the internals for the plugin named " + pluginName + ".");
 }
 
 PluginPrivate::~PluginPrivate()

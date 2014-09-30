@@ -87,6 +87,7 @@ private:
 };
 }
 
-#define W_RESOLVE_FUNCTION(FunctionVariable, FunctionHandle) *(void **)(&FunctionVariable) = FunctionHandle;
+#define W_RESOLVE_FUNCTION(FunctionVariable, FunctionHandle) \
+  *(void **)(&FunctionVariable) = FunctionHandle;
 
 #endif

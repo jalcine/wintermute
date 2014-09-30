@@ -28,19 +28,19 @@ LibraryPrivate::LibraryPrivate() :
 {
 }
 
-LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& filename, string& errorMessage)
+LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& filenameToLoad, string& errorMessage)
 {
-  wdebug("Claiming handle for library " + filename + "...");
+  wdebug("Claiming handle for library " + filenameToLoad + "...");
   LibraryPrivate::HandlePtr handle = nullptr;
 
   dlerror();
-  handle = dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL );
+  handle = dlopen(filenameToLoad.c_str(), RTLD_NOW | RTLD_GLOBAL );
   const char* msg = dlerror();
 
   if (!handle && msg)
   {
     errorMessage = msg;
-    werror("Failed to load library '" + filename + "': " + errorMessage);
+    werror("Failed to load library '" + filenameToLoad + "': " + errorMessage);
     return nullptr;
   }
 

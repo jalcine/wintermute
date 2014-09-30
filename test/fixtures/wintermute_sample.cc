@@ -40,12 +40,12 @@ SamplePlugin::~SamplePlugin()
 
 bool SamplePlugin::startup()
 {
-  wdebug("I'm tweaking, ho!");
+  wdebug("Sample plugin started.");
   return true;
 }
 
 bool SamplePlugin::shutdown()
 {
-  wdebug("I'm sleep, tho");
+  wdebug("Sample plugin killed.");
   return true;
 }

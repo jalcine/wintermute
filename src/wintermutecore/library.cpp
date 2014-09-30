@@ -158,19 +158,21 @@ string Library::filename() const
 
 Library::Ptr Library::find(const string& libraryQuery)
 {
-  Library::Ptr libraryPtr;
+  Library::Ptr libraryPtr = nullptr;
   list<string> filePathsToTry = collectFilePaths(libraryQuery);
   wdebug("Working over " + std::to_string(filePathsToTry.size()) + " paths...");
   for (auto path : filePathsToTry)
   {
     wdebug("Using path " + path + "...");
-    libraryPtr = std::make_shared<Library>(path);
+    libraryPtr.reset(new Library(path));
+    assert(libraryPtr);
     if (libraryPtr->loadedStatus() == LoadIsLoaded)
     {
-      return libraryPtr;
+      return std::make_shared<Library>(path);
     }
   }
-  return std::make_shared<Library>("");
+
+  return libraryPtr;
 }
 
 Library::FunctionPtr Library::resolveFunction(const string& functionName) const
@@ -180,7 +182,7 @@ Library::FunctionPtr Library::resolveFunction(const string& functionName) const
 
   if (functionName.empty())
   {
-    return 0;
+    return nullptr;
   }
 
   dlerror();
@@ -190,7 +192,7 @@ Library::FunctionPtr Library::resolveFunction(const string& functionName) const
   {
     string errorMessage = dlerror();
     wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);
-    return 0;
+    return nullptr;
   }
 
   return functionPtr;

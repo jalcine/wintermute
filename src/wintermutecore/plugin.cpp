@@ -43,12 +43,15 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
   }
 
   Library::Ptr pluginLibrary(Library::find(pluginQuery));
+  assert(pluginLibrary.unique());
 
   if (!pluginLibrary)
   {
     wwarn("Failed to find the library to use to handle the plugin '" + pluginQuery + "' with.");
     return nullptr;
   }
+
+  assert(pluginLibrary);
 
   PluginPrivate::CtorFunctionPtr ctorFunction;
   W_RESOLVE_FUNCTION(ctorFunction,
@@ -61,7 +64,7 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
   }
 
   Plugin::Ptr pluginPtr;
-  ctorFunction(pluginPtr);
+  pluginPtr.reset(ctorFunction());
 
   if (!pluginPtr || pluginPtr == nullptr)
   {
@@ -71,6 +74,8 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
 
   pluginPtr->d_func()->library = pluginLibrary;
   PluginPrivate::registerPlugin(pluginPtr);
+
+  pluginPtr->startup();
 
   return pluginPtr;
 }
@@ -82,6 +87,9 @@ bool Plugin::release(const string& pluginName)
     auto pluginLookupItr = PluginPrivate::plugins.find(pluginName);
     const string name(pluginLookupItr->first);
     Plugin::Ptr plugin(pluginLookupItr->second);
+
+    plugin->shutdown();
+
     auto library = plugin->d_func()->library;
     wdebug("Unloading plugin " + name + "...");
 
