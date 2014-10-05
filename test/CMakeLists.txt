@@ -39,6 +39,15 @@ if (BUILD_TESTING)
 
   ADD_SUBDIRECTORY(fixtures)
   ADD_SUBDIRECTORY(unit)
+
+  # Use Valgrind for memory checking.
+  set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+  set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+    "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
+
+  set(MEMCHECK_COMMAND
+    "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+  separate_arguments(MEMCHECK_COMMAND) 
 endif()
 
 #== Handle work if we're in CI mode.
