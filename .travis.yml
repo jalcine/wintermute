@@ -10,6 +10,7 @@ before_install:
   - sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq build-essential
+  - sudo apt-get install -qq python-pip python
   - test/build_dependencies.bash
 
 before_script:
@@ -21,3 +22,6 @@ script:
   - make ExperimentalTest
   - make ExperimentalMemCheck
   - make ExperimentalCoverage
+
+after_success:
+  - coveralls --gcov `which gcov-4.6` -r . -e .

@@ -72,11 +72,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
       -ftest-coverage
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
-      -fcolor-diagnostics
-      -fprofile-instr-generate
-      -fcoverage-mapping
-    )
+    #list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG )
   endif()
 endif()
 
