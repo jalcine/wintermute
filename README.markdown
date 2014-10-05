@@ -1,16 +1,35 @@
-# Wintermute
+```
+     /\__\        ___      /\__\    /\  \        /\  \        /\  \        /\__\        /\__\    /\  \        /\  \    
+    /:/ _/_      /\  \    /::|  |   \:\  \      /::\  \      /::\  \      /::|  |      /:/  /    \:\  \      /::\  \   
+   /:/ /\__\     \:\  \  /:|:|  |    \:\  \    /:/\:\  \    /:/\:\  \    /:|:|  |     /:/  /      \:\  \    /:/\:\  \  
+  /:/ /:/ _/_    /::\__\/:/|:|  |__  /::\  \  /::\~\:\  \  /::\~\:\  \  /:/|:|__|__  /:/  /  ___  /::\  \  /::\~\:\  \ 
+ /:/_/:/ /\__\__/:/\/__/:/ |:| /\__\/:/\:\__\/:/\:\ \:\__\/:/\:\ \:\__\/:/ |::::\__\/:/__/  /\__\/:/\:\__\/:/\:\ \:\__\
+ \:\/:/ /:/  /\/:/  /  \/__|:|/:/  /:/  \/__/\:\~\:\ \/__/\/_|::\/:/  /\/__/~~/:/  /\:\  \ /:/  /:/  \/__/\:\~\:\ \/__/
+  \::/_/:/  /\::/__/       |:/:/  /:/  /      \:\ \:\__\     |:|::/  /       /:/  /  \:\  /:/  /:/  /      \:\ \:\__\  
+   \:\/:/  /  \:\__\       |::/  /\/__/        \:\ \/__/     |:|\/__/       /:/  /    \:\/:/  /\/__/        \:\ \/__/  
+    \::/  /    \/__/       /:/  /               \:\__\       |:|  |        /:/  /      \::/  /               \:\__\    
+     \/__/                 \/__/                 \/__/        \|__|        \/__/        \/__/                 \/__/    
 
-[![Build Status](https://travis-ci.org/jalcine/libwintermutecore.svg?branch=develop)](https://travis-ci.org/jalcine/libwintermutecore)
+"The future us already here. It's just unevenly distributed." - William Gibson, Neuromancer (1984).
+```
 
-Wintermute's a pet project (for about four years now). Describing it in a
-single concise sentence would be unfair to it so [I wrote a incomplete
-post][blogpost] about it. This repository holds the sources for just the core
-library, `libwintermutecore`but I plan to add the driver executable in the
-future, as soon as the library's down and tested.
+[![Build Status](https://travis-ci.org/jalcine/wintermutecore.svg?branch=develop)][build_stat]
+[![Coverage Status](https://img.shields.io/coveralls/jalcine/wintermutecore.svg)][cover_stat]
 
-This project just needs `jsoncpp`, `log4cxx`, `cmake` and a C++ compiler that
-supports and implements the C+11 standards.
+# Synopsis 
+Wintermute's a software project of [Jacky Alciné][jacky] that intends to be a
+launching pad into self-driven hyper-connectivity of hardware and software. The
+whole purpose of this particular tree is to build a core library, a driver
+binary (more on that) and a few plugins to get the show started. I wrote a
+little [blog post][post1] about it, expect another soon.
+
+Building, requirement and installation information all live in
+[`INSTALL.markdown`][install].
 
 **This is alpha software, so alpha that it does nothing.**
 
-[blogpost]: http://jalcine.me/weblog/the-idea-behind-wintermute/
+[post1]: http://jalcine.me/weblog/the-idea-behind-wintermute/
+[build_stat]: https://travis-ci.org/jalcine/wintermutecore
+[cover_stat]: https://coveralls.io/r/jalcine/wintermutecore
+[jacky]: http://jalcine.me
+[install]: ./INSTALL.markdown
