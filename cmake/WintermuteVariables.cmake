@@ -33,24 +33,22 @@ SET(WINTERMUTE_COMPILE_FLAGS
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -O0
-  -Wctor-dtor-privacy
-  -Wno-deprecated
-  -Wno-unused-parameter
   -g3
+  -Wctor-dtor-privacy
   -Wenum-compare
   -Wextra
   -Wno-conversion-null
-  -Wshadow
-  -Wunused-variable
-  -Wunused-parameter
-  -Wunused-function
-  -Wunused
-  -Wno-system-headers
   -Wno-deprecated
+  -Wno-deprecated
+  -Wno-system-headers
+  -Wno-unused-parameter
   -Woverloaded-virtual
+  -Wshadow
+  -Wunused
+  -Wunused-function
+  -Wunused-parameter
+  -Wunused-variable
   -Wwrite-strings
-  -fprofile-arcs
-  -ftest-coverage
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
@@ -66,14 +64,28 @@ SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(WINTERMUTE_TEST_LIBRARIES gcov)
+    set(WINTERMUTE_TEST_LIBRARIES
+      gcov
+    )
+    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+      -fprofile-arcs
+      -ftest-coverage
+    )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(WINTERMUTE_TEST_LIBRARIES profile_rt)
+    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+      -fcolor-diagnostics
+      -fprofile-instr-generate
+      -fcoverage-mapping
+    )
   endif()
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION STREQUAL "4.6")
-  set(WINTERMUTE_COMPILE_FLAGS --std=c++0x ${WINTERMUTE_COMPILE_FLAGS})
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION MATCHES "^4.6")
+  list(APPEND WINTERMUTE_COMPILE_FLAGS
+    --std=c++0x
+  )
 else()
-  set(WINTERMUTE_COMPILE_FLAGS --std=c++11 ${WINTERMUTE_COMPILE_FLAGS})
+  list(APPEND WINTERMUTE_COMPILE_FLAGS
+    --std=c++11
+  )
 endif()

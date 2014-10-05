@@ -21,7 +21,7 @@
 #define TEST_BASE_DIR "/home/jacky/Development/Projects/Wintermute/core/build/test"
 #define SAMPLE_PLUGIN_NAME "sample"
 #define SAMPLE_PLUGIN_FILE_NAME "libwintermutesample.so"
-#define SAMPLE_PLUGIN_PATH "/home/jacky/Development/Projects/Wintermute/core/build/test/fixtures/libwintermutesample.so"
+#define SAMPLE_PLUGIN_PATH "/home/jacky/Development/Projects/Wintermute/core/build/lib/libwintermutesample.so"
 
 #include "fixtures.hpp"
 #include <cstdlib>

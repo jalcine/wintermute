@@ -24,7 +24,6 @@ include(WintermuteMacros)
 
 set(_srcs
   # Natives
-  ./globals.cpp
   ./logging.cpp
   ./util/serializable.cpp
   ./version.cpp

@@ -33,11 +33,10 @@
 
 using std::string;
 
-#define WINTERMUTE_VERSION "0.0.1"
+#define WINTERMUTE_VERSION          "0.0.1"
 #define WINTERMUTE_LOGGER_ROOT_NAME "root"
-
-#define WINTERMUTE_ENV_PLUGIN_PATH "WINTERMUTE_PLUGIN_PATH"
-#define WINTERMUTE_ENV_LOG_LEVEL   "WINTERMUTE_LOG_LEVEL"
+#define WINTERMUTE_ENV_PLUGIN_PATH  "WINTERMUTE_PLUGIN_PATH"
+#define WINTERMUTE_ENV_LOG_LEVEL    "WINTERMUTE_LOG_LEVEL"
 
 #ifdef WINTERMUTE_EXPORT
 # undef WINTERMUTE_EXPORT
@@ -48,7 +47,6 @@ using std::string;
 # define WINTERMUTE_EXPORT_PRIVATE
 #endif
 
-// TODO Move this to be under the `Wintermute` namespace.
 #define UniquePtr  ::std::unique_ptr
 #define SharedPtr  ::std::shared_ptr
 
@@ -121,7 +119,7 @@ typedef ::pid_t PID;
 
 // {{{ Functions to help the process
 
-void w_noop(void);
+inline void w_noop(void) { }
 
 // }}}
 
