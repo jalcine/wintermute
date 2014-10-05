@@ -68,5 +68,6 @@ SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
 # Define symbols for deprecation.
 GENERATE_EXPORT_HEADER(wintermutecore
   PREFIX_NAME WNTR
+  EXPORT_MACRO_NAME WINTERMUTE_EXPORT
   EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/wintermute_export.hpp
   )

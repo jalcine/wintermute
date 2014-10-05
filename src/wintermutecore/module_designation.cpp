@@ -80,19 +80,19 @@ bool Module::Designation::isLocal() const
 bool Module::Designation::isNull() const
 {
   W_PRV(const Designation);
-  return d->domain.empty() && d->name.empty();
+  return d && d->domain.empty() && d->name.empty();
 }
 
 bool Module::Designation::operator!=(const Designation& other) const
 {
-  return !this->operator==(other);
+  return ! (*this == other);
 }
 
 bool Module::Designation::operator==(const Designation& other) const
 {
-  return other.name() == name() &&
-         other.domain() == domain() &&
-         other.pid () == pid();
+  return name() == other.name() &&
+         domain() == other.domain() &&
+         pid() == other.pid();
 }
 
 void Module::Designation::deserialize(const Serializable::Map& data)

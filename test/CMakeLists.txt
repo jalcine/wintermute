@@ -19,22 +19,9 @@
 ###############################################################################
 
 #== Include things we'll need.
-INCLUDE(CTest)
 
 if (BUILD_TESTING)
-  INCLUDE(Dart)
-  INCLUDE(WintermuteMacros)
-
-#== CxxTest: Search and bail.
-  INCLUDE(FindCxxTest)
-  IF (NOT CXXTEST_FOUND)
-    MESSAGE(ERROR "We need CxxTest for the test suite.")
-    RETURN()
-  ENDIF()
-
-  SET(CXXTEST_TESTGEN_ARGS
-    --runner=XUnitPrinter --have-eh --have-std
-    )
+  INCLUDE(WintermuteTestMacros)
 
   SET(WINTERMUTE_TEST_INCLUDE_DIRS
     ${CXXTEST_INCLUDE_DIR}
@@ -44,19 +31,6 @@ if (BUILD_TESTING)
     ${CMAKE_BINARY_DIR}/src/wintermutecore
     )
 
-  MACRO(ADD_A_TEST _prefix _name _hdr)
-    set(_target ${_prefix}_${_name})
-
-    CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
-
-    WINTERMUTE_LINK_LIBRARIES(${_target})
-    WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-    TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
-
-    SET_PROPERTY(TARGET ${_target} APPEND_STRING
-      PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
-  ENDMACRO(ADD_A_TEST)
-
   CONFIGURE_FILE(include/test_suite.hpp.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
 
@@ -65,4 +39,12 @@ if (BUILD_TESTING)
 
   ADD_SUBDIRECTORY(fixtures)
   ADD_SUBDIRECTORY(unit)
+endif()
+
+#== Handle work if we're in CI mode.
+option(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
+
+if(CI_BUILD)
+  message(STATUS "CI build enabled.")
+  add_definitions(-Werror)
 endif()

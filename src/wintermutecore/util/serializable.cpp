@@ -30,6 +30,7 @@ Serializable::Serializable()
 
 Serializable::Serializable(const string& jsonString)
 {
+  //wtrace("We should do something with " + jsonString + ".");
   // TODO How do we attempt deserialization when we can't use the
   // deserialization method?
 }
@@ -50,20 +51,20 @@ string Serializable::toString(const Serializable::Map& data)
 
 Serializable::Map Serializable::fromString(const string& jsonString)
 {
-  wdebug("Deserializing JSON: " + jsonString);
+  //wdebug("Deserializing JSON: " + jsonString);
   Serializable::Map theMap;
   Json::Value incomingJson;
 
   Json::Reader jsonReader;
   if (!jsonReader.parse(jsonString, incomingJson))
   {
-    wdebug("Failed to deserialize JSON: " + jsonString);
+    //wdebug("Failed to deserialize JSON: " + jsonString);
     return theMap;
   }
 
   for (const string name : incomingJson.getMemberNames())
   {
-    wdebug("Deserializing JSON key: " + name + " for " + jsonString);
+    //wdebug("Deserializing JSON key: " + name + " for " + jsonString);
     const Json::Value currentValue = incomingJson[name];
     string currentStringValue;
 
@@ -99,9 +100,10 @@ Serializable::operator string() const
   }
 
   Json::FastWriter jsonWriter;
-  const string jsonString = jsonWriter.write(serializedJson);
+  string jsonString = jsonWriter.write(serializedJson);
+  jsonString.resize(jsonString.size() - 1);
 
   assert(!jsonString.empty());
-  wdebug("Serialized into " + jsonString);
+  //wdebug("Serialized into " + jsonString);
   return jsonString;
 }

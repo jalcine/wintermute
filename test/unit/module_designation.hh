@@ -43,25 +43,35 @@ public:
   {
     const string jsonForDesignation = "{\"name\":\"wintermute\", \"domain\":\"me.jalcine\", \"pid\":\"300\"}";
     Module::Designation des(jsonForDesignation);
+    Module::Designation desBuilt("wintermute", "me.jalcine", 300);
+    TS_ASSERT ( !des.isNull() );
     TS_ASSERT_EQUALS ( des.name(), "wintermute" );
     TS_ASSERT_EQUALS ( des.domain(), "me.jalcine" );
     TS_ASSERT_EQUALS ( des.pid(), 300 );
+    TS_ASSERT_EQUALS ( desBuilt, des );
   }
 
-  void checkComparsionOperator(void)
+  void testCheckComparsionOperator(void)
   {
-    Module::Designation des1("foo", "bar.nation");
-    Module::Designation des2("foo", "bar.nation");
-    Module::Designation des3("bar", "bar.nation");
-    TS_ASSERT ( des1 == des2 );
-    TS_ASSERT_EQUALS ( des1, des2 );
-    TS_ASSERT ( des1 != des3 );
+    TS_ASSERT_EQUALS ( Module::Designation("foo", "bar", 300), Module::Designation("foo", "bar", 300) );
+    TS_ASSERT ( Module::Designation("foo", "foo", 300) != Module::Designation("foo", "bar", 300) );
+    TS_ASSERT ( Module::Designation("baz", "bar", 300) != Module::Designation("foo", "bar", 300) );
+    TS_ASSERT ( Module::Designation("foo", "bar", 301) != Module::Designation("foo", "bar", 300) );
   }
 
   void testLocalByDefault(void)
   {
     Module::Designation des("foo", "bar.nation");
-    TS_ASSERT ( des.pid() == getpid() );
+    TS_ASSERT_EQUALS ( des.pid(), getpid() );
     TS_ASSERT ( static_cast<std::string>(des).find(std::to_string(getpid())) != std::string::npos );
+  }
+
+  void testIsActuallyNull(void)
+  {
+    Module::Designation des("foo", "bar.nation");
+    TS_ASSERT ( !des.isNull() );
+
+    Module::Designation des2;
+    TS_ASSERT ( des2.isNull() );
   }
 };

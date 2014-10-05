@@ -19,29 +19,27 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# == Variables we'd use.
-SET(BUILD_SHARED_LIBRARIES ON)
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+INCLUDE(CTest)
 
-#if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
-#endif()
+if (BUILD_TESTING)
+  INCLUDE(Dart)
+  INCLUDE(FindCxxTest)
+  IF (NOT CXXTEST_FOUND)
+    MESSAGE(ERROR "We need CxxTest for the test suite.")
+    RETURN()
+  ENDIF()
+ENDIF()
 
-# == Imports we'd use.
-# Include a means of picking up the proper paths on a machine.)
-INCLUDE(GNUInstallDirs)
+SET(CXXTEST_TESTGEN_ARGS
+  --runner=XUnitPrinter --have-eh --have-std
+  )
 
-# Build a header file we can use to include into other projects.
-INCLUDE(GenerateExportHeader)
+MACRO(wintermute_add_test _prefix _name _hdr)
+  set(_target ${_prefix}_${_name})
+  CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
+  WINTERMUTE_LINK_LIBRARIES(${_target})
+  WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
+  TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
 
-# Look up libraries.
-INCLUDE(CheckLibraryExists)
-
-# == Our CMake files.
-INCLUDE(WintermuteDependencies)
+  SET_PROPERTY(TARGET ${_target} APPEND_STRING PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
+ENDMACRO(wintermute_add_test)

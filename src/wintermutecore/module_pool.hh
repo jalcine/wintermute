@@ -16,16 +16,18 @@
  */
 
 #include "module.hpp"
-#include <map>
+#include "module_designation.hh"
+#include <unordered_map>
 
-using std::map;
+using std::unordered_map;
 
 namespace Wintermute
 {
 class ModulePoolPrivate
 {
 public:
-  typedef map < Module::Designation, Module::Ptr, std::equal_to<Module::Designation> > Map;
+  typedef unordered_map<Module::Designation, Module::Ptr, DesignationPrivate::Hash> Map;
   Map modules;
 };
 }
+

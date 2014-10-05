@@ -29,7 +29,14 @@ public:
   PID pid;
   string name;
   string domain;
+  explicit DesignationPrivate();
+  ~DesignationPrivate();
 
   void clone(const SharedPtr<DesignationPrivate>& other);
+
+  struct Hash
+  {
+    size_t operator()(const Wintermute::Module::Designation &des) const;
+  };
 };
 }

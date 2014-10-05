@@ -17,35 +17,58 @@
 
 #include "test_suite.hpp"
 #include <wintermutecore/module.hpp>
-#include "sample_module.hpp"
+
+#define MAX_SIZE 3
 
 using Wintermute::Module;
 
 class ModulePoolTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testRegisterModules(void)
+  void tearDown(void)
   {
-    SampleModule theModule;
-    TS_ASSERT( Module::Pool::instance()->registerModule(theModule) == true );
-  }
+    Module::List aList = Module::Pool::instance()->modules();
 
-  void testUnregisterModules(void)
-  {
-    SampleModule theModule;
-    TS_ASSERT( Module::Pool::instance()->registerModule(theModule) == true );
-    TS_ASSERT_EQUALS ( Module::Pool::instance()->deregisterModule(theModule.designation()), true );
-  }
-
-  void testModules(void)
-  {
-    for (int i = 1; i < 9; ++i)
+    for (Module::Ptr ptr : aList)
     {
-      SampleModule theModule;
-      Module::Pool::instance()->registerModule(theModule);
+      assert(ptr);
+      Module::Pool::instance()->remove(ptr->designation());
     }
-    TS_ASSERT_EQUALS ( Module::Pool::instance()->modules().size(), 10 );
+  }
+
+  void testAddingModules(void)
+  {
+    Module::Ptr theModule(new SampleModule(1000));
+    TS_ASSERT ( Module::Pool::instance()->add(theModule) );
+
+    Module::Ptr foundModule = Module::Pool::instance()->find( theModule->designation() );
+    TS_ASSERT ( foundModule );
+    //TS_ASSERT_EQUALS ( theModule->designation(), foundModule->designation() );
+  }
+
+  void testRemovingModules(void)
+  {
+    Module::Ptr theModule(new SampleModule(2000));
+    Module::Designation des = theModule->designation();
+    TS_ASSERT( Module::Pool::instance()->add(theModule) );
+
+    Module::Ptr aModule(Module::Pool::instance()->find(des));
+    TS_ASSERT ( aModule );
+    TS_ASSERT ( Module::Pool::instance()->remove(des) );
+
+    Module::Ptr anotherModule = Module::Pool::instance()->find(des);
+    TS_ASSERT ( !anotherModule );
+  }
+
+  void testListingModules(void)
+  {
+    for (int i = 0; i < MAX_SIZE; ++i)
+    {
+      Module::Ptr theModule(new SampleModule(i + 3000));
+      TS_ASSERT ( Module::Pool::instance()->add(theModule) );
+    }
+
+    TS_ASSERT_EQUALS ( Module::Pool::instance()->modules().size(), MAX_SIZE );
   }
 };
-
 

@@ -23,8 +23,9 @@ using Wintermute::Module;
 class ModuleTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testSample(void)
+  void testHasDesignation(void)
   {
-    TS_ASSERT(1 == 1);
+    Module::Ptr modulePtr(new SampleModule);
+    TS_ASSERT ( !modulePtr->designation().isNull() );
   }
 };

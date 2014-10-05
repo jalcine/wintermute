@@ -16,6 +16,7 @@
  */
 
 #include <wintermutecore/module.hpp>
+#include <wintermutecore/logging.hpp>
 
 #ifndef WINTERMUTE_TEST_SAMPLE_MODULE
 # define WINTERMUTE_TEST_SAMPLE_MODULE
@@ -23,9 +24,12 @@
 class SampleModule : public Wintermute::Module
 {
 public:
-  explicit SampleModule() :
-    Wintermute::Module(Wintermute::Module::Designation("input", "test01.wintermute.in", 3001))
+  explicit SampleModule(const unsigned int index = 1) :
+    Wintermute::Module(
+        Wintermute::Module::Designation("input", "test" + std::to_string(index) + ".wintermute.in", 3001 + index)
+    )
   {
+    winfo("SampleModule: My name is " + (string) designation());
   }
 };
 

@@ -51,5 +51,3 @@ bool Module::receiveMessage(const Message& message) const
 Module::~Module()
 {
 }
-
-

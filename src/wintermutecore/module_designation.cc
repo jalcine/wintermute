@@ -17,11 +17,30 @@
 
 #include "module_designation.hh"
 
+using std::hash;
+using std::string;
+using Wintermute::Module;
 using Wintermute::DesignationPrivate;
+
+DesignationPrivate::DesignationPrivate()
+  : pid(0), name(), domain()
+{
+}
+
+DesignationPrivate::~DesignationPrivate()
+{
+}
 
 void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
 {
   this->pid = other->pid;
   this->name = other->name;
   this->domain = other->domain;
+}
+
+size_t DesignationPrivate::Hash::operator()(const Module::Designation& des) const
+{
+  hash<string> hashStr_fn;
+
+  return hashStr_fn((string) des);
 }

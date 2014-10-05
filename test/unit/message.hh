@@ -33,7 +33,7 @@ public:
     message.setPayload(data);
     TS_ASSERT_EQUALS( message.payload().at("foo"), Message::HashValue("bar") );
 
-    Message clonedMessage = message.clone();
+    Message clonedMessage(message.clone());
     TS_ASSERT_EQUALS( clonedMessage.payload().at("foo"), Message::HashValue("bar") );
   }
 

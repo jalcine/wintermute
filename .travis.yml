@@ -14,14 +14,10 @@ before_install:
 
 before_script:
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON
 
 script:
   - make all
   - make ExperimentalTest
   - make ExperimentalMemCheck
   - make ExperimentalCoverage
-
-os:
-  - linux
-  - osx

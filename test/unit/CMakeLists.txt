@@ -19,11 +19,11 @@
 ###############################################################################
 
 macro(add_a_unit_test _name)
-  add_a_test(unit "${_name}" "${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh")
+  wintermute_add_test(unit ${_name} ${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh)
 endmacro(add_a_unit_test)
 
 # == Define the root tests.
-#add_a_unit_test(singleton)
+add_a_unit_test(singleton)
 add_a_unit_test(message)
 add_a_unit_test(module)
 add_a_unit_test(module_pool)
