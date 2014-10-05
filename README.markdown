@@ -9,6 +9,7 @@
 
 [![Build Status](https://travis-ci.org/jalcine/wintermute.svg?branch=develop)][build_stat]
 [![Coverage Status](https://img.shields.io/coveralls/jalcine/wintermute.svg?branch=develop)][cover_stat]
+[![Stories in Ready](https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready)][progress_waffle]
 
 # Synopsis 
 Wintermute's a software project of [Jacky Alciné][jacky] that intends to be a
@@ -25,5 +26,6 @@ Building, requirement and installation information all live in
 [post1]: http://jalcine.me/weblog/the-idea-behind-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute
+[progress_waffle]: http://waffle.io/jalcine/wintermute
 [jacky]: http://jalcine.me
 [install]: ./INSTALL.markdown
