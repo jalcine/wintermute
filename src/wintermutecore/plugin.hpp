@@ -38,7 +38,8 @@ public:
   W_DEF_PRIVATE(Plugin);
   W_DECL_PTR_TYPE(Plugin);
 
-  enum PluginType {
+  enum PluginType
+  {
     PluginTypeUndefined = 0x000,
     PluginTypeSupport   = 0x100,
     PluginTypeService   = 0x200,
@@ -89,7 +90,8 @@ protected:
     return (bool) pluginPtr; \
   } \
   extern "C" WINTERMUTE_EXPORT const char* w_plugin_version() { \
-    return "#WintermuteMinVersion#"; \
+    return #WintermuteMinVersion; \
   }
 
 #endif
+

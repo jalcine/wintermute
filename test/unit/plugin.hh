@@ -36,7 +36,7 @@ class PluginTestSuite : public CxxTest::TestSuite
 public:
   void setUp()
   {
-    DISABLE_LOGGING;
+    //DISABLE_LOGGING;
   }
 
   void testFindLoadedPlugins()

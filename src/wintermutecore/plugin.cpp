@@ -37,8 +37,11 @@ bool isLibraryCompatible(Library::Ptr& libraryPtr)
     return nullptr;
   }
 
-  const Version libraryVersion(versionFunction());
+  const string versionString(versionFunction());
+
+  const Version libraryVersion(versionString);
   const Version systemVersion(WINTERMUTE_VERSION);
+  wdebug("Raw version string from library: " + versionString);
   wdebug("System " + (string) systemVersion + " >= library min " + (string) libraryVersion);
   return systemVersion >= libraryVersion;
 }
@@ -106,7 +109,9 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
     {
       winfo("PLugin loaded, starting...");
       pluginPtr->startup();
-    } else {
+    }
+    else
+    {
       werror("Failed to start plugin.");
     }
   }
@@ -152,3 +157,4 @@ string Plugin::name() const
   W_PRV(const Plugin);
   return d->name;
 }
+
