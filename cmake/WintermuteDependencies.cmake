@@ -25,33 +25,43 @@ else()
   return()
 endif()
 
+# == Look up manual dependencies.
+INCLUDE(WintermuteHeaderDependencies)
 
-# Look for things this library needs/wants via pkgconfig.
+# == Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
-FIND_PACKAGE(Boost 1.53 REQUIRED)
+FIND_PACKAGE(Boost 1.54 EXACT REQUIRED
+  COMPONENTS filesystem system)
 
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
+  ${Boost_FILE_SYSTEM_INCLUDE_DIRS}
+  ${Boost_SYSTEM_INCLUDE_DIRS}
   ${JsonCpp_INCLUDE_DIRS}
   ${Log4Cxx_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-)
+  )
 
 set(WINTERMUTE_LIBRARIES
+  dl
+  ${Boost_FILESYSTEM_LIBRARY_RELEASE}
+  ${Boost_SYSTEM_LIBRARY_RELEASE}
   ${JsonCpp_LIBRARIES}
   ${Log4Cxx_LIBRARIES}
-  ${Boost_LIBRARIES}
-)
+  )
 
-if (EXISTS WINTERMUTE_COMPILE_FLAGS)
+if(DEFINED WINTERMUTE_COMPILE_FLAGS)
   set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
     ${JsonCpp_CFLAGS}
     ${Log4Cxx_CFLAGS}
-    ${Boost_CFLAGS}
-  )
-endif(EXISTS WINTERMUTE_COMPILE_FLAGS)
+    )
+endif()
+
+# == Versioning
+set(WINTERMUTE_VERSION_MAJOR 0)
+set(WINTERMUTE_VERSION_MINOR 0)
+set(WINTERMUTE_VERSION_PATCH 0)

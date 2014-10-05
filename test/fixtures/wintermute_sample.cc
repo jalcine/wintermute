@@ -15,17 +15,42 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <wintermutecore/logging.hpp>
 #include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "wintermute_sample.hh"
 
-using Wintermute::Module;
-
-class ModuleTestSuite : public CxxTest::TestSuite
+int w_sample_test()
 {
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+  winfo("Invoking a function from beyond.");
+  return 2014;
+}
+
+using Wintermute::Plugin;
+using Wintermute::SamplePlugin;
+
+SamplePlugin::SamplePlugin() : Plugin(SAMPLE_PLUGIN_NAME)
+{
+  wdebug("Created the sample plugin!");
+}
+
+SamplePlugin::~SamplePlugin()
+{
+  wdebug("Killed the sample plugin!");
+}
+
+bool SamplePlugin::startup()
+{
+  wdebug("Sample plugin started.");
+  return true;
+}
+
+bool SamplePlugin::shutdown()
+{
+  wdebug("Sample plugin killed.");
+  return true;
+}
+
+Plugin::PluginType SamplePlugin::type() const
+{
+  return Plugin::PluginTypeSupport;
+}

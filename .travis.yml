@@ -7,15 +7,17 @@ before_install:
   - sudo apt-add-repository ppa:dhart/ppa -y
   - sudo apt-add-repository ppa:boost-latest/ppa -y
   - sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   - sudo apt-get update -qq
-  - sudo apt-get remove g++
-  - sudo apt-get install -qq g++-4.7 build-essential
+  - sudo apt-get install -qq build-essential
   - test/build_dependencies.bash
 
 before_script:
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON
 
 script:
   - make all
-  - make test
+  - make ExperimentalTest
+  - make ExperimentalMemCheck
+  - make ExperimentalCoverage

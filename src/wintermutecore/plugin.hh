@@ -15,17 +15,34 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#ifndef WINTERMUTE_PRIVATE_PLUGIN_HPP
+#define WINTERMUTE_PRIVATE_PLUGIN_HPP
 
-using Wintermute::Module;
+#include <unordered_map>
+#include <string>
+#include "library.hpp"
+#include "plugin.hpp"
 
-class ModuleTestSuite : public CxxTest::TestSuite
+using std::unordered_map;
+using std::string;
+
+namespace Wintermute
+{
+class PluginPrivate
 {
 public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
+  typedef Plugin*(*CtorFunctionPtr)(void);
+  typedef const char*(*VersionFunctionPtr)(void);
+  typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
+  typedef unordered_map<string, Plugin::Ptr> PluginList;
+
+  static PluginList plugins;
+  Library::Ptr library;
+  string name;
+
+  explicit PluginPrivate(const string& pluginName);
+  virtual ~PluginPrivate();
+  static void registerPlugin(Plugin::Ptr& plugin);
 };
+}
+#endif

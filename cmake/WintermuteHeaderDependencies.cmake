@@ -18,16 +18,9 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+INCLUDE(CheckIncludeFile)
 
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ENABLE_TESTING()
-INCLUDE(CTest)
-ADD_SUBDIRECTORY(test)
+CHECK_INCLUDE_FILE(dlfcn.h DLFCN_H)
+CHECK_INCLUDE_FILE(unistd.h UNISTD_H)
+CHECK_INCLUDE_FILE(cstdlib UNISTD_H)

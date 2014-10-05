@@ -15,17 +15,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include <wintermutecore/plugin.hpp>
 
-using Wintermute::Module;
-
-class ModuleTestSuite : public CxxTest::TestSuite
+namespace Wintermute
+{
+class SamplePlugin : public Plugin
 {
 public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
+  explicit SamplePlugin();
+  virtual ~SamplePlugin();
+  virtual bool startup();
+  virtual bool shutdown();
+  virtual Plugin::PluginType type() const;
 };
+}
+
+W_DECL_PLUGIN(Wintermute::SamplePlugin, "0.0.1");
+
+extern "C" int w_sample_test();

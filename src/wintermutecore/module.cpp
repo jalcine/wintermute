@@ -15,17 +15,39 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "module.hh"
+#include "module.hpp"
+#include "logging.hpp"
 
 using Wintermute::Module;
+using Wintermute::Module;
+using Wintermute::ModulePrivate;
 
-class ModuleTestSuite : public CxxTest::TestSuite
+Module::Module(const Designation& aDesignation) : d_ptr(new ModulePrivate)
 {
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+  W_PRV(Module);
+  d->designation = aDesignation;
+  wtrace("Module " + static_cast<string>(aDesignation) + " started.");
+}
+
+Module::Designation Module::designation() const
+{
+  W_PRV(Module);
+  return d->designation;
+}
+
+bool Module::sendMessage(const Message& message) const
+{
+  throw std::invalid_argument("This method has not be overriden.");
+  return false;
+}
+
+bool Module::receiveMessage(const Message& message) const
+{
+  throw std::invalid_argument("This method has not be overriden.");
+  return false;
+}
+
+Module::~Module()
+{
+}

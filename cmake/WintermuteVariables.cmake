@@ -25,7 +25,67 @@ else()
   return()
 endif()
 
-SET(WINTERMUTE_COMPILE_FLAGS "-std=c++11")
-SET(WINTERMUTE_COMPILE_FLAGS_DEBUG "-Wall -O0")
-SET(WINTERMUTE_COMPILE_DEFINITIONS "")
-SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "Wintermute_DEBUG")
+SET(WINTERMUTE_COMPILE_FLAGS
+  -Wabi
+  -Wall
+  -fstrict-aliasing
+  )
+
+SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
+  -O0
+  -g3
+  -Wctor-dtor-privacy
+  -Wenum-compare
+  -Wextra
+  -Wno-conversion-null
+  -Wno-deprecated
+  -Wno-deprecated
+  -Wno-system-headers
+  -Wno-unused-parameter
+  -Woverloaded-virtual
+  -Wshadow
+  -Wunused
+  -Wunused-function
+  -Wunused-parameter
+  -Wunused-variable
+  -Wwrite-strings
+  )
+
+SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
+  -O3
+  )
+
+set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
+set(WINTERMUTE_COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
+set(WINTERMUTE_COMPILE_FLAGS_RELEASE "${WINTERMUTE_COMPILE_FLAGS_RELEASE}")
+
+SET(WINTERMUTE_COMPILE_DEFINITIONS "WINTERMUTE")
+SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(WINTERMUTE_TEST_LIBRARIES
+      gcov
+    )
+    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+      -fprofile-arcs
+      -ftest-coverage
+    )
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+      -fcolor-diagnostics
+      -fprofile-instr-generate
+      -fcoverage-mapping
+    )
+  endif()
+endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION MATCHES "^4.6")
+  list(APPEND WINTERMUTE_COMPILE_FLAGS
+    --std=c++0x
+  )
+else()
+  list(APPEND WINTERMUTE_COMPILE_FLAGS
+    --std=c++11
+  )
+endif()

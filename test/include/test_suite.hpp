@@ -15,17 +15,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#ifndef WINTERMUTE_TEST_SUITE_HPP
+#define WINTERMUTE_TEST_SUITE_HPP
 
-using Wintermute::Module;
+#define TEST_BASE_DIR "/home/jacky/Development/Projects/Wintermute/core/build/test"
+#define SAMPLE_PLUGIN_NAME "sample"
+#define SAMPLE_PLUGIN_FILE_NAME "libwintermutesample.so"
+#define SAMPLE_PLUGIN_PATH "/home/jacky/Development/Projects/Wintermute/core/build/lib/libwintermutesample.so"
 
-class ModuleTestSuite : public CxxTest::TestSuite
-{
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+#include "fixtures.hpp"
+#include <cstdlib>
+
+#endif

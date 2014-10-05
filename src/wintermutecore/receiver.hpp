@@ -15,17 +15,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#ifndef WINTERMUTE_CORE_RECEIVER_HPP
+#define WINTERMUTE_CORE_RECEIVER_HPP
 
-using Wintermute::Module;
+#include "globals.hpp"
 
-class ModuleTestSuite : public CxxTest::TestSuite
+using std::string;
+
+namespace Wintermute
 {
+class Message;
+class ReceiverPrivate;
+class Receiver :
+  W_DEF_SHAREABLE(Receiver)
+{
+  W_DEF_PRIVATE(Receiver)
+
 public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
+  W_DECL_PTR_TYPE(Receiver)
+  explicit Receiver();
+  virtual ~Receiver();
+
+  virtual string name() const = 0;
+  virtual Message receive() = 0;
 };
+}
+
+#endif

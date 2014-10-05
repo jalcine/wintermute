@@ -15,17 +15,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "plugin.hpp"
+#include "logging.hpp"
+#include "plugin.hh"
 
-using Wintermute::Module;
+using Wintermute::Plugin;
+using Wintermute::PluginPrivate;
 
-class ModuleTestSuite : public CxxTest::TestSuite
+PluginPrivate::PluginList PluginPrivate::plugins;
+
+PluginPrivate::PluginPrivate(const string& pluginName) :
+  library(), name(pluginName)
 {
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+  wdebug("Defined the internals for the plugin named " + pluginName + ".");
+}
+
+PluginPrivate::~PluginPrivate()
+{
+}
+
+void PluginPrivate::registerPlugin(Plugin::Ptr& plugin)
+{
+  wdebug("Inserted " + plugin->name() + " into the namespace.");
+  PluginPrivate::plugins.insert(std::make_pair(plugin->name(), plugin));
+}

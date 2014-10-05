@@ -15,17 +15,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#ifndef WINTERMUTE_CORE_DISPATCHER_HPP
+#define WINTERMUTE_CORE_DISPATCHER_HPP
 
-using Wintermute::Module;
+#include <string>
+#include "globals.hpp"
 
-class ModuleTestSuite : public CxxTest::TestSuite
+using std::string;
+
+namespace Wintermute
 {
+class DispatcherPrivate;
+class Message;
+/* Serves as an abstract basis for sending messages. */
+class Dispatcher :
+  W_DEF_SHAREABLE(Dispatcher)
+{
+
 public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
+  W_DECL_PTR_TYPE(Dispatcher)
+  explicit Dispatcher();
+  virtual ~Dispatcher();
+
+  virtual string name() const = 0;
+  virtual bool send(const Message& message) = 0;
 };
+}
+
+#endif

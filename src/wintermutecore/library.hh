@@ -15,17 +15,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include <wintermutecore/library.hpp>
+#include <string>
 
-using Wintermute::Module;
+using std::string;
 
-class ModuleTestSuite : public CxxTest::TestSuite
-{
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+namespace Wintermute {
+  class LibraryPrivate {
+    public:
+      explicit LibraryPrivate();
+      virtual ~LibraryPrivate();
+      typedef void* HandlePtr;
+      HandlePtr claimHandleForFilename(const string& filename, string& errorMessage);
+      bool freeHandle(string& errorMessage);
+      HandlePtr handlePtr;
+      string filename;
+      Library::LoadState loadState;
+  };
+}

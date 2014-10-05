@@ -15,17 +15,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "module_pool.hh"
 
-using Wintermute::Module;
-
-class ModuleTestSuite : public CxxTest::TestSuite
-{
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+using Wintermute::ModulePoolPrivate;

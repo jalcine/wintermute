@@ -15,17 +15,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "module.hpp"
+#include "module_designation.hh"
+#include <unordered_map>
 
-using Wintermute::Module;
+using std::unordered_map;
 
-class ModuleTestSuite : public CxxTest::TestSuite
+namespace Wintermute
+{
+class ModulePoolPrivate
 {
 public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
+  typedef unordered_map<Module::Designation, Module::Ptr, DesignationPrivate::Hash> Map;
+  Map modules;
 };
+}
+

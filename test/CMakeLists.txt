@@ -19,35 +19,41 @@
 ###############################################################################
 
 #== Include things we'll need.
-INCLUDE(FindCxxTest)
-INCLUDE(CTest)
-INCLUDE(WintermuteMacros)
 
-#== CxxTest: Search and bail.
-IF (NOT CXXTEST_FOUND)
-  MESSAGE(ERROR "We need CxxTest for the test suite.")
-  RETURN()
-ENDIF(NOT CXXTEST_FOUND)
+if (BUILD_TESTING)
+  INCLUDE(WintermuteTestMacros)
 
-SET(WINTERMUTE_TEST_INCLUDE_DIRS 
-  ${CXXTEST_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}/test
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_BINARY_DIR}/src/libwintermutecore
-)
+  SET(WINTERMUTE_TEST_INCLUDE_DIRS
+    ${CXXTEST_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/test/include
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_BINARY_DIR}/src/wintermutecore
+    )
 
-MACRO(ADD_A_TEST _prefix _name _hdr)
-  set(_target ${_prefix}_${_name})
+  CONFIGURE_FILE(include/test_suite.hpp.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp @ONLY)
 
-  CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
+  CONFIGURE_FILE(CTestConfig.cmake.in ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
+    @ONLY)
 
-  WINTERMUTE_LINK_LIBRARIES(${_target})
-  WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-  TARGET_LINK_LIBRARIES(${_target} wintermutecore)
+  ADD_SUBDIRECTORY(fixtures)
+  ADD_SUBDIRECTORY(unit)
 
-  SET_PROPERTY(TARGET ${_target} APPEND_STRING
-    PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
-ENDMACRO(ADD_A_TEST)
+  # Use Valgrind for memory checking.
+  set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+  set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+    "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
 
-ADD_SUBDIRECTORY(unit)
+  set(MEMCHECK_COMMAND
+    "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+  separate_arguments(MEMCHECK_COMMAND) 
+endif()
+
+#== Handle work if we're in CI mode.
+option(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
+
+if(CI_BUILD)
+  message(STATUS "CI build enabled.")
+  add_definitions(-Werror)
+endif()

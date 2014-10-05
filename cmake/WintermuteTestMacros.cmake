@@ -18,16 +18,28 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
-
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ENABLE_TESTING()
 INCLUDE(CTest)
-ADD_SUBDIRECTORY(test)
+
+if (BUILD_TESTING)
+  INCLUDE(Dart)
+  INCLUDE(FindCxxTest)
+  IF (NOT CXXTEST_FOUND)
+    MESSAGE(ERROR "We need CxxTest for the test suite.")
+    RETURN()
+  ENDIF()
+ENDIF()
+
+SET(CXXTEST_TESTGEN_ARGS
+  --runner=XUnitPrinter --have-eh --have-std
+  )
+
+MACRO(wintermute_add_test _prefix _name _hdr)
+  set(_target ${_prefix}_${_name})
+  CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
+  WINTERMUTE_LINK_LIBRARIES(${_target})
+  WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
+  TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
+
+  SET_PROPERTY(TARGET ${_target} APPEND_STRING PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
+ENDMACRO(wintermute_add_test)

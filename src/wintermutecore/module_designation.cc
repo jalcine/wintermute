@@ -15,17 +15,32 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include "module_designation.hh"
 
+using std::hash;
+using std::string;
 using Wintermute::Module;
+using Wintermute::DesignationPrivate;
 
-class ModuleTestSuite : public CxxTest::TestSuite
+DesignationPrivate::DesignationPrivate()
+  : pid(0), name(), domain()
 {
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+}
+
+DesignationPrivate::~DesignationPrivate()
+{
+}
+
+void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
+{
+  this->pid = other->pid;
+  this->name = other->name;
+  this->domain = other->domain;
+}
+
+size_t DesignationPrivate::Hash::operator()(const Module::Designation& des) const
+{
+  hash<string> hashStr_fn;
+
+  return hashStr_fn((string) des);
+}

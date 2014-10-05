@@ -27,6 +27,7 @@ endif()
 
 include(WintermuteVariables)
 include(WintermuteDependencies)
+include(CMakeParseArguments)
 
 #==============================================================================
 #== @macro wintermute_add_target_properties
@@ -35,21 +36,60 @@ include(WintermuteDependencies)
 #== includes things that can vary on an environmental level as well.
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES
-    INCLUDE_DIRECTORIES "${WINTERMUTE_INCLUDE_DIRS}"
-    COMPILE_FLAGS "${WINTERMUTE_COMPILE_FLAGS}"
-    COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
-    COMPILE_DEFINITIONS_DEBUG "${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}"
-  )
+  # Add inclusion directories to target.
+  target_include_directories(${_target} BEFORE PUBLIC ${WINTERMUTE_INCLUDE_DIRS})
+
+  # Add compilation flags for target.
+  target_compile_options(${_target} BEFORE PUBLIC ${WINTERMUTE_COMPILE_FLAGS})
+
+  # Add compilation definitions for target.
+  target_compile_definitions(${_target} PUBLIC
+    "${WINTERMUTE_COMPILE_DEFINITIONS}")
+
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${_target} PRIVATE
+      ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG})
+    target_compile_options(${_target} PRIVATE
+      ${WINTERMUTE_COMPILE_FLAGS_DEBUG})
+  endif()
 ENDMACRO(wintermute_add_target_properties)
 
 #==============================================================================
 #== @macro wintermute_link_libraries
 #== @param _target The target in question.
 #== Links TARGET with the libraries Wintermute would need in order to operate.
-#== @note This typically isn't required unless you're interfacing with private
-#== header information of Wintermute.
 #==============================================================================
 macro(wintermute_link_libraries _target)
-  target_link_libraries(${_target} ${WINTERMUTE_LIBRARIES})
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_COMPILER_IS_GNUCXX)
+      set(WINTERMUTE_TEST_LIBRARIES gcov)
+    elseif(CMAKE_CXX_COMPILER STREQUAL "Clang")
+      set(WINTERMUTE_TEST_LIBRARIES profile_rt)
+    endif()
+  endif()
+
+  target_link_libraries(${_target}
+    ${WINTERMUTE_LIBRARIES}
+    ${WINTERMUTE_TEST_LIBRARIES})
 endmacro(wintermute_link_libraries _target)
+
+#==============================================================================
+#== @macro wintermute_define_plugin
+#== @param TARGET The target of the plugin.
+#== @param SOURCES The sources for this plugin.
+#== @param INCLUDE_DIRECTORIES The extra includes for this plugin.
+#== @param LIBRARIES The extra libraries for this plugin.
+#==============================================================================
+macro(wintermute_define_plugin)
+  set(options )
+  set(oneValueArgs TARGET)
+  set(nValueArgs SOURCES INCLUDE_DIRECTORIES)
+
+  cmake_parse_arguments(wdp "${options}" "${oneValueArgs}" "${nValueArgs}" ${ARGN})
+
+  add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
+  target_link_libraries(${wdp_TARGET} wintermutecore ${wdp_LIBRARIES})
+  target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
+  wintermute_link_libraries(${wdp_TARGET})
+  wintermute_add_target_properties(${wdp_TARGET})
+endmacro(wintermute_define_plugin)

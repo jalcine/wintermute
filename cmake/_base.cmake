@@ -20,5 +20,3 @@
 
 # Internal dependencies
 INCLUDE(defaults)
-
-# External dependencies

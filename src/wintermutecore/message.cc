@@ -1,5 +1,5 @@
 /*
- * Wintermute is free software; you can redistribute it and/or
+ * Wintermute is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -15,17 +15,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include <wintermutecore/module.hpp>
+#include <algorithm>
+#include "message.hh"
+#include "message.hpp"
+#include "logging.hpp"
 
+using Wintermute::Message;
 using Wintermute::Module;
+using Wintermute::MessagePrivate;
+using Wintermute::Util::Serializable;
 
-class ModuleTestSuite : public CxxTest::TestSuite
+MessagePrivate::MessagePrivate() : data(Message::HashType())
 {
-public:
-  void testHasDesignation(void)
-  {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( !modulePtr->designation().isNull() );
-  }
-};
+}
+
+void MessagePrivate::clone(const SharedPtr<MessagePrivate>& d)
+{
+  this->data = d->data;
+  this->sender = d->sender;
+  this->receiver = d->receiver;
+}
+
+bool MessagePrivate::isEmpty() const
+{
+  /// TODO This needs a better check. If anything, check only if the sender AND
+  //payload are empty/null.
+  return !sender.isNull() && !receiver.isNull() && !data.empty();
+}
