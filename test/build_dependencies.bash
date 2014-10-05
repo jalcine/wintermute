@@ -2,6 +2,8 @@
 
 alias addpkg="sudo apt-get install -qq"
 
+sudo pip install cpp-coveralls --use-mirrors
+
 echo -en "Running tests on $(uname -a)."
 
 # Install pkg-config.
