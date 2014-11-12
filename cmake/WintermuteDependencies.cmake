@@ -35,7 +35,7 @@ PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
-FIND_PACKAGE(Boost 1.54 EXACT REQUIRED
+FIND_PACKAGE(Boost 1.55 EXACT REQUIRED
   COMPONENTS filesystem system)
 
 # == Exported variables

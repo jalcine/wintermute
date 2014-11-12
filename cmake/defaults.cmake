@@ -45,3 +45,4 @@ INCLUDE(CheckLibraryExists)
 
 # == Our CMake files.
 INCLUDE(WintermuteDependencies)
+INCLUDE(WintermuteDocumentation)
