@@ -41,3 +41,7 @@ if (NOT DOXYGEN_DOT_FOUND)
     set(DOXYGEN_DOT_EXECUTABLE ${DOT_PROGRAM})
   endif()
 endif()
+
+macro(doxygen_generate_documentation)
+
+endmacro(doxygen_generate_documentation)
