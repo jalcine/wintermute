@@ -64,6 +64,17 @@ SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
   )
 
+# TODO Pull out version string from here and make that a constant (kinda).
+DOXYGEN_GENERATE_DOCUMENTATION(
+  TARGET           "wintermutecore"
+  BUILD_AFTER      "wintermutecore"
+  PROJECT_NAME     "Wintermute"
+  PROJECT_BRIEF    "Wintermute's core library"
+  PROJECT_VERSION  "0.0.x"
+  MAIN_DOC_PAGE    "${CMAKE_SOURCE_DIR}/doc/Main.markdown"
+  SOURCE_DIR       "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
 # Define symbols for deprecation.
 GENERATE_EXPORT_HEADER(wintermutecore
   PREFIX_NAME WNTR
