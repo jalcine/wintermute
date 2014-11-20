@@ -5,3 +5,4 @@ CTestConfig.cmake
 *.orig
 CTestConfig.cmake
 src/wintermutecore/globals.hpp
+test/include/test_suite.hpp
