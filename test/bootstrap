@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function_name() {
+bootstrap_build() {
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
   sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
