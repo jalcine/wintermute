@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-alias addpkg="sudo apt-get install -qq"
-
 bootstrap_build() {
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
@@ -16,21 +14,21 @@ bootstrap_build() {
   echo -en "Running tests on $(uname -a)."
 
   # Install pkg-config.
-  addpkg pkg-config cmake
+  sudo apt-get install -qq pkg-config cmake
 
   # Install CxxTest.
-  addpkg cxxtest
+  sudo apt-get install -qq cxxtest
 
   # Install memory and coverage tools.
-  addpkg valgrind
-  addpkg lcov
+  sudo apt-get install -qq valgrind
+  sudo apt-get install -qq lcov
 
   # Install app dependecies.
-  addpkg libjsoncpp-dev
-  addpkg liblog4cxx10-dev
-  addpkg libboost1.54-dev
-  addpkg libboost-filesystem1.54-dev
-  addpkg libclang-3.4-common-dev
+  sudo apt-get install -qq libjsoncpp-dev
+  sudo apt-get install -qq liblog4cxx10-dev
+  sudo apt-get install -qq libboost1.54-dev
+  sudo apt-get install -qq libboost-filesystem1.54-dev
+  sudo apt-get install -qq libclang-3.4-common-dev
 
   echo "Done loading dependencies."
 
