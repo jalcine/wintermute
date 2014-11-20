@@ -18,8 +18,8 @@ bootstrap_build() {
   # Install dependencies.
   sudo apt-get install -qq pkg-config cmake \
     cxxtest valgrind lcov libjsoncpp-dev \
-    liblog4cxx10-dev libboost1.54-dev \
-    libboost-filesystem1.54-dev
+    liblog4cxx10-dev libboost1.55-dev \
+    libboost-filesystem1.54-dev doxygen \
 
   echo "Done installing dependencies."
 
