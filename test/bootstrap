@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+alias addpkg="sudo apt-get install -qq"
+
 bootstrap_build() {
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
@@ -8,8 +10,6 @@ bootstrap_build() {
   sudo apt-get update -qq
   sudo apt-get install -qq build-essential
   sudo apt-get install -qq python-pip python
-
-  alias addpkg="sudo apt-get install -qq"
 
   sudo pip install cpp-coveralls --use-mirrors
 
