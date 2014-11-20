@@ -13,24 +13,13 @@ bootstrap_build() {
 
   echo -en "Running tests on $(uname -a)."
 
-  # Install pkg-config.
-  sudo apt-get install -qq pkg-config cmake
+  # Install dependencies.
+  sudo apt-get install -qq pkg-config cmake \
+  cxxtest valgrind lcov libjsoncpp-dev \
+  liblog4cxx10-dev libboost1.54-dev \
+  libboost-filesystem1.54-dev libclang-3.4-common-dev
 
-  # Install CxxTest.
-  sudo apt-get install -qq cxxtest
-
-  # Install memory and coverage tools.
-  sudo apt-get install -qq valgrind
-  sudo apt-get install -qq lcov
-
-  # Install app dependecies.
-  sudo apt-get install -qq libjsoncpp-dev
-  sudo apt-get install -qq liblog4cxx10-dev
-  sudo apt-get install -qq libboost1.54-dev
-  sudo apt-get install -qq libboost-filesystem1.54-dev
-  sudo apt-get install -qq libclang-3.4-common-dev
-
-  echo "Done loading dependencies."
+  echo "Done installing dependencies."
 
   sudo ln -s /usr/lib/llvm-3.4/lib/libprofile_rt.a /usr/lib/libprofile_rt.a
 }
