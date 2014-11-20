@@ -11,7 +11,7 @@ bootstrap_build() {
   sudo apt-get install -qq build-essential
   sudo apt-get install -qq python-pip python
 
-  sudo pip install cpp-coveralls --use-mirrors
+  sudo pip install cpp-coveralls --upgrade
 
   echo -en "Running tests on $(uname -a)."
 
