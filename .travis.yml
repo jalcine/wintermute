@@ -10,7 +10,11 @@ before_script:
   - test/bootstrap --generate
 
 script:
-  - test/bootstrap --run
+  - make all
+  - make ExperimentalTest
+  - make ExperimentalMemCheck
+  - make ExperimentalCoverage
+
 
 after_success:
   - test/bootstrap --post
