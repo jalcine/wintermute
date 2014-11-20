@@ -7,7 +7,7 @@ before_install:
   - test/bootstrap --before
 
 before_script:
-  - test/boostrap --generate
+  - test/bootstrap --generate
 
 script:
   - test/bootstrap --run
