@@ -4,24 +4,13 @@ compiler:
   - clang
 
 before_install:
-  - sudo apt-add-repository ppa:dhart/ppa -y
-  - sudo apt-add-repository ppa:boost-latest/ppa -y
-  - sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-add-repository ppa:kubuntu-ppa/beta -y
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq build-essential
-  - sudo apt-get install -qq python-pip python
-  - test/build_dependencies.bash
+  - test/bootstrap --before
 
 before_script:
-  - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON
+  - test/boostrap --generate
 
 script:
-  - make all
-  - make ExperimentalTest
-  - make ExperimentalMemCheck
-  - make ExperimentalCoverage
+  - test/bootstrap --run
 
 after_success:
-  - coveralls --gcov `which gcov-4.6` -r . -e .
+  - test/bootstrap --post

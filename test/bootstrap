@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+function_name() {
+  sudo apt-add-repository ppa:dhart/ppa -y
+  sudo apt-add-repository ppa:boost-latest/ppa -y
+  sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
+  sudo apt-add-repository ppa:kubuntu-ppa/beta -y
+  sudo apt-get update -qq
+  sudo apt-get install -qq build-essential
+  sudo apt-get install -qq python-pip python
+
+  alias addpkg="sudo apt-get install -qq"
+
+  sudo pip install cpp-coveralls --use-mirrors
+
+  echo -en "Running tests on $(uname -a)."
+
+  # Install pkg-config.
+  addpkg pkg-config cmake
+
+  # Install CxxTest.
+  addpkg cxxtest
+
+  # Install memory and coverage tools.
+  addpkg valgrind
+  addpkg lcov
+
+  # Install app dependecies.
+  addpkg libjsoncpp-dev
+  addpkg liblog4cxx10-dev
+  addpkg libboost1.54-dev
+  addpkg libboost-filesystem1.54-dev
+  addpkg libclang-3.4-common-dev
+
+  echo "Done loading dependencies."
+
+  sudo ln -s /usr/lib/llvm-3.4/lib/libprofile_rt.a /usr/lib/libprofile_rt.a
+}
+
+case $1 in
+  "--before" )
+    bootstrap_build
+    ;;
+  "--generate" )
+    mkdir build && cd build;
+    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON;
+    ;;
+  "--run" )
+    make all
+    make ExperimentalTest
+    make ExperimentalMemCheck
+    make ExperimentalCoverage
+    ;;
+  "--post" )
+    coveralls --gcov `which gcov-4.6` -r . -e .
+    ;;
+esac
