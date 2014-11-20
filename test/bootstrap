@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 bootstrap_build() {
+  echo "[build]: fetching PPAs...."
   wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
   sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
   sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   sudo add-apt-repository ppa:h-rayflood/llvm -y
+  echo "[build]: updating system..."
   sudo apt-get update -qq
+  echo "[build]: installing packages..."
   sudo apt-get install -qq build-essential
   sudo apt-get install -qq python-pip python
 
@@ -16,10 +19,11 @@ bootstrap_build() {
   echo -en "Running tests on $(uname -a)."
 
   # Install dependencies.
+  echo "[build]: installing dependencies..."
   sudo apt-get install -qq pkg-config cmake \
     cxxtest valgrind lcov libjsoncpp-dev \
     liblog4cxx10-dev libboost1.55-dev \
-    libboost-filesystem1.54-dev doxygen \
+    libboost-filesystem1.54-dev doxygen
 
   echo "Done installing dependencies."
 
