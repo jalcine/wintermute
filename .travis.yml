@@ -15,6 +15,13 @@ script:
   - make ExperimentalMemCheck
   - make ExperimentalCoverage
 
-
 after_success:
   - test/bootstrap --post
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/a01dbbba8dcad4b82db8
+    on_success: change
+    on_failure: always
+    on_start: false
