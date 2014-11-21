@@ -19,3 +19,13 @@
 ###############################################################################
 # == Root library.
 ADD_SUBDIRECTORY(wintermutecore)
+
+# == Standalone Plugins
+#ADD_SUBDIRECTORY(wintermute-daemon)
+#ADD_SUBDIRECTORY(wintermute-heartbeat)
+
+# == Transports
+#ADD_SUBDIRECTORY(wintermute-transport-dbus)
+#ADD_SUBDIRECTORY(wintermute-transport-zeromq)
+#ADD_SUBDIRECTORY(wintermute-transport-http)
+#ADD_SUBDIRECTORY(wintermute-transport-gcm)
