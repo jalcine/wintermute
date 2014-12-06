@@ -22,8 +22,8 @@ ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = YES
 FULL_PATH_NAMES        = NO
 
-STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@\
-                         @CMAKE_BINARY_DIR@
+STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@"\
+                         "@CMAKE_BINARY_DIR@"
 SHORT_NAMES            = YES
 JAVADOC_AUTOBRIEF      = YES
 QT_AUTOBRIEF           = NO
@@ -454,7 +454,7 @@ GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
 INTERACTIVE_SVG        = NO
-DOT_PATH               = "@DOT_PROGRAM@"
+DOT_PATH               = "@DOXYGEN_DOT_PROGRAM@"
 DOTFILE_DIRS           =
 MSCFILE_DIRS           =
 DIAFILE_DIRS           =
