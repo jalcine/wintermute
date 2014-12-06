@@ -40,6 +40,5 @@ MACRO(wintermute_add_test _prefix _name _hdr)
   WINTERMUTE_LINK_LIBRARIES(${_target})
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
   TARGET_LINK_LIBRARIES(${_target} wintermutecore gcov)
-
   SET_PROPERTY(TARGET ${_target} APPEND_STRING PROPERTY INCLUDE_DIRECTORIES ${WINTERMUTE_TEST_INCLUDE_DIRS})
 ENDMACRO(wintermute_add_test)

@@ -1,29 +1,37 @@
 #!/usr/bin/env bash
 
 bootstrap_build() {
-  echo "[build]: fetching PPAs...."
+  echo -en "Running tests on $(uname -a)."
+
+  echo "\n[build]: fetching PPAs....\n"
   wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
   sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
   sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   sudo add-apt-repository ppa:h-rayflood/llvm -y
+
   echo "[build]: updating system..."
   sudo apt-get update -qq
+
   echo "[build]: installing packages..."
   sudo apt-get install -qq build-essential
   sudo apt-get install -qq python-pip python
 
   sudo pip install cpp-coveralls --upgrade
 
-  echo -en "Running tests on $(uname -a)."
-
   # Install dependencies.
   echo "[build]: installing dependencies..."
-  sudo apt-get install -qq pkg-config cmake \
-    cxxtest valgrind lcov libjsoncpp-dev \
-    liblog4cxx10-dev libboost1.55-dev \
-    libboost-filesystem1.54-dev doxygen
+  sudo apt-get install -qq libjsoncpp-dev
+  sudo apt-get install -qq liblog4cxx10-dev
+  sudo apt-get install -qq libboost-dev
+  sudo apt-get install -qq libboost-filesystem-dev
+  sudo apt-get install -qq doxygen
+  sudo apt-get install -qq cxxtest
+  sudo apt-get install -qq valgrind
+  sudo apt-get install -qq lcov 
+  sudo apt-get install -qq pkg-config
+  sudo apt-get install -qq cmake
 
   echo "Done installing dependencies."
 
@@ -32,18 +40,18 @@ bootstrap_build() {
 
 case $1 in
   "--before" )
-    bootstrap_build
+    bootstrap_build || exit 8
     ;;
   "--generate" )
-    cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON;
+    cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--run" )
-    make all
-    make ExperimentalTest
+    make all || exit 1
+    make ExperimentalTest || exit 2
     make ExperimentalMemCheck
     make ExperimentalCoverage
     ;;
   "--post" )
-    coveralls --gcov `which gcov-4.6` -r . -e .
+    coveralls --gcov $(which gcov) --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
     ;;
 esac
