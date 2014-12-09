@@ -4,6 +4,7 @@ bootstrap_build() {
   echo -en "Running tests on $(uname -a)."
 
   echo "\n[build]: fetching PPAs....\n"
+  sudo apt-get install software-properties-common -qq
   wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:boost-latest/ppa -y
@@ -26,6 +27,7 @@ bootstrap_build() {
   sudo apt-get install -qq liblog4cxx10-dev
   sudo apt-get install -qq libboost-dev
   sudo apt-get install -qq libboost-filesystem-dev
+  sudo apt-get install -qq libboost-system-dev
   sudo apt-get install -qq doxygen
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
