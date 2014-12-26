@@ -64,16 +64,19 @@ SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
   )
 
-# TODO Pull out version string from here and make that a constant (kinda).
+
+file(GLOB _extra_doc_pages
+  doc/wintermutecore/**/*.markdown)
+
 DOXYGEN_GENERATE_DOCUMENTATION(
   TARGET           "wintermutecore"
   BUILD_AFTER      "wintermutecore"
   PROJECT_NAME     "Wintermute"
   PROJECT_BRIEF    "Wintermute's core library"
-  PROJECT_VERSION  "0.1.0"
-  MAIN_DOC_PAGE    "${CMAKE_SOURCE_DIR}/doc/Main.markdown"
+  PROJECT_VERSION  "${WINTERMUTE_VERSION}"
+  MAIN_DOC_PAGE    "${CMAKE_SOURCE_DIR}/doc/wintermutecore/Main.markdown"
   SOURCE_DIR       "${CMAKE_CURRENT_SOURCE_DIR}"
-  EXTRA_DOC_FILES  "${CMAKE_SOURCE_DIR}/doc/wintermutecore/**/*.markdown"
+  EXTRA_DOC_FILES  ${_extra_doc_pages}
 )
 message("${CMAKE_SOURCE_DIR}/doc/Main.markdown")
 

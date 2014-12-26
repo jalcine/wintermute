@@ -85,3 +85,5 @@ else()
     --std=c++11
   )
 endif()
+
+include(WintermuteVersion)
