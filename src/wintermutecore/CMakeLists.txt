@@ -70,10 +70,12 @@ DOXYGEN_GENERATE_DOCUMENTATION(
   BUILD_AFTER      "wintermutecore"
   PROJECT_NAME     "Wintermute"
   PROJECT_BRIEF    "Wintermute's core library"
-  PROJECT_VERSION  "0.0.x"
+  PROJECT_VERSION  "0.1.0"
   MAIN_DOC_PAGE    "${CMAKE_SOURCE_DIR}/doc/Main.markdown"
   SOURCE_DIR       "${CMAKE_CURRENT_SOURCE_DIR}"
+  EXTRA_DOC_FILES  "${CMAKE_SOURCE_DIR}/doc/wintermutecore/**/*.markdown"
 )
+message("${CMAKE_SOURCE_DIR}/doc/Main.markdown")
 
 # Define symbols for deprecation.
 GENERATE_EXPORT_HEADER(wintermutecore

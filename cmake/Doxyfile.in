@@ -241,7 +241,7 @@ WARN_LOGFILE           = "@_doxy_log_file@"
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @_doxy_SOURCE_DIR@
+INPUT                  = @_doxy_SOURCE_DIR@ "@_doxy_MAIN_DOC_PAGE@" "@_doxy_EXTRA_DOC_FILES@"
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.cpp *.hpp
 RECURSIVE              = YES
@@ -255,7 +255,7 @@ IMAGE_PATH             =
 INPUT_FILTER           =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
-USE_MDFILE_AS_MAINPAGE = @_doxy_MAIN_DOC_PAGE@
+USE_MDFILE_AS_MAINPAGE = "@_doxy_MAIN_DOC_PAGE@"
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing

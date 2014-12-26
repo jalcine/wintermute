@@ -44,13 +44,15 @@ IF (NOT DOXYGEN_DOT_FOUND OR NOT DOXYGEN_DOT_EXECUTABLE)
   ENDIF()
 ENDIF()
 
+ADD_CUSTOM_TARGET(docs)
+
 MACRO(doxygen_generate_documentation)
   # TODO Collect the options to pass into the file.
   SET(options )
   SET(oneValueArgs TARGET BUILD_AFTER
     PROJECT_NAME PROJECT_VERSION PROJECT_BRIEF
     MAIN_DOC_PAGE PROJECT_LOGO EXAMPLE_PATH
-    IMAGE_PATH SOURCE_DIR)
+    EXTRA_DOC_FILES IMAGE_PATH SOURCE_DIR)
   SET(multiValueArgs SOURCES)
   CMAKE_PARSE_ARGUMENTS(_doxy "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -84,12 +86,9 @@ MACRO(doxygen_generate_documentation)
 
   SET(_doxy_args "${_doxy_config_path}")
 
-  # TODO Generate configuration for Doxygen.
-  # TODO Create target for Doxygen generation.
-  # TODO Add target to 'doc' meta-target.
   ADD_CUSTOM_TARGET("${_doxy_TARGET}-docs" ALL
-    COMMAND ${DOXYGEN_EXECUTABLE} ${_doxy_args} ${_doxy_SOURCE_DIR}
-    DEPENDS ${_doxy_BUILD_AFTER}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${_doxy_args}
+    DEPENDS ${_doxy_BUILD_AFTER} docs
     WORKING_DIRECTORY ${_doxy_working_dir}
   )
 ENDMACRO(doxygen_generate_documentation)
