@@ -23,7 +23,8 @@ little [blog post][post1] about it, expect another soon.
 Building, requirement and installation information all live in
 [`INSTALL.markdown`][install]. Pointers for contributing on the project are
 located in [`CONTRIBUTING.markdown`][contrib]. So far, Wintermute works on a
-[few platforms][platforms]
+[few platforms][platforms], but feel free to build for yours and try it out.
+This project is [Vagrant][] enabled.
 
 **This is alpha software, so alpha that it does nothing.** But in due time, my
 friend.

@@ -25,7 +25,7 @@ IF (GENERATE_DOCUMENTATION EQUAL OFF)
   return()
 ENDIF()
 
-FIND_PACKAGE(Doxygen 1.8.8 REQUIRED)
+FIND_PACKAGE(Doxygen 1.8 REQUIRED)
 
 IF (NOT DOXYGEN_FOUND)
   MESSAGE("Cannot generate documentation, Doxygen not found.")

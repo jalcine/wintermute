@@ -6,3 +6,4 @@ CTestConfig.cmake
 CTestConfig.cmake
 src/wintermutecore/globals.hpp
 test/include/test_suite.hpp
+.vagrant/*

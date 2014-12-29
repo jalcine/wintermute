@@ -3,6 +3,8 @@
 bootstrap_build() {
   echo -en "Running tests on $(uname -a)."
 
+  sudo apt-get update -qq && sudo apt-get upgrade -qq
+
   echo "\n[build]: fetching PPAs....\n"
   sudo apt-get install software-properties-common -qq
   wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
@@ -31,7 +33,7 @@ bootstrap_build() {
   sudo apt-get install -qq doxygen
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
-  sudo apt-get install -qq lcov 
+  sudo apt-get install -qq lcov
   sudo apt-get install -qq pkg-config
   sudo apt-get install -qq cmake
 
@@ -46,6 +48,10 @@ case $1 in
     ;;
   "--generate" )
     cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    ;;
+  "--generate-vagrant" )
+    mkcd build && cd build
+    cmake /vagrant -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--run" )
     make all || exit 1
