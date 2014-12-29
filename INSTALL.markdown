@@ -39,6 +39,7 @@ $ vagrant ssh
 cd /vagrant
 # Run the variant of the test bootstrap for Vagrant.
 /vagrant/test/bootstrap --generate-vagrant
+```
 
 [boost-filesystem]: http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm
 [boost-system]: http://www.boost.org/doc/libs/1_55_0/libs/system/doc/index.html

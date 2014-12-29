@@ -33,7 +33,6 @@ friend.
 [build_stat]: https://travis-ci.org/jalcine/wintermute
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute
 [progress_waffle]: http://waffle.io/jalcine/wintermute
-[jacky]: http://jalcine.me
 [travisdevelop_img]: https://travis-ci.org/jalcine/wintermute.svg?branch=develop
 [coverallsdevelop_img]: https://img.shields.io/coveralls/jalcine/wintermute.svg?branch=develop
 [waffledevelop_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
