@@ -19,30 +19,15 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# == Variables we'd use.
-SET(BUILD_SHARED_LIBRARIES ON)
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+if (NOT DEFINED _wntr_ver)
+  set(_wntr_ver ON)
+else()
+  return()
+endif()
 
-#if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
-#endif()
-
-# == Imports we'd use.
-# Include a means of picking up the proper paths on a machine.)
-INCLUDE(GNUInstallDirs)
-
-# Build a header file we can use to include into other projects.
-INCLUDE(GenerateExportHeader)
-
-# Look up libraries.
-INCLUDE(CheckLibraryExists)
-
-# == Our CMake files.
-INCLUDE(WintermuteDependencies)
-INCLUDE(WintermuteDocumentation)
+set(WINTERMUTE_VERSION_MAJOR 0)
+set(WINTERMUTE_VERSION_MINOR 0)
+set(WINTERMUTE_VERSION_PATCH 1)
+set(WINTERMUTE_VERSION_RC "dev")
+set(WINTERMUTE_VERSION
+  ${WINTERMUTE_VERSION_MAJOR}.${WINTERMUTE_VERSION_MINOR}.${WINTERMUTE_VERSION_PATCH}-${WINTERMUTE_VERSION_RC})

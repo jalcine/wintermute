@@ -6,7 +6,7 @@
 ```
 
 > "The future is already here. It's just unevenly distributed." -
-> William Gibson, Neuromancer (1984).
+> William Gibson, [Neuromancer (1984)][neuromancer].
 
 [![Build Status][travisdevelop_img]][build_stat]
 [![Coverage Status][coverallsdevelop_img]][cover_stat]
@@ -22,7 +22,8 @@ little [blog post][post1] about it, expect another soon.
 # Building & Contributing
 Building, requirement and installation information all live in
 [`INSTALL.markdown`][install]. Pointers for contributing on the project are
-located in [`CONTRIBUTING.markdown`][contrib]
+located in [`CONTRIBUTING.markdown`][contrib]. So far, Wintermute works on a
+[few platforms][platforms]
 
 **This is alpha software, so alpha that it does nothing.** But in due time, my
 friend.
@@ -37,3 +38,6 @@ friend.
 [waffledevelop_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
 [contrib]: ./CONTRIBUTING.markdown
 [install]: ./INSTALL.markdown
+[platforms]: ./INSTALL.markdown#platforms
+[vagrant]: https://vagrantup.com
+[neuromancer]: http://www.goodreads.com/book/show/22328
