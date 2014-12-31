@@ -23,7 +23,7 @@ include(WintermuteSourceBuild
   RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
   )
 
-include(WintermuteTestMacros)
+include(WintermuteTest)
 
 MACRO(wintermute_plugin_declare)
   SET(options
@@ -57,6 +57,7 @@ MACRO(wintermute_plugin_declare)
     PUBLIC ${_include_dirs})
 ENDMACRO(wintermute_plugin_declare)
 
+# TODO: Configure the test driver source file to work for the provided Plugin.
 MACRO(wintermute_plugin_validate)
   SET(options
     )
@@ -69,20 +70,19 @@ MACRO(wintermute_plugin_validate)
   CMAKE_PARSE_ARGUMENTS(_wpv "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  # TODO: Configure the test driver source file to work for the provided
-  # Plugin.
-
-  set(_plugin_driver_file
+  SET(_plugin_driver_file
     "${CMAKE_CURRENT_BINARY_DIR}/${_wpv_TARGET}-validator.hh")
-  set(_test_driver_file )
+  SET(_test_driver_file )
 
-  if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
-    set(_test_driver_file "${CMAKE_SOURCE_DIR}/cmake/plugin_driver.hh.in")
-  else()
-  endif()
+  IF (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
+    SET(_test_driver_file "${CMAKE_SOURCE_DIR}/cmake/plugin_driver.hh.in")
+  ELSE()
+  ENDIF()
+
+  GET_TARGET_PROPERTY(_wpv_file ${_wpv_TARGET} LOCATION)
 
   CONFIGURE_FILE(${_test_driver_file}
-    "${CMAKE_CURRENT_BINARY_DIR}/${_wpv_TARGET}-validator.hh"
+    ${_plugin_driver_file}
     @ONLY)
 
   WINTERMUTE_ADD_TEST(plugin-verify ${_wpv_TARGET} ${_plugin_driver_file})
