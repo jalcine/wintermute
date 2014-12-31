@@ -19,7 +19,8 @@
 ###############################################################################
 
 macro(add_a_unit_test _name)
-  wintermute_add_test(unit ${_name} ${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh)
+  wintermute_add_test(unit ${_name}
+    ${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh)
 endmacro(add_a_unit_test)
 
 # == Define the root tests.

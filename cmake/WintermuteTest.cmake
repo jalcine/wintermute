@@ -43,7 +43,7 @@ SET(WINTERMUTE_TEST_INCLUDE_DIRS
 
 # TODO: Make this source-specific
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/test_suite.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_suite.hpp
   @ONLY)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/CTestConfig.cmake.in
