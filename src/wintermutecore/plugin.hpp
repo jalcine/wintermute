@@ -21,10 +21,6 @@
 #include <wintermutecore/globals.hpp>
 #include <wintermutecore/version.hpp>
 
-#define WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME "w_plugin_ctor"
-#define WINTERMUTE_PLUGIN_DTOR_FUNCTION_NAME "w_plugin_dtor"
-#define WINTERMUTE_PLUGIN_VERSION_FUNCTION_NAME "w_plugin_version"
-
 using std::string;
 
 namespace Wintermute
@@ -32,11 +28,14 @@ namespace Wintermute
 class PluginPrivate;
 
 /* An interface to add functionality and form to Wintermute. */
-class Plugin : W_DEF_SHAREABLE(Plugin)
+class WINTERMUTE_EXPORT_PUBLIC Plugin
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Plugin)
+#endif
 {
 public:
-  W_DEF_PRIVATE(Plugin);
-  W_DECL_PTR_TYPE(Plugin);
+  W_DEF_PRIVATE(Plugin)
+  W_DECL_PTR_TYPE(Plugin)
 
   enum PluginType
   {
@@ -82,14 +81,18 @@ protected:
 };
 }
 
+#define WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME    "w_plugin_ctor"
+#define WINTERMUTE_PLUGIN_DTOR_FUNCTION_NAME    "w_plugin_dtor"
+#define WINTERMUTE_PLUGIN_VERSION_FUNCTION_NAME "w_plugin_version"
+
 #define W_DECL_PLUGIN(PluginClass, WintermuteMinVersion) \
-  extern "C" WINTERMUTE_EXPORT PluginClass* w_plugin_ctor() { \
+  extern "C" WINTERMUTE_EXPORT_PUBLIC PluginClass* w_plugin_ctor() { \
     return new PluginClass();\
   } \
-  extern "C" WINTERMUTE_EXPORT bool w_plugin_dtor(Wintermute::Plugin::Ptr& pluginPtr) { \
+  extern "C" WINTERMUTE_EXPORT_PUBLIC bool w_plugin_dtor(Wintermute::Plugin::Ptr& pluginPtr) { \
     return (bool) pluginPtr; \
   } \
-  extern "C" WINTERMUTE_EXPORT const char* w_plugin_version() { \
+  extern "C" WINTERMUTE_EXPORT_PUBLIC const char* w_plugin_version() { \
     return #WintermuteMinVersion; \
   }
 

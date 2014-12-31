@@ -37,10 +37,19 @@ LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& f
   handle = dlopen(filenameToLoad.c_str(), RTLD_NOW | RTLD_GLOBAL );
   const char* msg = dlerror();
 
-  if (!handle && msg)
+  if (!handle)
   {
-    errorMessage = msg;
-    werror("Failed to load library '" + filenameToLoad + "': " + errorMessage);
+    if (msg)
+    {
+      errorMessage = msg;
+      werror("Failed to load library '" + filenameToLoad + "': " + errorMessage);
+    }
+    else
+    {
+      errorMessage = "Unknown error.";
+      wwarn("Failed to load library due to an unknown error; possibly file missing.");
+    }
+
     return nullptr;
   }
 
@@ -53,11 +62,24 @@ LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& f
 bool LibraryPrivate::freeHandle(string& errorMessage)
 {
   dlerror();
-  const int wasntSuccessfully = dlclose(handlePtr);
-  if (wasntSuccessfully) {
-    errorMessage = dlerror();
+
+  if (handlePtr == nullptr)
+  {
+    wtrace("No pointer to a library is held.");
+    return true;
   }
-  return wasntSuccessfully == 0;
+
+  const int wasntSuccessful = dlclose(handlePtr);
+  if (wasntSuccessful)
+  {
+    errorMessage = dlerror(); // We do this twice to prevent memory leaks.
+  }
+  else
+  {
+    handlePtr = nullptr;
+  }
+
+  return wasntSuccessful == 0;
 }
 
 LibraryPrivate::~LibraryPrivate()

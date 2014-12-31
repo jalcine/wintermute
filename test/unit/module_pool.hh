@@ -17,58 +17,48 @@
 
 #include "test_suite.hpp"
 #include <wintermutecore/module.hpp>
+#include <algorithm>
 
-#define MAX_SIZE 3
+#define MAX_SIZE 10
 
 using Wintermute::Module;
+using std::begin;
+using std::end;
+using std::make_shared;
 
 class ModulePoolTestSuite : public CxxTest::TestSuite
 {
 public:
-  void tearDown(void)
+  void testFindingModule()
   {
-    Module::List aList = Module::Pool::instance()->modules();
-
-    for (Module::Ptr ptr : aList)
-    {
-      assert(ptr);
-      Module::Pool::instance()->remove(ptr->designation());
-    }
+    Module::Ptr modulePtr(new SampleModule);
+    TS_ASSERT ( modulePtr->enable() );
+    TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
+    TS_ASSERT ( modulePtr->disable() );
   }
 
-  void testAddingModules(void)
+  void testAddingModule()
   {
-    Module::Ptr theModule(new SampleModule(1000));
-    TS_ASSERT ( Module::Pool::instance()->add(theModule) );
+    Module::Ptr modulePtr(new SampleModule);
+    TS_ASSERT ( modulePtr->enable() );
+    TS_ASSERT ( modulePtr->isEnabled() );
+    TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
 
-    Module::Ptr foundModule = Module::Pool::instance()->find( theModule->designation() );
-    TS_ASSERT ( foundModule );
-    //TS_ASSERT_EQUALS ( theModule->designation(), foundModule->designation() );
+    Module::Ptr foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
+    TS_ASSERT_EQUALS ( foundModulePtr->designation() , modulePtr->designation() );
+    TS_ASSERT ( modulePtr->disable() );
   }
 
-  void testRemovingModules(void)
+  void testRemovingModule()
   {
-    Module::Ptr theModule(new SampleModule(2000));
-    Module::Designation des = theModule->designation();
-    TS_ASSERT( Module::Pool::instance()->add(theModule) );
+    Module::Ptr modulePtr(new SampleModule);
+    TS_ASSERT ( modulePtr->enable() );
+    TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
+    TS_ASSERT ( modulePtr->disable() );
+    TS_ASSERT ( !modulePtr->isEnabled() );
+    TS_ASSERT ( !Module::Pool::instance()->has(modulePtr->designation()) );
 
-    Module::Ptr aModule(Module::Pool::instance()->find(des));
-    TS_ASSERT ( aModule );
-    TS_ASSERT ( Module::Pool::instance()->remove(des) );
-
-    Module::Ptr anotherModule = Module::Pool::instance()->find(des);
-    TS_ASSERT ( !anotherModule );
-  }
-
-  void testListingModules(void)
-  {
-    for (int i = 0; i < MAX_SIZE; ++i)
-    {
-      Module::Ptr theModule(new SampleModule(i + 3000));
-      TS_ASSERT ( Module::Pool::instance()->add(theModule) );
-    }
-
-    TS_ASSERT_EQUALS ( Module::Pool::instance()->modules().size(), MAX_SIZE );
+    Module::Ptr foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
+    TS_ASSERT ( !foundModulePtr );
   }
 };
-

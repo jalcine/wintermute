@@ -20,10 +20,6 @@
 #include "tunnel.hpp"
 #include "logging.hpp"
 
-#define dPtr Tunnel::instance()->d_func()
-
-using Wintermute::Dispatcher;
-using Wintermute::Receiver;
 using Wintermute::Message;
 using Wintermute::Tunnel;
 using Wintermute::TunnelPrivate;
@@ -34,56 +30,127 @@ Tunnel::Tunnel() : d_ptr(new TunnelPrivate)
 {
 }
 
-bool Tunnel::registerDispatcher(const Dispatcher::Ptr& dispatcher)
+Tunnel::~Tunnel()
 {
-  dPtr->dispatchers.insert(std::make_pair(dispatcher->name(), dispatcher));
-  return dPtr->dispatchers.find(dispatcher->name()) != dPtr->dispatchers.end();
+  //clearAllReceivers();
+  //clearAllDispatchers();
 }
 
-bool Tunnel::unregisterDispatcher(const Dispatcher::Ptr& dispatcher)
+bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 {
-  return dPtr->dispatchers.erase(dispatcher->name()) == 1;
+  W_SPRV(Tunnel);
+  auto thePair = std::make_pair(dispatcher->name(), dispatcher);
+  d->dispatchers.insert(thePair);
+
+  return !knowsOfDispatcher(dispatcher->name()) == false;
 }
 
-bool Tunnel::registerReceiver(const Receiver::Ptr& receiver)
+
+bool Tunnel::unregisterDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 {
-  dPtr->receivers.insert(std::make_pair(receiver->name(), receiver));
-  return dPtr->receivers.find(receiver->name()) != dPtr->receivers.end();
+  W_SPRV(Tunnel);
+  auto count = d->dispatchers.erase(dispatcher->name());
+  return count == 1;
 }
 
-bool Tunnel::unregisterReceiver(const Receiver::Ptr& receiver)
+void Tunnel::clearAllDispatchers()
 {
-  return dPtr->receivers.erase(receiver->name()) == 1;
+  W_SPRV(Tunnel);
+  d->dispatchers.clear();
+}
+
+bool Tunnel::knowsOfDispatcher(const string& dispatcherName)
+{
+  W_SPRV(Tunnel);
+  return d->dispatchers.count(dispatcherName) != 0;
+}
+
+Tunnel::Dispatcher::List Tunnel::dispatchers()
+{
+  W_SPRV(Tunnel);
+  Tunnel::Dispatcher::List listOfDispatchers;
+  for (auto pair : d->dispatchers)
+  {
+    listOfDispatchers.push_back(pair.second);
+  }
+
+  return listOfDispatchers;
+}
+
+bool Tunnel::registerReceiver(const Tunnel::Receiver::Ptr& receiver)
+{
+  W_SPRV(Tunnel);
+  auto thePair = std::make_pair(receiver->name(), receiver);
+  d->receivers.insert(thePair);
+
+  return !knowsOfReceiver(receiver->name()) == false;
+}
+
+bool Tunnel::unregisterReceiver(const Tunnel::Receiver::Ptr& receiver)
+{
+  W_SPRV(Tunnel);
+  auto count = d->receivers.erase(receiver->name()) == 1;
+  return count == 1;
+}
+
+void Tunnel::clearAllReceivers()
+{
+  W_SPRV(Tunnel);
+  d->receivers.clear();
+}
+
+bool Tunnel::knowsOfReceiver(const string& receiverName)
+{
+  W_SPRV(Tunnel);
+  return d->receivers.count(receiverName) != 0;
+}
+
+Tunnel::Receiver::List Tunnel::receivers()
+{
+  W_SPRV(Tunnel);
+  Tunnel::Receiver::List listOfReceivers;
+  for (auto pair : d->receivers)
+  {
+    listOfReceivers.push_back(pair.second);
+  }
+
+  return listOfReceivers;
 }
 
 bool Tunnel::sendMessage(const Message& message)
 {
   wdebug("Sending message '" + static_cast<string>(message) + "'...");
-  for (auto itr : dPtr->dispatchers)
+  Dispatcher::List dispatchers = Tunnel::instance()->dispatchers();
+  auto sendAMessage = [&message](Dispatcher::Ptr & dispatcherPtr)
   {
-    const string name = itr.first;
-    Dispatcher::Ptr dispatcher = itr.second;
-    wdebug("Sending the message using the '" + name + "' dispatcher...");
-    if (!dispatcher->send(message))
+    const string name = dispatcherPtr->name();
+    const bool wasSent = dispatcherPtr->send(message);
+    if (!wasSent)
     {
       werror("Failed to send out a message using the '" + name + "' dispatcher!");
-      return false;
     }
+
+    return wasSent;
   };
+
+
+  for_each(dispatchers.begin(), dispatchers.end(), sendAMessage);
   return true;
 }
 
 bool Tunnel::hasPendingMessages()
 {
-  return !dPtr->obtainedMessages.empty();
+  W_SPRV(Tunnel);
+  return !d->obtainedMessages.empty();
 }
 
 const Message Tunnel::receiveMessage()
 {
+  W_SPRV(Tunnel);
   if (Tunnel::hasPendingMessages())
   {
-    const Message theMessage = dPtr->obtainedMessages.top();
-    dPtr->obtainedMessages.pop();
+    const Message theMessage = d->obtainedMessages.top();
+    d->obtainedMessages.pop();
     return theMessage;
   }
   else
@@ -92,29 +159,4 @@ const Message Tunnel::receiveMessage()
   }
 }
 
-void Tunnel::addMessageToQueue(const Message& message)
-{
-  dPtr->obtainedMessages.push(message);
-}
 
-bool Tunnel::knowsOfReceiver(const string& receiverName)
-{
-  return dPtr->receivers.count(receiverName) != 0;
-}
-
-bool Tunnel::knowsOfDispatcher(const string& dispatcherName)
-{
-  return dPtr->dispatchers.count(dispatcherName) != 0;
-}
-
-Tunnel::~Tunnel()
-{
-}
-
-TunnelPrivate::TunnelPrivate()
-{
-}
-
-TunnelPrivate::~TunnelPrivate()
-{
-}

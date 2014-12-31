@@ -15,96 +15,88 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <string>
-#include "libwintermutecore/tunnel.hpp"
 #include "test_suite.hpp"
+#include "wintermutecore/tunnel.hpp"
 
 using std::string;
 using Wintermute::Module;
 using Wintermute::Message;
-using Wintermute::Receiver;
-using Wintermute::Dispatcher;
 using Wintermute::Tunnel;
-
-Message aGlobalMessageForAll;
-
-class SampleDispatcher : public Dispatcher
-{
-public:
-  virtual inline string name() const
-  {
-    return "sample";
-  }
-  virtual inline bool send(const Message& message)
-  {
-    aGlobalMessageForAll = message;
-    Tunnel::addMessageToQueue(message);
-    TS_ASSERT_EQUALS ( aGlobalMessageForAll, message );
-    return true;
-  }
-};
-
-class SampleReceiver : public Receiver
-{
-public:
-  virtual inline string name() const
-  {
-    return "sample";
-  }
-  virtual inline Message receive()
-  {
-    return aGlobalMessageForAll;
-  }
-};
+using Wintermute::Logging;
 
 class TunnelTestSuite : public CxxTest::TestSuite
 {
 public:
+  void setUp(void)
+  {
+  }
+
   void testSendOutMessage(void)
   {
-    Receiver::Ptr receiverPtr(new SampleReceiver);
-    Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
-    Message message = craftRandomMessage();
+    Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
+    TS_ASSERT ( Tunnel::registerDispatcher(dispatcherPtr) );
 
-    Tunnel::registerDispatcher(dispatcherPtr);
-    Tunnel::registerReceiver(receiverPtr);
+    Message message = craftRandomMessage();
     TS_ASSERT ( Tunnel::sendMessage(message) );
 
-    Message obtainedMessage = receiverPtr->receive();
-
-    TS_ASSERT ( !!obtainedMessage );
-    TS_ASSERT_EQUALS ( message.isLocal(), obtainedMessage.isLocal() );
+    Message obtainedMessage = ((SampleDispatcher*) dispatcherPtr.get())->message;
+    TS_ASSERT ( !obtainedMessage.isEmpty() );
     TS_ASSERT_EQUALS ( message, obtainedMessage );
   }
 
   void testReceiveMessage(void)
   {
-    Receiver::Ptr receiverPtr(new SampleReceiver);
-    Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
-    const Message message = craftRandomMessage();
-
-    Tunnel::registerDispatcher(dispatcherPtr);
-    Tunnel::registerReceiver(receiverPtr);
-    TS_ASSERT ( Tunnel::sendMessage(message) );
-    const Message receivedMessage = Tunnel::receiveMessage();
-    TS_ASSERT ( !!receivedMessage );
-
-    TS_ASSERT_EQUALS(receivedMessage, message);
+    Message msg = craftRandomMessage();
+    Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg));
+    TS_ASSERT ( Tunnel::registerReceiver(receiverPtr) );
+    TS_ASSERT ( Tunnel::sendMessage(msg) );
   }
 
   void testFindADispatcher(void)
   {
-    Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
+    Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
     TS_ASSERT(Tunnel::registerDispatcher(dispatcherPtr));
-    TS_ASSERT(Tunnel::knowsOfDispatcher(dispatcherPtr->name()));
+    TS_ASSERT(Tunnel::knowsOfDispatcher("sample"));
     TS_ASSERT(!Tunnel::knowsOfDispatcher("foobarzilla"));
   }
 
   void testAddAndFindAReceiver(void)
   {
-    Receiver::Ptr receiverPtr(new SampleReceiver);
+    Wintermute::Message msg;
+    Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg));
     TS_ASSERT(Tunnel::registerReceiver(receiverPtr));
-    TS_ASSERT(Tunnel::knowsOfReceiver(receiverPtr->name()));
+    TS_ASSERT(Tunnel::knowsOfReceiver("sample"));
     TS_ASSERT(!Tunnel::knowsOfReceiver("foobarzilla"));
   }
+
+  void testCleanOutReceivers(void)
+  {
+    Wintermute::Message msg;
+    for (int i = 1; i < 10; ++i)
+    {
+      string newName = "sampleReceiver_" + std::to_string(i);
+      Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg, newName));
+      TS_ASSERT(Tunnel::registerReceiver(receiverPtr));
+    }
+
+    TS_ASSERT_EQUALS ( Tunnel::receivers().size(), 10 );
+    Tunnel::clearAllReceivers();
+    TS_ASSERT_EQUALS ( Tunnel::receivers().size(), 0 );
+  }
+
+  void testCleanOutDispatchers(void)
+  {
+    for (int i = 1; i < 10; ++i)
+    {
+      string newName = "sampleDispatcher_" + std::to_string(i);
+      Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher(newName));
+      TS_ASSERT(Tunnel::registerDispatcher(dispatcherPtr));
+    }
+
+    TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 10 );
+    Tunnel::clearAllDispatchers();
+    TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 0 );
+  }
 };
+
+

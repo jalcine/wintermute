@@ -23,12 +23,18 @@ using Wintermute::Version;
 
 Version::Version(const string& versionStr)
 {
-  const int majorDeliminator = versionStr.find(".");
-  const int minorDeliminator = versionStr.find(".", majorDeliminator + 1);
+  const auto majorDeliminator = versionStr.find_first_of(".");
+  const auto minorDeliminator = versionStr.find_first_of(".", majorDeliminator + 1);
+  const auto rcDeliminator    = versionStr.find_first_of("-", minorDeliminator);
 
   major = atoi(versionStr.substr(0, majorDeliminator).c_str());
   minor = atoi(versionStr.substr(majorDeliminator + 1, minorDeliminator - majorDeliminator).c_str());
   patch = atoi(versionStr.substr(minorDeliminator + 1, versionStr.length() - minorDeliminator).c_str());
+
+  if (rcDeliminator != string::npos)
+  {
+    rc = versionStr.substr(rcDeliminator + 1, versionStr.length() - rcDeliminator);
+  }
 }
 
 bool operator< (const Wintermute::Version& lhs, const Wintermute::Version& rhs)
@@ -36,6 +42,7 @@ bool operator< (const Wintermute::Version& lhs, const Wintermute::Version& rhs)
   if (lhs.major < rhs.major) return true;
   if (lhs.minor < rhs.minor) return true;
   if (lhs.patch < rhs.patch) return true;
+  if (!lhs.rc.empty() && rhs.rc.empty()) return true;
 
   return false;
 }
@@ -45,6 +52,7 @@ bool operator> (const Wintermute::Version& lhs, const Wintermute::Version& rhs)
   if (lhs.major > rhs.major) return true;
   if (lhs.minor > rhs.minor) return true;
   if (lhs.patch > rhs.patch) return true;
+  if (lhs.rc.empty() && rhs.rc.empty()) return true;
 
   return false;
 }
@@ -63,7 +71,8 @@ bool operator==(const Wintermute::Version& lhs, const Wintermute::Version& rhs)
 {
   return (lhs.major == rhs.major) &&
          (lhs.minor == rhs.minor) &&
-         (lhs.patch == rhs.patch);
+         (lhs.patch == rhs.patch) &&
+         (lhs.rc == rhs.rc);
 }
 
 bool operator!=(const Wintermute::Version& lhs, const Wintermute::Version& rhs)
@@ -73,7 +82,13 @@ bool operator!=(const Wintermute::Version& lhs, const Wintermute::Version& rhs)
 
 Version::operator string() const
 {
-  return to_string(major) + "." +
-         to_string(minor) + "." +
-         to_string(patch);
+  string versionStr = to_string(major) + "." + to_string(minor) + "." + to_string(patch);
+  if (!rc.empty())
+  {
+    versionStr += "-" + rc;
+  }
+
+  return versionStr;
 }
+
+

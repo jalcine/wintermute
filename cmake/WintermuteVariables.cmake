@@ -26,9 +26,10 @@ else()
 endif()
 
 SET(WINTERMUTE_COMPILE_FLAGS
-  -Wabi
+  -Werror=unused
+  -Wpedantic
   -Wall
-  -fstrict-aliasing
+  -Wunused
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
@@ -39,16 +40,15 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -Wextra
   -Wno-conversion-null
   -Wno-deprecated
-  -Wno-deprecated
   -Wno-system-headers
   -Wno-unused-parameter
   -Woverloaded-virtual
   -Wshadow
-  -Wunused
   -Wunused-function
   -Wunused-parameter
   -Wunused-variable
   -Wwrite-strings
+  -ftemplate-backtrace-limit=0
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
@@ -59,20 +59,28 @@ set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
 set(WINTERMUTE_COMPILE_FLAGS_DEBUG "${WINTERMUTE_COMPILE_FLAGS_DEBUG}")
 set(WINTERMUTE_COMPILE_FLAGS_RELEASE "${WINTERMUTE_COMPILE_FLAGS_RELEASE}")
 
-SET(WINTERMUTE_COMPILE_DEFINITIONS "WINTERMUTE")
-SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG "WINTERMUTE_DEBUG")
+SET(WINTERMUTE_COMPILE_DEFINITIONS WINTERMUTE)
+SET(WINTERMUTE_COMPILE_DEFINITIONS_DEBUG 
+  WINTERMUTE_DEBUG
+  GLIBCXX_FORCE_NEW
+  )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+    -fexceptions
+  )
+  if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     set(WINTERMUTE_TEST_LIBRARIES
       gcov
     )
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
       -fprofile-arcs
       -ftest-coverage
+      -fabi-version=4
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    #list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG )
+    list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
+    )
   endif()
 endif()
 

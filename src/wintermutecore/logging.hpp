@@ -26,18 +26,18 @@ using std::string;
 namespace Wintermute
 {
 
-/*
- * @brief Basis of logging in Wintermute.
+/**
+ * Basis of logging in Wintermute.
  * This class holds the foundational aspects of Wintermute's logging and
  * abstracts it out so that the logging service can be swapped to and fro
- * without much discomfort to the codebase.
+ * without much discomfort to the code base.
  */
 class Logging
 {
   explicit Logging();
 public:
   virtual ~Logging();
-  /* Levels at which Wintermute is capable of reporting its log messages. */
+  /** Levels at which Wintermute is capable of reporting its log messages. */
   enum Level
   {
     Disabled = 0x0,
@@ -49,45 +49,79 @@ public:
     Fatal = 0x50
   };
 
-  /* Sets the level of logging that Wintermute uses globally. */
+  /** Sets the level of logging that Wintermute uses globally. */
   void setLevel(const Level& level = Level::Error);
 
-  /* Obtains the level of logging that Wintermute is using. */
+  /** Obtains the level of logging that Wintermute is using. */
   Level level() const;
 
-  /* Outputs a Level::Debug message into Wintermute's logger. */
+  /** Outputs a Level::Debug message into Wintermute's logger. */
   void debug(const string& message, const string& name);
 
-  /* Outputs a Level::Error message into Wintermute's logger. */
+  /** Outputs a Level::Error message into Wintermute's logger. */
   void error(const string& message, const string& name);
 
-  /* Outputs a Level::Info message into Wintermute's logger. */
+  /** Outputs a Level::Info message into Wintermute's logger. */
   void info(const string& message, const string& name);
 
-  /* Outputs a Level::Warn message into Wintermute's logger. */
+  /** Outputs a Level::Warn message into Wintermute's logger. */
   void warn(const string& message, const string& name);
 
-  /* Outputs a Level::Trace message into Wintermute's logger. */
+  /** Outputs a Level::Trace message into Wintermute's logger. */
   void trace(const string& message, const string& name);
+
+  static void cleanup();
 
   W_DEF_SINGLETON(Logging);
 };
 }
 
+/**
+ * Obtains a handle to the singleton instance of Wintermute's log abstraction.
+ * @sa Wintermtue::Logging
+ * @sa Wintermtue::Logging::instance
+ */
 #define wlog        Wintermute::Logging::instance()
+
+/**
+ * Prints out a informational log message to the root log.
+ * @sa wlog
+ * @sa Wintermute::Logging::info
+ */
 #define winfo(msg)  wlog->info(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+
+/**
+ * Prints out an error log message to the root log.
+ * @sa wlog
+ * @sa Wintermute::Logging::error
+ */
 #define werror(msg) wlog->error(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+
+/**
+ * Prints out a warning log message to the root log.
+ * @sa wlog
+ * @sa Wintermute::Logging::warn
+ */
 #define wwarn(msg)  wlog->warn(msg, WINTERMUTE_LOGGER_ROOT_NAME);
 
-#ifdef WINTERMUTE_DEBUG
-# define wtrace(msg) wlog->trace(msg, WINTERMUTE_LOGGER_ROOT_NAME);
-# define wdebug(msg) wlog->debug(msg, WINTERMUTE_LOGGER_ROOT_NAME);
-#else
-# define wdebug(msg) w_noop();
-# define wtrace(msg) w_noop();
-#endif
+/**
+ * Prints out a tracing log message to the root log.
+ * @sa wlog
+ * @sa Wintermute::Logging::trace
+ */
+#define wtrace(msg) wlog->trace(msg, WINTERMUTE_LOGGER_ROOT_NAME);
 
-#define DISABLE_LOGGING Wintermute::Logging::instance()->setLevel(Logging::Disabled)
-#define ENABLE_LOGGING(Level)  Wintermute::Logging::instance()->setLevel(Logging::#Level)
+/**
+ * Prints out a debugging log message to the root log.
+ * @sa wlog
+ * @sa Wintermute::Logging::debug
+ */
+#define wdebug(msg) wlog->debug(msg, WINTERMUTE_LOGGER_ROOT_NAME);
+
+#define ENABLE_LOGGING(Level) \
+  Wintermute::Logging::instance()->setLevel(Wintermute::Logging::#Level)
+
+#define DISABLE_LOGGING \
+  Wintermute::Logging::instance()->setLevel(Wintermute::Logging::Disabled)
 
 #endif

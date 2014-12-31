@@ -19,6 +19,7 @@
 #include "plugin.hpp"
 #include "plugin.hh"
 #include "logging.hpp"
+#include <iostream>
 
 using Wintermute::Version;
 using Wintermute::Library;
@@ -27,22 +28,28 @@ using Wintermute::PluginPrivate;
 
 bool isLibraryCompatible(Library::Ptr& libraryPtr)
 {
+  if (!libraryPtr)
+  {
+    throw std::invalid_argument("Invalid pointer to library.");
+    return false;
+  }
+
   PluginPrivate::VersionFunctionPtr versionFunction;
   W_RESOLVE_FUNCTION(versionFunction,
-                     libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_VERSION_FUNCTION_NAME));
+    libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_VERSION_FUNCTION_NAME));
 
   if (!versionFunction)
   {
     wwarn("Failed to resolve function for plugin library version.");
-    return nullptr;
+    return false;
   }
 
   const string versionString(versionFunction());
-
   const Version libraryVersion(versionString);
-  const Version systemVersion(WINTERMUTE_VERSION);
+  const Version systemVersion = Version::system();
+
   wdebug("Raw version string from library: " + versionString);
-  wdebug("System " + (string) systemVersion + " >= library min " + (string) libraryVersion);
+  wdebug("System " + static_cast<string>(systemVersion)+ " >= library min " + static_cast<string>(libraryVersion));
   return systemVersion >= libraryVersion;
 }
 
@@ -50,7 +57,7 @@ void loadPluginFromLibrary(Library::Ptr& libraryPtr, Plugin::Ptr& pluginPtr)
 {
   PluginPrivate::CtorFunctionPtr ctorFunction;
   W_RESOLVE_FUNCTION(ctorFunction,
-                     libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME));
+    libraryPtr->resolveFunction(WINTERMUTE_PLUGIN_CTOR_FUNCTION_NAME));
 
   if (!ctorFunction)
   {
@@ -60,15 +67,14 @@ void loadPluginFromLibrary(Library::Ptr& libraryPtr, Plugin::Ptr& pluginPtr)
 
   pluginPtr.reset(ctorFunction());
 
-  if (!pluginPtr || pluginPtr == nullptr)
+  if (!pluginPtr)
   {
     werror("Failed to create a instance of the plugin.");
     return;
   }
 
-  pluginPtr->d_func()->library = libraryPtr;
+  pluginPtr->d_func()->library.swap(libraryPtr);
   PluginPrivate::registerPlugin(pluginPtr);
-
 }
 
 Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate(pluginName))
@@ -78,25 +84,48 @@ Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate(pluginName))
 
 Plugin::~Plugin()
 {
+  W_PRV(Plugin);
+  if (d->library->loadedStatus() == Library::LoadIsLoaded)
+  {
+    wdebug("Unloading plugin's library prior to deallocation...");
+    d->library->unload();
+  }
+
   wdebug("Deallocated a plugin.");
 }
 
+// TODO: Dice up this function.
 Plugin::Ptr Plugin::find(const string& pluginQuery)
 {
   Plugin::Ptr pluginPtr;
+
   wdebug("Searching for a plugin identified by " + pluginQuery + " ...");
   if (pluginQuery.empty())
   {
-    wwarn("Provided empty plugin search query.");
+    wdebug("Provided empty plugin search query.");
     return nullptr;
   }
 
-  Library::Ptr pluginLibrary(Library::find(pluginQuery));
+  // TODO: Return pointers to loaded plugins.
+  if (hasPlugin(pluginQuery))
+  {
+    wdebug("Plugin has been loaded before, returning known reference.");
+    auto itr = PluginPrivate::plugins.find(pluginQuery);
+    assert(itr != std::end(PluginPrivate::plugins));
+    assert(itr->second);
+    return itr->second;
+  }
+  else
+  {
+    wdebug("The plugin is not in the known pool; attempting to load.");
+  }
+
+  Library::Ptr pluginLibrary = Library::find(pluginQuery);
   assert(pluginLibrary.unique());
 
   if (!pluginLibrary)
   {
-    wwarn("Failed to find the library to use to handle the plugin '" + pluginQuery + "' with.");
+    wwarn("Failed to find the library to use to handle the plugin " + pluginQuery + " with.");
     return nullptr;
   }
 
@@ -107,49 +136,62 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
     loadPluginFromLibrary(pluginLibrary, pluginPtr);
     if (pluginPtr)
     {
-      winfo("PLugin loaded, starting...");
+      winfo("Plugin " + pluginQuery + " loaded, starting...");
       pluginPtr->startup();
+      winfo("Plugin " + pluginQuery + " started.");
     }
     else
     {
-      werror("Failed to start plugin.");
+      werror("Failed to start plugin " + pluginQuery + ".");
+      pluginLibrary->unload();
+      return nullptr;
     }
   }
-
+  else
+  {
+    wwarn("The plugin " + pluginQuery + " is incompatible with Wintermute.");
+    return nullptr;
+  }
 
   return pluginPtr;
 }
 
 bool Plugin::release(const string& pluginName)
 {
-  if (Plugin::hasPlugin(pluginName))
+  if (!Plugin::hasPlugin(pluginName))
   {
-    auto pluginLookupItr = PluginPrivate::plugins.find(pluginName);
-    const string name(pluginLookupItr->first);
-    Plugin::Ptr plugin(pluginLookupItr->second);
-
-    plugin->shutdown();
-
-    auto library = plugin->d_func()->library;
-    wdebug("Unloading plugin " + name + "...");
-
-    PluginPrivate::DtorFunctionPtr dtorFunction;
-    W_RESOLVE_FUNCTION(dtorFunction, library->resolveFunction(WINTERMUTE_PLUGIN_DTOR_FUNCTION_NAME));
-
-    const bool freedPlugin = dtorFunction(plugin);
-
-    if (!freedPlugin)
-    {
-      werror("Failed to free plugin " + name + " from memory.");
-    }
+    wwarn("The plugin " + pluginName + " doesn't exist in this instance of Wintermute.");
+    return true;
   }
 
-  return false;
+  auto pluginLookupItr = PluginPrivate::plugins.find(pluginName);
+  const string name(pluginLookupItr->first);
+  Plugin::Ptr plugin(pluginLookupItr->second);
+
+  plugin->shutdown();
+
+  auto library = plugin->d_func()->library;
+  wdebug("Unloading plugin " + name + "...");
+
+  PluginPrivate::DtorFunctionPtr dtorFunction;
+  W_RESOLVE_FUNCTION(dtorFunction,
+    library->resolveFunction(WINTERMUTE_PLUGIN_DTOR_FUNCTION_NAME));
+
+  const bool freedPlugin = dtorFunction(plugin);
+
+  if (!freedPlugin)
+  {
+    werror("Failed to free plugin " + name + " from memory.");
+  }
+
+  winfo("Plugin " + name + " unloaded.");
+
+  return true;
 }
 
 bool Plugin::hasPlugin(const string& pluginName)
 {
-  return PluginPrivate::plugins.find(pluginName) != std::end(PluginPrivate::plugins);
+  return PluginPrivate::plugins.count(pluginName) != 0;
 }
 
 string Plugin::name() const

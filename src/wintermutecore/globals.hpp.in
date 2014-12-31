@@ -1,4 +1,5 @@
-/* vim: set ft=cpp fdm=marker :
+/*
+ * vim: set ft=cpp :
  * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -32,19 +33,23 @@
 #include <unistd.h>
 
 using std::string;
+using std::make_shared;
 
-#define WINTERMUTE_VERSION          "0.0.1"
+#define WINTERMUTE_VERSION          "@WINTERMUTE_VERSION@"
 #define WINTERMUTE_LOGGER_ROOT_NAME "root"
 #define WINTERMUTE_ENV_PLUGIN_PATH  "WINTERMUTE_PLUGIN_PATH"
 #define WINTERMUTE_ENV_LOG_LEVEL    "WINTERMUTE_LOG_LEVEL"
 
 #ifdef WINTERMUTE_EXPORT
-# undef WINTERMUTE_EXPORT
-# define WINTERMUTE_EXPORT         __attribute__ ((visibility ("default")))
+# define WINTERMUTE_EXPORT_PUBLIC  __attribute__ ((visibility ("default")))
 # define WINTERMUTE_EXPORT_PRIVATE __attribute__ ((visibility ("hidden")))
 #else
-# define WINTERMUTE_EXPORT
+# define WINTERMUTE_EXPORT_PUBLIC
 # define WINTERMUTE_EXPORT_PRIVATE
+#endif
+
+#ifdef WINTERMUTE_DEBUG
+# define _GLIBCXX_DEBUG
 #endif
 
 #define UniquePtr  ::std::unique_ptr
@@ -52,46 +57,68 @@ using std::string;
 
 // {{{ Private + Public Accessors
 
-/* Defines inline instance-level methods to handle private instance data. */
+/// Defines inline instance-level methods to handle private instance data.
 #define W_DEF_PRIVATE(Class) \
-  friend class Class##Private; \
-  SharedPtr<Class##Private> d_ptr = nullptr; \
-  inline Class##Private* d_func() const { return d_ptr.get(); } \
-  inline Class##Private* d_func() { return d_ptr.get(); }
+  using _Prv = Class##Private; \
+  friend _Prv; \
+  SharedPtr<_Prv> d_ptr = nullptr; \
+  inline _Prv* d_func() const { return d_ptr.get(); } \
+  inline _Prv* d_func() { return d_ptr.get(); }
 
-/* Defines inline instance-level methods to handle public instance data. */
+#define W_DEF_PRIVATE_PREDECL(_Class) \
+  SharedPtr<_Class> d_ptr; \
+  inline _Class* d_func() const { return d_ptr.get(); } \
+  inline _Class* d_func() { return d_ptr.get(); }
+
+
+/// Defines inline instance-level methods to handle public instance data.
 #define W_DEF_PUBLIC(Class) \
   friend class Class; \
   SharedPtr<Class> q_ptr; \
   inline Class* q_func() const { return q_ptr.get(); } \
   inline Class* q_func() { return q_ptr.get(); } \
 
-/* Provides a shortcut to grab private data for an object with private data. */
-#define W_PRV(Class) Class##Private* const d = d_func();
+#define W_DEF_PUBLIC_PREDECL(_Class) \
+  SharedPtr<_Class> q_ptr; \
+  inline _Class* q_func() const { return q_ptr.get(); } \
+  inline _Class* q_func() { return q_ptr.get(); } \
 
-/* Provides a shortcut to grab public data for an object with public data. */
+/// Provides a shortcut to grab private data for an object with private data.
+#define W_PRV(Class) Class##Private* const d = d_func();
+#define W_PRVP(_Class) _Class* const d = d_func();
+
+/// Provides a shortcut to grab private data for an static object with private data.
+#define W_SPRV(Class) Class##Private* const d = Class::instance()->d_func();
+#define W_SPRVP(_Class, Class) _Class* const d = Class::instance()->d_func();
+
+/// Provides a shortcut to grab public data for an object with public data.
 #define W_PUB(Class) Class* const q = q_func();
 
 // }}}
 
-// {{{ Sharable Data
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+/**
+ * Provides a definition for sharable classes.
+ * @ingroup Sharing Data
+ */
+#define W_DEF_SHAREABLE(Class) \
+  public std::enable_shared_from_this<Class>
 
-/* Provides a definition for sharable classes. */
-#define W_DEF_SHAREABLE(Class) public std::enable_shared_from_this<Class>
-
-/* Provides a declaration for sharable classes. */
+/**
+ * Provides a definition for sharable classes.
+ * @ingroup Sharing Data
+ */
 #define W_DECL_PTR_TYPE(Class) \
-  typedef SharedPtr<Class> Ptr; \
-  inline Ptr getptr() { return shared_from_this(); }
+  typedef SharedPtr<Class> Ptr;
 
-/* Handles the act of pulling a shared instance while maintaing ref counting. */
-#define W_CLAIM_SHARED_PTR(Statement) (Statement)->getptr()
-
-// }}}
+#endif
 
 // {{{ Singleton class access
 
-/* Defines the logic needed to handle a singleton. */
+/**
+ * Defines the logic needed to handle a singleton.
+ * @ingroup Singletons
+ */
 #define W_DEF_SINGLETON(Class) \
   private: \
     static SharedPtr<Class> _instance; \
@@ -103,10 +130,12 @@ using std::string;
       return _instance;  \
     }
 
-/* Declares the instance of the singleton as a nullptr. */
-#define W_DECLARE_SINGLETON(Class) SharedPtr<Class> Class::_instance(nullptr);
-
-// }}}
+/**
+ * Declares the instance of the singleton as a nullptr.
+ * @ingroup Singletons
+ */
+#define W_DECLARE_SINGLETON(Class) \
+  SharedPtr<Class> Class::_instance(nullptr);
 
 // {{{ Platform-specific types
 

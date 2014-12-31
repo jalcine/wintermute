@@ -39,13 +39,14 @@ if (BUILD_TESTING)
 
   ADD_SUBDIRECTORY(fixtures)
   ADD_SUBDIRECTORY(unit)
+  ADD_SUBDIRECTORY(features)
 
   # Use Valgrind for memory checking.
   set(CMAKE_MEMORYCHECK_COMMAND valgrind)
   set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
     "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
 
-  set(MEMCHECK_COMMAND
+  set(MEMORYCHECK_COMMAND
     "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
   separate_arguments(MEMCHECK_COMMAND) 
 endif()
@@ -54,6 +55,6 @@ endif()
 option(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
 
 if(CI_BUILD)
-  message(STATUS "CI build enabled.")
+  message(STATUS "CI build enabled; all warnings have been elevated to errors.")
   add_definitions(-Werror)
 endif()

@@ -25,6 +25,7 @@ using Wintermute::ModulePoolPrivate;
 using std::make_pair;
 using std::to_string;
 using std::end;
+using std::begin;
 
 W_DECLARE_SINGLETON(Module::Pool)
 
@@ -33,22 +34,27 @@ Module::Pool::Pool() : d_ptr(new ModulePoolPrivate)
   wdebug("Setting up the module pool in a clean slate...");
   W_PRV(ModulePool);
   d->modules.clear();
+  wdebug("Module pool primed.");
 }
 
 Module::Ptr Module::Pool::find(const Module::Designation& designation) const
 {
   W_PRV(const ModulePool);
   wdebug("Looking for the module designated as '" + (string) designation + "'...");
-  ModulePoolPrivate::Map::const_iterator itr = d->modules.find(designation);
+  auto itr = d->modules.find(designation);
 
-  if (itr != d->modules.cend())
+  if (itr != std::end(d->modules))
   {
     wdebug("Found the module '" + (string) designation + "'.");
     Module::Ptr modulePtr = itr->second;
+    assert(modulePtr);
     return modulePtr;
   }
+  else
+  {
+    wdebug("Could not find the module '" + (string) designation + "'.");
+  }
 
-  wdebug("Could not find the module '" + (string) designation + "'.");
   return nullptr;
 }
 
@@ -57,14 +63,18 @@ Module::List Module::Pool::modules() const
   W_PRV(const ModulePool);
   Module::List knownModules;
 
-  wdebug("Returning a list of " + to_string(d->modules.size()) + " modules.");
+  wdebug("Returning a list of " + to_string(d->modules.size()) + " known modules.");
 
-  for (auto itr = d->modules.cbegin(); itr != d->modules.cend(); itr++)
+  if (!d->modules.empty())
   {
-    knownModules.push_back(itr->second);
-  }
+    for (auto itr = begin(d->modules); itr != end(d->modules); itr++)
+    {
+      assert(itr->second);
+      knownModules.push_back(itr->second);
+    }
 
-  assert ( knownModules.size() == d->modules.size() );
+    assert ( knownModules.size() == d->modules.size() );
+  }
 
   return knownModules;
 }
@@ -72,39 +82,66 @@ Module::List Module::Pool::modules() const
 bool Module::Pool::add(Module::Ptr& modulePtr)
 {
   W_PRV(ModulePool);
-  auto mapValue = make_pair(modulePtr->designation(), modulePtr);
-  auto returnTupleInsert = d->modules.insert(mapValue);
-  const bool wasInserted = returnTupleInsert.second;
 
-  wdebug("Was the designation " + (string) modulePtr->designation()
-         + " inserted? " + to_string( (int) (wasInserted) ) );
-
-  if (wasInserted)
+  if (!has(modulePtr->designation()))
   {
-    wdebug("There are " + to_string(d->modules.size()) + " modules available.");
+    Module::Designation designation = modulePtr->designation();
+    auto mapValue = make_pair(designation, modulePtr);
+    auto returnTupleInsert = d->modules.insert(mapValue);
+    const bool wasInserted = returnTupleInsert.second;
+
+    wdebug("Was the designation " + (string) modulePtr->designation() + " inserted? " + to_string( (int) (wasInserted) ) );
+
+    if (wasInserted)
+    {
+      wdebug("There are " + to_string(d->modules.size()) + " modules available.");
+    }
+    else
+    {
+      wwarn("Failed to insert " + (string) modulePtr->designation() + " into the pool.");
+    }
+
+    return wasInserted;
   }
   else
   {
-    wwarn("Failed to insert " + (string) modulePtr->designation() + " into the pool.");
+    wwarn("Module '" + static_cast<string>(modulePtr->designation()) + "' already exists in the pool.");
+    return false;
   }
 
-  return wasInserted;
+  return false;
 }
 
 bool Module::Pool::remove(const Module::Designation& designation)
 {
   W_PRV(ModulePool);
+
+  if (!has(designation))
+  {
+    wwarn("Module " + static_cast<string>(designation) + " was not found.");
+    return false;
+  }
+
   Module::Ptr modulePtr(find(designation));
 
   if (modulePtr)
   {
     const int count = d->modules.erase(designation);
-    wdebug("Module " + (string) designation + " found for deletion; was the module removed? (" + string((count == 1) ? "yes" : "no") + ")");
+    wdebug("Module " + (string) designation + " found for deletion; was the module removed? (" + std::to_string(count) + ")");
     return count == 1;
   }
-
-  wdebug("Module " + (string) designation + " was not found in the pool.");
+  else
+  {
+    wdebug("Module " + (string) designation + " was not found in the pool.");
+    return false;
+  }
   return false;
+}
+
+bool Module::Pool::has(const Module::Designation& designation) const
+{
+  W_PRV(const ModulePool);
+  return d->modules.count(designation) != 0;
 }
 
 Module::Pool::~Pool()

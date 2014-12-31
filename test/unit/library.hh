@@ -27,63 +27,61 @@ Library::Ptr fetchWorkingLibrary()
 {
   Library::Ptr libraryPtr = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
   TSM_ASSERT ( "Library pointer allocated with full file path.",
-               libraryPtr );
+    libraryPtr );
   TSM_ASSERT_EQUALS ( "Library reports proper status.",
-                      libraryPtr->loadedStatus(),
-                      Library::LoadIsLoaded );
+    libraryPtr->loadedStatus(),
+    Library::LoadIsLoaded );
   TSM_ASSERT_EQUALS ( "Library reports provided file name.",
-                      libraryPtr->filename(),
-                      SAMPLE_PLUGIN_PATH );
+    libraryPtr->filename(),
+    SAMPLE_PLUGIN_PATH );
   return libraryPtr;
 }
 
 class LibraryTestSuite : public CxxTest::TestSuite
 {
 public:
-  void setUp()
-  {
-    //DISABLE_LOGGING;
-  }
-
   void tearDown()
   {
     unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   }
 
+  void setUp()
+  {
+    DISABLE_LOGGING;
+  }
+
   void testLoadLibraryWithNoName()
   {
     Library::Ptr libraryWithNoName = std::make_shared<Library>("");
-    TSM_ASSERT ( "Library pointer allocated.",
-                 libraryWithNoName );
-    TSM_ASSERT_EQUALS ( "Library not loaded.",
-                        libraryWithNoName->loadedStatus(),
-                        Library::LoadUndefined );
+    TSM_ASSERT ( "Library pointer allocated.", libraryWithNoName );
+    TSM_ASSERT_EQUALS ( "Library not loaded.", libraryWithNoName->loadedStatus(),
+      Library::LoadUndefined );
   }
 
   void testLoadLibraryWithFullFilePath()
   {
     Library::Ptr libraryWithFullFilePath = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
     TSM_ASSERT ( "Library pointer allocated with full file path.",
-                 libraryWithFullFilePath );
+      libraryWithFullFilePath );
     TSM_ASSERT_EQUALS ( "Library reports proper status.",
-                        libraryWithFullFilePath->loadedStatus(),
-                        Library::LoadIsLoaded );
+      libraryWithFullFilePath->loadedStatus(),
+      Library::LoadIsLoaded );
     TSM_ASSERT_EQUALS ( "Library reports provided file name;.",
-                        libraryWithFullFilePath->filename(),
-                        SAMPLE_PLUGIN_PATH );
+      libraryWithFullFilePath->filename(),
+      SAMPLE_PLUGIN_PATH );
   }
 
   void testUnloadingLibrary()
   {
     Library::Ptr libraryPtr = fetchWorkingLibrary();
     TSM_ASSERT_EQUALS ( "Library unloaded successfully.",
-                        libraryPtr->unload(),
-                        Library::LoadNotLoaded );
+      libraryPtr->unload(),
+      Library::LoadNotLoaded );
     TSM_ASSERT_EQUALS ( "Library status = LoadNotLoaded",
-                        libraryPtr->loadedStatus(),
-                        Library::LoadNotLoaded );
+      libraryPtr->loadedStatus(),
+      Library::LoadNotLoaded );
     TSM_ASSERT ( "Wipe filename on unload.",
-                 libraryPtr->filename().empty() );
+      libraryPtr->filename().empty() );
   }
 
   void testDiscoverLibraryByName()
@@ -91,12 +89,12 @@ public:
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
     Library::Ptr libraryByNamePtr = Library::find(SAMPLE_PLUGIN_NAME);
     TSM_ASSERT ( "Library pointer allocated with full file path.",
-                 libraryByNamePtr );
+      libraryByNamePtr );
     TSM_ASSERT_EQUALS ( "Library reports proper status.",
-                        libraryByNamePtr->loadedStatus(),
-                        Library::LoadIsLoaded );
+      libraryByNamePtr->loadedStatus(),
+      Library::LoadIsLoaded );
     TSM_ASSERT ( "Library reports provided file name.",
-                 libraryByNamePtr->filename().find_last_of(SAMPLE_PLUGIN_FILE_NAME) != string::npos);
+      libraryByNamePtr->filename().find_last_of(SAMPLE_PLUGIN_FILE_NAME) != string::npos);
   }
 
   void testDiscoverLibraryByRelativeFileName()
@@ -104,25 +102,25 @@ public:
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, TEST_BASE_DIR, 1);
     Library::Ptr libraryByRelativeFileNamePtr = Library::find("fixtures/" SAMPLE_PLUGIN_FILE_NAME);
     TSM_ASSERT ( "Library pointer allocated with full file path.",
-                 libraryByRelativeFileNamePtr );
+      libraryByRelativeFileNamePtr );
     TSM_ASSERT_EQUALS ( "Library reports proper status.",
-                        libraryByRelativeFileNamePtr->loadedStatus(),
-                        Library::LoadIsLoaded );
+      libraryByRelativeFileNamePtr->loadedStatus(),
+      Library::LoadIsLoaded );
     TSM_ASSERT ( "Library reports provided file name.",
-                 libraryByRelativeFileNamePtr->filename().find_last_of(SAMPLE_PLUGIN_FILE_NAME) != string::npos);
+      libraryByRelativeFileNamePtr->filename().find_last_of(SAMPLE_PLUGIN_FILE_NAME) != string::npos);
   }
 
   void testDiscoverLibraryByFullFilePath()
   {
     Library::Ptr libraryByFullFilePathPtr = Library::find(SAMPLE_PLUGIN_PATH);
     TSM_ASSERT ( "Library pointer allocated with name.",
-                 libraryByFullFilePathPtr );
+      libraryByFullFilePathPtr );
     TSM_ASSERT_EQUALS ( "Library reports proper status.",
-                        libraryByFullFilePathPtr->loadedStatus(),
-                        Library::LoadIsLoaded );
+      libraryByFullFilePathPtr->loadedStatus(),
+      Library::LoadIsLoaded );
     TSM_ASSERT_EQUALS ( "Library reports provided file name.",
-                        libraryByFullFilePathPtr->filename(),
-                        SAMPLE_PLUGIN_PATH );
+      libraryByFullFilePathPtr->filename(),
+      SAMPLE_PLUGIN_PATH );
   }
 
   void testResolveNoFunctionFromLibrary()
@@ -130,7 +128,7 @@ public:
     Library::Ptr libraryPtr = fetchWorkingLibrary();
     Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("");
     TSM_ASSERT ( "Didn't resolved empty function name from library.",
-                 !okFunctionPtr );
+      !okFunctionPtr );
   }
 
   void testResolveFunctionFromLibrary()
@@ -138,11 +136,11 @@ public:
     Library::Ptr libraryPtr = fetchWorkingLibrary();
     Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("w_sample_test");
     TSM_ASSERT ( "Resolved function 'w_sample_test' from library.",
-                 okFunctionPtr );
+      okFunctionPtr );
     int (*aFunction)(void);
     W_RESOLVE_FUNCTION(aFunction, okFunctionPtr);
     TSM_ASSERT_EQUALS ( "Function invoked with expected return value.",
-                        aFunction(), 2014);
+      aFunction(), 2014);
   }
 
 };

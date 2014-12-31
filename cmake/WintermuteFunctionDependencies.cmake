@@ -19,8 +19,10 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-INCLUDE(CheckIncludeFile)
+if (NOT DEFINED _wntr_func_deps)
+  set(_wntr_func_deps ON)
+else()
+  return()
+endif()
 
-CHECK_INCLUDE_FILE(dlfcn.h DLFCN_H)
-CHECK_INCLUDE_FILE(unistd.h UNISTD_H)
-CHECK_INCLUDE_FILE(cstdlib UNISTD_H)
+include(CheckFunctionExists)

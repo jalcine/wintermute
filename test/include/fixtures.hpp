@@ -16,21 +16,156 @@
  */
 
 #include <wintermutecore/module.hpp>
+#include <wintermutecore/tunnel.hpp>
 #include <wintermutecore/logging.hpp>
+#include <wintermutecore/message.hpp>
+#include <wintermutecore/call.hpp>
+#include <string>
 
-#ifndef WINTERMUTE_TEST_SAMPLE_MODULE
-# define WINTERMUTE_TEST_SAMPLE_MODULE
+using std::string;
+
+// TODO: Compile a list of faux values.
+
+// Generates a random designation.
+Wintermute::Module::Designation craftRandomDesignation()
+{
+  return Wintermute::Module::Designation("foo", "bar");
+}
+
+Wintermute::Message craftRandomMessage()
+{
+  Wintermute::Message::HashType data;
+  data.insert(std::make_pair("foo", "bar"));
+  return Wintermute::Message(data, craftRandomDesignation(), craftRandomDesignation());
+}
 
 class SampleModule : public Wintermute::Module
 {
 public:
   explicit SampleModule(const unsigned int index = 1) :
     Wintermute::Module(
-        Wintermute::Module::Designation("input", "test" + std::to_string(index) + ".wintermute.in", 3001 + index)
+      Wintermute::Module::Designation("input", "test" + std::to_string(index) + ".wintermute.in")
     )
   {
     winfo("SampleModule: My name is " + (string) designation());
   }
 };
 
-#endif
+class SampleDispatcher : public Wintermute::Tunnel::Dispatcher
+{
+public:
+  explicit SampleDispatcher(const string& theName = "sample") : Wintermute::Tunnel::Dispatcher(theName) { }
+  virtual ~SampleDispatcher() { }
+
+  virtual bool send (const Wintermute::Message& sendingMessage)
+  {
+    message = sendingMessage;
+    return message == sendingMessage;
+  }
+
+  Wintermute::Message message;
+};
+
+class SampleReceiver : public Wintermute::Tunnel::Receiver
+{
+public:
+  explicit SampleReceiver(const Wintermute::Message& storedMessage, const string& theName = "sample")
+    : Wintermute::Tunnel::Receiver(theName), message(storedMessage) { }
+
+  virtual ~SampleReceiver() { }
+
+  virtual Wintermute::Message receive ()
+  {
+    return message;
+  }
+
+  Wintermute::Message message;
+};
+
+class SampleVoidCall : public Wintermute::Call
+{
+public:
+  explicit SampleVoidCall() : Wintermute::Call("sampleVoid")
+  {
+    Call::Function func = [ = ](const string & arguments) -> const string
+    {
+      return string();
+    };
+
+    bindFunction(func);
+  }
+  virtual ~SampleVoidCall() { }
+};
+
+class SampleCallWithValue : public Wintermute::Call
+{
+private:
+  string val;
+public:
+  // TODO Fix this shit. Keep getting '-Wwrite-strings'.
+  static const string DefaultValue;
+
+  explicit SampleCallWithValue(const string& value = DefaultValue) :
+    Wintermute::Call("samplevalue")
+  {
+    Call::Function func = [ = ](const string & arguments) -> const string
+    {
+      return value;
+    };
+
+    bindFunction(func);
+  }
+  virtual ~SampleCallWithValue() { }
+};
+
+class SampleVoidModuleCall : public Wintermute::Module::Call
+{
+public:
+  explicit SampleVoidModuleCall(const Wintermute::Module::Ptr& modulePtr) :
+    Wintermute::Module::Call(modulePtr, "sampleVoid")
+  {
+    Call::Function func = [ = ](const string & arguments) -> const string
+    {
+      return string();
+    };
+
+    bindFunction(func);
+  }
+  virtual ~SampleVoidModuleCall() { }
+};
+
+class SampleModuleCallWithValue : public Wintermute::Module::Call
+{
+public:
+  explicit SampleModuleCallWithValue(const Wintermute::Module::Ptr& modulePtr,
+                                     const string& value = string(SampleCallWithValue::DefaultValue)) :
+    Wintermute::Module::Call(modulePtr, "sampleWithValues")
+  {
+    Call::Function func = [ = ](const string & arguments) -> const string
+    {
+      return value;
+    };
+
+    bindFunction(func);
+  }
+  virtual ~SampleModuleCallWithValue() { }
+};
+
+class SampleMimicModuleCall : public Wintermute::Module::Call
+{
+public:
+  explicit SampleMimicModuleCall(const Wintermute::Module::Ptr& modulePtr) :
+    Wintermute::Module::Call(modulePtr, "sampleMimic")
+  {
+    Call::Function func = [ = ](const string & arguments) -> const string
+    {
+      return arguments;
+    };
+
+    bindFunction(func);
+  }
+  virtual ~SampleMimicModuleCall() { }
+};
+
+const string SampleCallWithValue::DefaultValue = string("sample");
+

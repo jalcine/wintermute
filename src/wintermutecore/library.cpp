@@ -5,7 +5,8 @@
  * version 3 of the License, or (at your option) any later version.
  *
  * Wintermute is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -86,6 +87,7 @@ Library::~Library()
     wdebug("Destroying this library for " + filename() + ", so unloading symbols first...");
     unload();
   }
+
   wdebug("Deallocated an instance of a library.");
 }
 
@@ -103,7 +105,7 @@ Library::LoadState Library::load(const string& filenameToLoad)
   string errorMessage;
   auto libraryHandlePtr = d->claimHandleForFilename(filenameToLoad, errorMessage);
 
-  if (!errorMessage.empty() || !libraryHandlePtr)
+  if (!libraryHandlePtr)
   {
     d->handlePtr = nullptr;
     d->loadState = LoadNotLoaded;
@@ -122,13 +124,6 @@ Library::LoadState Library::load(const string& filenameToLoad)
 Library::LoadState Library::unload()
 {
   W_PRV(Library);
-  if (!d->handlePtr)
-  {
-    wdebug("Library already unloaded.");
-    d->loadState = LoadNotLoaded;
-    return LoadUndefined;
-  }
-
   string errorMessage;
   const bool wasHandleFreed = d->freeHandle(errorMessage);
 
@@ -138,7 +133,7 @@ Library::LoadState Library::unload()
     return LoadNotLoaded;
   }
 
-  winfo("Library handle unloaded for " + d->filename + ".");
+  //wwarn("Library handle unloaded for " + d->filename + ".");
   d->filename = "";
   d->loadState = LoadNotLoaded;
   return LoadNotLoaded;
@@ -158,17 +153,22 @@ string Library::filename() const
 
 Library::Ptr Library::find(const string& libraryQuery)
 {
-  Library::Ptr libraryPtr = nullptr;
+  Library::Ptr libraryPtr;
   list<string> filePathsToTry = collectFilePaths(libraryQuery);
   wdebug("Working over " + std::to_string(filePathsToTry.size()) + " paths...");
+
   for (auto path : filePathsToTry)
   {
     wdebug("Using path " + path + "...");
-    libraryPtr.reset(new Library(path));
-    assert(libraryPtr);
-    if (libraryPtr->loadedStatus() == LoadIsLoaded)
+    Library::Ptr sampleLibraryPtr = make_shared<Library>(path);
+    assert(sampleLibraryPtr);
+    const bool wasLibraryLoaded = (sampleLibraryPtr->loadedStatus() == LoadIsLoaded);
+    wdebug("Was library loaded from " + path + "? " + std::to_string(wasLibraryLoaded));
+
+    if (wasLibraryLoaded)
     {
-      return std::make_shared<Library>(path);
+      libraryPtr = sampleLibraryPtr;
+      break;
     }
   }
 
@@ -178,22 +178,41 @@ Library::Ptr Library::find(const string& libraryQuery)
 Library::FunctionPtr Library::resolveFunction(const string& functionName) const
 {
   W_PRV(const Library);
+  Library::FunctionPtr functionPtr;
+  const char* errorMessage;
+
   wdebug("Resolving function " + functionName + " from " + d->filename);
+
+  if (d->loadState != LoadIsLoaded)
+  {
+    werror("Can not resolve a function from an unloaded library.");
+    return nullptr;
+  }
 
   if (functionName.empty())
   {
+    wwarn("Cannot resolve a function with no name.");
     return nullptr;
   }
 
   dlerror();
-  Library::FunctionPtr functionPtr = dlsym(d->handlePtr, functionName.c_str());
+  functionPtr = dlsym(d->handlePtr, functionName.c_str());
+  errorMessage = dlerror();
 
   if (!functionPtr)
   {
-    string errorMessage = dlerror();
-    wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);
+    if (errorMessage != NULL)
+    {
+      wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);
+    }
+    else
+    {
+      wwarn("The function '" + functionName + "' was not found, empty reference obtained.");
+    }
+
     return nullptr;
   }
 
+  wtrace("Obtained function handle for '" + functionName + "' from " + d->filename + ".");
   return functionPtr;
 }

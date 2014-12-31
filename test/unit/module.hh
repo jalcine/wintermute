@@ -17,15 +17,51 @@
 
 #include "test_suite.hpp"
 #include <wintermutecore/module.hpp>
+#include <wintermutecore/logging.hpp>
 
 using Wintermute::Module;
+using Wintermute::Call;
 
 class ModuleTestSuite : public CxxTest::TestSuite
 {
 public:
+
   void testHasDesignation(void)
   {
     Module::Ptr modulePtr(new SampleModule);
     TS_ASSERT ( !modulePtr->designation().isNull() );
   }
+
+  // FIXME Finish this test.
+  void testCanEnableModule(void) { }
+
+  // FIXME Finish this test.
+  void testCanDisableModule(void) { }
+
+  void testAddCallToModule()
+  {
+    const string expectedValue("CookieMonster");
+    Module::Ptr modulePtr(new SampleModule);
+    Module::Call::Ptr resultCall(new SampleModuleCallWithValue(modulePtr, expectedValue));
+
+    TS_ASSERT ( modulePtr->addCall(resultCall) );
+    Module::Call::Ptr obtainedCall = modulePtr->call(resultCall->name());
+    TS_ASSERT ( obtainedCall );
+    TS_ASSERT_EQUALS ( obtainedCall, resultCall );
+
+    string arguments;
+    const string result = obtainedCall->invokeFunction(arguments);
+    TS_ASSERT_EQUALS ( result, expectedValue );
+  }
+
+  void testRemoveCallFromModule()
+  {
+    Module::Ptr modulePtr(new SampleModule);
+    Module::Call::Ptr resultCall(new SampleModuleCallWithValue(modulePtr));
+
+    TS_ASSERT ( modulePtr->addCall(resultCall) );
+    TS_ASSERT ( modulePtr->removeCall(resultCall->name()) );
+    TS_ASSERT ( resultCall );
+  }
 };
+

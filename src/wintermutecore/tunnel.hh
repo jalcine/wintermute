@@ -15,13 +15,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <stack>
-#include "dispatcher.hpp"
-#include "receiver.hpp"
+#include "tunnel.hpp"
 
-using std::map;
+using std::unordered_map;
 using std::stack;
 using std::string;
 
@@ -30,11 +29,12 @@ namespace Wintermute
 class TunnelPrivate
 {
   public:
-    typedef map<string, Dispatcher::Ptr> DispatcherMap;
-    typedef map<string, Receiver::Ptr> ReceiverMap;
+    typedef unordered_map<string, Tunnel::Dispatcher::Ptr> DispatcherMap;
+    typedef unordered_map<string, Tunnel::Receiver::Ptr> ReceiverMap;
     typedef stack<Message> MessageQueue;
     explicit TunnelPrivate();
     virtual ~TunnelPrivate();
+
     DispatcherMap dispatchers;
     ReceiverMap receivers;
     MessageQueue obtainedMessages;

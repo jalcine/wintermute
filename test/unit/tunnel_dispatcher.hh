@@ -11,18 +11,22 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with Wintermute; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * ree Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
 
-#include "receiver.hpp"
+#include "test_suite.hpp"
+#include <wintermutecore/tunnel.hpp>
 
-using Wintermute::Receiver;
+using Wintermute::Tunnel;
 
-Receiver::Receiver()
+class TunnelDispatcherTestSuite : public CxxTest::TestSuite
 {
-}
+public:
+  void testBuild()
+  {
+    Tunnel::Dispatcher::Ptr dispatcher(new SampleDispatcher);
+    TS_ASSERT ( dispatcher );
+  }
+};
 
-Receiver::~Receiver()
-{
-}

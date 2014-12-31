@@ -27,7 +27,6 @@ class VersionTestSuite : public CxxTest::TestSuite
 public:
   void setUp()
   {
-    DISABLE_LOGGING;
   }
 
   void testConvertFromStringToVersion()
@@ -36,6 +35,7 @@ public:
     TS_ASSERT_EQUALS((string) Version("2003.2.33031"), "2003.2.33031");
     TS_ASSERT_EQUALS((string) Version("010.332.33031"), "10.332.33031");
     TS_ASSERT_EQUALS((string) Version("00000.332.33031"), "0.332.33031");
+    TS_ASSERT_EQUALS((string) Version("0.2.31-dev"), "0.2.31-dev");
   }
 
   void testComparsionsLessThan()

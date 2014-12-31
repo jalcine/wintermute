@@ -31,77 +31,55 @@ namespace Wintermute
 {
 class MessagePrivate;
 
-/* Serves as the basis for message passing between modules.
+/**
+ * Serves as the basis for message passing between modules.
  * Message is the data class that allows for passing of data
  * structures over ambigious means of data trasveral.
  *
- * @see Wintermute::Procedure::Dispatcher
- * @see Wintermute::Procedure::Receiver
+ * @sa Wintermute::Tunnel::Dispatcher
+ * @sa Wintermute::Tunnel::Receiver
  */
-class WINTERMUTE_EXPORT Message : public Util::Serializable
+class WINTERMUTE_EXPORT_PUBLIC Message :
+  public Util::Serializable
 {
+private:
+  W_DEF_PRIVATE(Message)
+  W_SERIALIZABLE(Message)
 
 public:
-  /* A type mapping used to handle the data hash's key. */
   typedef string HashKey;
-
-  /* A type mapping used to handle the data hash's value. */
   typedef string HashValue;
-
-  /* A type mapping used to handle the data hash. */
   typedef Serializable::Map HashType;
 
-  /* Builds a new Message with the provided data. */
   explicit Message(const Message::HashType& data,
-                   const Module::Designation& receiver = Module::Designation(),
-                   const Module::Designation& sender = Module::Designation());
+    const Module::Designation& receiver = Module::Designation(),
+    const Module::Designation& sender = Module::Designation());
 
-  /* Copy constructor. */
   Message(const Message& other);
 
-  /* Empty constructor. */
   Message();
 
-  /* Destructor */
   virtual ~Message();
 
-  /* Determines if this Message was crafted locally. */
-  bool isLocal() const;
-
-  /* Determines if this Message represents no data. */
   bool isEmpty() const;
 
-  /* Copies the content of this Message into another one. */
   Message clone() const;
 
-  /* Obtains the payload that's been held by this message. */
   HashType payload() const;
 
-  /* Obtains the designation of the sending module. */
   Module::Designation sender() const;
 
-  /* Obtains the designation of the receiving module. */
   Module::Designation receiver() const;
 
-  /* Changes the sender of this message. */
   void setSender(const Module::Designation& newSender);
 
-  /* Changes the receiver of this message. */
   void setReceiver(const Module::Designation& newReceiver);
 
-  /* Changes the payload data that this Message contains. */
   void setPayload(const Message::HashType& newData);
 
-  /* Equality operator. */
   bool operator==(const Message& other) const;
 
-  /* Boolean evaluting operator. */
   bool operator!() const;
-
-protected:
-  virtual Serializable::Map serialize() const;
-  virtual void deserialize(const Serializable::Map& data);
-  W_DEF_PRIVATE(Message)
 };
 }
 

@@ -27,7 +27,7 @@ PluginPrivate::PluginList PluginPrivate::plugins;
 PluginPrivate::PluginPrivate(const string& pluginName) :
   library(), name(pluginName)
 {
-  wdebug("Defined the internals for the plugin named " + pluginName + ".");
+  wdebug("Defined the internals for the plugin " + pluginName + ".");
 }
 
 PluginPrivate::~PluginPrivate()

@@ -32,6 +32,7 @@ public:
   {
     auto ptr = SingletonClass::instance();
     TS_ASSERT ( ptr.get() != nullptr );
+
     auto otherPtr = SingletonClass::instance();
     TS_ASSERT ( ptr == otherPtr );
   }

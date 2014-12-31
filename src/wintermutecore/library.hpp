@@ -23,14 +23,19 @@
 namespace Wintermute
 {
 class LibraryPrivate;
-/* A class to load libraries and their function symbols.
+/**
+ * A class to load libraries and their function symbols.
+ * @ingroup Plugins
  * Represents a portable wrapper over the facilities required to load
  * dynamically loadable libraries.
  */
-class Library : W_DEF_SHAREABLE(Library)
+class Library
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Library)
+#endif
 {
 public:
-  W_DECL_PTR_TYPE(Library);
+  W_DECL_PTR_TYPE(Library)
   typedef void* FunctionPtr;
 
   /* Default destructor. */

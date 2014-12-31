@@ -22,25 +22,75 @@
 
 namespace Wintermute
 {
-class WINTERMUTE_EXPORT Version
+/**
+ * Provides a uniform means of handling versioning.
+ * @sa WINTERMUTE_VERSION
+ */
+class WINTERMUTE_EXPORT_PUBLIC Version
 {
 public:
   explicit Version(const string& versionStr);
   ~Version() = default;
-  Version(const uint& versionMajor, const uint& versionMinor, const uint& versionPatch);
+  Version(const uint& versionMajor, const uint& versionMinor, const uint& versionPatch, const string& versionRc);
   operator string() const;
 
   uint major;
   uint minor;
   uint patch;
+  string rc;
+
+  static inline Version system() {
+    return Version(WINTERMUTE_VERSION);
+  }
 };
 }
 
+/**
+ * Less than comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator< (const Wintermute::Version& lhs, const Wintermute::Version& rhs);
+
+/**
+ * Greater than comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator> (const Wintermute::Version& lhs, const Wintermute::Version& rhs);
+
+/**
+ * Less than or equal to comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator<=(const Wintermute::Version& lhs, const Wintermute::Version& rhs);
+
+/**
+ * Greater than or equal to comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator>=(const Wintermute::Version& lhs, const Wintermute::Version& rhs);
+
+/**
+ * Equality comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator==(const Wintermute::Version& lhs, const Wintermute::Version& rhs);
+
+/**
+ * Not equal to comparison operation.
+ * @param lhs Left value.
+ * @param rhs Right value.
+ * @sa Wintermtue::Version
+ */
 bool operator!=(const Wintermute::Version& lhs, const Wintermute::Version& rhs);
 
 #endif

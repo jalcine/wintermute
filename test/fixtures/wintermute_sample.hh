@@ -30,6 +30,6 @@ public:
 };
 }
 
-W_DECL_PLUGIN(Wintermute::SamplePlugin, "0.0.1");
+W_DECL_PLUGIN(Wintermute::SamplePlugin, WINTERMUTE_VERSION)
 
 extern "C" int w_sample_test();

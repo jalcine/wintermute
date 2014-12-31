@@ -16,14 +16,17 @@
  */
 
 #include "module.hpp"
+#include "call.hpp"
 
 namespace Wintermute
 {
 class ModulePrivate
 {
 public:
+  W_DEF_PUBLIC(Module);
   Module::Designation designation;
-  explicit ModulePrivate();
+  Module::Call::Map calls;
+  explicit ModulePrivate(const Module::Designation& des);
   virtual ~ModulePrivate();
 };
 }

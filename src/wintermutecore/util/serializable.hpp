@@ -26,7 +26,9 @@ namespace Wintermute
 {
 namespace Util
 {
-/* An interface to facilitate the act of serializing and deserializing data.
+/**
+ * An interface to facilitate the act of serializing and deserializing data.
+ *
  * The Serializable interface allows for Wintermute::Util::Serializer to
  * convert it to the format that'd see fit for serialized communication. At
  * the time of writing, textual JSON is the preferred means of serialized
@@ -35,37 +37,55 @@ namespace Util
 class Serializable
 {
 public:
+  /// Represents the type that all Serializable objects are converted into.
   typedef std::string PlainType;
+
+  /// Represents the key-value store that's used to represents Serializable
+  /// objects.
   typedef std::map<std::string, std::string> Map;
 
-  // Converts this serializable data into a JSON string.
+  /// Converts this serializable data into a JSON string.
   operator PlainType() const;
 
-  // Takes a map and makes it into a deserializable string.
-  static std::string toString(const Serializable::Map& data);
+  /// Converts this serialized data into a map.
+  operator Map() const;
 
-  // Takes a map and makes it into a deserializable string.
+  /**
+   * Takes a map and makes it into to the plain data type.
+   * @param data The key-value pairs used to craft said structure.
+   * @return The serializable value in the PlainType type.
+   *
+   * With the provided key-value pairs, it converts each of the values into a
+   * single JSON structure.
+   */
+  static PlainType toString(const Serializable::Map& data);
+
+  /// Takes a map and makes it into a deserializable string.
   static Serializable::Map fromString(const std::string& res);
 
 protected:
 
-  // Populates this serializable data with the provided map.
+  /// Populates this serializable data with the provided map.
   Serializable(const Serializable::Map& dataMap);
 
-  // Populates this serializable data with the provided JSON strong.
+  /// Populates this serializable data with the provided JSON strong.
   Serializable(const std::string& jsonString);
 
-  // An empty serializable object
+  /// An empty serializable object
   explicit Serializable();
 
-  // Converts this object's representation into a map for serialization.
+  /// Converts this object's representation into a map for serialization.
   virtual Serializable::Map serialize() const = 0;
 
-  // Takes a map and expands the data stored into this working instance.
+  /// Takes a map and expands the data stored into this working instance.
   virtual void deserialize(const Serializable::Map& data) = 0;
 };
 
 }
 }
+
+#define W_SERIALIZABLE(Class) \
+  virtual Wintermute::Util::Serializable::Map serialize() const; \
+  virtual void deserialize(const Wintermute::Util::Serializable::Map& data);
 
 #endif

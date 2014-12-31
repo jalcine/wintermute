@@ -33,6 +33,7 @@ DesignationPrivate::~DesignationPrivate()
 
 void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
 {
+  assert(other);
   this->pid = other->pid;
   this->name = other->name;
   this->domain = other->domain;

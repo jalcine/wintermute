@@ -23,29 +23,43 @@ PROJECT(WintermuteCore CXX)
 include(WintermuteMacros)
 
 set(_srcs
-  # Natives
+  # == Natives
   ./logging.cpp
-  ./util/serializable.cpp
   ./version.cpp
 
-  # Procedural
-  ./message.cc
-  ./message.cpp
-  ./module.cpp
-  ./module.cc
-  ./module_designation.cc
-  ./module_designation.cpp
-  ./module_pool.cc
-  ./module_pool.cpp
-  #./dispatcher.cpp
-  #./receiver.cpp
-  #./tunnel.cpp
-
-  # == Plugin related.
+  # == Plugin Related
   ./library.cc
-  ./library.cpp
   ./plugin.cc
+  ./library.cpp
   ./plugin.cpp
+
+  # == RPC Related
+  ./tunnel.cc
+  ./tunnel_dispatcher.cc
+  ./tunnel_receiver.cc
+  ./tunnel.cpp
+  ./tunnel_dispatcher.cpp
+  ./tunnel_receiver.cpp
+
+  # == Procedure Related
+  ./message.cc
+  ./call.cc
+  ./method.cc
+  ./message.cpp
+  ./call.cpp
+  ./method.cpp
+
+  # == Module Related
+  ./module.cc
+  ./module_pool.cc
+  ./module_designation.cc
+  ./module.cpp
+  ./module_designation.cpp
+  ./module_pool.cpp
+  ./module_call.cpp
+
+  # == Utilities
+  ./util/serializable.cpp
   )
 
 # Set up sources.
@@ -64,9 +78,8 @@ SET_TARGET_PROPERTIES(wintermutecore PROPERTIES
   DEFINE_SYMBOL "WINTERMUTE_EXPORT"
   )
 
-
-file(GLOB _extra_doc_pages
-  doc/wintermutecore/**/*.markdown)
+file(GLOB _extra_doc_files
+  "${CMAKE_SOURCE_DIR}/doc/wintermutecore/*.markdown")
 
 DOXYGEN_GENERATE_DOCUMENTATION(
   TARGET           "wintermutecore"
@@ -76,9 +89,8 @@ DOXYGEN_GENERATE_DOCUMENTATION(
   PROJECT_VERSION  "${WINTERMUTE_VERSION}"
   MAIN_DOC_PAGE    "${CMAKE_SOURCE_DIR}/doc/wintermutecore/Main.markdown"
   SOURCE_DIR       "${CMAKE_CURRENT_SOURCE_DIR}"
-  EXTRA_DOC_FILES  ${_extra_doc_pages}
+  EXTRA_DOC_FILES  ${_extra_doc_files}
 )
-message("${CMAKE_SOURCE_DIR}/doc/Main.markdown")
 
 # Define symbols for deprecation.
 GENERATE_EXPORT_HEADER(wintermutecore

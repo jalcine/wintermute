@@ -15,14 +15,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "dispatcher.hpp"
+#include "tunnel_dispatcher.hh"
+#include "tunnel.hpp"
+#include "logging.hpp"
 
-using Wintermute::Dispatcher;
+using Wintermute::Tunnel;
+using Wintermute::DispatcherPrivate;
 
-Dispatcher::Dispatcher()
+Tunnel::Dispatcher::Dispatcher(const string& theName) : d_ptr(new DispatcherPrivate)
 {
+  W_PRV(Dispatcher);
+  d->name = theName;
+  wdebug("Built a new dispatcher for the tunnel called " + name() + ".");
 }
 
-Dispatcher::~Dispatcher()
-{
+string Tunnel::Dispatcher::name() const {
+  W_PRV(const Dispatcher);
+  return d->name;
 }
+
+Tunnel::Dispatcher::~Dispatcher()
+{
+  wdebug("Destroyed the " + name() + " dispatcher.");
+}
+

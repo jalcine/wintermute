@@ -24,33 +24,34 @@ using Wintermute::ModulePrivate;
 using Wintermute::DesignationPrivate;
 using Wintermute::Util::Serializable;
 
-Module::Module::Designation::Designation(const string& aName, const string& aDomain, const pid_t& aPid) :
-  Serializable(""), d_ptr (new DesignationPrivate)
+Module::Module::Designation::Designation(const string& aName, const string& aDomain) :
+  Serializable(""), d_ptr (std::make_shared<DesignationPrivate>())
 {
   W_PRV(Designation);
   d->name = aName;
   d->domain = aDomain;
-  d->pid = aPid;
 }
 
 Module::Designation::Designation(const Designation& other) : Serializable(other),
-  d_ptr(new DesignationPrivate)
+  d_ptr (std::make_shared<DesignationPrivate>())
 {
   W_PRV(Designation);
+  assert(other.d_ptr);
   d->clone(other.d_ptr);
 }
 
-Module::Designation::Designation() : d_ptr(new DesignationPrivate)
+Module::Designation::Designation(const string& jsonString) : 
+  d_ptr (std::make_shared<DesignationPrivate>())
+{
+  deserialize(Serializable::fromString(jsonString));
+}
+
+Module::Designation::Designation() : 
+  d_ptr (std::make_shared<DesignationPrivate>())
 {
   W_PRV(Designation);
   d->name = std::string();
   d->domain = std::string();
-  d->pid = 0;
-}
-
-Module::Designation::Designation(const string& jsonString) : d_ptr(new DesignationPrivate)
-{
-  deserialize(Serializable::fromString(jsonString));
 }
 
 string Module::Designation::name() const
@@ -63,18 +64,6 @@ string Module::Designation::domain() const
 {
   W_PRV(const Designation);
   return d->domain;
-}
-
-pid_t Module::Designation::pid() const
-{
-  W_PRV(const Designation);
-  return d->pid;
-}
-
-bool Module::Designation::isLocal() const
-{
-  W_PRV(const Designation);
-  return d->pid == getpid();
 }
 
 bool Module::Designation::isNull() const
@@ -91,18 +80,15 @@ bool Module::Designation::operator!=(const Designation& other) const
 bool Module::Designation::operator==(const Designation& other) const
 {
   return name() == other.name() &&
-         domain() == other.domain() &&
-         pid() == other.pid();
+         domain() == other.domain();
 }
 
 void Module::Designation::deserialize(const Serializable::Map& data)
 {
   W_PRV(Designation);
-  assert(data.count("pid") == 1);
   assert(data.count("domain") == 1);
   assert(data.count("name") == 1);
 
-  d->pid = stoi(data.at("pid"));
   d->name = data.at("name");
   d->domain = data.at("domain");
 }
@@ -111,7 +97,6 @@ Serializable::Map Module::Designation::serialize() const
 {
   W_PRV(const Designation);
   Serializable::Map theMap;
-  theMap.insert(std::make_pair("pid", std::to_string(d->pid)));
   theMap.insert(std::make_pair("name", d->name));
   theMap.insert(std::make_pair("domain", d->domain));
 

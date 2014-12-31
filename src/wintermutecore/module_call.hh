@@ -15,43 +15,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "test_suite.hpp"
-#include "libwintermutecore/dispatcher.hpp"
-#include "libwintermutecore/message.hpp"
+#include "module.hpp"
 
-using Wintermute::Message;
-using Wintermute::Dispatcher;
-
-Message aMessage;
-
-class SampleDispatcher : public Dispatcher
+namespace Wintermute
+{
+class ModuleCallPrivate
 {
 public:
-	explicit SampleDispatcher() : Dispatcher()
-	{
-	}
-
-	virtual string name() const
-	{
-		return "sample";
-	}
-
-	virtual bool send(const Message& message)
-	{
-		aMessage = message;
-		TS_TRACE("We should send something.");
-		return true;
-	}
+  Module::Ptr module;
 };
+}
 
-
-class DispatcherTestSuite : public CxxTest::TestSuite
-{
-public:
-	void testABICheck(void)
-	{
-		SampleDispatcher dispatcher;
-		dispatcher.send(craftRandomMessage());
-		TS_ASSERT_EQUALS(aMessage, aMessage);
-	}
-};

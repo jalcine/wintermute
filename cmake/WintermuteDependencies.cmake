@@ -1,4 +1,4 @@
-# vim: set ts=2 sts=2 sw=2 fdm=indent
+# vim: set ts=2 sts=2 sw=2 fdm=marker
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -25,18 +25,24 @@ else()
   return()
 endif()
 
-# == Look up manual dependencies.
-INCLUDE(WintermuteHeaderDependencies)
+## ======================
+## === ** PACKAGES ** ===
+## ======================
+## {{{ 
 
-# == Look up package-level dependencies.
+# = Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
+INCLUDE(CheckIncludeFile)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
 # Look for Boost and the aspects we'd like from it.
 FIND_PACKAGE(Boost 1.5 REQUIRED
-  COMPONENTS filesystem system)
+  COMPONENTS 
+    filesystem
+    system
+)
 
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
@@ -65,3 +71,37 @@ endif()
 set(WINTERMUTE_VERSION_MAJOR 0)
 set(WINTERMUTE_VERSION_MINOR 0)
 set(WINTERMUTE_VERSION_PATCH 0)
+
+# == Add to the required varibles to improve searching.
+set(CMAKE_REQUIRED_INCLUDES ${WINTERMUTE_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_INCLUDE_FLAGS})
+
+## }}}
+## ======================
+## ==== ** HEADERS ** ===
+## ======================
+## TODO: Find a better solution for looking up files and stopping the build if
+## they don't exist.
+## {{{
+
+## macro find_required_header(FILE_PATH)
+# Searches for the provided header at all known file paths. Wraps the
+# functionality of `check_include_file` making it a hard failure.
+macro(FIND_REQUIRED_HEADER _FILE_PATH)
+  check_include_file(${_FILE_PATH} _found)
+  if (_found-NOTFOUND)
+    message(ERROR "Failed to find header: ${_FILE_PATH}!")
+  endif()
+endmacro(FIND_REQUIRED_HEADER)
+
+FIND_REQUIRED_HEADER(boost/variant.hpp CHKHDR_BOOST_VARIANT)
+FIND_REQUIRED_HEADER(cxxabi.h CHKHDR_CXXABI)
+FIND_REQUIRED_HEADER(sys/types.h CHKHDR_SYS_TYPES)
+FIND_REQUIRED_HEADER(unistd.h CHKHDR_UNISTD)
+
+## }}}
+## ======================
+## ==== ** SYMBOLS ** ===
+## ======================
+## {{{
+## }}}

@@ -16,13 +16,18 @@
  */
 
 #include "module.hh"
+#include "logging.hpp"
 
 using Wintermute::ModulePrivate;
 
-ModulePrivate::ModulePrivate()
+ModulePrivate::ModulePrivate(const Module::Designation& des) :
+  designation(des)
 {
+  calls.clear();
 }
 
 ModulePrivate::~ModulePrivate()
 {
+  wdebug("Flushing out calls for " + static_cast<string>(designation) + "...");
+  calls.clear();
 }

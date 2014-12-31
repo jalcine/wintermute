@@ -11,35 +11,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with Wintermute; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * ree Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_CORE_DISPATCHER_HPP
-#define WINTERMUTE_CORE_DISPATCHER_HPP
-
-#include <string>
-#include "globals.hpp"
-
-using std::string;
+#include <wintermutecore/globals.hpp>
 
 namespace Wintermute
 {
-class DispatcherPrivate;
-class Message;
-/* Serves as an abstract basis for sending messages. */
-class Dispatcher :
-  W_DEF_SHAREABLE(Dispatcher)
+struct ReceiverPrivate
 {
-
 public:
-  W_DECL_PTR_TYPE(Dispatcher)
-  explicit Dispatcher();
-  virtual ~Dispatcher();
-
-  virtual string name() const = 0;
-  virtual bool send(const Message& message) = 0;
+  string name;
 };
 }
-
-#endif

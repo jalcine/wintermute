@@ -43,12 +43,6 @@ public:
     TS_ASSERT_EQUALS( aMessage.isEmpty(), true );
   }
 
-  void testIsntLocalByDefault(void)
-  {
-    Message aMessage;
-    TS_ASSERT ( aMessage.isLocal() == false );
-  }
-
   void testSchemaCheck(void)
   {
     Module::Designation sender("input", "in.wintermute.test");
@@ -61,6 +55,5 @@ public:
     TS_ASSERT_EQUALS ( message.sender() , sender );
     TS_ASSERT_EQUALS ( message.receiver() , receiver );
     TS_ASSERT_EQUALS ( message.payload() , data );
-    TS_ASSERT_EQUALS ( message.isLocal() , true );
   }
 };

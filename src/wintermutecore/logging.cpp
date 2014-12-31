@@ -130,8 +130,14 @@ void Logging::warn(const string & message, const string& name)
 void Logging::trace(const string & message, const string& name)
 {
 #ifdef WINTERMUTE_DEBUG
+  assert(obtain_logger(name));
   obtain_logger(name)->trace(message);
 #else
   w_noop();
 #endif
+}
+
+void Logging::cleanup()
+{
+  //instance().reset();
 }
