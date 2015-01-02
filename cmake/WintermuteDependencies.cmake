@@ -26,7 +26,7 @@ endif()
 ## ======================
 ## === ** PACKAGES ** ===
 ## ======================
-## {{{ 
+## {{{
 
 # = Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
@@ -34,23 +34,27 @@ INCLUDE(CheckIncludeFile)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
+PKG_SEARCH_MODULE(LibUv libuv REQUIRED)
 
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
   ${JsonCpp_INCLUDE_DIRS}
   ${Log4Cxx_INCLUDE_DIRS}
+  ${LibUv_INCLUDE_DIRS}
   )
 
 set(WINTERMUTE_LIBRARIES
   dl
   ${JsonCpp_LIBRARIES}
   ${Log4Cxx_LIBRARIES}
+  ${LibUv_LIBRARIES}
   )
 
 if(DEFINED WINTERMUTE_COMPILE_FLAGS)
   set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
     ${JsonCpp_CFLAGS}
     ${Log4Cxx_CFLAGS}
+    ${LibUv_CFLAGS}
     )
 endif()
 

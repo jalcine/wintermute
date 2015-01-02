@@ -5,25 +5,25 @@ bootstrap_build() {
 
   sudo apt-get update -qq
 
-  echo "\n[build]: fetching PPAs....\n"
-  sudo apt-get install software-properties-common -qq
+  echo -en "\n[build]: fetching PPAs....\n"
+  sudo apt-get install python-software-properties software-properties-common -qq
   wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
   sudo apt-add-repository ppa:dhart/ppa -y
   sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
   sudo apt-add-repository ppa:kubuntu-ppa/beta -y
   sudo add-apt-repository ppa:h-rayflood/llvm -y
 
-  echo "[build]: updating system..."
+  echo -en "\n[build]: updating system...\n"
   sudo apt-get update -qq
 
-  echo "[build]: installing packages..."
+  echo -en "\n[build]: installing packages...\n"
   sudo apt-get install -qq build-essential
   sudo apt-get install -qq python-pip python
 
   sudo pip install cpp-coveralls --upgrade
 
   # Install dependencies.
-  echo "[build]: installing dependencies..."
+  echo -en "\n[build]: installing dependencies...\n"
   sudo apt-get install -qq libjsoncpp-dev
   sudo apt-get install -qq liblog4cxx10-dev
   sudo apt-get install -qq doxygen
@@ -33,9 +33,22 @@ bootstrap_build() {
   sudo apt-get install -qq pkg-config
   sudo apt-get install -qq cmake
 
-  echo "Done installing dependencies."
+  install_libuv
+
+  echo -en "\Done installing dependencies.\n"
 
   sudo ln -s /usr/lib/llvm-3.4/lib/libprofile_rt.a /usr/lib/libprofile_rt.a
+}
+
+install_libuv() {
+  sudo apt-get install git libtool autoconf automake -qq;
+
+  git clone git://github.com/libuv/libuv ~/libuv;
+  cd ~/libuv;
+  sh autogen.sh;
+  ./configure --prefix=/usr;
+  make;
+  sudo make install;
 }
 
 case $1 in
@@ -57,5 +70,18 @@ case $1 in
     ;;
   "--post" )
     coveralls --gcov $(which gcov) --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
+    ;;
+  "*" )
+    echo -en <<HELP
+test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
+
+  --before              Installs the necessary packages.
+  --generate            Configures the project using CMake.
+  --generate-vagrant    Configures the project using CMake under a Vagrant-like
+                        environment.
+  --run                 Builds and tests Wintermute.
+  --post                Runs post-testing actions (works only on Travis.CI).
+  --help                HELLO!
+HELP
     ;;
 esac
