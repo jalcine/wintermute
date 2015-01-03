@@ -10,7 +10,8 @@
 
 [![Build Status][travisdevelop_img]][build_stat]
 [![Coverage Status][coverallsdevelop_img]][cover_stat]
-[![Stories Ready to be Worked On][waffledevelop_img]][progress_waffle]
+[![Stories Ready to be Worked On][waffle_ready_img]][waffleio]
+[![Stories Being Worked On][waffle_work_img]][waffleio]
 
 # Synopsis 
 Wintermute's a software project that intends to be a launching pad into
@@ -32,10 +33,11 @@ friend.
 [post1]: http://jalcine.me/weblog/the-idea-behind-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute
-[progress_waffle]: http://waffle.io/jalcine/wintermute
+[waffleio]: http://waffle.io/jalcine/wintermute
 [travisdevelop_img]: https://travis-ci.org/jalcine/wintermute.svg?branch=develop
 [coverallsdevelop_img]: https://img.shields.io/coveralls/jalcine/wintermute.svg?branch=develop
-[waffledevelop_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
+[waffle_ready_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
+[waffle_work_img]: https://badge.waffle.io/jalcine/wintermute.png?label=in%20progress&title=In%20Progress
 [contrib]: ./CONTRIBUTING.markdown
 [install]: ./INSTALL.markdown
 [platforms]: ./INSTALL.markdown#platforms
