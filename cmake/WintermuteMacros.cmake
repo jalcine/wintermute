@@ -17,8 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-
 if (NOT DEFINED _wntr_mcrs)
   set(_wntr_mcrs ON)
 else()
@@ -37,20 +35,17 @@ include(CMakeParseArguments)
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
   # Add inclusion directories to target.
-  target_include_directories(${_target} BEFORE PUBLIC ${WINTERMUTE_INCLUDE_DIRS})
-
-  # Add compilation flags for target.
-  target_compile_options(${_target} BEFORE PUBLIC ${WINTERMUTE_COMPILE_FLAGS})
-
-  # Add compilation definitions for target.
-  target_compile_definitions(${_target} PUBLIC
-    "${WINTERMUTE_COMPILE_DEFINITIONS}")
+  SET_TARGET_PROPERTIES(${_target} PROPERTIES
+    INCLUDE_DIRECTORIES "${WINTERMUTE_INCLUDE_DIRS}"
+    COMPILE_OPTIONS     "${WINTERMUTE_COMPILE_FLAGS}"
+    COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
+  )
 
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${_target} PRIVATE
-      ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG})
-    target_compile_options(${_target} PRIVATE
-      ${WINTERMUTE_COMPILE_FLAGS_DEBUG})
+  SET_TARGET_PROPERTIES(${_target} PROPERTIES
+    COMPILE_DEFINITIONS ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}
+    COMPILE_FLAGS       ${WINTERMUTE_COMPILE_FLAGS_DEBUG}
+    )
   endif()
 ENDMACRO(wintermute_add_target_properties)
 
@@ -89,7 +84,7 @@ macro(wintermute_define_plugin)
 
   add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
   target_link_libraries(${wdp_TARGET} wintermutecore ${wdp_LIBRARIES})
-  target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
+  #target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
   wintermute_link_libraries(${wdp_TARGET})
   wintermute_add_target_properties(${wdp_TARGET})
 endmacro(wintermute_define_plugin)
