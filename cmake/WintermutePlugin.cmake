@@ -24,6 +24,7 @@ include(WintermuteSourceBuild
   )
 
 include(WintermuteTest)
+include(WintermuteVariables)
 
 MACRO(wintermute_plugin_declare)
   SET(options
@@ -38,8 +39,9 @@ MACRO(wintermute_plugin_declare)
   CMAKE_PARSE_ARGUMENTS(_wpd "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+  wintermute_add_target_properties(${_wpd_TARGET})
   target_link_libraries(${_wpd_TARGET}
-    wintermutecore)
+    wintermute)
 
   set(_include_dirs )
   set(_libs )
