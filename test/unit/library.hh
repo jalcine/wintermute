@@ -50,9 +50,9 @@ public:
     }
   }
 
-  Library::Ptr fetchWorkingLibrary(const string& path = SAMPLE_PLUGIN_PATH)
+  Library::Ptr fetchWorkingLibrary(const string& thePath = SAMPLE_PLUGIN_PATH)
   {
-    libraryPtr = std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
+    libraryPtr = std::make_shared<Library>(thePath);
 
     TSM_ASSERT ( "Library pointer allocated with full file path.",
       libraryPtr );
@@ -63,7 +63,7 @@ public:
 
     TSM_ASSERT_EQUALS ( "Library reports provided file name.",
       libraryPtr->filename(),
-      SAMPLE_PLUGIN_PATH );
+      thePath );
 
     return libraryPtr;
   }
@@ -98,18 +98,18 @@ public:
 
   void testUnloadingLibrary()
   {
-    Library::Ptr libraryPtr = fetchWorkingLibrary();
+    Library::Ptr aLibraryPtr = fetchWorkingLibrary();
 
     TSM_ASSERT_EQUALS ( "Library unloaded successfully.",
-      libraryPtr->unload(),
+      aLibraryPtr->unload(),
       Library::LoadNotLoaded );
 
     TSM_ASSERT_EQUALS ( "Library status = LoadNotLoaded",
-      libraryPtr->loadedStatus(),
+      aLibraryPtr->loadedStatus(),
       Library::LoadNotLoaded );
 
     TSM_ASSERT ( "Wipe filename on unload.",
-      libraryPtr->filename().empty() );
+      aLibraryPtr->filename().empty() );
   }
 
   void testDiscoverLibraryByName()

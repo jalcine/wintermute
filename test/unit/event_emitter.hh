@@ -38,7 +38,7 @@ public:
       emitter = make_shared<Emitter>(loop)
     );
 
-    TS_ASSERT_THROWS (
+    TS_ASSERT_THROWS(
       emitter2 = make_shared<Emitter>(nullptr),
       std::invalid_argument
     );
@@ -112,6 +112,7 @@ public:
 
     TS_ASSERT_THROWS_NOTHING ( emitter->listen("sample", onceListener) );
     TS_ASSERT_THROWS_NOTHING ( emitter->listen("sample", allListener) );
+    TS_ASSERT_THROWS_NOTHING ( emitter->emit(event) );
     TS_ASSERT_THROWS_NOTHING ( emitter->emit(event) );
 
     auto sampleListeners = emitter->listeners("sample");
