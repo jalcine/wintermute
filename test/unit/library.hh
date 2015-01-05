@@ -62,8 +62,11 @@ public:
     TSM_ASSERT_EQUALS (
       "Library loads successfully.",
       libraryPtr->loadedStatus(),
-      Library::LoadIsLoaded
-    );
+      Library::LoadIsLoaded );
+
+    TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+      libraryPtr->filename(),
+      thePath );
 
     return libraryPtr;
   }
@@ -99,14 +102,13 @@ public:
 
   void testUnloadingLibrary()
   {
-    Library::Ptr aLibraryPtr =
-      std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
+    Library::Ptr aLibraryPtr = fetchWorkingLibrary();
 
     TSM_ASSERT_EQUALS ( "Library unloaded successfully.",
       aLibraryPtr->unload(),
       Library::LoadNotLoaded );
 
-    TSM_ASSERT_EQUALS ( "Library status == LoadNotLoaded",
+    TSM_ASSERT_EQUALS ( "Library status = LoadNotLoaded",
       aLibraryPtr->loadedStatus(),
       Library::LoadNotLoaded );
 
