@@ -85,10 +85,15 @@ Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate(pluginName))
 Plugin::~Plugin()
 {
   W_PRV(Plugin);
-  if (d->library->loadedStatus() == Library::LoadIsLoaded)
+
+  if (d->library && d->library->loadedStatus() == Library::LoadIsLoaded)
   {
     wdebug("Unloading plugin's library prior to deallocation...");
     d->library->unload();
+  }
+  else
+  {
+    wdebug("No library instance.");
   }
 
   wdebug("Deallocated a plugin.");
