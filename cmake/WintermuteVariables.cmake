@@ -30,12 +30,12 @@ SET(WINTERMUTE_COMPILE_FLAGS
   -Wunused
   -Wctor-dtor-privacy
   -Wenum-compare
+  -fmessage-length=0
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -O0
   -g3
-  -fexceptions
   -Wextra
   -Wno-conversion-null
   -Wno-deprecated
@@ -47,7 +47,7 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -Wunused-parameter
   -Wunused-variable
   -Wwrite-strings
-  -ftemplate-backtrace-limit=0
+  -ggdb3
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
@@ -73,7 +73,6 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
       -fprofile-arcs
       -ftest-coverage
-      -fabi-version=4
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
@@ -81,13 +80,15 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   endif()
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION MATCHES "^4.6")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+    CMAKE_CXX_COMPILER_VERSION MATCHES "^4.6")
   list(APPEND WINTERMUTE_COMPILE_FLAGS
     --std=c++0x
   )
 else()
   list(APPEND WINTERMUTE_COMPILE_FLAGS
-    --std=c++11
+    --std=c++14
+    -gstabs+
   )
 endif()
 

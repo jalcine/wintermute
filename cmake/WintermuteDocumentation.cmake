@@ -110,7 +110,7 @@ MACRO(doxygen_generate_documentation)
 
   SET(_doxy_args "${_doxy_config_path}")
 
-  ADD_CUSTOM_TARGET("${_doxy_TARGET}-docs" ALL
+  ADD_CUSTOM_TARGET("${_doxy_TARGET}-docs"
     COMMAND ${DOXYGEN_EXECUTABLE} ${_doxy_args}
     DEPENDS ${_doxy_BUILD_AFTER}
     WORKING_DIRECTORY ${_doxy_working_dir}

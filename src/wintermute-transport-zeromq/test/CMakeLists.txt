@@ -17,15 +17,11 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-# == Root library.
-ADD_SUBDIRECTORY(wintermutecore)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-# == Standalone Plugins
-#ADD_SUBDIRECTORY(wintermute-daemon)
-#ADD_SUBDIRECTORY(wintermute-heartbeat)
-
-# == Transports
-#ADD_SUBDIRECTORY(wintermute-transport-dbus)
-ADD_SUBDIRECTORY(wintermute-transport-zeromq)
-#ADD_SUBDIRECTORY(wintermute-transport-http)
-#ADD_SUBDIRECTORY(wintermute-transport-gcm)
+WINTERMUTE_PLUGIN_ADD_TEST(
+  PREFIX unit-zmq
+  TARGET transport-zmq
+  NAME tunnel
+  HEADER ${CMAKE_CURRENT_SOURCE_DIR}/tunnel.hh
+  )
