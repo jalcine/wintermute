@@ -18,9 +18,12 @@
 #include "tunnel.hh"
 
 using Wintermute::TunnelPrivate;
+using Wintermute::Events::Emitter;
+using Wintermute::Events::Loop;
 
 TunnelPrivate::TunnelPrivate()
 {
+  emitter = make_shared<Emitter>(Loop::primary());
 }
 
 TunnelPrivate::~TunnelPrivate()

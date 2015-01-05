@@ -20,7 +20,7 @@
 
 namespace Wintermute
 {
-struct DispatcherPrivate
+class DispatcherPrivate
 {
 public:
   string name;

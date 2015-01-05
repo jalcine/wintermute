@@ -31,13 +31,11 @@ class TunnelPrivate
   public:
     typedef unordered_map<string, Tunnel::Dispatcher::Ptr> DispatcherMap;
     typedef unordered_map<string, Tunnel::Receiver::Ptr> ReceiverMap;
-    typedef stack<Message> MessageQueue;
     explicit TunnelPrivate();
     virtual ~TunnelPrivate();
 
     DispatcherMap dispatchers;
     ReceiverMap receivers;
-    MessageQueue obtainedMessages;
     Events::Emitter::Ptr emitter;
 };
 }
