@@ -31,8 +31,8 @@ namespace Wintermute
 {
 class Message;
 class TunnelPrivate;
-struct DispatcherPrivate;
-struct ReceiverPrivate;
+class DispatcherPrivate;
+class ReceiverPrivate;
 
 /**
  * @brief Handles the act of sending and receiving new messages.
@@ -95,7 +95,12 @@ public:
     /* Sends out the provided message over the wire. */
     virtual bool send(const Message & message) = 0;
 
+    /* The emitter that this Dispatcher uses. */
     virtual Events::Emitter::Ptr emitter() const;
+
+    virtual void start() = 0;
+
+    virtual void stop() = 0;
 
   protected:
     /* Protected constructor. */
@@ -135,16 +140,20 @@ public:
     // Public destructor.
     virtual ~Receiver();
 
-    /**
-     * Obtains the name of this Receiver.
-     */
+    /* Obtains the name of this Receiver. */
     string name() const;
 
-    ///< The Emitter object used by this Receiver.
+    /* The Emitter object used by this Receiver. */
     virtual Events::Emitter::Ptr emitter() const;
+
+    virtual void start() = 0;
+
+    virtual void stop() = 0;
 
   protected:
     explicit Receiver(const string & name);
+
+    void handleMessage(const Message& message);
 
   private:
     W_DEF_PRIVATE(Receiver)
@@ -155,6 +164,8 @@ public:
 
   // Unregisters a dispatcher into the Tunnel.
   static bool unregisterDispatcher(const Dispatcher::Ptr& dispatcher);
+
+  static bool unregisterDispatcher(const string& dispatcherName);
 
   // Removes all of the dispatchers from the Tunnel.
   static void clearAllDispatchers();
@@ -171,6 +182,8 @@ public:
   // Unregisters a receiver into the Tunnel.
   static bool unregisterReceiver(const Receiver::Ptr& receiver);
 
+  static bool unregisterReceiver(const string& receiverName);
+
   // Removes all of the receivers from the Tunnel.
   static void clearAllReceivers();
 
@@ -182,6 +195,10 @@ public:
 
   // Sends a message through the Tunnel through all dispatchers.
   static void sendMessage(const Message& message);
+
+  static void start();
+
+  static void stop();
 
   /**
    * Represents an event relating to a Message.

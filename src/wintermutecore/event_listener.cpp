@@ -17,6 +17,7 @@
 
 #include "event_listener.hh"
 #include "events.hpp"
+#include "logging.hpp"
 
 using namespace Wintermute::Events;
 
@@ -43,5 +44,7 @@ void Listener::invoke(const Event::Ptr& event) throw (std::invalid_argument)
     throw std::invalid_argument("An invalid Event pointer was provided.");
   }
   W_PRV(Listener);
+  assert(event);
+  wdebug("Invoking callback for " + event->name() + "...");
   d->callback(event);
 }

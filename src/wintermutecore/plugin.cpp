@@ -28,9 +28,11 @@ using Wintermute::PluginPrivate;
 
 bool isLibraryCompatible(Library::Ptr& libraryPtr)
 {
+  assert(libraryPtr);
   if (!libraryPtr)
   {
-    throw std::invalid_argument("Invalid pointer to library.");
+    werror("Obtained an invalid pointer to a library.");
+    //throw std::invalid_argument("Invalid pointer to library.");
     return false;
   }
 
@@ -103,7 +105,7 @@ Plugin::~Plugin()
 // TODO: Dice up this function.
 Plugin::Ptr Plugin::find(const string& pluginQuery)
 {
-  Plugin::Ptr pluginPtr;
+  Plugin::Ptr pluginPtr = nullptr;
 
   wdebug("Searching for a plugin identified by " + pluginQuery + " ...");
   if (pluginQuery.empty())
