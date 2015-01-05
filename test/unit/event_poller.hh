@@ -16,9 +16,10 @@
  */
 
 #include <cstdio>
+#include <chrono>
+#include <ctime>
 #include "test_suite.hpp"
 #include "wintermutecore/events.hpp"
-#include "wintermutecore/globals.hh"
 
 using Wintermute::Events::Event;
 using Wintermute::Events::Loop;
@@ -27,12 +28,12 @@ using std::dynamic_pointer_cast;
 
 SharedPtr<uv_pipe_t> open_local_socket_for_test(uv_loop_t* loopPtr)
 {
-  int r = 0;
+  auto nowTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  string nowStr = ctime(&nowTime);
+  string pathToSocket = TEST_BASE_DIR "/wintermute-test-" + nowStr + ".sock\0";
   SharedPtr<uv_pipe_t> pipePtr = make_shared<uv_pipe_t>();
-  r = uv_pipe_init(loopPtr, pipePtr.get(), 0);
-  W_CHECK_UV(r, "uv_pipe_init");
-  uv_pipe_bind(pipePtr.get(), TEST_BASE_DIR "/wintermute-test.sock");
-  W_CHECK_UV(r, "uv_pipe_bind");
+  W_CHECK_UV(uv_pipe_init(loopPtr, pipePtr.get(), 0), "uv_pipe_init");
+  W_CHECK_UV(uv_pipe_bind(pipePtr.get(), pathToSocket.c_str() ), "uv_pipe_bind");
   return pipePtr;
 }
 
@@ -70,8 +71,7 @@ public:
   {
     bool isCalled = false;
     int fileDesc = 0, r = 0;
-    SampleLoop::Ptr loop = make_shared<SampleLoop>();
-    uv_loop_t* loopPtr = loop->uvLoop();
+    Loop::Ptr loop = Loop::primary();
     Poller::Ptr poller;
     auto invokeFunction = [&isCalled, &poller](const Event::Ptr & eventPtr) -> void
     {
@@ -80,7 +80,7 @@ public:
       isCalled = true;
     };
 
-    SharedPtr<uv_pipe_t> pipePtr = open_local_socket_for_test(loopPtr);
+    SharedPtr<uv_pipe_t> pipePtr = open_local_socket_for_test(uv_default_loop());
     r = uv_fileno((uv_handle_t*)pipePtr.get(), &fileDesc);
     W_CHECK_UV(r, "uv_fileno");
     TS_ASSERT_DIFFERS ( fileDesc, 0 );
@@ -89,12 +89,10 @@ public:
     TS_ASSERT ( poller );
     poller->listenForEvent("core.events.poll", invokeFunction, Listener::FrequencyOnce);
 
-    TS_ASSERT ( poller->start() );
-    TS_ASSERT ( loop->run() );
+    TSM_ASSERT ( "Poller started.", poller->start() );
+    TSM_ASSERT ( "Loop ran.", loop->run() );
     TSM_ASSERT ( "Event 'core.events.poll' was emitted by poller.", isCalled );
 
     uv_close((uv_handle_t*)pipePtr.get(), NULL);
   }
 };
-
-
