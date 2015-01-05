@@ -16,6 +16,7 @@
 #include <algorithm>
 #include "event_emitter.hh"
 #include "events.hpp"
+#include "logging.hpp"
 
 using namespace Wintermute::Events;
 using std::for_each;
@@ -83,7 +84,9 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
     return (listenerPair.second == listener);
   });
 
-  if (listenerItr != std::end(d->listeners)) {
+  if (listenerItr != std::end(d->listeners))
+  {
+    wdebug("Removed found listener.");
     d->listeners.erase(listenerItr);
     return true;
   }
@@ -93,10 +96,12 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 
 void Emitter::emit(const Event::Ptr& event)
 {
+  wdebug("Invoking " + event->name() + "...");
   Listener::List listenersForEvent = listeners(event->name());
   for_each(begin(listenersForEvent), end(listenersForEvent),
     [&](Listener::Ptr & listener)
   {
+    assert(listener);
     listener->invoke(event);
 
     if (listener->frequency == Listener::FrequencyOnce)

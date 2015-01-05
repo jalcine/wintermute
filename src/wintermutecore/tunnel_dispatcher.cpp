@@ -19,26 +19,58 @@
 #include "tunnel.hpp"
 #include "logging.hpp"
 
+using std::dynamic_pointer_cast;
 using Wintermute::Tunnel;
 using Wintermute::DispatcherPrivate;
 using Wintermute::Events::Emitter;
+using Wintermute::Events::Event;
+using Wintermute::Events::Loop;
 
-Tunnel::Dispatcher::Dispatcher(const string& theName) : d_ptr(new DispatcherPrivate)
+Tunnel::Dispatcher::Dispatcher(const string& theName) :
+  d_ptr(new DispatcherPrivate)
 {
   W_PRV(Dispatcher);
   d->name = theName;
-  d->emitter = make_shared<Events::Emitter>(Tunnel::instance()->emitter()->loop());
+  Loop::Ptr loop = Tunnel::instance()->emitter()->loop();
+  d->emitter = make_shared<Events::Emitter>(loop);
+  auto cb = [this](const Event::Ptr& event)
+  {
+    assert(event);
+    Tunnel::MessageEvent::Ptr msgEvent =
+      dynamic_pointer_cast<Tunnel::MessageEvent>(event);
+    assert(msgEvent);
+
+    if (!msgEvent) return; // We were not meant to deal with this.
+
+    if (msgEvent->direction == Tunnel::MessageEvent::DirectionOutgoing)
+    {
+      wdebug("Obtained a MessageEvent for sending a message for " +
+        this->name() + ".");
+      const Message message = msgEvent->message;
+      const bool wasSent = this->send(message);
+
+      if (!wasSent)
+      {
+        werror("Failed to send out a message using the '" + this->name() +
+          "' dispatcher!");
+      }
+    }
+  };
+
+  Tunnel::instance()->listenForEvent(W_EVENT_TUNNEL_MESSAGE, cb);
   wdebug("Built a new dispatcher for the tunnel called " + name() + ".");
 }
 
 string Tunnel::Dispatcher::name() const {
   W_PRV(const Dispatcher);
+  assert(!d->name.empty());
   return d->name;
 }
 
 Emitter::Ptr Tunnel::Dispatcher::emitter() const
 {
   W_PRV(Dispatcher);
+  assert(d->emitter);
   return d->emitter;
 }
 
@@ -46,4 +78,3 @@ Tunnel::Dispatcher::~Dispatcher()
 {
   wdebug("Destroyed the " + name() + " dispatcher.");
 }
-

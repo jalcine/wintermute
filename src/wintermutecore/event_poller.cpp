@@ -14,6 +14,7 @@
  */
 
 #include <string>
+#include <limits>
 #include "events.hpp"
 #include "event_poller.hh"
 #include "event_loop.hh"
@@ -21,26 +22,38 @@
 
 using namespace Wintermute::Events;
 
-void wintermute_event_poller_callback(uv_poll_t* handle, int status, int events)
+void w_event_poller_cb(uv_poll_t* handle, int status, int events)
 {
+  assert(handle);
+  //assert(status && status < std::numeric_limits<int>::max());
+
   if (status == 0)
   {
-    wdebug("Found " + to_string(events) + " events available from libuv.");
+    wdebug("Found " + to_string(events) + " polling events available from libuv.");
     PollerPrivate* dptr = (PollerPrivate*) handle->data;
+    assert(dptr);
     dptr->callback(dptr->q_ptr);
   }
   else
   {
-    // TODO: Handle errors whilst polling.
+    werror("Error polling: " + string(uv_strerror(status)) + string(uv_err_name(status)));
   }
 }
 
-Poller::Poller(Poller::FileDescriptor aFd, Poller::PollDirection aDirection,
-  const Loop::Ptr& loopPtr) : d_ptr(new PollerPrivate(nullptr))
+Poller::Poller(const Poller::FileDescriptor& aFd,
+  const Poller::PollDirection& aDirection,
+  const Loop::Ptr& loopPtr) : d_ptr(new PollerPrivate)
 {
+  assert(d_ptr && d_ptr.get() != NULL);
+
   if (aFd == 0)
   {
     throw std::invalid_argument("Provided an invalid file descriptor.");
+  }
+
+  if ((int) aDirection > 2 || (int) aDirection < 0)
+  {
+    throw std::invalid_argument("Provided an invalid direction to listen for.");
   }
 
   if (!loopPtr)
@@ -51,9 +64,12 @@ Poller::Poller(Poller::FileDescriptor aFd, Poller::PollDirection aDirection,
   W_PRV(Poller);
   d->q_ptr = make_shared<Poller>(*this);
   d->emitter = make_shared<Emitter>(loopPtr);
+  d->handle.reset(new uv_poll_t);
   d->fd = aFd;
   d->loop = loopPtr;
   d->direction = aDirection;
+  assert(d->handle);
+
   d->applyCallback(loopPtr->d_ptr->loop);
 }
 
@@ -83,23 +99,48 @@ Poller::PollDirection Poller::direction() const
 Loop::Ptr Poller::loop() const
 {
   W_PRV(const Poller);
+  assert(d->loop);
   return d->loop;
 }
 
 bool Poller::start()
 {
+  if (isActive()) return true;
   W_PRV(Poller);
   int r = 0;
-  r = uv_poll_start(&d->handle, d->direction, &wintermute_event_poller_callback);
-  return r == 0;
+  const uv_poll_event uvDir = static_cast<uv_poll_event>(d->direction);
+  assert(d->handle);
+
+  wdebug("Starting poller for file descriptor " + to_string(fd()) + " in "
+      + to_string(uvDir) + "...");
+
+  r = uv_poll_start(d->handle.get(), uvDir, &w_event_poller_cb);
+  W_CHECK_UV(r, "uv_poll_start");
+
+  wdebug("Was poller for file descriptor " + to_string(fd()) + " started? " +
+    to_string( r == 0 ));
+  return (r == 0) && isActive();
 }
 
 bool Poller::stop()
 {
+  if (!isActive()) return true;
   W_PRV(Poller);
-  int r;
-  r = uv_poll_stop(&d->handle);
+  wdebug("Stopping poller for file descriptor " + to_string(fd()) + "...");
+
+  int r = 0;
+  r = uv_poll_stop(d->handle.get());
+  W_CHECK_UV(r, "uv_poll_stop");
+
+  wdebug("Was poller for file descriptor " + to_string(fd()) + " stopped? " +
+    to_string( r == 0 ));
   return r == 0;
 }
 
-
+bool Poller::isActive() const
+{
+  W_PRV(const Poller);
+  assert(d->handle);
+  auto hdl = (const uv_handle_t*) d->handle.get();
+  return uv_is_active(hdl) > 0;
+}

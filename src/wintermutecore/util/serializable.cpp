@@ -112,3 +112,16 @@ Serializable::operator Serializable::Map() const
 {
   return serialize();
 }
+
+Serializable& Serializable::operator =(const string& jsonString)
+{
+  Map map = fromString(jsonString);
+  deserialize(map);
+  return *this;
+}
+
+Serializable& Serializable::operator =(const Map& data)
+{
+  deserialize(data);
+  return *this;
+}

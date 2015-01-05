@@ -26,33 +26,45 @@ namespace Wintermute
 {
 namespace Events
 {
-struct PollerPrivate
+class PollerPrivate
 {
+public:
   W_DEF_PUBLIC(Poller);
   int fd;
   Poller::PollDirection direction;
   Loop::Ptr loop;
   Emitter::Ptr emitter;
   function<void (Poller::Ptr& )> callback;
-  uv_poll_t handle;
+  SharedPtr<uv_poll_t> handle;
 
-  explicit PollerPrivate(Poller::Ptr qPtr) :
-    q_ptr(qPtr), fd(0), direction(Poller::PollReadable) { }
+  explicit PollerPrivate(Poller::Ptr qPtr = nullptr) :
+    q_ptr(qPtr), fd(0), direction(Poller::PollReadable), loop(nullptr),
+    emitter(nullptr), callback(nullptr), handle(nullptr)
+  {
+  }
 
   void applyCallback(uv_loop_t* loopHdl)
   {
-    assert(q_ptr);
-    int r = 0;
+    assert(this);
+    assert(q_ptr && q_ptr.get() != NULL);
+    assert(loopHdl);
     assert(fd > 0);
-    r = uv_poll_init(loopHdl, &handle, fd);
-    assert ( r == 0 );
-    handle.data = this;
+
+    int r = 0;
+    r = uv_poll_init_socket(loopHdl, handle.get(), fd);
+    W_CHECK_UV(r, "uv_poll_init_socket");
+    handle->data = this;
+    assert(handle->data);
 
     callback = [](Poller::Ptr& pollerPtr) -> void
     {
-      assert(pollerPtr);
-      wdebug("Obtained a poll event from the provided FD: " + to_string(pollerPtr->fd()));
-      Event::Ptr event = make_shared<PollEvent>(pollerPtr);
+      assert(pollerPtr.get() != NULL);
+      wdebug("Obtained a poll event from the provided file descriptor: "
+        + to_string(pollerPtr->fd()));
+
+      PollEvent::Ptr event = make_shared<PollEvent>(pollerPtr);
+      assert(event && event.get() != NULL);
+
       pollerPtr->emitEvent(event);
     };
     assert(callback);

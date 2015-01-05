@@ -49,8 +49,8 @@ public:
     LoadUndefined    = 0x000,
     LoadNotLoaded    = 0x100,
     LoadIsLoaded     = 0x200,
-    LoadStateSuccess = LoadIsLoaded,
-    LoadStateFailure = LoadNotLoaded,
+    LoadStateSuccess = 0x210,
+    LoadStateFailure = 0x110,
   };
 
   /* Loads a library into memory.

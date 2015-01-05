@@ -40,13 +40,13 @@ Module::Designation::Designation(const Designation& other) : Serializable(other)
   d->clone(other.d_ptr);
 }
 
-Module::Designation::Designation(const string& jsonString) : 
+Module::Designation::Designation(const string& jsonString) :
   d_ptr (std::make_shared<DesignationPrivate>())
 {
   deserialize(Serializable::fromString(jsonString));
 }
 
-Module::Designation::Designation() : 
+Module::Designation::Designation() :
   d_ptr (std::make_shared<DesignationPrivate>())
 {
   W_PRV(Designation);

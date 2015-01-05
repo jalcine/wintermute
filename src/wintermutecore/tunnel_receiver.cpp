@@ -22,13 +22,39 @@
 using Wintermute::Tunnel;
 using Wintermute::ReceiverPrivate;
 using Wintermute::Events::Emitter;
+using Wintermute::Events::Event;
+using Wintermute::Events::Loop;
 
-Tunnel::Receiver::Receiver(const string& theName) : d_ptr(new ReceiverPrivate)
+Tunnel::Receiver::Receiver(const string& theName) :
+  d_ptr(new ReceiverPrivate)
 {
   W_PRV(Receiver);
   d->name = theName;
-  d->emitter = make_shared<Events::Emitter>(Tunnel::instance()->emitter()->loop());
-  wdebug("Built a new receiver for the tunnel called " + name() + ".");
+  Loop::Ptr loop = Tunnel::instance()->emitter()->loop();
+  assert(loop);
+  d->emitter = make_shared<Events::Emitter>(loop);
+
+  auto cb = [](const Event::Ptr& eventPtr)
+  {
+    const Tunnel::MessageEvent::Ptr msgEvent =
+      std::dynamic_pointer_cast<Tunnel::MessageEvent>(eventPtr);
+
+    if (!msgEvent) return; // We were not meant to deal with this.
+
+    if (msgEvent->direction == Tunnel::MessageEvent::DirectionIncoming)
+    {
+      wdebug("Incoming message: " + (string) msgEvent->message);
+      Tunnel::instance()->emitEvent(msgEvent);
+    }
+  };
+
+  assert ( listenForEvent(W_EVENT_TUNNEL_MESSAGE, cb) );
+  wdebug("Built a new receiver for the tunnel called '" + name() + "'.");
+}
+
+Tunnel::Receiver::~Receiver()
+{
+  wdebug("Destroyed the " + name() + " receiver.");
 }
 
 string Tunnel::Receiver::name() const
@@ -43,7 +69,12 @@ Emitter::Ptr Tunnel::Receiver::emitter() const
   return d->emitter;
 }
 
-Tunnel::Receiver::~Receiver()
+void Tunnel::Receiver::handleMessage(const Message& message)
 {
-  wdebug("Destroyed the " + name() + " receiver.");
+  wdebug("Obtained " + static_cast<string>(message) +
+    "; raising in Tunnel...");
+  MessageEvent::Ptr msgEvent = make_shared<MessageEvent>(message);
+  msgEvent->direction = MessageEvent::DirectionIncoming;
+  Tunnel::instance()->emitEvent(msgEvent);
+  wdebug("Raised Message in Tunnel.");
 }
