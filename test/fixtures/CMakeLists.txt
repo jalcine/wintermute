@@ -18,13 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
+include(WintermuteTest)
+
 wintermute_define_plugin(
   TARGET
     wintermutesample
   SOURCES
     ./wintermute_sample.cc
   INCLUDE_DIRECTORIES
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/test/include
-    ${CMAKE_CURRENT_BINARY_DIR}/../../src/wintermutecore
+    ${WINTERMUTE_TEST_INCLUDE_DIRS}
   )

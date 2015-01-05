@@ -19,27 +19,38 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
+INCLUDE(Dart)
+INCLUDE(FindCxxTest)
 INCLUDE(WintermuteTestMacros)
+
 INCLUDE(WintermuteSourceBuild
   OPTIONAL
   RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
   )
-INCLUDE(Dart)
-INCLUDE(FindCxxTest)
 
 IF (NOT CXXTEST_FOUND)
   MESSAGE(ERROR "We need CxxTest for the test suite.")
   RETURN()
 ENDIF()
 
-# TODO: Make this source-specific
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
-  ${CXXTEST_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}/test/include
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_BINARY_DIR}/src/wintermutecore
-  )
+  ${CXXTEST_INCLUDE_DIR})
+
+if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
+  SET(WINTERMUTE_TEST_INCLUDE_DIRS
+    ${CMAKE_SOURCE_DIR}/test/include
+    ${CMAKE_SOURCE_DIR}/test
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_BINARY_DIR}/src/wintermutecore
+    ${WINTERMUTE_TEST_INCLUDE_DIRS}
+    )
+else()
+  SET(WINTERMUTE_TEST_INCLUDE_DIRS
+    ${WINTERMUTE_TEST_INCLUDE_DIRS}
+    ${WINTERMUTE_TEST_INCLUDE_DIR}
+    )
+endif()
 
 # TODO: Make this source-specific
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in

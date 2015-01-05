@@ -35,17 +35,18 @@ include(CMakeParseArguments)
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
   # Add inclusion directories to target.
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES
-    INCLUDE_DIRECTORIES "${WINTERMUTE_INCLUDE_DIRS}"
-    COMPILE_OPTIONS     "${WINTERMUTE_COMPILE_FLAGS}"
-    COMPILE_DEFINITIONS "${WINTERMUTE_COMPILE_DEFINITIONS}"
-  )
+  TARGET_INCLUDE_DIRECTORIES(${_target} PUBLIC
+    ${WINTERMUTE_INCLUDE_DIRS})
+  TARGET_COMPILE_OPTIONS(${_target} PUBLIC
+    ${WINTERMUTE_COMPILE_FLAGS})
+  TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC
+    ${WINTERMUTE_COMPILE_DEFINITIONS})
 
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES
-    COMPILE_DEFINITIONS ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG}
-    COMPILE_FLAGS       ${WINTERMUTE_COMPILE_FLAGS_DEBUG}
-    )
+    TARGET_COMPILE_OPTIONS(${_target} PUBLIC
+      ${WINTERMUTE_COMPILE_FLAGS_DEBUG})
+    TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC
+      ${WINTERMUTE_COMPILE_DEFINITIONS_DEBUG})
   endif()
 ENDMACRO(wintermute_add_target_properties)
 
@@ -84,7 +85,7 @@ macro(wintermute_define_plugin)
 
   add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
   target_link_libraries(${wdp_TARGET} wintermutecore ${wdp_LIBRARIES})
-  #target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
+  target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
   wintermute_link_libraries(${wdp_TARGET})
   wintermute_add_target_properties(${wdp_TARGET})
 endmacro(wintermute_define_plugin)

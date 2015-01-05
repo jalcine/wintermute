@@ -21,8 +21,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 if (NOT DEFINED _wntr_srcbld)
   set(_wntr_srcbld ON)
+  message(STATUS "Source build of Wintermute; localizing necessary components.")
 else()
   return()
 endif()
 
-message(STATUS "Source build of Wintermute; localizing necessary components.")
