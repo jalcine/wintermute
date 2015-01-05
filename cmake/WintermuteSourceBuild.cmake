@@ -1,4 +1,4 @@
-# vim: set ts=2 sts=2 sw=2 fdm=indent
+# vim: set ts=2 sts=2 sw=2 fdm=marker
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -17,5 +17,12 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-# == Root library.
-ADD_SUBDIRECTORY(wintermutecore)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+
+if (NOT DEFINED _wntr_srcbld)
+  set(_wntr_srcbld ON)
+else()
+  return()
+endif()
+
+message(STATUS "Source build of Wintermute; localizing necessary components.")
