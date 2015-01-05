@@ -250,8 +250,7 @@ FILE_PATTERNS          = *.cpp *.hpp
 RECURSIVE              = YES
 EXCLUDE_SYMLINKS       = YES
 #EXCLUDE_PATTERNS       = "*.cc,*.hh"
-EXCLUDE_SYMBOLS        = "*Private" \
-                         "W_DEF*"
+EXCLUDE_SYMBOLS        = "*Private" "W_*"
 EXAMPLE_PATH           = "@_doxy_EXAMPLE_PATH@"
 EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
