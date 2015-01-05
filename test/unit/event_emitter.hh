@@ -38,7 +38,7 @@ public:
       emitter = make_shared<Emitter>(loop)
     );
 
-    TS_ASSERT_THROWS(
+    TS_ASSERT_THROWS (
       emitter2 = make_shared<Emitter>(nullptr),
       std::invalid_argument
     );
