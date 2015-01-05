@@ -23,6 +23,7 @@
 #include <wintermutecore/call.hpp>
 #include <wintermutecore/library.hpp>
 #include <wintermutecore/events.hpp>
+#include <string>
 #include <cxxtest/TestSuite.h>
 #include "wintermutecore/event_loop.hh"
 #include "wintermutecore/plugin.hpp"
