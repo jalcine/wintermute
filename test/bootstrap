@@ -32,6 +32,7 @@ bootstrap_build() {
   sudo apt-get install -qq lcov
   sudo apt-get install -qq pkg-config
   sudo apt-get install -qq cmake
+  sudo apt-get install -qq libzmq3-dev libzmqpp-dev
 
   install_libuv
 
@@ -44,6 +45,7 @@ install_libuv() {
   sudo apt-get install git libtool autoconf automake -qq;
 
   git clone git://github.com/libuv/libuv ~/libuv;
+  git checkout v1.2.1;
   cd ~/libuv;
   sh autogen.sh;
   ./configure --prefix=/usr;

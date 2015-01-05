@@ -20,13 +20,25 @@
 #include <wintermutecore/logging.hpp>
 #include <wintermutecore/message.hpp>
 #include <wintermutecore/call.hpp>
+#include <wintermutecore/library.hpp>
 #include <wintermutecore/events.hpp>
 #include <string>
+#include <cxxtest/TestSuite.h>
 #include "wintermutecore/event_loop.hh"
 
 using std::string;
 
 // TODO: Compile a list of faux values.
+
+// {{{ Value Traits for CxxTest
+CXXTEST_ENUM_TRAITS(Wintermute::Library::LoadState,
+  CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadIsLoaded)
+  CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadNotLoaded)
+  CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadStateFailure)
+  CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadStateSuccess)
+  CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadUndefined)
+);
+// }}}
 
 // Generates a random designation.
 Wintermute::Module::Designation craftRandomDesignation()
@@ -77,6 +89,9 @@ public:
     return message == sendingMessage;
   }
 
+  virtual void start() { }
+  virtual void stop() { }
+
   Wintermute::Message message;
 };
 
@@ -96,7 +111,25 @@ public:
     emitEvent(msgPtr);
   }
 
+  virtual void start() { }
+  virtual void stop() { }
+
   Wintermute::Message message;
+};
+
+class SampleConsumingDispatcher : public Wintermute::Tunnel::Dispatcher
+{
+public:
+  explicit SampleConsumingDispatcher(const string& theName = "sample") : Wintermute::Tunnel::Dispatcher(theName) { }
+  virtual ~SampleConsumingDispatcher() { }
+
+  virtual bool send (const Wintermute::Message& sendingMessage)
+  {
+    receiver->message = sendingMessage;
+    return true;
+  }
+
+  SharedPtr<SampleReceiver> receiver;
 };
 
 class SampleVoidCall : public Wintermute::Call
