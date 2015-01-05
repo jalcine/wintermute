@@ -80,6 +80,8 @@ public:
   bool operator==(const Message& other) const;
 
   bool operator!() const;
+
+  using Serializable::operator=;
 };
 }
 

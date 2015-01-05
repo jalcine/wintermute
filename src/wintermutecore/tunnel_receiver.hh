@@ -20,7 +20,7 @@
 
 namespace Wintermute
 {
-struct ReceiverPrivate
+class ReceiverPrivate
 {
 public:
   string name;
