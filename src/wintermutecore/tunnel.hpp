@@ -84,6 +84,8 @@ public:
   {
   public:
     W_DECL_PTR_TYPE(Dispatcher)
+
+    /* Defines a list of Dispatcher objects. */
     typedef std::list<Dispatcher::Ptr> List;
 
     /* Public destructor. */
@@ -103,7 +105,7 @@ public:
     virtual void stop() = 0;
 
   protected:
-    /* Protected constructor. */
+    /* Constructor. */
     explicit Dispatcher(const string & name);
 
   private:
@@ -118,10 +120,10 @@ public:
    * @sa Wintermute::Tunnel
    * @sa Wintermute::Message
    *
-   * `Receiver` classes are used by Wintermute to handle the act of obtaining
-   * a `Message` from any arbitrary format and converting it into a composite
-   * `Message` locally. This level of abstraction allows Wintermute to fetch a
-   * `Message` without any real concern from where or how the `Message`came
+   * Receiver classes are used by Wintermute to handle the act of obtaining
+   * a Message from any arbitrary format and converting it into a composite
+   * Message locally. This level of abstraction allows Wintermute to fetch a
+   * Message without any real concern from where or how the Message came
    * from or came to be, respectfully.
    *
    * @todo Look into adding ones that have some form of encryption.
