@@ -87,3 +87,23 @@ MACRO(wintermute_plugin_validate)
 
   WINTERMUTE_ADD_TEST(plugin-verify ${_wpv_TARGET} ${_plugin_driver_file})
 ENDMACRO(wintermute_plugin_validate)
+
+MACRO(wintermute_plugin_add_test)
+  SET(options
+    )
+  SET(oneValueArgs
+    PREFIX
+    HEADER
+    NAME
+    TARGET
+    )
+  SET(multiValueArgs
+    )
+
+  CMAKE_PARSE_ARGUMENTS(_wpat "${options}"
+    "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  WINTERMUTE_ADD_TEST("plugin-${_wpat_PREFIX}" ${_wpat_NAME} ${_wpat_HEADER})
+  TARGET_LINK_LIBRARIES("plugin-${_wpat_PREFIX}_${_wpat_NAME}"
+    ${_wpat_TARGET})
+ENDMACRO(wintermute_plugin_add_test)
