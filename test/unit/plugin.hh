@@ -34,9 +34,24 @@ Plugin::Ptr fetchWorkingPlugin()
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
+  Plugin::Ptr pluginPtr;
+
   void setUp()
   {
-    DISABLE_LOGGING;
+  }
+
+  void tearDown()
+  {
+    if (pluginPtr)
+    {
+      TSM_ASSERT ( "Plugin released from library.",
+        Plugin::release(pluginPtr->name()) );
+    }
+
+    if (pluginPtr)
+    {
+      pluginPtr.reset();
+    }
   }
 
   void testFindLoadedPlugins()
@@ -47,14 +62,12 @@ public:
 
     {
       setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
-      Plugin::Ptr pluginPtr = Plugin::find(SAMPLE_PLUGIN_NAME);
+      pluginPtr = Plugin::find(SAMPLE_PLUGIN_NAME);
       unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
     }
 
     TSM_ASSERT ( "Plugin '" SAMPLE_PLUGIN_NAME "' found in listing.",
       Plugin::hasPlugin(SAMPLE_PLUGIN_NAME) == true);
-
-    Plugin::release(SAMPLE_PLUGIN_NAME);
   }
 
   void testDontFindMissingPlugins()
@@ -65,19 +78,17 @@ public:
 
   void testRetainsNameOfPlugin()
   {
-    Plugin::Ptr pluginPtr(fetchWorkingPlugin());
-    TS_ASSERT ( pluginPtr );
+    pluginPtr = fetchWorkingPlugin();
+
     TSM_ASSERT_EQUALS ( "Has the correct name",
       pluginPtr->name(), SAMPLE_PLUGIN_NAME);
-    TS_ASSERT ( Plugin::release(pluginPtr->name()) );
   }
 
   void testExposesTypeOfPlugin()
   {
-    Plugin::Ptr pluginPtr(fetchWorkingPlugin());
-    TS_ASSERT ( pluginPtr );
+    pluginPtr = fetchWorkingPlugin();
+
     TSM_ASSERT ( "Isn't an undefined value.",
       pluginPtr->type() != Plugin::PluginTypeUndefined );
-    TS_ASSERT ( Plugin::release(pluginPtr->name()) );
   }
 };
