@@ -57,10 +57,4 @@ void Listener::invoke(const Event::Ptr& event) throw (std::invalid_argument)
   {
     wdebug("No callback set up for this listener. A potential bug?");
   }
-
-  if (d->callback)
-  {
-    wdebug("Invoking callback for " + event->name() + "...");
-    d->callback(event);
-  }
 }
