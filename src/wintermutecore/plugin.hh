@@ -34,15 +34,16 @@ public:
   typedef Plugin*(*CtorFunctionPtr)(void);
   typedef const char*(*VersionFunctionPtr)(void);
   typedef bool(*DtorFunctionPtr)(Plugin::Ptr&);
-  typedef unordered_map<string, Plugin::Ptr> PluginList;
+  typedef unordered_map<string, Plugin::Ptr> PluginMap;
 
-  static PluginList plugins;
+  static PluginMap plugins;
   Library::Ptr library;
   string name;
 
   explicit PluginPrivate(const string& pluginName);
   virtual ~PluginPrivate();
-  static void registerPlugin(Plugin::Ptr& plugin);
+  static bool registerPlugin(Plugin::Ptr& plugin);
+  static bool unregisterPlugin(const string& pluginName);
 };
 }
 #endif
