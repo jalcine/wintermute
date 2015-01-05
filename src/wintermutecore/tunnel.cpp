@@ -27,17 +27,18 @@ using Wintermute::Events::Emitter;
 using Wintermute::Events::Loop;
 using Wintermute::Events::Event;
 using std::dynamic_pointer_cast;
+using std::for_each;
 
 W_DECLARE_SINGLETON(Tunnel)
 
 Tunnel::Tunnel() : d_ptr(new TunnelPrivate)
 {
-  Tunnel::d_ptr->emitter = make_shared<Emitter>(Loop::primary());
-  // TODO: Add listener for incoming messages.
+  assert(d_ptr);
 }
 
 Tunnel::~Tunnel()
 {
+  stop();
   //clearAllReceivers();
   //clearAllDispatchers();
 }
@@ -50,31 +51,10 @@ Emitter::Ptr Tunnel::emitter() const
 
 bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 {
+  assert(dispatcher);
   W_SPRV(Tunnel);
   auto thePair = std::make_pair(dispatcher->name(), dispatcher);
   d->dispatchers.insert(thePair);
-
-  // TODO: Move this into the constructor for the Dispatcher.
-  Tunnel::instance()->listenForEvent(W_EVENT_TUNNEL_MESSAGE,
-  [&dispatcher](const Event::Ptr& event)
-  {
-    Tunnel::MessageEvent::Ptr msgEvent =
-      dynamic_pointer_cast<Tunnel::MessageEvent>(event);
-
-    if (!msgEvent) return; // We were not meant to deal with this.
-
-    if (msgEvent->direction == Tunnel::MessageEvent::DirectionOutgoing)
-    {
-      const Message message = msgEvent->message;
-      const string name = dispatcher->name();
-      const bool wasSent = dispatcher->send(message);
-      if (!wasSent)
-      {
-        werror("Failed to send out a message using the '" + name + "' dispatcher!");
-      }
-    }
-  });
-
   return !knowsOfDispatcher(dispatcher->name()) == false;
 }
 
@@ -83,6 +63,19 @@ bool Tunnel::unregisterDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
   W_SPRV(Tunnel);
   auto count = d->dispatchers.erase(dispatcher->name());
   return count == 1;
+}
+
+bool Tunnel::unregisterDispatcher(const string& dispatcherName)
+{
+  W_SPRV(Tunnel);
+  auto itr = d->dispatchers.find(dispatcherName);
+  if (itr == std::end(d->dispatchers))
+  {
+    return false;
+  }
+
+  Tunnel::Dispatcher::Ptr dispatcherPtr = d->dispatchers.find(dispatcherName)->second;
+  return unregisterDispatcher(dispatcherPtr);
 }
 
 void Tunnel::clearAllDispatchers()
@@ -111,26 +104,24 @@ Tunnel::Dispatcher::List Tunnel::dispatchers()
 
 bool Tunnel::registerReceiver(const Tunnel::Receiver::Ptr& receiver)
 {
+  assert(receiver);
   W_SPRV(Tunnel);
   auto thePair = std::make_pair(receiver->name(), receiver);
   d->receivers.insert(thePair);
+  return knowsOfReceiver(receiver->name());
+}
 
-  // TODO: Move this into the constructor for the Receiver.
-  receiver->listenForEvent("core.tunnel.message", [](const Events::Event::Ptr& eventPtr)
+bool Tunnel::unregisterReceiver(const string& receiverName)
+{
+  W_SPRV(Tunnel);
+  auto itr = d->receivers.find(receiverName);
+  if (itr == std::end(d->receivers))
   {
-    const Tunnel::MessageEvent::Ptr msgEvent =
-      std::dynamic_pointer_cast<Tunnel::MessageEvent>(eventPtr);
+    return false;
+  }
 
-    if (!msgEvent) return; // We were not meant to deal with this.
-
-    if (msgEvent->direction == Tunnel::MessageEvent::DirectionIncoming)
-    {
-      wdebug(msgEvent->message);
-      Tunnel::instance()->emitEvent(msgEvent);
-    }
-  });
-
-  return !knowsOfReceiver(receiver->name()) == false;
+  Tunnel::Receiver::Ptr receiverPtr = d->receivers.find(receiverName)->second;
+  return unregisterReceiver(receiverPtr);
 }
 
 bool Tunnel::unregisterReceiver(const Tunnel::Receiver::Ptr& receiver)
@@ -166,8 +157,66 @@ Tunnel::Receiver::List Tunnel::receivers()
 
 void Tunnel::sendMessage(const Message& message)
 {
-  wdebug("Queuing message '" + static_cast<string>(message) + "' for delivery...");
-  Tunnel::MessageEvent::Ptr msgPtr = make_shared<Tunnel::MessageEvent>(message);
+  wdebug("Queuing message '" + static_cast<string>(message) +
+    "' for delivery...");
+
+  Tunnel::MessageEvent::Ptr msgPtr(nullptr);
+  msgPtr = make_shared<Tunnel::MessageEvent>(message);
   msgPtr->direction = Tunnel::MessageEvent::DirectionOutgoing;
   instance()->emitEvent(msgPtr);
+
+  wdebug("Message queued.");
+}
+
+void Tunnel::start()
+{
+  W_SPRV(Tunnel);
+  auto startDispatcherFunc =
+    [](std::pair<const string, Tunnel::Dispatcher::Ptr> pair)
+  {
+    winfo("Starting the " + pair.second->name() + " dispatcher...");
+    assert(pair.second);
+    pair.second->start();
+    winfo("Started the " + pair.second->name() + " dispatcher.");
+  };
+  auto startReceiverFunc =
+    [](std::pair<const string, Tunnel::Receiver::Ptr> pair)
+  {
+    winfo("Starting the " + pair.second->name() + " receiver...");
+    assert(pair.second);
+    pair.second->start();
+    winfo("Started the " + pair.second->name() + " receiver.");
+  };
+
+  wdebug("Starting the Tunnel...");
+  for_each(d->receivers.begin(), d->receivers.end(), startReceiverFunc);
+  for_each(d->dispatchers.begin(), d->dispatchers.end(), startDispatcherFunc);
+  wdebug("Started the Tunnel.");
+}
+
+void Tunnel::stop()
+{
+  auto d = Tunnel::_instance->d_func();
+
+  auto stopDispatcherFunc =
+    [](std::pair<const string, Tunnel::Dispatcher::Ptr> pair)
+  {
+    winfo("Stopping the " + pair.second->name() + " dispatcher...");
+    assert(pair.second);
+    pair.second->stop();
+    winfo("Stopped the " + pair.second->name() + " dispatcher.");
+  };
+  auto stopReceiverFunc =
+    [](std::pair<const string, Tunnel::Receiver::Ptr> pair)
+  {
+    winfo("Stopping the " + pair.second->name() + " receiver...");
+    assert(pair.second);
+    pair.second->stop();
+    winfo("Stopped the " + pair.second->name() + " receiver.");
+  };
+
+  wdebug("Stopping the Tunnel...");
+  for_each(d->dispatchers.begin(), d->dispatchers.end(), stopDispatcherFunc);
+  for_each(d->receivers.begin(), d->receivers.end(), stopReceiverFunc);
+  wdebug("Stopped the Tunnel.");
 }

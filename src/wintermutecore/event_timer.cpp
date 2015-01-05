@@ -21,7 +21,7 @@
 
 using namespace Wintermute::Events;
 
-void wintermute_event_timer_callback(uv_timer_t* handle)
+void w_event_timer_cb(uv_timer_t* handle)
 {
   TimerPrivate* d = (TimerPrivate*) handle->data;
   assert(d);
@@ -57,7 +57,7 @@ bool Timer::start(const uint64_t timeout)
 {
   W_PRV(Timer);
   int r = 0;
-  r = uv_timer_start(&d->handle, &wintermute_event_timer_callback,
+  r = uv_timer_start(&d->handle, &w_event_timer_cb,
     timeout, interval());
   assert ( r == 0 );
   d->active = true;
