@@ -31,6 +31,7 @@ endif()
 # = Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
 INCLUDE(CheckIncludeFile)
+INCLUDE(WintermuteVariables)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
@@ -50,13 +51,17 @@ set(WINTERMUTE_LIBRARIES
   ${LibUv_LIBRARIES}
   )
 
-if(DEFINED WINTERMUTE_COMPILE_FLAGS)
-  set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS}
-    ${JsonCpp_CFLAGS}
-    ${Log4Cxx_CFLAGS}
-    ${LibUv_CFLAGS}
-    )
-endif()
+list(APPEND WINTERMUTE_COMPILE_FLAGS
+  ${JsonCpp_CFLAGS}
+  ${Log4Cxx_CFLAGS}
+  ${LibUv_CFLAGS}
+  )
+
+list(APPEND WINTERMUTE_LINK_FLAGS
+  ${JsonCpp_LDFLAGS}
+  ${Log4Cxx_LDFLAGS}
+  ${LibUv_LDFLAGS}
+  )
 
 # == Versioning
 set(WINTERMUTE_VERSION_MAJOR 0)

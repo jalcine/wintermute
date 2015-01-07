@@ -42,6 +42,12 @@ MACRO(wintermute_add_target_properties _target)
   TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC
     ${WINTERMUTE_COMPILE_DEFINITIONS})
 
+  set(_ld_flags_raw "${WINTERMUTE_LINK_FLAGS}")
+  string(REPLACE ";" "  " _ld_flags "${_ld_flags_raw}")
+  SET_TARGET_PROPERTIES(${_target} PROPERTIES
+    LINK_FLAGS "${_ld_flags}"
+    )
+
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     TARGET_COMPILE_OPTIONS(${_target} PUBLIC
       ${WINTERMUTE_COMPILE_FLAGS_DEBUG})
@@ -84,7 +90,7 @@ macro(wintermute_define_plugin)
   cmake_parse_arguments(wdp "${options}" "${oneValueArgs}" "${nValueArgs}" ${ARGN})
 
   add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
-  target_link_libraries(${wdp_TARGET} wintermutecore ${wdp_LIBRARIES})
+  target_link_libraries(${wdp_TARGET} wintermute ${wdp_LIBRARIES})
   target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
   wintermute_link_libraries(${wdp_TARGET})
   wintermute_add_target_properties(${wdp_TARGET})
