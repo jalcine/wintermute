@@ -48,10 +48,6 @@ using std::make_shared;
 # define WINTERMUTE_EXPORT_PRIVATE
 #endif
 
-#ifdef WINTERMUTE_DEBUG
-# define _GLIBCXX_DEBUG
-#endif
-
 #define UniquePtr  ::std::unique_ptr
 #define SharedPtr  ::std::shared_ptr
 
@@ -66,22 +62,25 @@ using std::make_shared;
   inline _Prv* d_func() { return d_ptr.get(); }
 
 #define W_DEF_PRIVATE_PREDECL(_Class) \
-  SharedPtr<_Class> d_ptr; \
-  inline _Class* d_func() const { return d_ptr.get(); } \
-  inline _Class* d_func() { return d_ptr.get(); }
+  using _Pub = Class; \
+  SharedPtr<_Pub> d_ptr; \
+  inline _Pub* d_func() const { return d_ptr.get(); } \
+  inline _Pub* d_func() { return d_ptr.get(); }
 
 
 /// Defines inline instance-level methods to handle public instance data.
 #define W_DEF_PUBLIC(Class) \
-  friend class Class; \
-  SharedPtr<Class> q_ptr; \
-  inline Class* q_func() const { return q_ptr.get(); } \
-  inline Class* q_func() { return q_ptr.get(); } \
+  using _Pub = Class; \
+  friend _Pub; \
+  SharedPtr<_Pub> q_ptr; \
+  inline _Pub* q_func() const { return q_ptr.get(); } \
+  inline _Pub* q_func() { return q_ptr.get(); } \
 
 #define W_DEF_PUBLIC_PREDECL(_Class) \
-  SharedPtr<_Class> q_ptr; \
-  inline _Class* q_func() const { return q_ptr.get(); } \
-  inline _Class* q_func() { return q_ptr.get(); } \
+  using _Pub = Class; \
+  SharedPtr<_Pub> q_ptr; \
+  inline _Pub* q_func() const { return q_ptr.get(); } \
+  inline _Pub* q_func() { return q_ptr.get(); } \
 
 /// Provides a shortcut to grab private data for an object with private data.
 #define W_PRV(Class) Class##Private* const d = d_func();
@@ -96,7 +95,6 @@ using std::make_shared;
 
 // }}}
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
 /**
  * Provides a definition for sharable classes.
  * @ingroup Sharing Data
@@ -111,8 +109,6 @@ using std::make_shared;
 #define W_DECL_PTR_TYPE(Class) \
   typedef SharedPtr<Class> Ptr;
 
-#endif
-
 // {{{ Singleton class access
 
 /**
@@ -125,13 +121,13 @@ using std::make_shared;
   public: \
     static inline SharedPtr<Class> instance() { \
       if (!_instance) { \
-        _instance.reset(new Class()); \
+        _instance.reset(new Class); \
       } \
       return _instance;  \
     }
 
 /**
- * Declares the instance of the singleton as a nullptr.
+ * Declares the instance of the singleton as a null pointer 
  * @ingroup Singletons
  */
 #define W_DECLARE_SINGLETON(Class) \

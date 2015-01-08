@@ -26,6 +26,9 @@ set(_srcs
   ./logging.cpp
   ./version.cpp
 
+  # == Utilities
+  ./util/serializable.cpp
+
   # == Plugin Related
   ./library.cc
   ./plugin.cc
@@ -57,8 +60,6 @@ set(_srcs
   ./module_pool.cpp
   ./module_call.cpp
 
-  # == Utilities
-  ./util/serializable.cpp
   )
 
 # Set up sources.
