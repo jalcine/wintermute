@@ -20,7 +20,6 @@
 
 #include <map>
 #include <string>
-#include <boost/variant.hpp>
 
 namespace Wintermute
 {

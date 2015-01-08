@@ -3,8 +3,6 @@
 In order to build Wintermute, you'll need the following libraries and programs
 already existing on your machine:
 
-  * [boost-filesystem][] 1.5.x
-  * [boost-system][] 1.5.x
   * [json-cpp][] 0.6.0
   * [log4cxx] 0.10.0
 
@@ -41,8 +39,6 @@ cd /vagrant
 /vagrant/test/bootstrap --generate-vagrant
 ```
 
-[boost-filesystem]: http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm
-[boost-system]: http://www.boost.org/doc/libs/1_55_0/libs/system/doc/index.html
 [json-cpp]: https://github.com/open-source-parsers/jsoncpp
 [log4cxx]: http://logging.apache.org/log4cxx/index.html
 [vagrant]: https://vagrantup.com

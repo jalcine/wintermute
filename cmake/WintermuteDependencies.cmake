@@ -35,25 +35,14 @@ INCLUDE(CheckIncludeFile)
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 
-# Look for Boost and the aspects we'd like from it.
-FIND_PACKAGE(Boost 1.5 REQUIRED
-  COMPONENTS 
-    filesystem
-    system
-)
-
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
-  ${Boost_FILE_SYSTEM_INCLUDE_DIRS}
-  ${Boost_SYSTEM_INCLUDE_DIRS}
   ${JsonCpp_INCLUDE_DIRS}
   ${Log4Cxx_INCLUDE_DIRS}
   )
 
 set(WINTERMUTE_LIBRARIES
   dl
-  ${Boost_FILESYSTEM_LIBRARY_RELEASE}
-  ${Boost_SYSTEM_LIBRARY_RELEASE}
   ${JsonCpp_LIBRARIES}
   ${Log4Cxx_LIBRARIES}
   )
