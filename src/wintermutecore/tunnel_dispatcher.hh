@@ -16,6 +16,7 @@
  */
 
 #include <wintermutecore/globals.hpp>
+#include <wintermutecore/events.hpp>
 
 namespace Wintermute
 {
@@ -23,6 +24,7 @@ struct DispatcherPrivate
 {
 public:
   string name;
+  Events::Emitter::Ptr emitter;
 };
 }
 

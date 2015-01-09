@@ -21,17 +21,25 @@
 
 using Wintermute::Tunnel;
 using Wintermute::DispatcherPrivate;
+using Wintermute::Events::Emitter;
 
 Tunnel::Dispatcher::Dispatcher(const string& theName) : d_ptr(new DispatcherPrivate)
 {
   W_PRV(Dispatcher);
   d->name = theName;
+  d->emitter = make_shared<Events::Emitter>(Tunnel::instance()->emitter()->loop());
   wdebug("Built a new dispatcher for the tunnel called " + name() + ".");
 }
 
 string Tunnel::Dispatcher::name() const {
   W_PRV(const Dispatcher);
   return d->name;
+}
+
+Emitter::Ptr Tunnel::Dispatcher::emitter() const
+{
+  W_PRV(Dispatcher);
+  return d->emitter;
 }
 
 Tunnel::Dispatcher::~Dispatcher()

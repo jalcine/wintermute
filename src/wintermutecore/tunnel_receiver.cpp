@@ -21,11 +21,13 @@
 
 using Wintermute::Tunnel;
 using Wintermute::ReceiverPrivate;
+using Wintermute::Events::Emitter;
 
 Tunnel::Receiver::Receiver(const string& theName) : d_ptr(new ReceiverPrivate)
 {
   W_PRV(Receiver);
   d->name = theName;
+  d->emitter = make_shared<Events::Emitter>(Tunnel::instance()->emitter()->loop());
   wdebug("Built a new receiver for the tunnel called " + name() + ".");
 }
 
@@ -33,6 +35,12 @@ string Tunnel::Receiver::name() const
 {
   W_PRV(const Receiver);
   return d->name;
+}
+
+Emitter::Ptr Tunnel::Receiver::emitter() const
+{
+  W_PRV(Receiver);
+  return d->emitter;
 }
 
 Tunnel::Receiver::~Receiver()

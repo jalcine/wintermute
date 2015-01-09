@@ -23,6 +23,7 @@
 using Wintermute::Message;
 using Wintermute::Tunnel;
 using Wintermute::TunnelPrivate;
+using Wintermute::Events::Emitter;
 
 W_DECLARE_SINGLETON(Tunnel)
 
@@ -34,6 +35,12 @@ Tunnel::~Tunnel()
 {
   //clearAllReceivers();
   //clearAllDispatchers();
+}
+
+Emitter::Ptr Tunnel::emitter() const
+{
+  W_SPRV(Tunnel);
+  return d->emitter;
 }
 
 bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)

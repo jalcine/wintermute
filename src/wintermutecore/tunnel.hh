@@ -38,5 +38,6 @@ class TunnelPrivate
     DispatcherMap dispatchers;
     ReceiverMap receivers;
     MessageQueue obtainedMessages;
+    Events::Emitter::Ptr emitter;
 };
 }

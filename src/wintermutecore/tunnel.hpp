@@ -21,6 +21,7 @@
 #include <list>
 #include <wintermutecore/globals.hpp>
 #include <wintermutecore/message.hpp>
+#include <wintermutecore/events.hpp>
 
 using std::list;
 
@@ -41,7 +42,7 @@ struct ReceiverPrivate;
  * incoming data into a Message and outgoing Message objects into strings
  * that can be more readily manipulated..
  */
-class Tunnel
+class Tunnel : public Events::Emittable
 {
   W_DEF_PRIVATE(Tunnel)
   explicit Tunnel();
@@ -51,6 +52,8 @@ public:
 
   // Public destructor.
   virtual ~Tunnel();
+
+  virtual Events::Emitter::Ptr emitter() const;
 
   /**
    * @brief Represents the abstraction of a `Message` sender.
@@ -71,8 +74,9 @@ public:
    * @todo Look into adding ones that have some form of signing.
    */
   class Dispatcher
+    : public Events::Emittable
 #ifndef DOXYGEN_SKIP
-    : W_DEF_SHAREABLE(Dispatcher)
+    , W_DEF_SHAREABLE(Dispatcher)
 #endif
 
   {
@@ -88,6 +92,8 @@ public:
 
     /* Sends out the provided message over the wire. */
     virtual bool send(const Message & message) = 0;
+
+    virtual Events::Emitter::Ptr emitter() const;
 
   protected:
     /* Protected constructor. */
@@ -115,8 +121,9 @@ public:
    * @todo Look into adding ones that have some form of signing.
    */
   class Receiver
+    : public Events::Emittable
 #ifndef DOXYGEN_SKIP
-    : W_DEF_SHAREABLE(Receiver)
+    , W_DEF_SHAREABLE(Receiver)
 #endif
   {
   public:
@@ -138,6 +145,8 @@ public:
      * Requests a new message from the Receiver's internal specifications.
      */
     virtual Message receive() = 0;
+
+    virtual Events::Emitter::Ptr emitter() const;
 
   protected:
     explicit Receiver(const string & name);
