@@ -89,6 +89,7 @@ public:
   {
     Call::Function func = [ = ](const string & arguments) -> const string
     {
+      assert(arguments == arguments);
       return string();
     };
 
@@ -108,8 +109,9 @@ public:
   explicit SampleCallWithValue(const string& value = DefaultValue) :
     Wintermute::Call("samplevalue")
   {
-    Call::Function func = [ = ](const string & arguments) -> const string
+    Call::Function func = [&value](const string & arguments) -> const string
     {
+      assert(arguments == arguments);
       return value;
     };
 
@@ -124,8 +126,9 @@ public:
   explicit SampleVoidModuleCall(const Wintermute::Module::Ptr& modulePtr) :
     Wintermute::Module::Call(modulePtr, "sampleVoid")
   {
-    Call::Function func = [ = ](const string & arguments) -> const string
+    Call::Function func = [](const string & arguments) -> const string
     {
+      assert(arguments == arguments);
       return string();
     };
 
@@ -138,11 +141,12 @@ class SampleModuleCallWithValue : public Wintermute::Module::Call
 {
 public:
   explicit SampleModuleCallWithValue(const Wintermute::Module::Ptr& modulePtr,
-                                     const string& value = string(SampleCallWithValue::DefaultValue)) :
+      const string& value = string(SampleCallWithValue::DefaultValue)) :
     Wintermute::Module::Call(modulePtr, "sampleWithValues")
   {
-    Call::Function func = [ = ](const string & arguments) -> const string
+    Call::Function func = [ &value ](const string & arguments) -> const string
     {
+      assert(arguments == arguments);
       return value;
     };
 
@@ -157,8 +161,9 @@ public:
   explicit SampleMimicModuleCall(const Wintermute::Module::Ptr& modulePtr) :
     Wintermute::Module::Call(modulePtr, "sampleMimic")
   {
-    Call::Function func = [ = ](const string & arguments) -> const string
+    Call::Function func = [](const string & arguments) -> const string
     {
+      assert(arguments == arguments);
       return arguments;
     };
 
@@ -167,5 +172,10 @@ public:
   virtual ~SampleMimicModuleCall() { }
 };
 
-const string SampleCallWithValue::DefaultValue = string("sample");
+class SampleEvent : public Wintermute::Events::Event
+{
+public:
+  explicit SampleEvent(const string& eventName) : Event(eventName) { }
+};
 
+const string SampleCallWithValue::DefaultValue = string("sample");

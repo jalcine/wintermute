@@ -18,10 +18,11 @@
 #ifndef WINTERMUTE_TEST_SUITE_HPP
 #define WINTERMUTE_TEST_SUITE_HPP
 
-#define TEST_BASE_DIR "@CMAKE_BINARY_DIR@/test"
-#define SAMPLE_PLUGIN_NAME "sample"
+#define TEST_BASE_DIR           "@CMAKE_BINARY_DIR@/test"
+#define SAMPLE_PLUGIN_NAME      "sample"
 #define SAMPLE_PLUGIN_FILE_NAME "libwintermutesample.so"
-#define SAMPLE_PLUGIN_PATH "@CMAKE_BINARY_DIR@/lib/libwintermutesample.so"
+#define SAMPLE_PLUGIN_PATH      "@CMAKE_BINARY_DIR@/lib/libwintermutesample.so"
+#define SAMPLE_TEST_FILE        "@CMAKE_SOURCE_DIR@/CMakeLists.txt"
 
 #include "fixtures.hpp"
 #include <cstdlib>

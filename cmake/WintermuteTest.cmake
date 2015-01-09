@@ -33,6 +33,15 @@ IF (NOT CXXTEST_FOUND)
   RETURN()
 ENDIF()
 
+SET(_wntr_test_tpl
+  ${CMAKE_SOURCE_DIR}/cmake/test_template.cpp
+  )
+
+SET(CXXTEST_TESTGEN_ARGS
+  --template ${_wntr_test_tpl}
+  --runner=ErrorPrinter
+  )
+
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
   ${CXXTEST_INCLUDE_DIR})
 
