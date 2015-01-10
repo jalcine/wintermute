@@ -17,8 +17,8 @@
 Wintermute's a software project that intends to be a launching pad into
 self-driven hyper-connectivity of hardware and software. The whole purpose
 of this particular tree is to build a core library, a driver binary
-(more on that) and a few plugins to get the show started. I wrote 
-little [blog post][post1] about it, expect another soon.
+(more on that) and a few plugins to get the show started. Check out
+[this weblog post][post] to really understand the mission behind Wintermute.
 
 # Building & Contributing
 Building, requirement and installation information all live in
@@ -30,7 +30,7 @@ This project is [Vagrant][] enabled.
 **This is alpha software, so alpha that it does nothing.** But in due time, my
 friend.
 
-[post1]: http://jalcine.me/weblog/the-idea-behind-wintermute/
+[post]: http://jalcine.me/weblog/ambitions-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute
 [waffleio]: http://waffle.io/jalcine/wintermute
