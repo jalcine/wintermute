@@ -51,7 +51,7 @@ Listener::Ptr Emitter::listen(const string& eventName, Listener::Ptr& listener)
   return listener;
 }
 
-Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback& cb, const Listener::Frequency& freq)
+Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback cb, const Listener::Frequency& freq)
 {
   Listener::Ptr listener = make_shared<Listener>(cb);
   listener->frequency = freq;

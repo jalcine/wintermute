@@ -47,6 +47,7 @@ public:
   {
     Loop::Ptr loop        = make_shared<Loop>(true);
     Loop::Ptr anotherLoop = make_shared<Loop>(false);
+    Loop::Ptr defaultLoop = Loop::primary();
     TS_ASSERT ( loop );
     TS_ASSERT ( anotherLoop );
 
@@ -54,6 +55,8 @@ public:
       std::static_pointer_cast<SampleLoop>(loop)->uvLoop(),
       uv_default_loop() );
     TS_ASSERT ( !anotherLoop->isPrimary() );
+    TS_ASSERT ( loop->isPrimary() );
+    TS_ASSERT ( defaultLoop->isPrimary() );
   }
 };
 

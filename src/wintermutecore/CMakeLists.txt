@@ -65,6 +65,7 @@ set(_srcs
   ./event_emitter.cpp
   ./event_object.cpp
   ./event_listener.cpp
+  ./event_poller.cpp
   )
 
 # Set up sources.

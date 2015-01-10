@@ -29,7 +29,7 @@ class LoopPrivate;
 class EventPrivate;
 class ListenerPrivate;
 class EmitterPrivate;
-
+class PollerPrivate;
 
 /**
  * Serves as a basis for event loops in Wintermute.
@@ -47,6 +47,7 @@ class Loop : W_DEF_SHAREABLE(Loop)
 protected:
   W_DEF_PRIVATE(Loop)
 public:
+  friend class Poller;
   W_DECL_PTR_TYPE(Loop)
 
   /**
@@ -102,8 +103,8 @@ public:
  */
 class Event : W_DEF_SHAREABLE(Event)
 {
-public:
   W_DEF_PRIVATE(Event);
+public:
   W_DECL_PTR_TYPE(Event)
 
   /**
@@ -126,19 +127,19 @@ public:
 
 /**
  * Represents a callback to be invoked for a provided Event.
- * Listener objects capture a valid form of a function and store it for
- * later invocation for event raising. It prohibits the use of empty callbacks
- * so that one can use a Events::Emitter knowning a function is being hit for
- * each listener.
  * @sa Emitter
  * @sa Event
+ *
+ * Listener objects capture a valid form of a function and store it for
+ * later invocation for event raising. It prohibits the use of empty callbacks
+ * so that one can use a Events::Emitter knowing a function is being hit for
+ * each listener.
  */
 class Listener : W_DEF_SHAREABLE(Listener)
 {
   W_DEF_PRIVATE(Listener);
 public:
   W_DECL_PTR_TYPE(Listener)
- 
   /**
    * The known frequenices at which a Listener should be invoked.
    */
@@ -168,7 +169,7 @@ public:
    * @param[in] callback The callback to use for the Listener.
    * @throw std::invalid_argument Thrown if the callback provided isn't valid.
    */
-  explicit Listener(Callback& callback) throw (std::invalid_argument);
+  explicit Listener(Callback callback) throw (std::invalid_argument);
 
   ///< Destructor.
   virtual ~Listener();
@@ -214,7 +215,7 @@ public:
    * @param[in] freq The frequency at which this could be raised.
    * @return A pointer to the crafted Listener pointer.
    */
-  Listener::Ptr listen(const string & name, Listener::Callback & func, const Listener::Frequency& freq = Listener::FrequencyEvery);
+  Listener::Ptr listen(const string & name, Listener::Callback func, const Listener::Frequency& freq = Listener::FrequencyEvery);
 
   /**
    * Listens for the named event to  invoke the provided callback.
@@ -244,6 +245,11 @@ public:
    * @param[in] event The Event being emitted to Listener objects.
    */
   void emit(const Event::Ptr & event);
+
+  /**
+   * Obtains the Loop used by this Emitter.
+   * @return A pointer to a Loop object.
+   */
   Loop::Ptr loop() const;
 };
 
@@ -261,7 +267,7 @@ public:
   virtual Emitter::Ptr emitter() const = 0;
 
   ///< @sa Wintermute::Events::Emitter::listen
-  Listener::Ptr listenForEvent(const string & name, Listener::Callback & func, const Listener::Frequency& freq = Listener::FrequencyEvery)
+  Listener::Ptr listenForEvent(const string & name, Listener::Callback func, const Listener::Frequency& freq = Listener::FrequencyEvery)
   {
     return emitter()->listen(name, func, freq);
   }
@@ -285,8 +291,77 @@ public:
   }
 };
 
+/**
+ * Represents a polling object.
+ * @sa PollEvent
+ * Poller allows one to poll on file descriptors friendly to [libuv][poll]. It
+ * emits the PollEvent when a new event has been triggered by the provided
+ * file descriptor.
+ *
+ * [poll]: http://libuv.readthedocs.org/en/latest/handle.html#c.uv_fileno
+ */
+class Poller : public Emittable {
+    W_DEF_PRIVATE(Poller);
+  public:
+    W_DECL_PTR_TYPE(Poller)
+
+    /**
+     * Determines what kind of listening on the file descriptor you'd want.
+     */
+    enum PollDirection
+    {
+      PollReadable = 0x1, ///< Emit events when we can read.
+      PollWritable = 0x2  ///< Emit events when we can write.
+    } ;
+
+    ///< Platform dependent implementation of the file descriptor type.
+    typedef int FileDescriptor;
+
+    ///< The Emitter used by this Poller.
+    ///< @sa Emittable
+    virtual Emitter::Ptr emitter() const;
+
+    /**
+     * Builds a new Poller object.
+     * @param[in] fd The file descriptor to listen on.
+     * @param[in] poll The polling directions to listen for.
+     * @param[in] loopPtr The Loop on which to work on.
+     */
+    explicit Poller(FileDescriptor fd, PollDirection poll = PollReadable,
+      const Loop::Ptr& loopPtr = Loop::primary());
+
+    ///< Destructor.
+    virtual ~Poller();
+
+    ///< The file descriptor we're working with.
+    FileDescriptor fd() const;
+
+    ///< The Loop this Poller works on.
+    Loop::Ptr loop() const;
+
+    ///< The directions of polling this Poller listens for.
+    PollDirection direction() const;
+
+    ///< Starts the Poller.
+    bool start();
+
+    ///< Stops the Poller.
+    bool stop();
+
+};
+
+class PollEvent : public Event
+{
+  public:
+    PollEvent(Poller::Ptr& thePoller) :
+      Event("core.events.poll"),
+      poller(thePoller) { }
+    virtual ~PollEvent() { }
+    Poller::Ptr poller;
+};
+
+
 }
 }
 
 #endif
-

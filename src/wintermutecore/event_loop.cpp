@@ -50,3 +50,10 @@ bool Loop::run()
   const int resultRun = uv_run(d->loop, UV_RUN_DEFAULT) == 0;
   return resultRun;
 }
+
+Loop::Ptr Loop::primary()
+{
+  Loop::Ptr primaryLoop = make_shared<Loop>(true);
+  assert(primaryLoop->isPrimary());
+  return primaryLoop;
+}

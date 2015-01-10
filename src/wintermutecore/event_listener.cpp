@@ -20,7 +20,7 @@
 
 using namespace Wintermute::Events;
 
-Listener::Listener(Callback& callback) throw (std::invalid_argument):
+Listener::Listener(Callback callback) throw (std::invalid_argument):
   d_ptr(new ListenerPrivate)
 {
   W_PRV(Listener);
