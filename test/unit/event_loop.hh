@@ -15,21 +15,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <uv.h>
 #include "test_suite.hpp"
-#include "wintermutecore/event_loop.hh"
 
+using ::uv_loop_t;
 using Wintermute::Events::Loop;
-using Wintermute::Events::LoopPrivate;
-
-class SampleLoop : public Wintermute::Events::Loop
-{
-public:
-  inline uv_loop_t* uvLoop()
-  {
-    return d_func()->loop;
-  }
-};
 
 class EventLoopTestSuite : public CxxTest::TestSuite
 {

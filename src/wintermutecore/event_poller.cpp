@@ -21,8 +21,22 @@
 
 using namespace Wintermute::Events;
 
+void wintermute_event_poller_callback(uv_poll_t* handle, int status, int events)
+{
+  if (status == 0)
+  {
+    wdebug("Found " + to_string(events) + " events available from libuv.");
+    PollerPrivate* dptr = (PollerPrivate*) handle->data;
+    dptr->callback(dptr->q_ptr);
+  }
+  else
+  {
+    // TODO: Handle errors whilst polling.
+  }
+}
+
 Poller::Poller(Poller::FileDescriptor aFd, Poller::PollDirection aDirection,
-  const Loop::Ptr& loopPtr) : d_ptr(new PollerPrivate)
+  const Loop::Ptr& loopPtr) : d_ptr(new PollerPrivate(nullptr))
 {
   if (aFd == 0)
   {
@@ -35,8 +49,7 @@ Poller::Poller(Poller::FileDescriptor aFd, Poller::PollDirection aDirection,
   }
 
   W_PRV(Poller);
-  // FIXME: This is (possibly) causing a std::bad_weak_ptr to be risen.
-  d->q_ptr = shared_from_this();
+  d->q_ptr = make_shared<Poller>(*this);
   d->emitter = make_shared<Emitter>(loopPtr);
   d->fd = aFd;
   d->loop = loopPtr;
@@ -77,11 +90,7 @@ bool Poller::start()
 {
   W_PRV(Poller);
   int r = 0;
-  uv_poll_cb cb = (uv_poll_cb) d->callback.target<void(uv_poll_t*, int, int)>();
-  assert(d->callback);
-  assert(cb);
-  r = uv_poll_start(&d->handle, d->direction, cb);
-  wdebug(to_string(r));
+  r = uv_poll_start(&d->handle, d->direction, &wintermute_event_poller_callback);
   return r == 0;
 }
 
@@ -92,3 +101,5 @@ bool Poller::stop()
   r = uv_poll_stop(&d->handle);
   return r == 0;
 }
+
+

@@ -20,7 +20,9 @@
 #include <wintermutecore/logging.hpp>
 #include <wintermutecore/message.hpp>
 #include <wintermutecore/call.hpp>
+#include <wintermutecore/events.hpp>
 #include <string>
+#include "wintermutecore/event_loop.hh"
 
 using std::string;
 
@@ -50,6 +52,18 @@ public:
     winfo("SampleModule: My name is " + (string) designation());
   }
 };
+
+class SampleLoop : public Wintermute::Events::Loop
+{
+public:
+  W_DECL_PTR_TYPE(SampleLoop)
+  explicit SampleLoop(const bool useDefault = true) : Loop(useDefault) { }
+  inline uv_loop_t* uvLoop()
+  {
+    return d_func()->loop;
+  }
+};
+
 
 class SampleDispatcher : public Wintermute::Tunnel::Dispatcher
 {

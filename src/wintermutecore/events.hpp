@@ -30,6 +30,7 @@ class EventPrivate;
 class ListenerPrivate;
 class EmitterPrivate;
 class PollerPrivate;
+class TimerPrivate;
 
 /**
  * Serves as a basis for event loops in Wintermute.
@@ -42,12 +43,15 @@ class PollerPrivate;
  *
  * [libuv]: https://github.com/libuv/libuv
  */
+// TODO: Add support for UV_RUN_ONCE.
+// TODO: Add support for UV_RUN_NOWAIT.
 class Loop : W_DEF_SHAREABLE(Loop)
 {
 protected:
   W_DEF_PRIVATE(Loop)
 public:
   friend class Poller;
+  friend class Timer;
   W_DECL_PTR_TYPE(Loop)
 
   /**
@@ -300,7 +304,11 @@ public:
  *
  * [poll]: http://libuv.readthedocs.org/en/latest/handle.html#c.uv_fileno
  */
-class Poller : public Emittable {
+class Poller : public Emittable 
+#ifndef DOXYGEN_SKIP
+  , W_DEF_SHAREABLE(Poller)
+#endif
+{
     W_DEF_PRIVATE(Poller);
   public:
     W_DECL_PTR_TYPE(Poller)
@@ -350,18 +358,99 @@ class Poller : public Emittable {
 
 };
 
+/**
+ * Represents a polling event emitted by a Poller object.
+ * @sa Poller
+ */
 class PollEvent : public Event
 {
   public:
+    /**
+     * Creates a new PollEvent for the provided Poller.
+     * @param thePoller The poller to use.
+     */
     PollEvent(Poller::Ptr& thePoller) :
       Event("core.events.poll"),
       poller(thePoller) { }
+
+    ///< Destructor.
     virtual ~PollEvent() { }
+
+    ///< The Poller that emitted this Event.
     Poller::Ptr poller;
 };
 
+/**
+ * Represents a time-based emission of events.
+ * With a provided interval or timeout, Timer allows one to periodically emit
+ * events.
+ */
+class Timer : public Emittable
+#ifndef DOXYGEN_SKIP
+  , W_DEF_SHAREABLE(Timer)
+#endif
+{
+    W_DEF_PRIVATE(Timer);
+  public:
+    W_DECL_PTR_TYPE(Timer)
+
+    ///< The Emitter for this Timer.
+    virtual Emitter::Ptr emitter() const;
+
+    /**
+     * Default constructor.
+     * @param[in] loopPtr The Loop this Timer works on.
+     */
+    explicit Timer(const Loop::Ptr& loopPtr = Loop::primary());
+
+    ///< Destructor.
+    virtual ~Timer();
+
+    /**
+     * Starts this Timer, after a provided timeout.
+     * @param[in] uint64_t The timeout in which to emit TimerEvent objects.
+     * @return TRUE if successful.
+     */
+    bool start(const uint64_t timeout);
+
+    ///< Stops this Timer.
+    ///< @return TRUE if successful.
+    bool stop();
+
+    ///< Determines if this Timer is actively running.
+    ///< @return TRUE if successful.
+    bool isActive() const;
+
+    ///< Obtains the interval at which this Timer object goes off.
+    uint64_t interval() const;
+
+    /**
+     * Sets the interval at which the Timer can go off.
+     * @param[in] uint64_t The interval for this Timer.
+     */
+    void setInterval(const uint64_t newInterval);
+};
+
+/**
+ * An Event object to be risen when a Timer reaches its timeout/interval.
+ */
+class TimerEvent : public Event
+{
+  public:
+    ///< Constructor.
+    TimerEvent(Timer::Ptr theTimer) :
+      Event("core.events.timeout"),
+      timer(theTimer) { }
+
+    ///< Destructor.
+    virtual ~TimerEvent() { }
+
+    ///< A pointer to the Timer in question.
+    Timer::Ptr timer;
+};
+
+
 
 }
 }
-
 #endif

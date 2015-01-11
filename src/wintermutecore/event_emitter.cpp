@@ -78,7 +78,8 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 {
   W_PRV(Emitter);
   auto listenerItr = find_if(begin(d->listeners), end(d->listeners),
-    [&listener](const pair<string, Listener::Ptr>& listenerPair) {
+    [&listener](const pair<string, Listener::Ptr>& listenerPair)
+  {
     return (listenerPair.second == listener);
   });
 

@@ -15,14 +15,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <uv.h>
 #include "test_suite.hpp"
 #include "wintermutecore/events.hpp"
 
 using Wintermute::Events::Loop;
 using Wintermute::Events::Event;
 using Wintermute::Events::Listener;
-using Wintermute::Events::LoopPrivate;
 
 class EventListenerTestSuite : public CxxTest::TestSuite
 {

@@ -21,7 +21,6 @@ using namespace Wintermute::Events;
 Loop::Loop(const bool useDefault) : d_ptr(new LoopPrivate)
 {
   W_PRV(Loop);
-  // TODO: Declare loop to be default or not depending on 'useDefault'.
   useDefault ? d->useDefaultLoop() : d->createNewLoop();
   assert(d->loop != NULL);
 }
@@ -47,8 +46,8 @@ bool Loop::isPrimary() const
 bool Loop::run()
 {
   W_PRV(Loop);
-  const int resultRun = uv_run(d->loop, UV_RUN_DEFAULT) == 0;
-  return resultRun;
+  const int resultRun = uv_run(d->loop, UV_RUN_DEFAULT);
+  return resultRun == 0;
 }
 
 Loop::Ptr Loop::primary()

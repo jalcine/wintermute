@@ -20,41 +20,38 @@
 
 using std::function;
 using std::to_string;
-using namespace std::placeholders;
 
 namespace Wintermute
 {
 namespace Events
 {
-struct PollerPrivate
+class TimerPrivate
 {
-  W_DEF_PUBLIC(Poller);
-  int fd;
-  Poller::PollDirection direction;
+public:
+  W_DEF_PUBLIC(Timer);
   Loop::Ptr loop;
   Emitter::Ptr emitter;
-  function<void (Poller::Ptr& )> callback;
-  uv_poll_t handle;
+  function<void (SharedPtr<TimerPrivate>)> callback;
+  uv_timer_t handle;
+  bool active;
 
-  explicit PollerPrivate(Poller::Ptr qPtr) :
-    q_ptr(qPtr), fd(0), direction(Poller::PollReadable) { }
+  TimerPrivate() : loop(nullptr), emitter(nullptr), callback(nullptr),
+    handle(), active(false) { }
 
   void applyCallback(uv_loop_t* loopHdl)
   {
-    assert(q_ptr);
+    W_PUB(Timer);
     int r = 0;
-    assert(fd > 0);
-    r = uv_poll_init(loopHdl, &handle, fd);
+    r = uv_timer_init(loopHdl, &handle);
     assert ( r == 0 );
     handle.data = this;
 
-    callback = [](Poller::Ptr& pollerPtr) -> void
+    callback = [&q](SharedPtr<TimerPrivate> dPtr) -> void
     {
-      assert(pollerPtr);
-      wdebug("Obtained a poll event from the provided FD: " + to_string(pollerPtr->fd()));
-      Event::Ptr event = make_shared<PollEvent>(pollerPtr);
-      pollerPtr->emitEvent(event);
+      Timer::Ptr qPtr = dPtr->q_ptr;
+      qPtr->emitEvent(make_shared<TimerEvent>(qPtr));
     };
+
     assert(callback);
   }
 };

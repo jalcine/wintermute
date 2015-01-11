@@ -15,7 +15,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <uv.h>
 #include <algorithm>
 #include "test_suite.hpp"
 #include "wintermutecore/events.hpp"
