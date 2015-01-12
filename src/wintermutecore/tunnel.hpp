@@ -23,6 +23,8 @@
 #include <wintermutecore/message.hpp>
 #include <wintermutecore/events.hpp>
 
+#define W_EVENT_TUNNEL_MESSAGE "core.tunnel.message"
+
 using std::list;
 
 namespace Wintermute
@@ -138,14 +140,7 @@ public:
      */
     string name() const;
 
-    /**
-     * Obtains a `Message` from the implementation's details.
-     * @sa Wintermute::Dispatcher::send
-     *
-     * Requests a new message from the Receiver's internal specifications.
-     */
-    virtual Message receive() = 0;
-
+    ///< The Emitter object used by this Receiver.
     virtual Events::Emitter::Ptr emitter() const;
 
   protected:
@@ -186,13 +181,39 @@ public:
   static Receiver::List receivers();
 
   // Sends a message through the Tunnel through all dispatchers.
-  static bool sendMessage(const Message& message);
+  static void sendMessage(const Message& message);
 
-  // Determines if there's pending messages for fetching off the received queue.
-  static bool hasPendingMessages();
+  /**
+   * Represents an event relating to a Message.
+   */
+  class MessageEvent : public Events::Event
+  {
+    public:
+      W_DECL_PTR_TYPE(MessageEvent)
 
-  // Takes the oldest message off the recieved queue and returns it.
-  static const Message receiveMessage();
+      ///< Represents which 'direction' in which a message came from.
+      enum Direction
+      {
+        DirectionNone     = 0x000, ///< No direction, null.
+        DirectionIncoming = 0x100, ///< Message is external, from Receiver.
+        DirectionOutgoing = 0x200  ///< Message is internal, from Dispatcher.
+      };
+
+      /**
+       * Default constructor.
+       * @param[in] msg The Message that's represented by this Event.
+       */
+      explicit MessageEvent(const Message& msg) :
+        Event("core.tunnel.message"), message(msg),
+        direction(DirectionNone) { }
+      virtual ~MessageEvent() { }
+
+      ///< The Message in question.
+      Message message;
+
+      ///< The direction of this event.
+      Direction direction;
+  };
 };
 }
 

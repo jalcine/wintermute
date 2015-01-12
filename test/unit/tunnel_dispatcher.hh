@@ -19,6 +19,7 @@
 #include <wintermutecore/tunnel.hpp>
 
 using Wintermute::Tunnel;
+using Wintermute::Message;
 
 class TunnelDispatcherTestSuite : public CxxTest::TestSuite
 {
@@ -28,5 +29,29 @@ public:
     Tunnel::Dispatcher::Ptr dispatcher(new SampleDispatcher);
     TS_ASSERT ( dispatcher );
   }
+
+  void testSendOutMessage(void)
+  {
+    Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
+    TS_ASSERT ( Tunnel::registerDispatcher(dispatcherPtr) );
+
+    Message message = craftRandomMessage();
+    TS_ASSERT_THROWS_NOTHING ( Tunnel::sendMessage(message) );
+
+    dispatcherPtr->listenForEvent(W_EVENT_TUNNEL_MESSAGE,
+      [&message](const Event::Ptr& eventPtr)
+    {
+      const Tunnel::MessageEvent::Ptr msgPtr =
+        std::dynamic_pointer_cast<Tunnel::MessageEvent>(eventPtr);
+
+      const Message obtainedMessage = msgPtr->message;
+      TS_ASSERT ( !obtainedMessage.isEmpty() );
+      TS_ASSERT_EQUALS ( message, obtainedMessage );
+      Tunnel::instance()->emitter()->loop()->stop();
+    });
+
+    Tunnel::instance()->emitter()->loop()->run();
+  }
+
 };
 

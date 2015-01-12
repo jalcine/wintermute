@@ -24,11 +24,16 @@ using Wintermute::Message;
 using Wintermute::Tunnel;
 using Wintermute::TunnelPrivate;
 using Wintermute::Events::Emitter;
+using Wintermute::Events::Loop;
+using Wintermute::Events::Event;
+using std::dynamic_pointer_cast;
 
 W_DECLARE_SINGLETON(Tunnel)
 
 Tunnel::Tunnel() : d_ptr(new TunnelPrivate)
 {
+  Tunnel::d_ptr->emitter = make_shared<Emitter>(Loop::primary());
+  // TODO: Add listener for incoming messages.
 }
 
 Tunnel::~Tunnel()
@@ -49,9 +54,29 @@ bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
   auto thePair = std::make_pair(dispatcher->name(), dispatcher);
   d->dispatchers.insert(thePair);
 
+  // TODO: Move this into the constructor for the Dispatcher.
+  Tunnel::instance()->listenForEvent(W_EVENT_TUNNEL_MESSAGE,
+  [&dispatcher](const Event::Ptr& event)
+  {
+    Tunnel::MessageEvent::Ptr msgEvent =
+      dynamic_pointer_cast<Tunnel::MessageEvent>(event);
+
+    if (!msgEvent) return; // We were not meant to deal with this.
+
+    if (msgEvent->direction == Tunnel::MessageEvent::DirectionOutgoing)
+    {
+      const Message message = msgEvent->message;
+      const string name = dispatcher->name();
+      const bool wasSent = dispatcher->send(message);
+      if (!wasSent)
+      {
+        werror("Failed to send out a message using the '" + name + "' dispatcher!");
+      }
+    }
+  });
+
   return !knowsOfDispatcher(dispatcher->name()) == false;
 }
-
 
 bool Tunnel::unregisterDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 {
@@ -90,6 +115,21 @@ bool Tunnel::registerReceiver(const Tunnel::Receiver::Ptr& receiver)
   auto thePair = std::make_pair(receiver->name(), receiver);
   d->receivers.insert(thePair);
 
+  // TODO: Move this into the constructor for the Receiver.
+  receiver->listenForEvent("core.tunnel.message", [](const Events::Event::Ptr& eventPtr)
+  {
+    const Tunnel::MessageEvent::Ptr msgEvent =
+      std::dynamic_pointer_cast<Tunnel::MessageEvent>(eventPtr);
+
+    if (!msgEvent) return; // We were not meant to deal with this.
+
+    if (msgEvent->direction == Tunnel::MessageEvent::DirectionIncoming)
+    {
+      wdebug(msgEvent->message);
+      Tunnel::instance()->emitEvent(msgEvent);
+    }
+  });
+
   return !knowsOfReceiver(receiver->name()) == false;
 }
 
@@ -124,46 +164,10 @@ Tunnel::Receiver::List Tunnel::receivers()
   return listOfReceivers;
 }
 
-bool Tunnel::sendMessage(const Message& message)
+void Tunnel::sendMessage(const Message& message)
 {
-  wdebug("Sending message '" + static_cast<string>(message) + "'...");
-  Dispatcher::List dispatchers = Tunnel::instance()->dispatchers();
-  auto sendAMessage = [&message](Dispatcher::Ptr & dispatcherPtr)
-  {
-    const string name = dispatcherPtr->name();
-    const bool wasSent = dispatcherPtr->send(message);
-    if (!wasSent)
-    {
-      werror("Failed to send out a message using the '" + name + "' dispatcher!");
-    }
-
-    return wasSent;
-  };
-
-
-  for_each(dispatchers.begin(), dispatchers.end(), sendAMessage);
-  return true;
+  wdebug("Queuing message '" + static_cast<string>(message) + "' for delivery...");
+  Tunnel::MessageEvent::Ptr msgPtr = make_shared<Tunnel::MessageEvent>(message);
+  msgPtr->direction = Tunnel::MessageEvent::DirectionOutgoing;
+  instance()->emitEvent(msgPtr);
 }
-
-bool Tunnel::hasPendingMessages()
-{
-  W_SPRV(Tunnel);
-  return !d->obtainedMessages.empty();
-}
-
-const Message Tunnel::receiveMessage()
-{
-  W_SPRV(Tunnel);
-  if (Tunnel::hasPendingMessages())
-  {
-    const Message theMessage = d->obtainedMessages.top();
-    d->obtainedMessages.pop();
-    return theMessage;
-  }
-  else
-  {
-    return Message();
-  }
-}
-
-
