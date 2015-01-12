@@ -60,6 +60,11 @@ set(_srcs
   ./module_pool.cpp
   ./module_call.cpp
 
+  # == Event related
+  ./event_loop.cpp
+  ./event_emitter.cpp
+  ./event_object.cpp
+  ./event_listener.cpp
   )
 
 # Set up sources.
