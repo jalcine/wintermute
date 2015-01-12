@@ -19,6 +19,7 @@
 #include <wintermutecore/tunnel.hpp>
 
 using Wintermute::Tunnel;
+using Wintermute::Message;
 
 class TunnelReceiverTestSuite : public CxxTest::TestSuite
 {
@@ -29,4 +30,46 @@ public:
     Tunnel::Receiver::Ptr receiver(new SampleReceiver(msg));
     TS_ASSERT ( receiver );
   }
+
+  void testReceiveMessage(void)
+  {
+    Message msg = craftRandomMessage();
+    bool pass = false;
+    Tunnel::instance()->listenForEvent(W_EVENT_TUNNEL_MESSAGE,
+      [&msg,&pass](const Event::Ptr& eventPtr)
+    {
+      Tunnel::MessageEvent::Ptr msgPtr =
+        std::dynamic_pointer_cast<Tunnel::MessageEvent>(eventPtr);
+
+      if (!msgPtr) return;
+
+      if (msgPtr->direction == Tunnel::MessageEvent::DirectionIncoming)
+      {
+        TS_ASSERT_EQUALS ( msgPtr->message, msg );
+        TS_TRACE ( msgPtr->message );
+        pass = true;
+        Tunnel::instance()->emitter()->loop()->stop();
+      } else if (msgPtr->direction == Tunnel::MessageEvent::DirectionOutgoing)
+      {
+        // Faux dispatcher.
+        msgPtr->direction = Tunnel::MessageEvent::DirectionIncoming;
+        Tunnel::instance()->emitEvent(msgPtr);
+      }
+    });
+
+    Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg));
+    TS_ASSERT ( Tunnel::registerReceiver(receiverPtr) );
+    TS_ASSERT_EQUALS (
+      receiverPtr->eventListeners(W_EVENT_TUNNEL_MESSAGE).size(),
+      1
+    );
+    TS_ASSERT_THROWS_NOTHING ( Tunnel::sendMessage(msg) );
+    Tunnel::instance()->emitter()->loop()->run();
+    TS_ASSERT ( Tunnel::unregisterReceiver(receiverPtr) );
+
+    if (!pass) {
+      TS_FAIL("The callback for fetching a incoming message wasn't called.");
+    }
+  }
+
 };

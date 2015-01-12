@@ -88,9 +88,12 @@ public:
 
   virtual ~SampleReceiver() { }
 
-  virtual Wintermute::Message receive ()
+  virtual void receive (const Wintermute::Message& incomingMessage)
   {
-    return message;
+    Wintermute::Tunnel::MessageEvent::Ptr msgPtr =
+      make_shared<Wintermute::Tunnel::MessageEvent>(incomingMessage);
+    msgPtr->direction = Wintermute::Tunnel::MessageEvent::DirectionIncoming;
+    emitEvent(msgPtr);
   }
 
   Wintermute::Message message;

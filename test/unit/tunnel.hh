@@ -23,6 +23,7 @@ using Wintermute::Module;
 using Wintermute::Message;
 using Wintermute::Tunnel;
 using Wintermute::Logging;
+using namespace Wintermute::Events;
 
 class TunnelTestSuite : public CxxTest::TestSuite
 {
@@ -31,32 +32,12 @@ public:
   {
   }
 
-  void testSendOutMessage(void)
-  {
-    Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
-    TS_ASSERT ( Tunnel::registerDispatcher(dispatcherPtr) );
-
-    Message message = craftRandomMessage();
-    TS_ASSERT ( Tunnel::sendMessage(message) );
-
-    Message obtainedMessage = ((SampleDispatcher*) dispatcherPtr.get())->message;
-    TS_ASSERT ( !obtainedMessage.isEmpty() );
-    TS_ASSERT_EQUALS ( message, obtainedMessage );
-  }
-
-  void testReceiveMessage(void)
-  {
-    Message msg = craftRandomMessage();
-    Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg));
-    TS_ASSERT ( Tunnel::registerReceiver(receiverPtr) );
-    TS_ASSERT ( Tunnel::sendMessage(msg) );
-  }
-
   void testFindADispatcher(void)
   {
     Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
     TS_ASSERT(Tunnel::registerDispatcher(dispatcherPtr));
     TS_ASSERT(Tunnel::knowsOfDispatcher("sample"));
+    TS_ASSERT(Tunnel::unregisterDispatcher(dispatcherPtr));
     TS_ASSERT(!Tunnel::knowsOfDispatcher("foobarzilla"));
   }
 
@@ -66,6 +47,7 @@ public:
     Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg));
     TS_ASSERT(Tunnel::registerReceiver(receiverPtr));
     TS_ASSERT(Tunnel::knowsOfReceiver("sample"));
+    TS_ASSERT(Tunnel::unregisterReceiver(receiverPtr));
     TS_ASSERT(!Tunnel::knowsOfReceiver("foobarzilla"));
   }
 
@@ -77,23 +59,28 @@ public:
       string newName = "sampleReceiver_" + std::to_string(i);
       Tunnel::Receiver::Ptr receiverPtr(new SampleReceiver(msg, newName));
       TS_ASSERT(Tunnel::registerReceiver(receiverPtr));
+      TS_ASSERT_EQUALS(receiverPtr->emitter()->listeners(W_EVENT_TUNNEL_MESSAGE).size(), 1);
     }
 
-    TS_ASSERT_EQUALS ( Tunnel::receivers().size(), 10 );
+    TS_ASSERT_EQUALS ( Tunnel::receivers().size(), 9 );
     Tunnel::clearAllReceivers();
     TS_ASSERT_EQUALS ( Tunnel::receivers().size(), 0 );
   }
 
   void testCleanOutDispatchers(void)
   {
+    Tunnel::clearAllReceivers();
+    Tunnel::clearAllDispatchers();
+    TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 0 );
     for (int i = 1; i < 10; ++i)
     {
       string newName = "sampleDispatcher_" + std::to_string(i);
       Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher(newName));
       TS_ASSERT(Tunnel::registerDispatcher(dispatcherPtr));
+      TS_ASSERT_EQUALS(Tunnel::instance()->emitter()->listeners(W_EVENT_TUNNEL_MESSAGE).size(), i+1);
     }
 
-    TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 10 );
+    TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 9 );
     Tunnel::clearAllDispatchers();
     TS_ASSERT_EQUALS ( Tunnel::dispatchers().size(), 0 );
   }
