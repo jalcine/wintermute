@@ -50,6 +50,13 @@ bool Loop::run()
   return resultRun == 0;
 }
 
+bool Loop::stop()
+{
+  W_PRV(Loop);
+  const int resultRun = uv_loop_close(d->loop);
+  return resultRun == 0;
+}
+
 Loop::Ptr Loop::primary()
 {
   Loop::Ptr primaryLoop = make_shared<Loop>(true);
