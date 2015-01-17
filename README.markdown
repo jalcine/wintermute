@@ -12,6 +12,7 @@
 [![Coverage Status][coverallsdevelop_img]][cover_stat]
 [![Stories Ready to be Worked On][waffle_ready_img]][waffleio]
 [![Stories Being Worked On][waffle_work_img]][waffleio]
+[![Throughput Graph][issuegraph]][issuelink]
 
 # Synopsis 
 Wintermute's a software project that intends to be a launching pad into
@@ -38,6 +39,8 @@ friend.
 [coverallsdevelop_img]: https://img.shields.io/coveralls/jalcine/wintermute.svg?branch=develop
 [waffle_ready_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
 [waffle_work_img]: https://badge.waffle.io/jalcine/wintermute.png?label=in%20progress&title=In%20Progress
+[issuegraph]: https://graphs.waffle.io/jalcine/wintermute/throughput.svg
+[issuelink]: https://waffle.io/jalcine/wintermute/metrics
 [contrib]: ./CONTRIBUTING.markdown
 [install]: ./INSTALL.markdown
 [platforms]: ./INSTALL.markdown#platforms
