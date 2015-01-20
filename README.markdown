@@ -14,7 +14,7 @@
 [![Stories Being Worked On][waffle_work_img]][waffleio]
 [![Throughput Graph][issuegraph]][issuelink]
 
-# Synopsis 
+# Synopsis
 Wintermute's a software project that intends to be a launching pad into
 self-driven hyper-connectivity of hardware and software. The whole purpose
 of this particular tree is to build a core library, a driver binary
