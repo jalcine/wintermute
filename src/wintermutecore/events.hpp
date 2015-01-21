@@ -55,6 +55,7 @@ protected:
 public:
   friend class Poller;
   friend class Timer;
+  friend class EmitterPrivate;
   W_DECL_PTR_TYPE(Loop)
 
   /**

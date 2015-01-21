@@ -52,7 +52,8 @@ Listener::Ptr Emitter::listen(const string& eventName, Listener::Ptr& listener)
   return listener;
 }
 
-Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback cb, const Listener::Frequency& freq)
+Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback cb,
+  const Listener::Frequency& freq)
 {
   Listener::Ptr listener = make_shared<Listener>(cb);
   listener->frequency = freq;
@@ -97,16 +98,23 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 void Emitter::emit(const Event::Ptr& event)
 {
   wdebug("Invoking " + event->name() + "...");
+  W_PRV(Emitter);
   Listener::List listenersForEvent = listeners(event->name());
-  for_each(begin(listenersForEvent), end(listenersForEvent),
-    [&](Listener::Ptr & listener)
+  auto for_each_invoke_cb = [&d, &event, this](const Listener::Ptr& listenerPtr)
   {
     assert(listener);
     listener->invoke(event);
 
     if (listener->frequency == Listener::FrequencyOnce)
+    wdebug("Queueing listener...");
+    d->queueEventForListener(listenerPtr, event);
+    if (listenerPtr->frequency == Listener::FrequencyOnce)
     {
-      stopListening(listener);
+      wdebug("Removed a one-time listener.");
+      this->stopListening(listenerPtr);
     }
-  });
+    wdebug("Queued listener.");
+  };
+
+  for_each(begin(listenersForEvent), end(listenersForEvent), for_each_invoke_cb);
 }

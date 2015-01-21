@@ -46,10 +46,12 @@ public:
 
   void testAddListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
+
     Listener::Ptr aListener = make_shared<Listener>(cb),
       aListener2 = make_shared<Listener>(cb),
       aListener3 = make_shared<Listener>(cb);
@@ -78,7 +80,8 @@ public:
 
   void testRemoveListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
@@ -97,10 +100,12 @@ public:
 
   void testInvokeListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
+
     Listener::Ptr onceListener = make_shared<Listener>(cb),
       allListener = make_shared<Listener>(cb);
     Loop::Ptr loop = make_shared<Loop>(true);

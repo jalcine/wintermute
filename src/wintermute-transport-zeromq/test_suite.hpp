@@ -3,6 +3,8 @@
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
@@ -13,28 +15,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <unordered_map>
-#include "events.hpp"
+#ifndef WINTERMUTE_TEST_SUITE_HPP
+#define WINTERMUTE_TEST_SUITE_HPP
 
-using std::unordered_multimap;
+#define TEST_BASE_DIR           "/home/jalcine/Development/Projects/Wintermute/core/build/test"
+#define SAMPLE_PLUGIN_NAME      "sample"
+#define SAMPLE_PLUGIN_FILE_NAME "libwintermutesample.so"
+#define SAMPLE_PLUGIN_PATH      "/home/jalcine/Development/Projects/Wintermute/core/build/lib/libwintermutesample.so"
+#define SAMPLE_TEST_FILE        "/home/jalcine/Development/Projects/Wintermute/core/CMakeLists.txt"
 
-namespace Wintermute
-{
-namespace Events
-{
-class EmitterPrivate
-{
-public:
-  Loop::Ptr loop;
-  unordered_multimap<string, Listener::Ptr> listeners;
+#include "fixtures.hpp"
+#include <cstdlib>
 
-  void queueEventForListener(const Listener::Ptr& listener, const Event::Ptr& event)
-  {
-    assert(listener);
-    assert(event);
-    // TODO: Invoke the listener here.
-  }
-};
-}
-}
-
+#endif
