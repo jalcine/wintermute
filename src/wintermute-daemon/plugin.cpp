@@ -20,4 +20,30 @@
 
 #include "plugin.hpp"
 
-using Wintermute::Daemon::Plugin;
+using Wintermute::Plugin;
+using DaemonPlugin = Wintermute::Daemon::Plugin;
+
+DaemonPlugin::Plugin() :
+  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME)
+{
+}
+
+DaemonPlugin::~Plugin()
+{
+}
+
+bool DaemonPlugin::startup()
+{
+  return true;
+}
+
+bool DaemonPlugin::shutdown()
+{
+  return true;
+}
+
+Plugin::PluginType DaemonPlugin::type() const
+{
+  return Wintermute::Plugin::PluginTypeService;
+}
+

@@ -18,6 +18,9 @@
     Boston, MA 02111-1307, USA.
  */
 
+#ifndef WINTERMUTE_DAEMON_PLUGIN_HPP_
+# define WINTERMUTE_DAEMON_PLUGIN_HPP_
+
 #include <wintermutecore/plugin.hpp>
 #include "globals.hpp"
 
@@ -27,9 +30,16 @@ namespace Daemon
 {
 class Plugin : public Wintermute::Plugin
 {
+  public:
+    explicit Plugin();
+    virtual ~Plugin();
+    virtual bool startup();
+    virtual bool shutdown();
+    virtual Plugin::PluginType type() const;
 };
 }
 }
 
 W_DECL_PLUGIN(Wintermute::Daemon::Plugin, WINTERMUTE_DAEMON_VERSION)
 
+#endif
