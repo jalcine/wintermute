@@ -22,7 +22,6 @@
 # define WINTERMUTE_CORE_UTIL_CONFIGURATION_HPP_
 
 #include <wintermutecore/globals.hpp>
-#include <wintermutecore/util/serializable.hpp>
 #include <list>
 
 using std::list;
@@ -32,28 +31,19 @@ namespace Wintermute
 namespace Util
 {
 class ConfigurationPrivate;
-
-/**
- * @class Wintermute::Util::Configuration
- * Provides a basis of handling configuration options in Wintermute.
- */
-class WINTERMUTE_EXPORT_PUBLIC Configuration
+class Configuration
 #ifndef DOXYGEN_SKIP
   : W_DEF_SHAREABLE(Configuration)
 #endif
 {
+  W_DECL_PTR_TYPE(Configuration)
   W_DEF_PRIVATE(Configuration);
 
 public:
-  W_DECL_PTR_TYPE(Configuration)
 
-  // TODO: Make this private.
   explicit Configuration(const string & configName);
-
   virtual ~Configuration();
-
   static bool addDirectory(const string& directory);
-
   static list<string> directories();
 
   static Ptr obtainStore(const string& configName);
