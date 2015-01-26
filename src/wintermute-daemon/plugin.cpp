@@ -34,11 +34,17 @@ DaemonPlugin::~Plugin()
 
 bool DaemonPlugin::startup()
 {
+  startLighthouseInstance();
+  startRelayForTunnel();
+  startDesignatedPlugins();
   return true;
 }
 
 bool DaemonPlugin::shutdown()
 {
+  stopLighthouseInstance();
+  stopRelayForTunnel();
+  stopDesignatedPlugins();
   return true;
 }
 
@@ -47,3 +53,33 @@ Plugin::PluginType DaemonPlugin::type() const
   return Wintermute::Plugin::PluginTypeService;
 }
 
+void DaemonPlugin::startLighthouseInstance()
+{
+  // TODO: Load the lighthouse plugin.
+  // TODO: Send a method call to the module to run in 'warden' mode.
+}
+
+void DaemonPlugin::stopLighthouseInstance()
+{
+  // TODO: Send a method call to the module to kill 'warden' mode.
+  // TODO: Unload the lighthouse plugin.
+}
+
+void DaemonPlugin::startRelayForTunnel()
+{
+  // TODO: Send local method call to Tunnel to activate relays.
+}
+
+void DaemonPlugin::stopRelayForTunnel()
+{
+  // TODO: Send local method call to Tunnel to deactivate relays.
+}
+
+void DaemonPlugin::startDesignatedPlugins()
+{
+  // TODO: Fetch list of plugins to be started when
+}
+
+void DaemonPlugin::stopDesignatedPlugins()
+{
+}

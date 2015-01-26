@@ -36,6 +36,14 @@ class Plugin : public Wintermute::Plugin
     virtual bool startup();
     virtual bool shutdown();
     virtual Plugin::PluginType type() const;
+
+  private:
+    void startLighthouseInstance();
+    void stopLighthouseInstance();
+    void startRelayForTunnel();
+    void stopRelayForTunnel();
+    void startDesignatedPlugins();
+    void stopDesignatedPlugins();
 };
 }
 }
