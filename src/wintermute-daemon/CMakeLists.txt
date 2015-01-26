@@ -20,7 +20,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 PROJECT(WintermuteDaemon CXX)
 
-include(WintermutePlugin)
+INCLUDE(WintermutePlugin)
+INCLUDE(FindPkgConfig)
 
 SET(WINTERMUTE_DAEMON_VERSION     0.0.1-dev)
 
@@ -37,9 +38,6 @@ CONFIGURE_FILE(globals.hpp.in
 ADD_LIBRARY(wintermute-daemon
   SHARED ${_srcs}
   )
-
-#TARGET_LINK_LIBRARIES(wintermute-daemon )
-#TARGET_INCLUDE_DIRECTORIES(wintermute-daemon)
 
 WINTERMUTE_PLUGIN_DECLARE(
   NAME   daemon
