@@ -82,9 +82,6 @@ case $1 in
   "--cmake" )
     install_cmake
     ;;
-  "--cmake" )
-    install_cmake
-    ;;
   "--generate-vagrant" )
     mkcd build && cd build
     cmake /vagrant -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
