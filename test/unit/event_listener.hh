@@ -50,7 +50,7 @@ public:
   void testPreventNullEventsFromBeingInvoked()
   {
     Listener::Ptr listener;
-    Listener::Callback func = [&](const Event::Ptr& event) { };
+    Listener::Callback func = [&](const Event::Ptr& event) { assert(event); };
 
     TS_ASSERT_THROWS_NOTHING( listener = make_shared<Listener>(func) );
     TS_ASSERT_THROWS(

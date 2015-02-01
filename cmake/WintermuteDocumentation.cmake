@@ -17,7 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-
 INCLUDE(CMakeParseArguments)
 OPTION(GENERATE_DOCUMENTATION OFF "Generate documentation using Doxygen.")
 
@@ -25,7 +24,7 @@ IF (GENERATE_DOCUMENTATION EQUAL OFF)
   return()
 ENDIF()
 
-FIND_PACKAGE(Doxygen 1.8 REQUIRED)
+FIND_PACKAGE(Doxygen 1.7 REQUIRED)
 
 IF (NOT DOXYGEN_FOUND)
   MESSAGE("Cannot generate documentation, Doxygen not found.")
