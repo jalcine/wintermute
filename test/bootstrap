@@ -83,8 +83,8 @@ case $1 in
     install_cmake
     ;;
   "--generate-vagrant" )
-    mkcd build && cd build
-    cmake /vagrant -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    mkdir build && cd build
+    cmake /vagrant -DCMAKE_CXX_COMPILER=$(which g++-4.9) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--run" )
     make all || exit 1
