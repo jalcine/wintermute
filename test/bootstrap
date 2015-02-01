@@ -34,6 +34,7 @@ bootstrap_build() {
   sudo apt-get install -qq pkg-config
   sudo apt-get install -qq cmake
   sudo apt-get install -qq g++-4.9 clang-3.5
+  sudo apt-get remove -qq g++-4.6
 
   install_libuv
   install_cmake
@@ -71,9 +72,6 @@ case $1 in
     ;;
   "--generate" )
     cmake . -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
-    ;;
-  "--cmake" )
-    install_cmake
     ;;
   "--cmake" )
     install_cmake
