@@ -1,12 +1,15 @@
-#define CXXTEST_HAVE_EH
-#define CXXTEST_ABORT_TEST_ON_FAIL
+//#define CXXTEST_HAVE_EH
+//#define CXXTEST_ABORT_TEST_ON_FAIL
+#include <iostream>
 #include <cxxtest/ErrorPrinter.h>
+using std::cout;
+using std::endl;
 
 int main()
 {
-    std::cout << "[wntr] Test suite starting..." << std::endl;
+    cout << "[wntr] Test suite starting..." << endl;
     int status = CxxTest::ErrorPrinter().run();
-    std::cout << "[wntr] Test suite complete." << std::endl;
+    cout << "[wntr] Test suite complete with status " << status << endl;
     return status;
 }
 

@@ -26,11 +26,13 @@ bootstrap_build() {
   echo -en "\n[build]: installing dependencies...\n"
   sudo apt-get install -qq libjsoncpp-dev
   sudo apt-get install -qq liblog4cxx10-dev
+  sudo apt-get install -qq libconfig++-dev
   sudo apt-get install -qq doxygen
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
   sudo apt-get install -qq lcov
   sudo apt-get install -qq pkg-config
+  sudo apt-get remove  -qq g++*
   sudo apt-get install -qq g++-4.9 clang-3.5
   sudo apt-get remove -qq g++-4.6
 
@@ -75,7 +77,7 @@ case $1 in
     install_cmake
     ;;
   "--generate-vagrant" )
-    mkdir build && cd build
+    mkdir build; cd build
     cmake /vagrant -DCMAKE_CXX_COMPILER=$(which g++-4.9) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--run" )
