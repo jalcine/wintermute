@@ -31,13 +31,25 @@ bootstrap_build() {
   sudo apt-get install -qq valgrind
   sudo apt-get install -qq lcov
   sudo apt-get install -qq pkg-config
-  sudo apt-get install -qq cmake
+  sudo apt-get install -qq g++-4.9 clang-3.5
 
   install_libuv
+  install_cmake
 
-  echo -en "\Done installing dependencies.\n"
+  echo -en "\nDone installing dependencies.\n"
 
-  sudo ln -s /usr/lib/llvm-3.4/lib/libprofile_rt.a /usr/lib/libprofile_rt.a
+}
+
+install_cmake() {
+  sudo apt-get build-dep -qq cmake;
+  cd $(mktemp -d);
+  wget http://www.cmake.org/files/v2.8/cmake-2.8.12.tar.gz
+  tar -xvzf cmake-2.8.12.tar.gz
+  cd cmake-2.8.12
+  sh autogen.sh
+  ./configure --prefix=/usr
+  make
+  sudo make install
 }
 
 install_libuv() {
@@ -58,9 +70,12 @@ case $1 in
   "--generate" )
     cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
+  "--cmake" )
+    install_cmake
+    ;;
   "--generate-vagrant" )
-    mkcd build && cd build
-    cmake /vagrant -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    mkdir build && cd build
+    cmake /vagrant -DCMAKE_CXX_COMPILER=$(which g++-4.9) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--run" )
     make all || exit 1
@@ -71,7 +86,7 @@ case $1 in
   "--post" )
     coveralls --gcov $(which gcov) --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
     ;;
-  "*" )
+  *)
     echo -en <<HELP
 test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
 

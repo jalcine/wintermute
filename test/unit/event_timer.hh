@@ -55,6 +55,7 @@ public:
     timer->listenForEvent("core.events.timeout",
       [&](const Event::Ptr& event) -> void
     {
+      assert(event);
       TS_TRACE("We get here.");
       timer->stop();
     }, Listener::FrequencyEvery);
