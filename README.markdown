@@ -32,13 +32,13 @@ This project is [Vagrant][] enabled.
 friend.
 
 [post]: http://jalcine.me/weblog/ambitions-wintermute/
-[build_stat]: https://travis-ci.org/jalcine/wintermute
-[cover_stat]: https://coveralls.io/r/jalcine/wintermute
+[build_stat]: https://travis-ci.org/jalcine/wintermute?branch=develop
+[cover_stat]: https://coveralls.io/r/jalcine/wintermute?branch=develop
 [waffleio]: http://waffle.io/jalcine/wintermute
 [travisdevelop_img]: https://travis-ci.org/jalcine/wintermute.svg?branch=develop
 [coverallsdevelop_img]: https://img.shields.io/coveralls/jalcine/wintermute.svg?branch=develop
 [waffle_ready_img]: https://badge.waffle.io/jalcine/wintermute.png?label=ready&title=Ready
-[waffle_work_img]: https://badge.waffle.io/jalcine/wintermute.png?label=in%20progress&title=In%20Progress
+[waffle_work_img]: https://badge.waffle.io/jalcine/wintermute.png?label=In%20Progress&title=In%20Progress
 [issuegraph]: https://graphs.waffle.io/jalcine/wintermute/throughput.svg
 [issuelink]: https://waffle.io/jalcine/wintermute/metrics
 [contrib]: ./CONTRIBUTING.markdown
