@@ -35,8 +35,8 @@ friend.
 
   + [ ] abstracted configuration framework
   + [ ] preliminary RPC framework (using modules + calls)
-  + [ ] plugin loading infrastructure
-  + [ ] versioning support
+  + [x] plugin loading infrastructure
+  + [x] versioning support
 
 [post]: http://jalcine.me/weblog/ambitions-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute?branch=develop
