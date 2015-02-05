@@ -31,6 +31,13 @@ This project is [Vagrant][] enabled.
 **This is alpha software, so alpha that it does nothing.** But in due time, my
 friend.
 
+# TODO
+
+  + [ ] abstracted configuration framework
+  + [ ] preliminary RPC framework (using modules + calls)
+  + [ ] plugin loading infrastructure
+  + [ ] versioning support
+
 [post]: http://jalcine.me/weblog/ambitions-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute?branch=develop
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute?branch=develop
