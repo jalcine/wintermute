@@ -28,6 +28,8 @@ set(_srcs
 
   # == Utilities
   ./util/serializable.cpp
+  ./util/configuration.cpp
+  ./util/configuration.cc
 
   # == Plugin Related
   ./library.cc
@@ -83,7 +85,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 
 SET_TARGET_PROPERTIES(wintermute PROPERTIES
   DEFINE_SYMBOL WINTERMUTE_EXPORT
-  VERSION       ${WINTERMUTE_VERSION} 
+  VERSION       ${WINTERMUTE_VERSION}
   )
 
 file(GLOB _extra_doc_files

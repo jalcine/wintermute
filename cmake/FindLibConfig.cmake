@@ -1,4 +1,6 @@
 # vim: set ts=2 sts=2 sw=2 fdm=indent
+# Uses PkgConfig to look up the package 'libconfig++'.
+# Site: http://www.hyperrealm.com/libconfig
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -17,36 +19,13 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
+INCLUDE(FindPkgConfig)
+INCLUDE(FindPackageHandleStandardArgs)
 
-macro(add_a_unit_test _name)
-  wintermute_add_test(unit ${_name}
-    ${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh)
-endmacro(add_a_unit_test)
+PKG_CHECK_MODULES(LIBCONFIG QUIET REQUIRED libconfig++)
 
-configure_file(sample.cfg.in sample.cfg @ONLY)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(libconfig DEFAULT_MSG
+  LIBCONFIG_LIBRARIES LIBCONFIG_FOUND)
 
-# == Define the root tests.
-add_a_unit_test(util_serializable)
-add_a_unit_test(util_configuration)
-add_a_unit_test(singleton)
-add_a_unit_test(message)
-add_a_unit_test(module)
-add_a_unit_test(module_pool)
-add_a_unit_test(module_designation)
-add_a_unit_test(call)
-#add_a_unit_test(signal)
-#add_a_unit_test(signalable)
-#add_a_unit_test(reply_call)
-#add_a_unit_test(signal_call)
-add_a_unit_test(tunnel)
-add_a_unit_test(tunnel_dispatcher)
-add_a_unit_test(tunnel_receiver)
-add_a_unit_test(method)
-add_a_unit_test(plugin)
-add_a_unit_test(library)
-add_a_unit_test(version)
-add_a_unit_test(event_loop)
-add_a_unit_test(event_emitter)
-add_a_unit_test(event_listener)
-add_a_unit_test(event_poller)
-add_a_unit_test(event_timer)
+MARK_AS_ADVANCED(LIBCONFIG_INCLUDE_DIRS LIBCONFIG_CFLAGS LIBCONFIG_CFLAGS_OTHER
+  LIBCONFIG_LIBRARIES LIBCONFIG_LIBRARY_DIR LIBCONFIG_DEFINITIONS)
