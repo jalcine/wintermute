@@ -70,7 +70,7 @@ public:
    * defines, be it the network or over a file descriptor. Such broad levels of
    * abstraction now allows Wintermute to do whatever it'd like when it comes
    * to sending out messages. Implementations can range from JSON-RPC to
-   * sending out audible morse code from one machine to another.
+   * sending out audible morse code from one machine to another (maybe!).
    *
    * @todo Look into adding ones that have some form of encryption.
    * @todo Look into adding ones that have some form of signing.
