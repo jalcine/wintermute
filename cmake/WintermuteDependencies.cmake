@@ -23,14 +23,13 @@ else()
   return()
 endif()
 
-## ======================
+## ===========================================================================
 ## === ** PACKAGES ** ===
-## ======================
+## ===========================================================================
 ## {{{
 
 # = Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
-INCLUDE(CheckIncludeFile)
 INCLUDE(WintermuteVariables)
 
 PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
@@ -79,30 +78,18 @@ set(CMAKE_REQUIRED_INCLUDES ${WINTERMUTE_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_INCLUDE_FLAGS})
 
 ## }}}
-## ======================
-## ==== ** HEADERS ** ===
-## ======================
-## TODO: Find a better solution for looking up files and stopping the build if
-## they don't exist.
+## ===========================================================================
+## ==== ** FLAGS ** ===
+## ===========================================================================
 ## {{{
-
-## macro find_required_header(FILE_PATH)
-# Searches for the provided header at all known file paths. Wraps the
-# functionality of `check_include_file` making it a hard failure.
-macro(FIND_REQUIRED_HEADER _FILE_PATH)
-  check_include_file(${_FILE_PATH} _found)
-  if (_found-NOTFOUND)
-    message(ERROR "Failed to find header: ${_FILE_PATH}!")
-  endif()
-endmacro(FIND_REQUIRED_HEADER)
-
-FIND_REQUIRED_HEADER(cxxabi.h CHKHDR_CXXABI)
-FIND_REQUIRED_HEADER(sys/types.h CHKHDR_SYS_TYPES)
-FIND_REQUIRED_HEADER(unistd.h CHKHDR_UNISTD)
-
-## }}}
-## ======================
-## ==== ** SYMBOLS ** ===
-## ======================
-## {{{
+INCLUDE(CheckCXXCompilerFlag)
+IF (CMAKE_BUILD_TYPE STREQUAL Debug)
+  CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
+  IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
+    MESSAGE(WARNING
+      '-ftemplate-backtrace-limit' is not supported.
+      Stack unwinding of templated functions will be packed.
+    )
+  ENDIF()
+ENDIF()
 ## }}}
