@@ -39,7 +39,6 @@ SET(_wntr_test_tpl
 
 SET(CXXTEST_TESTGEN_ARGS
   --template ${_wntr_test_tpl}
-  --runner=ErrorPrinter
   )
 
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
@@ -78,7 +77,7 @@ set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
 set(MEMORYCHECK_COMMAND
   "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
 
-SEPARATE_ARGUMENTS(MEMCHECK_COMMAND) 
+SEPARATE_ARGUMENTS(MEMCHECK_COMMAND)
 
 #== Handle work if we're in CI mode.
 OPTION(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
