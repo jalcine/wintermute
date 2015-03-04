@@ -28,8 +28,11 @@ namespace Wintermute
 {
 namespace Daemon
 {
+class PluginPrivate;
 class Plugin : public Wintermute::Plugin
 {
+  W_DEF_PRIVATE(Wintermute::Daemon::Plugin)
+
   public:
     explicit Plugin();
     virtual ~Plugin();

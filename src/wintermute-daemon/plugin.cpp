@@ -23,14 +23,14 @@
 
 using Wintermute::Plugin;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
+using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 
 DaemonPlugin::Plugin() :
-  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME),
-  d_ptr(new DaemonPlugin::_Prv)
+  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME)
 {
 }
 
-DaemonPlugin::~DaemonPlugin()
+DaemonPlugin::~Plugin()
 {
 }
 
@@ -76,7 +76,7 @@ void DaemonPlugin::stopLighthouseInstance()
 
 void DaemonPlugin::startRelayForTunnel()
 {
-  W_PRV(DaemonPlugin);
+  //W_PRV(DaemonPlugin);
   // TODO: Send local method call to Tunnel to activate relays.
 }
 

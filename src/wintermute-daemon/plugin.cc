@@ -18,30 +18,26 @@
    Boston, MA 02111-1307, USA.
    */
 
-#ifndef WINTERMUTE_DAEMON_PLUGIN_HH_
-#define WINTERMUTE_DAEMON_PLUGIN_HH_
+#include <wintermutecore/globals.hpp>
+#include <wintermutecore/logging.hpp>
+#include "plugin.hh"
 
-namespace Wintermute
+using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
+using std::to_string;
+
+DaemonPluginPrivate::PluginPrivate() { }
+DaemonPluginPrivate::~PluginPrivate() { }
+
+void DaemonPluginPrivate::loadLighthouse()
 {
-  namespace Daemon {
-    class PluginPrivate
-    {
-      public:
-        enum WardenAction {
-          WardenActionUndefined = 0,
-          WardenStart = 1,
-          WardenStop
-        };
-        explicit PluginPrivate();
-        ~PluginPrivate();
-        void loadLighthouse();
-        void unloadLighthouse();
-        void tellWarden(const WardenAction action);
-
-      private:
-        /* data */
-    };
-  }
 }
 
-#endif
+void DaemonPluginPrivate::unloadLighthouse()
+{
+}
+
+void DaemonPluginPrivate::tellWarden(
+    const DaemonPluginPrivate::WardenAction action)
+{
+  wdebug("Communicating with Warden => " + to_string((int)action) + "...");
+}
