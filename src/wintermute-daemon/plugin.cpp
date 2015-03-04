@@ -19,16 +19,18 @@
  */
 
 #include "plugin.hpp"
+#include "plugin.hh"
 
 using Wintermute::Plugin;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
 
 DaemonPlugin::Plugin() :
-  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME)
+  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME),
+  d_ptr(new DaemonPlugin::_Prv)
 {
 }
 
-DaemonPlugin::~Plugin()
+DaemonPlugin::~DaemonPlugin()
 {
 }
 
@@ -55,18 +57,26 @@ Plugin::PluginType DaemonPlugin::type() const
 
 void DaemonPlugin::startLighthouseInstance()
 {
+  W_PRV(DaemonPlugin);
   // TODO: Load the lighthouse plugin.
+  d->loadLighthouse();
+
   // TODO: Send a method call to the module to run in 'warden' mode.
+  d->tellWarden(DaemonPlugin::_Prv::WardenStart);
 }
 
 void DaemonPlugin::stopLighthouseInstance()
 {
+  W_PRV(DaemonPlugin);
   // TODO: Send a method call to the module to kill 'warden' mode.
+  d->tellWarden(DaemonPlugin::_Prv::WardenStop);
   // TODO: Unload the lighthouse plugin.
+  d->unloadLighthouse();
 }
 
 void DaemonPlugin::startRelayForTunnel()
 {
+  W_PRV(DaemonPlugin);
   // TODO: Send local method call to Tunnel to activate relays.
 }
 
@@ -77,9 +87,14 @@ void DaemonPlugin::stopRelayForTunnel()
 
 void DaemonPlugin::startDesignatedPlugins()
 {
-  // TODO: Fetch list of plugins to be started when
+  // TODO: Fetch list of plugins to be started when Wintermute is started.
+  // TODO: For each plugin in #1, load plugin.
+  // TODO: For each plugin in #1, confirm successful plugin load.
 }
 
 void DaemonPlugin::stopDesignatedPlugins()
 {
+  // TODO: Fetch list of plugins to be started when Wintermute is started.
+  // TODO: For each plugin in #1, unload plugin.
+  // TODO: For each plugin in #1, confirm successful plugin unload.
 }
