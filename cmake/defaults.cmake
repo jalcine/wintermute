@@ -17,19 +17,30 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
+# == Variables we'd use.
+SET(BUILD_SHARED_LIBRARIES ON)
+SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
+endif()
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
+# == Imports we'd use.
+# Include a means of picking up the proper paths on a machine.)
+INCLUDE(GNUInstallDirs)
 
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
+# Build a header file we can use to include into other projects.
+INCLUDE(GenerateExportHeader)
 
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+# Look up libraries.
+INCLUDE(CheckLibraryExists)
+
+# == Our CMake files.
+INCLUDE(WintermuteDependencies)
+INCLUDE(WintermuteDocumentation)

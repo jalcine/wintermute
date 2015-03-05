@@ -1,4 +1,6 @@
 # vim: set ts=2 sts=2 sw=2 fdm=indent
+# Uses PkgConfig to look up the package 'libconfig++'.
+# Site: http://www.hyperrealm.com/libconfig
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -17,19 +19,13 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
+INCLUDE(FindPkgConfig)
+INCLUDE(FindPackageHandleStandardArgs)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+PKG_CHECK_MODULES(LIBCONFIG QUIET REQUIRED libconfig++)
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(libconfig DEFAULT_MSG
+  LIBCONFIG_LIBRARIES LIBCONFIG_FOUND)
 
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+MARK_AS_ADVANCED(LIBCONFIG_INCLUDE_DIRS LIBCONFIG_CFLAGS LIBCONFIG_CFLAGS_OTHER
+  LIBCONFIG_LIBRARIES LIBCONFIG_LIBRARY_DIR LIBCONFIG_DEFINITIONS)

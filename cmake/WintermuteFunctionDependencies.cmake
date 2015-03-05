@@ -18,18 +18,11 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+if (NOT DEFINED _wntr_func_deps)
+  set(_wntr_func_deps ON)
+else()
+  return()
+endif()
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
-
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+include(CheckFunctionExists)

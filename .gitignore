@@ -1,0 +1,9 @@
+# vim: set ft=gitignore :
+build/*
+.ycm_extra_conf.pyc
+CTestConfig.cmake
+*.orig
+CTestConfig.cmake
+src/**/globals.hpp
+test/**/test_suite.hpp
+.vagrant/*

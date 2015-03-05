@@ -17,19 +17,36 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+macro(add_a_unit_test _name)
+  wintermute_add_test(unit ${_name}
+    ${CMAKE_SOURCE_DIR}/test/unit/${_name}.hh)
+endmacro(add_a_unit_test)
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
+configure_file(sample.cfg.in sample.cfg @ONLY)
 
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+# == Define the root tests.
+add_a_unit_test(util_serializable)
+add_a_unit_test(util_configuration)
+add_a_unit_test(singleton)
+add_a_unit_test(message)
+add_a_unit_test(module)
+add_a_unit_test(module_pool)
+add_a_unit_test(module_designation)
+add_a_unit_test(call)
+#add_a_unit_test(signal)
+#add_a_unit_test(signalable)
+#add_a_unit_test(reply_call)
+#add_a_unit_test(signal_call)
+add_a_unit_test(tunnel)
+add_a_unit_test(tunnel_dispatcher)
+add_a_unit_test(tunnel_receiver)
+add_a_unit_test(method)
+add_a_unit_test(plugin)
+add_a_unit_test(library)
+add_a_unit_test(version)
+add_a_unit_test(event_loop)
+add_a_unit_test(event_emitter)
+add_a_unit_test(event_listener)
+add_a_unit_test(event_poller)
+add_a_unit_test(event_timer)

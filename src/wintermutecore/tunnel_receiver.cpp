@@ -1,0 +1,49 @@
+/*
+ * Wintermute is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with Wintermute; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#include "tunnel_receiver.hh"
+#include "tunnel.hpp"
+#include "logging.hpp"
+
+using Wintermute::Tunnel;
+using Wintermute::ReceiverPrivate;
+using Wintermute::Events::Emitter;
+
+Tunnel::Receiver::Receiver(const string& theName) : d_ptr(new ReceiverPrivate)
+{
+  W_PRV(Receiver);
+  d->name = theName;
+  d->emitter = make_shared<Events::Emitter>(Tunnel::instance()->emitter()->loop());
+  wdebug("Built a new receiver for the tunnel called " + name() + ".");
+}
+
+string Tunnel::Receiver::name() const
+{
+  W_PRV(const Receiver);
+  return d->name;
+}
+
+Emitter::Ptr Tunnel::Receiver::emitter() const
+{
+  W_PRV(Receiver);
+  return d->emitter;
+}
+
+Tunnel::Receiver::~Receiver()
+{
+  wdebug("Destroyed the " + name() + " receiver.");
+}

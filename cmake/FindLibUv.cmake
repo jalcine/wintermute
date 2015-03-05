@@ -1,4 +1,5 @@
 # vim: set ts=2 sts=2 sw=2 fdm=indent
+# Uses PkgConfig 
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -17,19 +18,8 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
+# TODO: Add some more friendly logic to CMakeify libuv for CMake projects.
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+include(FindPkgConfig)
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
-
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+PKG_SEARCH_MODULES(LIBUV REQUIRED libuv)

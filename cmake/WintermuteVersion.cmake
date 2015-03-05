@@ -17,19 +17,17 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
+if (NOT DEFINED _wntr_ver)
+  set(_wntr_ver ON)
+else()
+  return()
+endif()
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+set(WINTERMUTE_VERSION_MAJOR 0)
+set(WINTERMUTE_VERSION_MINOR 0)
+set(WINTERMUTE_VERSION_PATCH 1)
+set(WINTERMUTE_VERSION_RC "dev")
+set(WINTERMUTE_VERSION
+  ${WINTERMUTE_VERSION_MAJOR}.${WINTERMUTE_VERSION_MINOR}.${WINTERMUTE_VERSION_PATCH}-${WINTERMUTE_VERSION_RC})
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
-
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+message(STATUS "Wintermute ${WINTERMUTE_VERSION} is being built.")

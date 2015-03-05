@@ -17,19 +17,14 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-INCLUDE(defaults)
+include(WintermuteTest)
 
-# Enable testing.
-ENABLE_TESTING()
-INCLUDE(CTest)
-
-# Include the source code for the project.
-ADD_SUBDIRECTORY(src)
-
-# Include the test suite.
-ADD_SUBDIRECTORY(test)
+wintermute_define_plugin(
+  TARGET
+    wintermutesample
+  SOURCES
+    ./wintermute_sample.cc
+  INCLUDE_DIRECTORIES
+    ${WINTERMUTE_TEST_INCLUDE_DIRS}
+  )

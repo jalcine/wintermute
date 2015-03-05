@@ -1,0 +1,6 @@
+# Wintermute's Style Configuration
+
+--style=google
+--indent-switches
+--indent=spaces=2
+--indent=tab=2
