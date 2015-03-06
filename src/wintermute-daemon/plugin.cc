@@ -50,7 +50,8 @@ void DaemonPluginPrivate::loadHeartbeat()
   // it should run as the pinger or the pingee by the existence of the daemon
   // plugin. Realistically, there should be only one process on the machine
   // that has the daemon plugin loaded so it's a contract we'll have to find a
-  // way to enforce.
+  // way to enforce. This way, we'd never have to link the daemon plugin
+  // directly to the heartbeat plugin to invoke particular actions on it.
 }
 
 void DaemonPluginPrivate::unloadHeartbeat()

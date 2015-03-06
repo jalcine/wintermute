@@ -40,16 +40,16 @@ DaemonPlugin::~Plugin()
 bool DaemonPlugin::startup()
 {
   startHeartbeatInstance();
-  startRelayForTunnel();
   startDesignatedPlugins();
+  startRelayForTunnel();
   return true;
 }
 
 bool DaemonPlugin::shutdown()
 {
-  stopHeartbeatInstance();
   stopRelayForTunnel();
   stopDesignatedPlugins();
+  stopHeartbeatInstance();
   return true;
 }
 
