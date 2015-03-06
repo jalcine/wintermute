@@ -18,18 +18,23 @@
     Boston, MA 02111-1307, USA.
  */
 
+#include <algorithm>
 #include <wintermutecore/logging.hpp>
 #include <wintermutecore/method.hpp>
+#include <wintermutecore/util/configuration.hpp>
 #include "plugin.hpp"
 #include "plugin.hh"
 
 using Wintermute::Plugin;
 using Wintermute::Method;
+using Wintermute::Util::Configuration;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
+using std::for_each;
 
 DaemonPlugin::Plugin() :
-  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME)
+  Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME),
+  d_ptr(new DaemonPluginPrivate)
 {
 }
 
@@ -92,6 +97,17 @@ void DaemonPlugin::stopRelayForTunnel()
 void DaemonPlugin::startDesignatedPlugins()
 {
   // TODO: Fetch list of plugins to be started when Wintermute is started.
+  Configuration::Ptr daemonCfg;
+
+  daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
+  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
+
+  for_each(pluginNames.begin(), pluginNames.end(), [&](const string& pluginName)
+  {
+    wdebug("Attempting to load plugin " + pluginName + "...");
+    Plugin::Ptr designatedPluginPtr = Plugin::find(pluginName);
+    wdebug("Loaded plugin '" + pluginName + "'.");
+  });
   // TODO: For each plugin in #1, load plugin.
   // TODO: For each plugin in #1, confirm successful plugin load.
 }
