@@ -15,7 +15,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <dlfcn.h>
 #include "logging.hpp"
 #include "library.hpp"
 #include "library.hh"
@@ -24,21 +23,22 @@ using Wintermute::Library;
 using Wintermute::LibraryPrivate;
 
 LibraryPrivate::LibraryPrivate() :
-  handlePtr(nullptr), filename(""), loadState(Library::LoadUndefined)
+  handlePtr(0), filename(""), loadState(Library::LoadUndefined)
 {
+  handlePtr = new LibraryPrivate::HandlePtr;
 }
 
-LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& filenameToLoad, string& errorMessage)
+LibraryPrivate::HandlePtr* LibraryPrivate::claimHandleForFilename(const string& filenameToLoad, string& errorMessage)
 {
   wdebug("Claiming handle for library " + filenameToLoad + "...");
-  LibraryPrivate::HandlePtr handle = nullptr;
+  LibraryPrivate::HandlePtr* handle = new LibraryPrivate::HandlePtr;
 
-  dlerror();
-  handle = dlopen(filenameToLoad.c_str(), RTLD_NOW | RTLD_GLOBAL );
-  const char* msg = dlerror();
+  const int openedLibrary = uv_dlopen(filenameToLoad.c_str(), handle);
 
-  if (!handle)
+  if (openedLibrary < 0)
   {
+    const char* msg = uv_dlerror(handle);
+
     if (msg)
     {
       errorMessage = msg;
@@ -61,25 +61,10 @@ LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& f
 
 bool LibraryPrivate::freeHandle(string& errorMessage)
 {
-  dlerror();
-
-  if (handlePtr == nullptr)
-  {
-    wtrace("No pointer to a library is held.");
-    return true;
-  }
-
-  const int wasntSuccessful = dlclose(handlePtr);
-  if (wasntSuccessful)
-  {
-    errorMessage = dlerror(); // We do this twice to prevent memory leaks.
-  }
-  else
-  {
-    handlePtr = nullptr;
-  }
-
-  return wasntSuccessful == 0;
+  uv_dlclose(handlePtr);
+  errorMessage = uv_dlerror(handlePtr);
+  handlePtr = nullptr;
+  return true;
 }
 
 LibraryPrivate::~LibraryPrivate()
