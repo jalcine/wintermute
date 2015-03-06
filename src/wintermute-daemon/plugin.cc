@@ -20,24 +20,49 @@
 
 #include <wintermutecore/globals.hpp>
 #include <wintermutecore/logging.hpp>
+#include <wintermutecore/plugin.hpp>
+#include <wintermutecore/method.hpp>
 #include "plugin.hh"
 
+using Wintermute::Plugin;
+using Wintermute::Module;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 using std::to_string;
 
 DaemonPluginPrivate::PluginPrivate() { }
 DaemonPluginPrivate::~PluginPrivate() { }
 
-void DaemonPluginPrivate::loadLighthouse()
+void DaemonPluginPrivate::loadHeartbeat()
 {
+  Plugin::Ptr heartbeatPluginPtr = Plugin::find("wintermute-heartbeat");
+  const bool loadedPlugin = !heartbeatPluginPtr;
+  if (!loadedPlugin)
+  {
+    wdebug("Failed to load the heartbeat plugin.");
+    return;
+  }
+  else
+  {
+    winfo("Heartbeat plugin loaded.");
+  }
+
+  // FIXME: So for now, we'll have the heartbeat plugin know whether or not if
+  // it should run as the pinger or the pingee by the existence of the daemon
+  // plugin. Realistically, there should be only one process on the machine
+  // that has the daemon plugin loaded so it's a contract we'll have to find a
+  // way to enforce.
 }
 
-void DaemonPluginPrivate::unloadLighthouse()
+void DaemonPluginPrivate::unloadHeartbeat()
 {
-}
-
-void DaemonPluginPrivate::tellWarden(
-    const DaemonPluginPrivate::WardenAction action)
-{
-  wdebug("Communicating with Warden => " + to_string((int)action) + "...");
+  const bool unloadedPlugin = Plugin::release("wintermute-heartbeat");
+  if (!unloadedPlugin)
+  {
+    wdebug("Failed to unload the heartbeat plugin.");
+    return;
+  }
+  else
+  {
+    winfo("Heartbeat plugin unloaded.");
+  }
 }

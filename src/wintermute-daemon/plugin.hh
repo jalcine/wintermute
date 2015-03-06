@@ -27,16 +27,10 @@ namespace Wintermute
     class PluginPrivate
     {
       public:
-        enum WardenAction {
-          WardenActionUndefined = 0,
-          WardenStart = 1,
-          WardenStop
-        };
         explicit PluginPrivate();
         ~PluginPrivate();
-        void loadLighthouse();
-        void unloadLighthouse();
-        void tellWarden(const WardenAction action);
+        void loadHeartbeat();
+        void unloadHeartbeat();
 
       private:
         /* data */
