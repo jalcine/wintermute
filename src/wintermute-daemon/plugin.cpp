@@ -18,10 +18,13 @@
     Boston, MA 02111-1307, USA.
  */
 
+#include <wintermutecore/logging.hpp>
+#include <wintermutecore/method.hpp>
 #include "plugin.hpp"
 #include "plugin.hh"
 
 using Wintermute::Plugin;
+using Wintermute::Method;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 
@@ -36,7 +39,7 @@ DaemonPlugin::~Plugin()
 
 bool DaemonPlugin::startup()
 {
-  startLighthouseInstance();
+  startHeartbeatInstance();
   startRelayForTunnel();
   startDesignatedPlugins();
   return true;
@@ -44,7 +47,7 @@ bool DaemonPlugin::startup()
 
 bool DaemonPlugin::shutdown()
 {
-  stopLighthouseInstance();
+  stopHeartbeatInstance();
   stopRelayForTunnel();
   stopDesignatedPlugins();
   return true;
@@ -55,29 +58,30 @@ Plugin::PluginType DaemonPlugin::type() const
   return Wintermute::Plugin::PluginTypeService;
 }
 
-void DaemonPlugin::startLighthouseInstance()
+void DaemonPlugin::startHeartbeatInstance()
 {
+  wdebug("Starting up heartbeat instance...");
   W_PRV(DaemonPlugin);
-  // TODO: Load the lighthouse plugin.
-  d->loadLighthouse();
-
-  // TODO: Send a method call to the module to run in 'warden' mode.
-  d->tellWarden(DaemonPlugin::_Prv::WardenStart);
+  d->loadHeartbeat();
+  wdebug("Started heartbeat instance.");
 }
 
-void DaemonPlugin::stopLighthouseInstance()
+void DaemonPlugin::stopHeartbeatInstance()
 {
+  wdebug("Stopping heartbeat instance...");
   W_PRV(DaemonPlugin);
-  // TODO: Send a method call to the module to kill 'warden' mode.
-  d->tellWarden(DaemonPlugin::_Prv::WardenStop);
-  // TODO: Unload the lighthouse plugin.
-  d->unloadLighthouse();
+  d->unloadHeartbeat();
+  wdebug("Stopped heartbeat instance.");
 }
 
 void DaemonPlugin::startRelayForTunnel()
 {
-  //W_PRV(DaemonPlugin);
   // TODO: Send local method call to Tunnel to activate relays.
+  Method::Ptr methodCall = std::make_shared<Method>(
+      "startRelay",
+      Module::Designation("in.wintermute", "zeromq"),
+      Module::Designation("in.wintermute", "daemon")
+  );
 }
 
 void DaemonPlugin::stopRelayForTunnel()

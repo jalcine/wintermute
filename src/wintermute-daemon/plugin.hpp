@@ -41,8 +41,8 @@ class Plugin : public Wintermute::Plugin
     virtual Plugin::PluginType type() const;
 
   private:
-    void startLighthouseInstance();
-    void stopLighthouseInstance();
+    void startHeartbeatInstance();
+    void stopHeartbeatInstance();
     void startRelayForTunnel();
     void stopRelayForTunnel();
     void startDesignatedPlugins();
