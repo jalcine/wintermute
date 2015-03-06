@@ -18,7 +18,6 @@
 #include <list>
 #include <string>
 #include <libgen.h>
-#include <dlfcn.h>
 #include "logging.hpp"
 #include "library.hpp"
 #include "library.hh"
@@ -133,7 +132,7 @@ Library::LoadState Library::unload()
     return LoadNotLoaded;
   }
 
-  //wwarn("Library handle unloaded for " + d->filename + ".");
+  wwarn("Library handle unloaded for " + d->filename + ".");
   d->filename = "";
   d->loadState = LoadNotLoaded;
   return LoadNotLoaded;
@@ -195,12 +194,11 @@ Library::FunctionPtr Library::resolveFunction(const string& functionName) const
     return nullptr;
   }
 
-  dlerror();
-  functionPtr = dlsym(d->handlePtr, functionName.c_str());
-  errorMessage = dlerror();
+  const int fcnResolved = uv_dlsym(d->handlePtr, functionName.c_str(), &functionPtr);
 
-  if (!functionPtr)
+  if (fcnResolved < 0)
   {
+    errorMessage = uv_dlerror(d->handlePtr);
     if (errorMessage != NULL)
     {
       wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);

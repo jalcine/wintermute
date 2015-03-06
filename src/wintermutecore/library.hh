@@ -15,8 +15,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/library.hpp>
+#include <uv.h>
 #include <string>
+#include <wintermutecore/library.hpp>
 
 using std::string;
 
@@ -25,10 +26,10 @@ namespace Wintermute {
     public:
       explicit LibraryPrivate();
       virtual ~LibraryPrivate();
-      typedef void* HandlePtr;
-      HandlePtr claimHandleForFilename(const string& filename, string& errorMessage);
+      typedef uv_lib_t HandlePtr;
+      HandlePtr* claimHandleForFilename(const string& filename, string& errorMessage);
       bool freeHandle(string& errorMessage);
-      HandlePtr handlePtr;
+      HandlePtr* handlePtr;
       string filename;
       Library::LoadState loadState;
   };
