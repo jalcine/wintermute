@@ -31,6 +31,7 @@ using Wintermute::Util::Configuration;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 using std::for_each;
+using std::to_string;
 
 DaemonPlugin::Plugin() :
   Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME),
@@ -96,7 +97,6 @@ void DaemonPlugin::stopRelayForTunnel()
 
 void DaemonPlugin::startDesignatedPlugins()
 {
-  // TODO: Fetch list of plugins to be started when Wintermute is started.
   Configuration::Ptr daemonCfg;
 
   daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
@@ -106,15 +106,23 @@ void DaemonPlugin::startDesignatedPlugins()
   {
     wdebug("Attempting to load plugin " + pluginName + "...");
     Plugin::Ptr designatedPluginPtr = Plugin::find(pluginName);
+    wwarn("Loaded designated plugin " + pluginName + "?" +
+      to_string((bool)(designatedPluginPtr)));
     wdebug("Loaded plugin '" + pluginName + "'.");
   });
-  // TODO: For each plugin in #1, load plugin.
-  // TODO: For each plugin in #1, confirm successful plugin load.
 }
 
 void DaemonPlugin::stopDesignatedPlugins()
 {
-  // TODO: Fetch list of plugins to be started when Wintermute is started.
-  // TODO: For each plugin in #1, unload plugin.
-  // TODO: For each plugin in #1, confirm successful plugin unload.
+  Configuration::Ptr daemonCfg;
+
+  daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
+  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
+
+  for_each(pluginNames.begin(), pluginNames.end(), [&](const string& pluginName)
+  {
+    const bool pluginUnloaded = Plugin::release(pluginName);
+    wdebug("Attempt to unload designated plugin " + pluginName + "?" +
+      to_string((int)pluginUnloaded));
+  });
 }
