@@ -21,7 +21,13 @@
 #ifndef WINTERMUTE_DAEMON_GLOBALS_HPP_
 # define WINTERMUTE_DAEMON_GLOBALS_HPP_
 
+#include <wintermutecore/globals.hpp>
+
 #define WINTERMUTE_DAEMON_PLUGIN_NAME "DAEMON"
-#define WINTERMUTE_DAEMON_CFG_PATH    "foooo.cfg"
+#define WINTERMUTE_DAEMON_DOMAIN WINTERMUTE_DOMAIN
+#define WINTERMUTE_DAEMON_MODULE "daemon"
+
+// TODO: Provide a proper path for the daemon's configuration.
+#define WINTERMUTE_DAEMON_CFG_PATH "@CMAKE_BINARY_DIR@/test/unit/sample"
 
 #endif
