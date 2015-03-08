@@ -96,7 +96,8 @@ void DaemonPlugin::stopModule()
 
 void DaemonPlugin::startDesignatedPlugins()
 {
-  Configuration::Ptr daemonCfg;
+  W_PRV(const DaemonPlugin);
+  Configuration::Ptr daemonCfg = d->config();
 
   daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
   list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
@@ -113,10 +114,9 @@ void DaemonPlugin::startDesignatedPlugins()
 
 void DaemonPlugin::stopDesignatedPlugins()
 {
-  Configuration::Ptr daemonCfg;
+  W_PRV(const DaemonPlugin);
+  Configuration::Ptr daemonCfg = d->config();
 
-  daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
-  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
 
   for_each(pluginNames.begin(), pluginNames.end(), [&](const string& pluginName)
   {

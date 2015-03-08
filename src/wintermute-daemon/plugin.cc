@@ -73,3 +73,10 @@ void DaemonPluginPrivate::unloadHeartbeat()
     winfo("Heartbeat plugin unloaded.");
   }
 }
+
+Configuration::Ptr DaemonPluginPrivate::config() const
+{
+  Configuration::Ptr daemonCfg;
+  daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
+  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
+}
