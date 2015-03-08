@@ -18,8 +18,11 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <wintermutecore/globals.hpp>
+#include <wintermutecore/method.hpp>
 #include "module.hpp"
 
+using Wintermute::Method;
 using Wintermute::Module;
 using DaemonModule = Wintermute::Daemon::Module;
 
@@ -34,8 +37,24 @@ DaemonModule::~Module()
 
 void DaemonModule::startRelay()
 {
+  // TODO: Update 'Module' to have a generator method for this.
+  Method::Ptr startMethodCall = std::make_shared<Method>(
+    "startRelay",
+    Module::Designation(WINTERMUTE_DOMAIN, "heartbeat"),
+    designation()
+  );
+
+  startMethodCall->invoke();
 }
 
 void DaemonModule::stopRelay()
 {
+  // TODO: Update 'Module' to have a generator method for this.
+  Method::Ptr stopMethodCall = std::make_shared<Method>(
+    "stopRelay",
+    Module::Designation(WINTERMUTE_DOMAIN, "heartbeat"),
+    designation()
+  );
+
+  stopMethodCall->invoke();
 }
