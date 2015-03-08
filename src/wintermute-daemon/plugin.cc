@@ -26,6 +26,7 @@
 
 using Wintermute::Plugin;
 using Wintermute::Module;
+using Wintermute::Util::Configuration;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 using std::to_string;
 
@@ -77,6 +78,8 @@ void DaemonPluginPrivate::unloadHeartbeat()
 Configuration::Ptr DaemonPluginPrivate::config() const
 {
   Configuration::Ptr daemonCfg;
+  // TODO: Try a collection of options here.
   daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
-  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
+
+  return daemonCfg;
 }

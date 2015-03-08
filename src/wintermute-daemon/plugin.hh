@@ -21,6 +21,8 @@
 #ifndef WINTERMUTE_DAEMON_PLUGIN_HH_
 #define WINTERMUTE_DAEMON_PLUGIN_HH_
 
+#include <wintermutecore/util/configuration.hpp>
+#include "globals.hpp"
 #include "module.hpp"
 
 namespace Wintermute
@@ -33,6 +35,7 @@ namespace Wintermute
         ~PluginPrivate();
         void loadHeartbeat();
         void unloadHeartbeat();
+        Util::Configuration::Ptr config() const;
         Daemon::Module::Ptr module;
 
       private:

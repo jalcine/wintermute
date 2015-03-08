@@ -98,8 +98,6 @@ void DaemonPlugin::startDesignatedPlugins()
 {
   W_PRV(const DaemonPlugin);
   Configuration::Ptr daemonCfg = d->config();
-
-  daemonCfg = Configuration::obtainStore(WINTERMUTE_DAEMON_CFG_PATH);
   list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
 
   for_each(pluginNames.begin(), pluginNames.end(), [&](const string& pluginName)
@@ -110,13 +108,15 @@ void DaemonPlugin::startDesignatedPlugins()
       to_string((bool)(designatedPluginPtr)));
     wdebug("Loaded plugin '" + pluginName + "'.");
   });
+
+  Plugin::find("wintermute-heartbeat");
 }
 
 void DaemonPlugin::stopDesignatedPlugins()
 {
   W_PRV(const DaemonPlugin);
   Configuration::Ptr daemonCfg = d->config();
-
+  list<string> pluginNames = daemonCfg->get("Start/Plugins", list<string>());
 
   for_each(pluginNames.begin(), pluginNames.end(), [&](const string& pluginName)
   {
@@ -124,4 +124,6 @@ void DaemonPlugin::stopDesignatedPlugins()
     wdebug("Attempt to unload designated plugin " + pluginName + "?" +
       to_string((int)pluginUnloaded));
   });
+
+  Plugin::release("wintermute-heartbeat");
 }
