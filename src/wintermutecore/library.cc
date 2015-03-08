@@ -64,7 +64,7 @@ bool LibraryPrivate::freeHandle()
   if (handle)
   {
     uv_dlclose(handle.get());
-    handle = nullptr;
+    LibraryPrivate::libraryHandles.erase(filename);
   }
 
   return true;

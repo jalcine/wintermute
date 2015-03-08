@@ -34,7 +34,6 @@ list<string> collectFilePaths(const string& filePath)
   const string ourPathFromEnv = (envWintermutePluginPath) ? envWintermutePluginPath : "";
 
   list<string> prefixes;
-  // Compile a list of paths where this thing can be at.
   list<string> filePaths =
   {
     filePath,
