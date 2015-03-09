@@ -33,7 +33,7 @@ namespace Daemon
 class ModulePrivate
 {
 public:
-  Events::SignalHandler signalHandler;
+  Events::SignalHandler::Ptr signalHandler;
 
   explicit ModulePrivate();
   virtual ~ModulePrivate();

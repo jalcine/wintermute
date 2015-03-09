@@ -20,10 +20,11 @@
 
 #include "module.hh"
 
+using Wintermute::Events::SignalHandler;
 using Wintermute::Daemon::ModulePrivate;
 
 ModulePrivate::ModulePrivate() :
-  signals()
+  signalHandler(make_shared<SignalHandler>(SIGINT))
 {
 }
 

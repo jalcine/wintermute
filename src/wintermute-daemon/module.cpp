@@ -27,6 +27,7 @@
 using Wintermute::Method;
 using Wintermute::Module;
 using DaemonModule = Wintermute::Daemon::Module;
+using Wintermute::Events::SignalEvent;
 
 DaemonModule::Module() :
   Wintermute::Module(Module::Designation("in.wintermute", "daemon")),
@@ -34,12 +35,10 @@ DaemonModule::Module() :
 {
   W_PRV(Daemon::Module);
 
-  d->addSignalListener(SIGINT, [&](){
-    wdebug("SIGINT given...");
-  });
-
-  d->addSignalListener(SIGQUIT, [&](){
-    wdebug("SIGQUIT given...");
+  d->signalHandler->listenForEvent(W_EVENT_SIGNAL,
+  [&](const SignalEvent::Ptr& sigEvent){
+    wdebug("Signal given...");
+    assert(sigEvent);
   });
 }
 
