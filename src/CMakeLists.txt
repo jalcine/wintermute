@@ -22,7 +22,7 @@ ADD_SUBDIRECTORY(wintermutecore)
 
 # == Standalone Plugins
 ADD_SUBDIRECTORY(wintermute-daemon)
-#ADD_SUBDIRECTORY(wintermute-heartbeat)
+ADD_SUBDIRECTORY(wintermute-heartbeat)
 
 # == Transports
 #ADD_SUBDIRECTORY(wintermute-transport-dbus)
