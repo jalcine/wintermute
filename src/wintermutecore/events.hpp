@@ -23,6 +23,7 @@
 
 #define W_EVENT_POLLED    "core.events.poll"
 #define W_EVENT_TIMEOUT   "core.events.timeout"
+#define W_EVENT_SIGNAL    "core.events.signal"
 
 namespace Wintermute
 {
@@ -34,6 +35,7 @@ class ListenerPrivate;
 class EmitterPrivate;
 class PollerPrivate;
 class TimerPrivate;
+class SignalHandlerPrivate;
 
 /**
  * Serves as a basis for event loops in Wintermute.
@@ -55,6 +57,7 @@ protected:
 public:
   friend class Poller;
   friend class Timer;
+  friend class SignalHandlerPrivate;
   W_DECL_PTR_TYPE(Loop)
 
   /**
@@ -274,7 +277,8 @@ public:
   virtual Emitter::Ptr emitter() const = 0;
 
   ///< @sa Wintermute::Events::Emitter::listen
-  Listener::Ptr listenForEvent(const string & name, Listener::Callback func, const Listener::Frequency& freq = Listener::FrequencyEvery)
+  Listener::Ptr listenForEvent(const string & name, Listener::Callback func,
+    const Listener::Frequency& freq = Listener::FrequencyEvery)
   {
     return emitter()->listen(name, func, freq);
   }
@@ -455,7 +459,38 @@ class TimerEvent : public Event
     Timer::Ptr timer;
 };
 
+class SignalHandler : public Emittable
+#ifndef DOXYGEN_SKIP
+  , W_DEF_SHAREABLE(SignalHandler)
+#endif
+{
+  private:
+    W_DEF_PRIVATE(SignalHandler);
+  public:
+    W_DECL_PTR_TYPE(SignalHandler)
 
+    explicit SignalHandler(const int& signalNumber);
+    virtual ~SignalHandler();
+
+    ///< The signal handler's emitter.
+    virtual Emitter::Ptr emitter() const;
+
+    ///< The signal this handler is listening to.
+    int signal() const;
+
+    SignalHandler::Ptr signalHandler;
+};
+
+class SignalEvent : public Event
+{
+  public:
+    explicit SignalEvent(const SignalHandler::Ptr& handler) :
+      Event(W_EVENT_SIGNAL), signalHandler(handler) {}
+
+    virtual ~SignalEvent() { }
+
+    SignalHandler::Ptr signalHandler;
+};
 
 }
 }
