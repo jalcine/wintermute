@@ -129,11 +129,11 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
   }
 
   Library::Ptr pluginLibrary = Library::find(pluginQuery);
-  assert(pluginLibrary.unique());
 
   if (!pluginLibrary)
   {
-    wwarn("Failed to find the library to use to handle the plugin " + pluginQuery + " with.");
+    wwarn("Failed to find the library to use to handle the plugin " +
+      pluginQuery + " with.");
     return nullptr;
   }
 
