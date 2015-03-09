@@ -26,6 +26,7 @@ class LibraryPrivate;
 /**
  * A class to load libraries and their function symbols.
  * @ingroup Plugins
+ *
  * Represents a portable wrapper over the facilities required to load
  * dynamically loadable libraries.
  */
@@ -53,24 +54,27 @@ public:
     LoadStateFailure = 0x110,
   };
 
-  /* Loads a library into memory.
+  /** Loads a library into memory.
+   * @param fileName The filepath, relative or absolute, of the library to load.
+   * @return LoadState
+   *
    * Using the provided 'filename', loads a library into memory. If the
    * load is successful ( a return value of LoadSuccess ), then filename()
    * will match the one provided. Otherwise, filename() != filename and the
    * return value will LoadSuccess != return_value.
    */
-  LoadState load(const string & filename);
+  LoadState load(const string & filepath);
 
-  /* Unloads a library from memory. */
+  /** Unloads a library from memory. */
   LoadState unload();
 
-  /* Obtains the filename for the library. */
+  /** Obtains the filename for the library. */
   string filename() const;
 
-  /* Determine the current load status of the plugin. */
+  /** Determine the current load status of the plugin. */
   LoadState loadedStatus() const;
 
-  /* Resolves a function from the library. */
+  /** Resolves a function from the library. */
   FunctionPtr resolveFunction(const string & functionName) const;
 
   /* Finds a plugin through a varity of means.
