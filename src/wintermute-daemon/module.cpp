@@ -20,15 +20,27 @@
 
 #include <wintermutecore/globals.hpp>
 #include <wintermutecore/method.hpp>
+#include <wintermutecore/logging.hpp>
 #include "module.hpp"
+#include "module.hh"
 
 using Wintermute::Method;
 using Wintermute::Module;
 using DaemonModule = Wintermute::Daemon::Module;
 
 DaemonModule::Module() :
-  Wintermute::Module(Module::Designation("in.wintermute", "daemon"))
+  Wintermute::Module(Module::Designation("in.wintermute", "daemon")),
+  d_ptr(new DaemonModule::_Prv)
 {
+  W_PRV(Daemon::Module);
+
+  d->addSignalListener(SIGINT, [&](){
+    wdebug("SIGINT given...");
+  });
+
+  d->addSignalListener(SIGQUIT, [&](){
+    wdebug("SIGQUIT given...");
+  });
 }
 
 DaemonModule::~Module()

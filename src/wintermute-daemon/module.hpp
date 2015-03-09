@@ -27,8 +27,11 @@ namespace Wintermute
 {
 namespace Daemon
 {
+class ModulePrivate;
 class Module : public Wintermute::Module
 {
+  W_DEF_PRIVATE(Module);
+
 public:
   explicit Module();
   virtual ~Module();
