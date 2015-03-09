@@ -29,9 +29,11 @@ using Wintermute::Plugin;
 using Wintermute::Method;
 using Wintermute::Util::Configuration;
 using DaemonPlugin = Wintermute::Daemon::Plugin;
+using DaemonModule = Wintermute::Daemon::Module;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 using std::for_each;
 using std::to_string;
+using std::dynamic_pointer_cast;
 
 DaemonPlugin::Plugin() :
   Wintermute::Plugin(WINTERMUTE_DAEMON_PLUGIN_NAME),
@@ -45,17 +47,17 @@ DaemonPlugin::~Plugin()
 
 bool DaemonPlugin::startup()
 {
-  startHeartbeatInstance();
   startDesignatedPlugins();
-  startRelayForTunnel();
+  startHeartbeatInstance();
+  startModule();
   return true;
 }
 
 bool DaemonPlugin::shutdown()
 {
-  stopRelayForTunnel();
-  stopDesignatedPlugins();
+  stopModule();
   stopHeartbeatInstance();
+  stopDesignatedPlugins();
   return true;
 }
 
@@ -80,19 +82,16 @@ void DaemonPlugin::stopHeartbeatInstance()
   wdebug("Stopped heartbeat instance.");
 }
 
-void DaemonPlugin::startRelayForTunnel()
+void DaemonPlugin::startModule()
 {
-  // TODO: Send local method call to Tunnel to activate relays.
-  Method::Ptr methodCall = std::make_shared<Method>(
-      "startRelay",
-      Module::Designation("in.wintermute", "zeromq"),
-      Module::Designation("in.wintermute", "daemon")
-  );
+  W_PRV(DaemonPlugin);
+  dynamic_pointer_cast<Daemon::Module>(d->module)->startRelay();
 }
 
-void DaemonPlugin::stopRelayForTunnel()
+void DaemonPlugin::stopModule()
 {
-  // TODO: Send local method call to Tunnel to deactivate relays.
+  W_PRV(DaemonPlugin);
+  dynamic_pointer_cast<Daemon::Module>(d->module)->stopRelay();
 }
 
 void DaemonPlugin::startDesignatedPlugins()

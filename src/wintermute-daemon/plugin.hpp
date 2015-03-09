@@ -43,8 +43,8 @@ class Plugin : public Wintermute::Plugin
   private:
     void startHeartbeatInstance();
     void stopHeartbeatInstance();
-    void startRelayForTunnel();
-    void stopRelayForTunnel();
+    void startModule();
+    void stopModule();
     void startDesignatedPlugins();
     void stopDesignatedPlugins();
 };
