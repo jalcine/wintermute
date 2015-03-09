@@ -21,6 +21,8 @@
 #ifndef WINTERMUTE_DAEMON_PLUGIN_HH_
 #define WINTERMUTE_DAEMON_PLUGIN_HH_
 
+#include "module.hpp"
+
 namespace Wintermute
 {
   namespace Daemon {
@@ -31,6 +33,7 @@ namespace Wintermute
         ~PluginPrivate();
         void loadHeartbeat();
         void unloadHeartbeat();
+        Daemon::Module::Ptr module;
 
       private:
         /* data */

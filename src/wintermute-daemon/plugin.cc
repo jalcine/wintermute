@@ -29,8 +29,14 @@ using Wintermute::Module;
 using DaemonPluginPrivate = Wintermute::Daemon::PluginPrivate;
 using std::to_string;
 
-DaemonPluginPrivate::PluginPrivate() { }
-DaemonPluginPrivate::~PluginPrivate() { }
+DaemonPluginPrivate::PluginPrivate() :
+  module(make_shared<Wintermute::Daemon::Module>())
+{
+}
+
+DaemonPluginPrivate::~PluginPrivate()
+{
+}
 
 void DaemonPluginPrivate::loadHeartbeat()
 {
