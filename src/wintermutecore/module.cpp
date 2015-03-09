@@ -68,7 +68,7 @@ bool Module::disable()
   return true; // It's not in the pool.
 }
 
-bool Module::isEnabled()
+bool Module::isEnabled() const
 {
   return Module::Pool::instance()->has(designation());
 }
@@ -142,4 +142,3 @@ Module::Call::Ptr Module::call(const string& nameOfCall) const
 Module::~Module()
 {
 }
-

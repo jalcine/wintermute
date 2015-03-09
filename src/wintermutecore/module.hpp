@@ -241,23 +241,23 @@ public:
   /// Obtains the designation of this Module.
   Designation designation() const;
 
+  /// Determines if this Module is enabled.
+  bool isEnabled() const;
+
+  /// Fetches the call in question.
+  Call::Ptr call(const string & callName) const;
+
   /// Adds this module to the pool.
   bool enable();
 
   /// Removes this module from the pool.
   bool disable();
 
-  /// Determines if this Module is enabled.
-  bool isEnabled();
-
   /// Adds a call to this Module.
   bool addCall(Module::Call::Ptr & callToAdd);
 
   /// Removes a call with the provided name.
   bool removeCall(const string & callName);
-
-  /// Fetches the call in question.
-  Call::Ptr call(const string & callName) const;
 
 protected:
   W_DEF_PRIVATE(Module)
