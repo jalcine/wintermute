@@ -3,7 +3,6 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = 'chef/ubuntu-13.04'
   config.vm.box_check_update = true
   config.ssh.forward_agent = true
 
@@ -17,5 +16,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision 'shell' do | s |
     s.path = "./test/bootstrap"
     s.args = "--before"
+  end
+
+  config.vm.define "target" do | t |
+    t.vm.box = 'chef/ubuntu-13.04'
+  end
+
+  config.vm.define "travis" do | t |
+    t.vm.box = 'chef/ubuntu-12.04'
   end
 end
