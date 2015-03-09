@@ -47,6 +47,18 @@ namespace Util
 
     return tokens;
   }
+
+  inline string join_string(const list<string>& tokens, const string& delim)
+  {
+    string resultingString = tokens.front();
+
+    for_each(tokens.begin()++, tokens.end(), [&](const string& token)
+    {
+      resultingString += delim + token;
+    });
+
+    return resultingString;
+  }
 }
 }
 
