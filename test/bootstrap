@@ -17,7 +17,8 @@ bootstrap_build() {
   sudo apt-get update -qq
 
   echo -en "\n[build]: installing packages...\n"
-  sudo apt-get install -qq build-essential
+  sudo apt-get install -qq libtool automake autconf bison
+  sudo apt-get install -qq pkg-config
   sudo apt-get install -qq python-pip python
 
   sudo pip install cpp-coveralls --upgrade
@@ -32,9 +33,10 @@ bootstrap_build() {
   sudo apt-get install -qq valgrind
   sudo apt-get install -qq lcov
   sudo apt-get install -qq pkg-config
-  sudo apt-get install -qq cmake
+  sudo apt-get remove  -qq g++*
   sudo apt-get install -qq g++-4.9 clang-3.5
   sudo apt-get remove -qq g++-4.6
+  sudo apt-get install -qq g++-4.9 clang-3.5
   sudo apt-get install -qq libzmq3-dev libzmqpp-dev
 
   install_libuv
@@ -73,6 +75,10 @@ case $1 in
     bootstrap_build || exit 8
     ;;
   "--generate" )
+    if [[ $CXX == "gcc" ]]; then
+      export CXX="$(which g++-4.9)"
+    fi
+
     cmake . -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
     ;;
   "--cmake" )
