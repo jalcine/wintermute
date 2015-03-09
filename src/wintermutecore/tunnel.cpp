@@ -61,8 +61,13 @@ bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 bool Tunnel::unregisterDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
 {
   W_SPRV(Tunnel);
-  auto count = d->dispatchers.erase(dispatcher->name());
-  return count == 1;
+  if (dispatcher)
+  {
+    auto count = d->dispatchers.erase(dispatcher->name());
+    return count == 1;
+  }
+
+  return false;
 }
 
 bool Tunnel::unregisterDispatcher(const string& dispatcherName)
@@ -74,7 +79,9 @@ bool Tunnel::unregisterDispatcher(const string& dispatcherName)
     return false;
   }
 
-  Tunnel::Dispatcher::Ptr dispatcherPtr = d->dispatchers.find(dispatcherName)->second;
+  Tunnel::Dispatcher::Ptr dispatcherPtr;
+  dispatcherPtr = d->dispatchers.find(dispatcherName)->second;
+  assert(dispatcherPtr);
   return unregisterDispatcher(dispatcherPtr);
 }
 
@@ -120,15 +127,21 @@ bool Tunnel::unregisterReceiver(const string& receiverName)
     return false;
   }
 
-  Tunnel::Receiver::Ptr receiverPtr = d->receivers.find(receiverName)->second;
+  Tunnel::Receiver::Ptr receiverPtr;
+  receiverPtr = d->receivers.find(receiverName)->second;
   return unregisterReceiver(receiverPtr);
 }
 
 bool Tunnel::unregisterReceiver(const Tunnel::Receiver::Ptr& receiver)
 {
   W_SPRV(Tunnel);
-  auto count = d->receivers.erase(receiver->name()) == 1;
-  return count == 1;
+  if (receiver)
+  {
+    auto count = d->receivers.erase(receiver->name()) == 1;
+    return count == 1;
+  }
+
+  return false;
 }
 
 void Tunnel::clearAllReceivers()
