@@ -109,7 +109,8 @@ void DaemonPlugin::startDesignatedPlugins()
     wdebug("Loaded plugin '" + pluginName + "'.");
   });
 
-  Plugin::find("wintermute-heartbeat");
+  Plugin::Ptr heartbeatPluginPtr = Plugin::find("wintermute-heartbeat");
+  assert(heartbeatPluginPtr);
 }
 
 void DaemonPlugin::stopDesignatedPlugins()
@@ -125,5 +126,6 @@ void DaemonPlugin::stopDesignatedPlugins()
       to_string((int)pluginUnloaded));
   });
 
-  Plugin::release("wintermute-heartbeat");
+  const bool releaseHeartbeat = Plugin::release("wintermute-heartbeat");
+  assert(releaseHeartbeat);
 }
