@@ -27,7 +27,9 @@ SET(WINTERMUTE_DAEMON_VERSION     0.0.1-dev)
 
 SET(_srcs
   plugin.cpp
-  daemon.cpp
+  plugin.cc
+  module.cpp
+  module.cc
   )
 
 CONFIGURE_FILE(globals.hpp.in
