@@ -61,6 +61,7 @@ public:
   bool has(const string& key) const;
 
   string get(const string& key, const string& defaultValue) const;
+  list<string> get(const string& key, const list<string>& defaultValue) const;
   bool get(const string& key, const bool& defaultValue) const;
   int get(const string& key, const int& defaultValue) const;
   float get(const string& key, const float& defaultValue) const;
@@ -69,6 +70,7 @@ public:
   bool set(const string& key, const bool& value);
   bool set(const string& key, const int& value);
   bool set(const string& key, const float& value);
+  bool set(const string& key, const list<string>& value);
 };
 }
 }
