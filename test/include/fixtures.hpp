@@ -139,7 +139,7 @@ public:
   {
     Call::Function func = [ = ](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return string();
     };
 
@@ -161,7 +161,7 @@ public:
   {
     Call::Function func = [&value](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return value;
     };
 
@@ -178,7 +178,7 @@ public:
   {
     Call::Function func = [](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return string();
     };
 
@@ -196,7 +196,7 @@ public:
   {
     Call::Function func = [ &value ](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return value;
     };
 
