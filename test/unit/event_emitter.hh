@@ -38,7 +38,7 @@ public:
       emitter = make_shared<Emitter>(loop)
     );
 
-    TS_ASSERT_THROWS (
+    TS_ASSERT_THROWS(
       emitter2 = make_shared<Emitter>(nullptr),
       std::invalid_argument
     );
@@ -46,10 +46,12 @@ public:
 
   void testAddListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
+
     Listener::Ptr aListener = make_shared<Listener>(cb),
       aListener2 = make_shared<Listener>(cb),
       aListener3 = make_shared<Listener>(cb);
@@ -78,7 +80,8 @@ public:
 
   void testRemoveListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
@@ -97,10 +100,12 @@ public:
 
   void testInvokeListeners()
   {
-    Listener::Callback cb = [&](const Event::Ptr & event) -> void
+    Listener::Callback cb =
+    [&](const Event::Ptr & event) -> void
     {
       assert(event);
     };
+
     Listener::Ptr onceListener = make_shared<Listener>(cb),
       allListener = make_shared<Listener>(cb);
     Loop::Ptr loop = make_shared<Loop>(true);
@@ -112,6 +117,7 @@ public:
 
     TS_ASSERT_THROWS_NOTHING ( emitter->listen("sample", onceListener) );
     TS_ASSERT_THROWS_NOTHING ( emitter->listen("sample", allListener) );
+    TS_ASSERT_THROWS_NOTHING ( emitter->emit(event) );
     TS_ASSERT_THROWS_NOTHING ( emitter->emit(event) );
 
     auto sampleListeners = emitter->listeners("sample");

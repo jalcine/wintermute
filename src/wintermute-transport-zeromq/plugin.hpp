@@ -1,5 +1,4 @@
 /*
- * vim: set ft=cpp :
  * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -16,14 +15,26 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_CORE_GLOBALS_HH_
-# define WINTERMUTE_CORE_GLOBALS_HH_
+#include <wintermutecore/plugin.hpp>
+#include <zmqpp/zmqpp.hpp>
+#include "dispatcher.hpp"
+#include "receiver.hpp"
 
-#define W_CHECK_UV(r, call)   \
-  if (r) { \
-    printf("\n[%s] E: %s - %s\n", call, uv_err_name(r), uv_strerror(r)); \
-    abort();\
-  } \
+namespace Wintermute
+{
+class ZMQPlugin : public Plugin
+{
+public:
+  explicit ZMQPlugin();
+  virtual ~ZMQPlugin();
+  virtual bool startup();
+  virtual bool shutdown();
+  virtual Plugin::PluginType type() const;
 
+  SharedPtr<zmqpp::context> context;
+  ZMQReceiver::Ptr receiver;
+  ZMQDispatcher::Ptr dispatcher;
+};
+}
 
-#endif
+W_DECL_PLUGIN(Wintermute::ZMQPlugin, WINTERMUTE_VERSION)

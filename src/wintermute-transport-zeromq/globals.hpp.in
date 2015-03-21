@@ -1,8 +1,11 @@
 /*
+ * vim: set ft=cpp :
  * Wintermute is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
@@ -13,41 +16,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "events.hpp"
-#include <uv.h>
+#ifndef WINTERMUTE_ZMQ_GLOBALS_HPP
+#define WINTERMUTE_ZMQ_GLOBALS_HPP
 
-using namespace Wintermute::Events;
+#include <wintermutecore/globals.hpp>
 
-namespace Wintermute
-{
-namespace Events
-{
-class LoopPrivate
-{
-public:
-  uv_loop_t* loop;
-  LoopPrivate() : loop(NULL)
-  {
-  }
+#define WINTERMUTE_ZMQ_PLUGIN_NAME "ZMQ"
+#define WINTERMUTE_ZMQ_TUNNEL_NAME "zmq"
+#define WINTERMUTE_ZMQ_VERSION     "@WINTERMUTE_ZMQ_VERSION@"
+#define WINTERMUTE_ZMQ_PORT        9931
+#define WINTERMUTE_ZMQ_IPC_ADDRESS "@WINTERMUTE_ZMQ_IPC_ADDRESS@"
+#define WINTERMUTE_ZMQ_FILTER      "{"
 
-  void useDefaultLoop()
-  {
-    loop = uv_default_loop();
-    assert(loop);
-  }
-
-  void createNewLoop()
-  {
-    // NOTE: Should we clear out 'loop' if it's already there?
-    loop = new uv_loop_t;
-    uv_loop_init(loop);
-    assert(loop);
-  }
-
-  ~LoopPrivate()
-  {
-    // TODO: Close the loop if it's active.
-  }
-};
-}
-}
+#endif

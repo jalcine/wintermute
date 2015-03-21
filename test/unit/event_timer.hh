@@ -57,6 +57,7 @@ public:
     {
       assert(event);
       TS_TRACE("We get here.");
+      assert(event);
       timer->stop();
     }, Listener::FrequencyEvery);
     timer->setInterval(0);

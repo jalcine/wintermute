@@ -21,12 +21,15 @@
 #include <map>
 #include <list>
 
+#define W_EVENT_POLLED    "core.events.poll"
+#define W_EVENT_TIMEOUT   "core.events.timeout"
+
 namespace Wintermute
 {
 namespace Events
 {
-class LoopPrivate;
 class EventPrivate;
+class LoopPrivate;
 class ListenerPrivate;
 class EmitterPrivate;
 class PollerPrivate;
@@ -52,6 +55,7 @@ protected:
 public:
   friend class Poller;
   friend class Timer;
+  friend class EmitterPrivate;
   W_DECL_PTR_TYPE(Loop)
 
   /**
@@ -304,7 +308,7 @@ public:
  *
  * [poll]: http://libuv.readthedocs.org/en/latest/handle.html#c.uv_fileno
  */
-class Poller : public Emittable 
+class Poller : public Emittable
 #ifndef DOXYGEN_SKIP
   , W_DEF_SHAREABLE(Poller)
 #endif
@@ -318,8 +322,8 @@ class Poller : public Emittable
      */
     enum PollDirection
     {
-      PollReadable = 0x1, ///< Emit events when we can read.
-      PollWritable = 0x2  ///< Emit events when we can write.
+      PollReadable = 1, ///< Emit events when we can read.
+      PollWritable = 2  ///< Emit events when we can write.
     } ;
 
     ///< Platform dependent implementation of the file descriptor type.
@@ -335,7 +339,8 @@ class Poller : public Emittable
      * @param[in] poll The polling directions to listen for.
      * @param[in] loopPtr The Loop on which to work on.
      */
-    explicit Poller(FileDescriptor fd, PollDirection poll = PollReadable,
+    explicit Poller(const FileDescriptor& fd,
+      const PollDirection& poll = PollReadable,
       const Loop::Ptr& loopPtr = Loop::primary());
 
     ///< Destructor.
@@ -356,6 +361,8 @@ class Poller : public Emittable
     ///< Stops the Poller.
     bool stop();
 
+    ///< Determines if the Poller is active.
+    bool isActive() const;
 };
 
 /**
@@ -370,7 +377,7 @@ class PollEvent : public Event
      * @param thePoller The poller to use.
      */
     PollEvent(Poller::Ptr& thePoller) :
-      Event("core.events.poll"),
+      Event(W_EVENT_POLLED),
       poller(thePoller) { }
 
     ///< Destructor.
@@ -411,7 +418,7 @@ class Timer : public Emittable
      * @param[in] uint64_t The timeout in which to emit TimerEvent objects.
      * @return TRUE if successful.
      */
-    bool start(const uint64_t timeout);
+    bool start(const uint64_t timeout = 0);
 
     ///< Stops this Timer.
     ///< @return TRUE if successful.
@@ -439,7 +446,7 @@ class TimerEvent : public Event
   public:
     ///< Constructor.
     TimerEvent(Timer::Ptr theTimer) :
-      Event("core.events.timeout"),
+      Event(W_EVENT_TIMEOUT),
       timer(theTimer) { }
 
     ///< Destructor.

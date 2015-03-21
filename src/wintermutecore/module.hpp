@@ -48,7 +48,7 @@ class ModuleCallPrivate;
  * and invoke signals. They allow for the flexibility one would expect from
  * Wintermute.
  */
-class Module 
+class Module
 #ifndef DOXYGEN_SKIP
   : W_DEF_SHAREABLE(Module)
 #endif
@@ -145,7 +145,7 @@ public:
     bool add(Module::Ptr& module);
 
     /**
-     * Removes a module from the known list. 
+     * Removes a module from the known list.
      * @param designation The designation of the module in question.
      * @return A boolean value on the success of the removal of said Module.
      * @sa Wintermute::Module::Pool::add
@@ -269,7 +269,7 @@ protected:
   virtual bool receiveMessage(const Message & message) const;
 
   /// Handles the act of sending out a message.
-  virtual bool sendMessage(const Message & message) const;
+  virtual bool sendMessage(const Message& message) const;
 };
 }
 

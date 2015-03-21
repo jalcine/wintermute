@@ -27,8 +27,9 @@ using Wintermute::Util::Serializable;
 
 namespace Wintermute
 {
-struct MethodPrivate
+class MethodPrivate
 {
+public:
   string callName;
   Module::Designation originatingModule;
   Module::Designation destinationModule;
@@ -37,4 +38,5 @@ struct MethodPrivate
 }
 
 #endif
+
 

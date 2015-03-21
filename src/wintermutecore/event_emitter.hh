@@ -27,6 +27,13 @@ class EmitterPrivate
 public:
   Loop::Ptr loop;
   unordered_multimap<string, Listener::Ptr> listeners;
+
+  void queueEventForListener(const Listener::Ptr& listener, const Event::Ptr& event)
+  {
+    assert(listener);
+    assert(event);
+    // TODO: Invoke the listener here.
+  }
 };
 }
 }

@@ -3,6 +3,8 @@
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
@@ -13,41 +15,23 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "events.hpp"
-#include <uv.h>
+#include <cxxtest/TestSuite.h>
+#include <wintermutecore/plugin.hpp>
+#include "test_suite.hpp"
 
-using namespace Wintermute::Events;
+#define PLUGIN_TEST_PATH "@_wpv_file@"
 
-namespace Wintermute
-{
-namespace Events
-{
-class LoopPrivate
+using Wintermute::Plugin;
+
+class PluginVerifyTestSuite : public CxxTest::TestSuite
 {
 public:
-  uv_loop_t* loop;
-  LoopPrivate() : loop(NULL)
+  void testWorkWithPlugin()
   {
-  }
-
-  void useDefaultLoop()
-  {
-    loop = uv_default_loop();
-    assert(loop);
-  }
-
-  void createNewLoop()
-  {
-    // NOTE: Should we clear out 'loop' if it's already there?
-    loop = new uv_loop_t;
-    uv_loop_init(loop);
-    assert(loop);
-  }
-
-  ~LoopPrivate()
-  {
-    // TODO: Close the loop if it's active.
+    Plugin::Ptr pluginPtr = Plugin::find(PLUGIN_TEST_PATH);
+    TSM_ASSERT ( "Plugin was loaded from disk.", pluginPtr );
+    TSM_ASSERT ( "Plugin was released from memory.", Plugin::release(pluginPtr->name()) );
   }
 };
-}
-}
+
+

@@ -19,10 +19,11 @@
 #include "logging.hpp"
 #include "plugin.hh"
 
+using std::to_string;
 using Wintermute::Plugin;
 using Wintermute::PluginPrivate;
 
-PluginPrivate::PluginList PluginPrivate::plugins;
+PluginPrivate::PluginMap PluginPrivate::plugins;
 
 PluginPrivate::PluginPrivate(const string& pluginName) :
   library(), name(pluginName)
@@ -34,8 +35,21 @@ PluginPrivate::~PluginPrivate()
 {
 }
 
-void PluginPrivate::registerPlugin(Plugin::Ptr& plugin)
+bool PluginPrivate::registerPlugin(Plugin::Ptr& plugin)
 {
-  wdebug("Inserted " + plugin->name() + " into the namespace.");
-  PluginPrivate::plugins.insert(std::make_pair(plugin->name(), plugin));
+  wdebug("Inserted " + plugin->name() + " into the pool.");
+  auto pairPluginNamePtr = std::make_pair(plugin->name(), plugin);
+  auto insertionStatus = PluginPrivate::plugins.insert(pairPluginNamePtr);
+  wdebug("Was the plugin " + plugin->name() + " inserted? " 
+    + to_string(insertionStatus.second));
+  return insertionStatus.second;
+}
+
+bool PluginPrivate::unregisterPlugin(const string& pluginName)
+{
+  wdebug("Removed " + pluginName + " from the pool.");
+  const PluginPrivate::PluginMap::size_type erasedCount = PluginPrivate::plugins.erase(pluginName);
+  wdebug("Was the plugin " + pluginName + " removed? " 
+    + to_string(erasedCount));
+  return erasedCount == 1;
 }

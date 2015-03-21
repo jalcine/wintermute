@@ -3,6 +3,8 @@
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
+ *
+ * Wintermute is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
@@ -13,41 +15,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "events.hpp"
-#include <uv.h>
+#ifndef WINTERMUTE_ZMQ_DISPATCHER_HPP_
+# define WINTERMUTE_ZMQ_DISPATCHER_HPP_
 
-using namespace Wintermute::Events;
+#include <wintermutecore/tunnel.hpp>
+#include <zmqpp/zmqpp.hpp>
+#include "globals.hpp"
 
 namespace Wintermute
 {
-namespace Events
+class ZMQDispatcher : public Tunnel::Dispatcher
 {
-class LoopPrivate
-{
+private:
+  SharedPtr<zmqpp::context_t> context;
+  SharedPtr<zmqpp::socket_t> socketPtr;
+  void bindTo(const string& bindStr);
+  list<string> clients() const;
+
 public:
-  uv_loop_t* loop;
-  LoopPrivate() : loop(NULL)
-  {
-  }
-
-  void useDefaultLoop()
-  {
-    loop = uv_default_loop();
-    assert(loop);
-  }
-
-  void createNewLoop()
-  {
-    // NOTE: Should we clear out 'loop' if it's already there?
-    loop = new uv_loop_t;
-    uv_loop_init(loop);
-    assert(loop);
-  }
-
-  ~LoopPrivate()
-  {
-    // TODO: Close the loop if it's active.
-  }
+  W_DECL_PTR_TYPE(ZMQDispatcher)
+  explicit ZMQDispatcher(const SharedPtr<zmqpp::context_t>& context);
+  virtual ~ZMQDispatcher();
+  virtual bool send(const Message& message) final;
+  virtual void start();
+  virtual void stop();
 };
 }
-}
+
+#endif

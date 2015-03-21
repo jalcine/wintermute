@@ -28,9 +28,11 @@ using Wintermute::PluginPrivate;
 
 bool isLibraryCompatible(Library::Ptr& libraryPtr)
 {
+  assert(libraryPtr);
   if (!libraryPtr)
   {
-    throw std::invalid_argument("Invalid pointer to library.");
+    werror("Obtained an invalid pointer to a library.");
+    //throw std::invalid_argument("Invalid pointer to library.");
     return false;
   }
 
@@ -49,7 +51,7 @@ bool isLibraryCompatible(Library::Ptr& libraryPtr)
   const Version systemVersion = Version::system();
 
   wdebug("Raw version string from library: " + versionString);
-  wdebug("System " + static_cast<string>(systemVersion)+ " >= library min " + static_cast<string>(libraryVersion));
+  wdebug("System " + static_cast<string>(systemVersion) + " >= library min " + static_cast<string>(libraryVersion));
   return systemVersion >= libraryVersion;
 }
 
@@ -65,6 +67,7 @@ void loadPluginFromLibrary(Library::Ptr& libraryPtr, Plugin::Ptr& pluginPtr)
     return;
   }
 
+  // TODO: Add exception handling around 'ctorFunction'.
   pluginPtr.reset(ctorFunction());
 
   if (!pluginPtr)
@@ -85,10 +88,15 @@ Plugin::Plugin(const string& pluginName) : d_ptr(new PluginPrivate(pluginName))
 Plugin::~Plugin()
 {
   W_PRV(Plugin);
-  if (d->library->loadedStatus() == Library::LoadIsLoaded)
+
+  if (d->library && d->library->loadedStatus() == Library::LoadIsLoaded)
   {
     wdebug("Unloading plugin's library prior to deallocation...");
     d->library->unload();
+  }
+  else
+  {
+    wdebug("No library instance.");
   }
 
   wdebug("Deallocated a plugin.");
@@ -97,7 +105,7 @@ Plugin::~Plugin()
 // TODO: Dice up this function.
 Plugin::Ptr Plugin::find(const string& pluginQuery)
 {
-  Plugin::Ptr pluginPtr;
+  Plugin::Ptr pluginPtr = nullptr;
 
   wdebug("Searching for a plugin identified by " + pluginQuery + " ...");
   if (pluginQuery.empty())
@@ -178,12 +186,18 @@ bool Plugin::release(const string& pluginName)
     library->resolveFunction(WINTERMUTE_PLUGIN_DTOR_FUNCTION_NAME));
 
   const bool freedPlugin = dtorFunction(plugin);
+  // NOTE: DO NOT use 'pluginPtr' after this point here.
 
   if (!freedPlugin)
   {
     werror("Failed to free plugin " + name + " from memory.");
   }
+  else
+  {
+    wdebug("Plugin " + name + " successfully freed.");
+  }
 
+  PluginPrivate::unregisterPlugin(pluginName);
   winfo("Plugin " + name + " unloaded.");
 
   return true;
@@ -191,7 +205,9 @@ bool Plugin::release(const string& pluginName)
 
 bool Plugin::hasPlugin(const string& pluginName)
 {
-  return PluginPrivate::plugins.count(pluginName) != 0;
+  auto countOfPlugins = PluginPrivate::plugins.count(pluginName);
+  wdebug(std::to_string(countOfPlugins));
+  return countOfPlugins != 0;
 }
 
 string Plugin::name() const
@@ -199,4 +215,3 @@ string Plugin::name() const
   W_PRV(const Plugin);
   return d->name;
 }
-
