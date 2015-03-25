@@ -19,7 +19,7 @@
  */
 
 #include <wintermutecore/globals.hpp>
-#include <uuid.h>
+#include <wintermutecore/util.hh>
 #include "module.hh"
 
 using Wintermute::Heartbeat::ModulePrivate;
@@ -35,9 +35,5 @@ ModulePrivate::~ModulePrivate()
 
 void ModulePrivate::generateUuid()
 {
-  uuid_t aUuid;
-  uuid_generate_time_safe(aUuid);
-  //uuid_unparse_lower(aUuid, uuidStr);
-  //uuid = uuidStr;
-  // TODO: Generate a UUID to be used by this module.
+  uuid = Wintermute::Util::generate_uuid();
 }
