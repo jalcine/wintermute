@@ -215,3 +215,15 @@ string Plugin::name() const
   W_PRV(const Plugin);
   return d->name;
 }
+
+const list<string> Plugin::all()
+{
+  list<string> pluginNameList;
+
+  for ( auto pluginPair : PluginPrivate::plugins )
+  {
+    pluginNameList.push_back(pluginPair.first);
+  }
+
+  return pluginNameList;
+}
