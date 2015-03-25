@@ -24,7 +24,10 @@
 #define SAMPLE_PLUGIN_PATH      "@CMAKE_BINARY_DIR@/lib/libwintermutesample.so"
 #define SAMPLE_TEST_FILE        "@CMAKE_SOURCE_DIR@/CMakeLists.txt"
 
+#ifndef WINTER_SAMPLE
 #include "fixtures.hpp"
+#endif
+
 #include <cstdlib>
 
 #endif

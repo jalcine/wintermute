@@ -34,10 +34,11 @@ Plugin::Ptr fetchWorkingPlugin()
 class PluginTestSuite : public CxxTest::TestSuite
 {
 public:
-  Plugin::Ptr pluginPtr;
+  Plugin::Ptr pluginPtr = nullptr;
 
   void setUp()
   {
+    pluginPtr = nullptr;
   }
 
   void tearDown()
