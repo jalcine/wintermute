@@ -23,8 +23,6 @@ PROJECT(WintermuteHeartbeat CXX)
 INCLUDE(WintermutePlugin)
 INCLUDE(FindPkgConfig)
 
-PKG_SEARCH_MODULE(UUID uuid)
-
 SET(WINTERMUTE_HEARTBEAT_VERSION 0.0.1-dev)
 
 SET(_srcs
@@ -49,16 +47,6 @@ WINTERMUTE_PLUGIN_DECLARE(
   NAME   heartbeat
   TARGET wintermute-heartbeat
   )
-
-TARGET_LINK_LIBRARIES(
-  wintermute-heartbeat
-  ${UUID_LIBRARIES}
-  )
-
-TARGET_INCLUDE_DIRECTORIES(
-  wintermute-heartbeat BEFORE PUBLIC
-  ${UUID_INCLUDE_DIRS}
-)
 
 WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-heartbeat)
 
