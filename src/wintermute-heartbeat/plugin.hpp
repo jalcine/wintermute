@@ -29,25 +29,16 @@ namespace Wintermute
 namespace Heartbeat
 {
 class PluginPrivate;
-class Plugin : public Wintermute::Plugin
+class Plugin final : public Wintermute::Plugin
 {
   W_DEF_PRIVATE(Wintermute::Heartbeat::Plugin)
 
   public:
     explicit Plugin();
-    virtual ~Plugin();
-    virtual bool startup();
-    virtual bool shutdown();
-    virtual Plugin::PluginType type() const;
-
-    enum Mode {
-      ModeUndefined = 0x000,
-      ModeSender    = 0x100,
-      ModeReceiver  = 0x200
-    };
-
-    void setMode(const Mode modeToUse);
-    Mode mode() const;
+    ~Plugin();
+    bool startup() override;
+    bool shutdown() override;
+    Plugin::PluginType type() const override;
 };
 }
 }
