@@ -73,6 +73,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
       -fprofile-arcs
       -ftest-coverage
+      -gstabs+
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
@@ -88,7 +89,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
 else()
   list(APPEND WINTERMUTE_COMPILE_FLAGS
     --std=c++14
-    -gstabs+
   )
 endif()
 
