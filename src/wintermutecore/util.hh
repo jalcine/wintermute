@@ -26,6 +26,7 @@
 #include <string>
 #include <algorithm>
 #include <iterator>
+#include <uuid.h>
 
 using std::list;
 using std::regex;
@@ -38,6 +39,7 @@ namespace Wintermute
 {
 namespace Util
 {
+  // TODO: Document.
   inline list<string> split_string(const string& str, const regex& delim)
   {
     list<string> tokens;
@@ -48,6 +50,7 @@ namespace Util
     return tokens;
   }
 
+  // TODO: Document.
   inline string join_string(const list<string>& tokens, const string& delim)
   {
     string resultingString;
@@ -65,9 +68,18 @@ namespace Util
     return resultingString;
   }
 
+  /**
+   * @fn Wintermute::Util::generate_uuid
+   * @return A UUID as a string.
+   * Generates a UUID.
+   */
   inline string generate_uuid()
   {
-    return string();
+    uuid_t uuidObj;
+    uuid_generate_time(uuidObj);
+    string uuidStr(std::begin(uuidObj), std::end(uuidObj));
+
+    return uuidStr;
   }
 }
 }
