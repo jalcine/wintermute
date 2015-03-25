@@ -52,7 +52,7 @@ else()
 endif()
 
 MACRO(wintermute_add_test _prefix _name _hdr)
-  SET(_target ${_prefix}_${_name})
+  SET(_target ${_prefix}-${_name})
   CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
   WINTERMUTE_LINK_LIBRARIES(${_target})
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
