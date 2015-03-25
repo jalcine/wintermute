@@ -23,7 +23,18 @@
 
 #include <wintermutecore/globals.hpp>
 
-#define WINTERMUTE_HEARTBEAT_PLUGIN_NAME "HEARTBEAT"
+/**
+ * Defines the name of the heartbeat plugin.
+ * @todo Document.
+ * @def WINTERMUTE_HEARTBEAT_PLUGIN_NAME
+ */
+#define WINTERMUTE_HEARTBEAT_PLUGIN_NAME "wintermute-heartbeat"
+
+/**
+ * Defines the base domain to be used for module calls.
+ * @todo Document
+ * @def WINTERMUTE_HEARTBEAT_DOMAIN
+ */
 #define WINTERMUTE_HEARTBEAT_DOMAIN WINTERMUTE_DOMAIN
 #define WINTERMUTE_HEARTBEAT_MODULE "heartbeat"
 

@@ -36,6 +36,8 @@ This cycle continues indefinitely.
   * What should a client node do if it notices that its UUID has changed?
     - What kind of assumptions can be made here?
     - Do we classify this as a system restart? If so, why?
+  * How do we prevent forgery of message structure by outside sources?
+    **TODO**: Look into using libsodium to encrypt all messages.
 
 ---
 [^1]: <https://en.wikipedia.org/wiki/Heartbeat_%28computing%29>
