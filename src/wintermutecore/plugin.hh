@@ -44,6 +44,7 @@ public:
   virtual ~PluginPrivate();
   static bool registerPlugin(Plugin::Ptr& plugin);
   static bool unregisterPlugin(const string& pluginName);
+  static Plugin::Ptr lookupPlugin(const string& pluginQuery);
 };
 }
 #endif
