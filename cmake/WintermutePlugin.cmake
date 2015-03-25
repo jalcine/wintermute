@@ -106,6 +106,6 @@ MACRO(wintermute_plugin_add_test)
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   WINTERMUTE_ADD_TEST("plugin-${_wpat_PREFIX}" ${_wpat_NAME} ${_wpat_HEADER})
-  TARGET_LINK_LIBRARIES("plugin-${_wpat_PREFIX}_${_wpat_NAME}"
+  TARGET_LINK_LIBRARIES("plugin-${_wpat_PREFIX}-${_wpat_NAME}"
     ${_wpat_TARGET})
 ENDMACRO(wintermute_plugin_add_test)
