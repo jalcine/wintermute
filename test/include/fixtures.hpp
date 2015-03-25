@@ -25,8 +25,10 @@
 #include <string>
 #include <cxxtest/TestSuite.h>
 #include "wintermutecore/event_loop.hh"
+#include "wintermutecore/plugin.hpp"
 
 using std::string;
+using Wintermute::Plugin;
 
 // TODO: Compile a list of faux values.
 
@@ -39,6 +41,44 @@ CXXTEST_ENUM_TRAITS(Wintermute::Library::LoadState,
   CXXTEST_ENUM_MEMBER(Wintermute::Library::LoadUndefined)
 );
 // }}}
+
+Wintermute::Plugin::Ptr wntrtest_load_plugin(const string& pluginName)
+{
+  Plugin::Ptr pluginPtr = nullptr;
+  TSM_ASSERT (
+    "Plugin " + pluginName + " has not been loaded already.",
+    !Plugin::hasPlugin(pluginName)
+  );
+
+  const string libDir(TEST_BASE_DIR "/../lib");
+  setenv(WINTERMUTE_ENV_PLUGIN_PATH, libDir.c_str() , 1);
+
+  TSM_ASSERT_THROWS_NOTHING (
+    "Load and obtain a pointer to the Plugin.",
+    pluginPtr = Plugin::find(pluginName)
+  );
+
+  TSM_ASSERT (
+    "Confirm that the plugin pointer is valid.",
+    pluginPtr != nullptr && pluginPtr
+  );
+
+  TSM_ASSERT (
+    "Confirm that the plugin pool is aware of " + pluginName,
+    Plugin::hasPlugin(pluginName) == true
+  );
+
+  unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
+  return pluginPtr;
+}
+
+void wntrtest_unload_plugin(const string& pluginName)
+{
+  TSM_ASSERT ( "Freed plugin",
+    Plugin::release(pluginName) );
+  TSM_ASSERT ( "Removed plugin.",
+    !Plugin::hasPlugin(pluginName) );
+}
 
 // Generates a random designation.
 Wintermute::Module::Designation craftRandomDesignation()
@@ -58,11 +98,16 @@ class SampleModule : public Wintermute::Module
 public:
   explicit SampleModule(const unsigned int index = 1) :
     Wintermute::Module(
-      Wintermute::Module::Designation("input", "test" + std::to_string(index) + ".wintermute.in")
+      Wintermute::Module::Designation(
+        "input",
+        "test" + std::to_string(index) + ".wintermute.in"
+      )
     )
   {
-    winfo("SampleModule: My name is " + (string) designation());
+    winfo("SampleModule: My name is " + (string) designation() + ".");
   }
+
+  virtual ~SampleModule() { }
 };
 
 class SampleLoop : public Wintermute::Events::Loop
@@ -139,7 +184,7 @@ public:
   {
     Call::Function func = [ = ](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return string();
     };
 
@@ -161,7 +206,7 @@ public:
   {
     Call::Function func = [&value](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return value;
     };
 
@@ -178,7 +223,7 @@ public:
   {
     Call::Function func = [](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return string();
     };
 
@@ -196,7 +241,7 @@ public:
   {
     Call::Function func = [ &value ](const string & arguments) -> const string
     {
-      assert(arguments == arguments);
+      winfo(arguments);
       return value;
     };
 
