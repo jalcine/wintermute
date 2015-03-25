@@ -18,30 +18,29 @@
     Boston, MA 02111-1307, USA.
  */
 
-#include <string>
-#include <wintermutecore/events.hpp>
-#include <wintermutecore/module.hpp>
-#include "module.hpp"
+#include "ping_module.hpp"
 
-using std::string;
+using Wintermute::Heartbeat::PingModule;
+using Wintermute::Module;
 
-namespace Wintermute
+PingModule::PingModule() :
+  Module(Wintermute::Module::Designation(
+    WINTERMUTE_HEARTBEAT_MODULE_PINGER,
+    WINTERMUTE_HEARTBEAT_DOMAIN
+  ))
 {
-  namespace Heartbeat
-  {
-    class ModulePrivate
-    {
-      public:
-        explicit ModulePrivate();
-        virtual ~ModulePrivate();
-        void setUpSubModule();
-        void tearDownSubModule();
-        Wintermute::Module::Ptr modeModule;
-        Heartbeat::Module::Mode mode;
+}
 
-      private:
-        void generateUuid();
-        void determineMode();
-    };
-  }
+PingModule::~PingModule()
+{
+}
+
+bool PingModule::sendMessage(const Message& message)
+{
+  return Module::sendMessage(message);
+}
+
+bool PingModule::receiveMessage(const Message& message) const
+{
+  return Module::receiveMessage(message);
 }

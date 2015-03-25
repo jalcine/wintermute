@@ -18,30 +18,40 @@
     Boston, MA 02111-1307, USA.
  */
 
-#include <string>
-#include <wintermutecore/events.hpp>
-#include <wintermutecore/module.hpp>
-#include "module.hpp"
+#include <wintermutecore/logging.hpp>
+#include <wintermutecore/util.hh>
+#include "pong_module.hpp"
 
-using std::string;
+using Wintermute::Heartbeat::PongModule;
+using Wintermute::Module;
+using Wintermute::Util::generate_uuid;
 
-namespace Wintermute
+PongModule::PongModule() :
+  Module(Wintermute::Module::Designation(
+    WINTERMUTE_HEARTBEAT_MODULE_PONGER,
+    WINTERMUTE_HEARTBEAT_DOMAIN
+  )), uuid()
 {
-  namespace Heartbeat
-  {
-    class ModulePrivate
-    {
-      public:
-        explicit ModulePrivate();
-        virtual ~ModulePrivate();
-        void setUpSubModule();
-        void tearDownSubModule();
-        Wintermute::Module::Ptr modeModule;
-        Heartbeat::Module::Mode mode;
+  regenerateUuid();
+}
 
-      private:
-        void generateUuid();
-        void determineMode();
-    };
-  }
+PongModule::~PongModule()
+{
+}
+
+void PongModule::regenerateUuid()
+{
+  uuid = generate_uuid();
+  wdebug("The UUID of this instance is '" + uuid + "'.");
+  assert(!uuid.empty());
+}
+
+bool PongModule::sendMessage(const Message& message)
+{
+  return Module::sendMessage(message);
+}
+
+bool PongModule::receiveMessage(const Message& message) const
+{
+  return Module::receiveMessage(message);
 }
