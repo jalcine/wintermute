@@ -28,10 +28,8 @@ using HeartbeatPluginPrivate = Wintermute::Heartbeat::PluginPrivate;
 using std::to_string;
 
 HeartbeatPluginPrivate::PluginPrivate() :
-  timer(make_shared<Wintermute::Events::Timer>())
-  //module(make_shared<Wintermute::Heartbeat::Module>())
+  module()
 {
-  timer->setInterval(WINTERMUTE_HEARTBEAT_INTERVAL);
 }
 
 HeartbeatPluginPrivate::~PluginPrivate()
