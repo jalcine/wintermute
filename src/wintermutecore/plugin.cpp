@@ -70,6 +70,8 @@ void loadPluginFromLibrary(Library::Ptr& libraryPtr, Plugin::Ptr& pluginPtr)
   // TODO: Add exception handling around 'ctorFunction'.
   pluginPtr.reset(ctorFunction());
 
+  assert(pluginPtr);
+
   if (!pluginPtr)
   {
     werror("Failed to create a instance of the plugin.");
@@ -118,10 +120,9 @@ Plugin::Ptr Plugin::find(const string& pluginQuery)
   if (hasPlugin(pluginQuery))
   {
     wdebug("Plugin has been loaded before, returning known reference.");
-    auto itr = PluginPrivate::plugins.find(pluginQuery);
-    assert(itr != std::end(PluginPrivate::plugins));
-    assert(itr->second);
-    return itr->second;
+    pluginPtr = PluginPrivate::lookupPlugin(pluginQuery);
+    assert(pluginPtr);
+    return pluginPtr;
   }
   else
   {
@@ -206,7 +207,6 @@ bool Plugin::release(const string& pluginName)
 bool Plugin::hasPlugin(const string& pluginName)
 {
   auto countOfPlugins = PluginPrivate::plugins.count(pluginName);
-  wdebug(std::to_string(countOfPlugins));
   return countOfPlugins != 0;
 }
 
@@ -214,4 +214,16 @@ string Plugin::name() const
 {
   W_PRV(const Plugin);
   return d->name;
+}
+
+const list<string> Plugin::all()
+{
+  list<string> pluginNameList;
+
+  for ( auto pluginPair : PluginPrivate::plugins )
+  {
+    pluginNameList.push_back(pluginPair.first);
+  }
+
+  return pluginNameList;
 }
