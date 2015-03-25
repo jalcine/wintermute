@@ -27,6 +27,7 @@ using std::to_string;
 using std::dynamic_pointer_cast;
 
 Module::Module(const Module::Designation& aDesignation) :
+  enable_shared_from_this(),
   d_ptr(std::make_shared<ModulePrivate>(aDesignation))
 {
   wtrace("Module " + static_cast<string>(aDesignation) + " started.");
@@ -47,8 +48,13 @@ bool Module::enable()
   }
 
   wdebug("Module " + static_cast<string>(designation()) + " doesn't exist in the pool, adding..");
-  Module::Ptr modulePtr = std::make_shared<Module>(*this);
-  return Module::Pool::instance()->add(modulePtr);
+  Module::Ptr modulePtr = shared_from_this();
+  const bool moduleAdded = Module::Pool::instance()->add(modulePtr);
+  wdebug("Was module " + static_cast<string>(designation()) + " added into pool? " + to_string((int) moduleAdded));
+
+  assert(moduleAdded);
+
+  return moduleAdded;
 }
 
 bool Module::disable()
@@ -73,7 +79,7 @@ bool Module::isEnabled() const
   return Module::Pool::instance()->has(designation());
 }
 
-bool Module::sendMessage(const Message& message) const
+bool Module::sendMessage(const Message& message)
 {
   assert ( !message.isEmpty() );
   throw std::invalid_argument("This method has not been overridden.");

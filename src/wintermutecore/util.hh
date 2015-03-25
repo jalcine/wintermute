@@ -50,14 +50,24 @@ namespace Util
 
   inline string join_string(const list<string>& tokens, const string& delim)
   {
-    string resultingString = tokens.front();
+    string resultingString;
 
-    for_each(tokens.begin()++, tokens.end(), [&](const string& token)
+    if (!tokens.empty())
     {
-      resultingString += delim + token;
-    });
+      resultingString = tokens.front();
+
+      for_each(tokens.begin()++, tokens.end(), [&](const string& token)
+      {
+        resultingString += delim + token;
+      });
+    }
 
     return resultingString;
+  }
+
+  inline string generate_uuid()
+  {
+    return string();
   }
 }
 }

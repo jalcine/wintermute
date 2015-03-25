@@ -269,7 +269,7 @@ protected:
   virtual bool receiveMessage(const Message & message) const;
 
   /// Handles the act of sending out a message.
-  virtual bool sendMessage(const Message& message) const;
+  virtual bool sendMessage(const Message& message);
 };
 }
 

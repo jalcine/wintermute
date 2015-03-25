@@ -26,6 +26,7 @@ using std::make_pair;
 using std::to_string;
 using std::end;
 using std::begin;
+using std::dynamic_pointer_cast;
 
 W_DECLARE_SINGLETON(Module::Pool)
 
@@ -40,22 +41,19 @@ Module::Pool::Pool() : d_ptr(new ModulePoolPrivate)
 Module::Ptr Module::Pool::find(const Module::Designation& designation) const
 {
   W_PRV(const ModulePool);
-  wdebug("Looking for the module designated as '" + (string) designation + "'...");
-  auto itr = d->modules.find(designation);
+  Module::Ptr modulePtr = nullptr;
+  wdebug("Looking up module '" + (string) designation + "'...");
 
-  if (itr != std::end(d->modules))
+  if (d->modules.count(designation) != 1)
   {
-    wdebug("Found the module '" + (string) designation + "'.");
-    Module::Ptr modulePtr = itr->second;
-    assert(modulePtr);
-    return modulePtr;
-  }
-  else
-  {
-    wdebug("Could not find the module '" + (string) designation + "'.");
+    wdebug("The module " + static_cast<string>(designation) + " was not found.");
+    return nullptr;
   }
 
-  return nullptr;
+  wdebug("Found the module '" + (designation.domain() + "." + designation.name()) + "'.");
+  modulePtr = d->modules.at(designation)->shared_from_this();
+  assert(modulePtr);
+  return modulePtr;
 }
 
 Module::List Module::Pool::modules() const
@@ -72,9 +70,9 @@ Module::List Module::Pool::modules() const
       assert(itr->second);
       knownModules.push_back(itr->second);
     }
-
-    assert ( knownModules.size() == d->modules.size() );
   }
+
+  assert ( knownModules.size() == d->modules.size() );
 
   return knownModules;
 }
@@ -83,9 +81,11 @@ bool Module::Pool::add(Module::Ptr& modulePtr)
 {
   W_PRV(ModulePool);
 
+  assert(modulePtr);
+
   if (!has(modulePtr->designation()))
   {
-    Module::Designation designation = modulePtr->designation();
+    auto designation = modulePtr->designation();
     auto mapValue = make_pair(designation, modulePtr);
     auto returnTupleInsert = d->modules.insert(mapValue);
     const bool wasInserted = returnTupleInsert.second;
@@ -106,7 +106,6 @@ bool Module::Pool::add(Module::Ptr& modulePtr)
   else
   {
     wwarn("Module '" + static_cast<string>(modulePtr->designation()) + "' already exists in the pool.");
-    return false;
   }
 
   return false;
@@ -149,4 +148,3 @@ Module::Pool::~Pool()
   W_PRV(ModulePool);
   d->modules.clear();
 }
-
