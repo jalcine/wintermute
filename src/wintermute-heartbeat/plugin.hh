@@ -21,24 +21,23 @@
 #ifndef WINTERMUTE_HEARTBEAT_PLUGIN_HH_
 # define WINTERMUTE_HEARTBEAT_PLUGIN_HH_
 
-#include <wintermutecore/events.hpp>
 #include "globals.hpp"
 #include "module.hpp"
 #include "plugin.hpp"
 
 namespace Wintermute
 {
-  namespace Heartbeat {
-    class PluginPrivate
-    {
-      public:
-        explicit PluginPrivate();
-        ~PluginPrivate();
-        /*Heartbeat::Module::Ptr module;*/
-        Events::Timer::Ptr timer;
-        Heartbeat::Plugin::Mode mode;
-    };
-  }
-}
+namespace Heartbeat {
+class PluginPrivate
+{
+public:
+  explicit PluginPrivate();
+  ~PluginPrivate();
+  Heartbeat::Module::Ptr module;
+  Events::Listener::Ptr startUpModuleListener;
+  Events::Listener::Ptr shutDownModuleListener;
+};
+} /* end namespace Heartbeat */
+} /* end namespace Wintermute */
 
 #endif

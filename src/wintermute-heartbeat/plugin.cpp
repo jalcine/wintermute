@@ -20,33 +20,97 @@
 
 #include <algorithm>
 #include <wintermutecore/logging.hpp>
+#include <wintermutecore/tunnel.hpp>
 #include "plugin.hh"
 #include "plugin.hpp"
+#include "module.hpp"
 
 using Wintermute::Plugin;
+using Wintermute::Tunnel;
+using Wintermute::Events::Event;
+using Wintermute::Events::Listener;
 using HeartbeatPlugin = Wintermute::Heartbeat::Plugin;
+using HeartbeatModule = Wintermute::Heartbeat::Module;
 using HeartbeatPluginPrivate = Wintermute::Heartbeat::PluginPrivate;
 
 HeartbeatPlugin::Plugin() :
   Wintermute::Plugin(WINTERMUTE_HEARTBEAT_PLUGIN_NAME),
-  d_ptr(new HeartbeatPluginPrivate)
+  d_ptr(make_shared<HeartbeatPluginPrivate>())
 {
+  wdebug("Heartbeat plugin created.");
 }
 
 HeartbeatPlugin::~Plugin()
 {
+  wdebug("Heartbeat plugin down for the count.");
 }
 
 bool HeartbeatPlugin::startup()
 {
   W_PRV(HeartbeatPlugin);
-  d->timer->start();
-  return false;
+
+  auto enableModuleFunc = [this](const Event::Ptr& eventPtr)
+  {
+    assert(eventPtr);
+    auto module = make_shared<HeartbeatModule>();
+    assert(module);
+    wdebug("Starting up the heartbeat module...");
+    module->enable();
+
+    this->d_ptr->module = module;
+    wdebug("Heartbeat root module enabled.");
+    assert(this->d_ptr->module);
+  };
+
+  auto disableModuleFunc = [this](const Event::Ptr& eventPtr)
+  {
+    assert(eventPtr);
+    wdebug("Disabling the module..");
+    auto module = this->d_ptr->module;
+
+    if (module)
+    {
+      module->disable();
+      module.reset();
+      wdebug("Heartbeat root module disabled.");
+    }
+    else
+    {
+      wdebug("No heartbeat root module to disable.");
+    }
+
+    this->d_ptr->module = nullptr;
+    assert(!this->d_ptr->module);
+  };
+
+  d->startUpModuleListener = Tunnel::instance()->listenForEvent (
+    W_EVENT_TUNNEL_START,
+    enableModuleFunc,
+    Listener::FrequencyOnce
+  );
+
+  d->shutDownModuleListener = Tunnel::instance()->listenForEvent (
+    W_EVENT_TUNNEL_STOP,
+    disableModuleFunc,
+    Listener::FrequencyOnce
+  );
+
+  return true;
 }
 
 bool HeartbeatPlugin::shutdown()
 {
-  return false;
+  W_PRV(HeartbeatPlugin);
+  if (d->module)
+  {
+    wdebug("Killing module since Tunnel wasn't stopped yet.");
+    d->shutDownModuleListener->invoke(nullptr);
+  }
+
+  Tunnel::instance()->removeEventListener(d->shutDownModuleListener);
+  Tunnel::instance()->removeEventListener(d->startUpModuleListener);
+
+  return !(d->module);
 }
 
 Plugin::PluginType HeartbeatPlugin::type() const
@@ -54,17 +118,4 @@ Plugin::PluginType HeartbeatPlugin::type() const
   return Wintermute::Plugin::PluginTypeSupport;
 }
 
-HeartbeatPlugin::Mode HeartbeatPlugin::mode() const
-{
-  W_PRV(const HeartbeatPlugin);
-  return d->mode;
-}
-
-void HeartbeatPlugin::setMode(const Mode modeToUse)
-{
-  W_PRV(HeartbeatPlugin);
-  d->mode = modeToUse;
-}
-
 W_DECL_PLUGIN(Wintermute::Heartbeat::Plugin, WINTERMUTE_HEARTBEAT_VERSION)
-
