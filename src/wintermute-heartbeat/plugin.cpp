@@ -67,4 +67,3 @@ void HeartbeatPlugin::setMode(const Mode modeToUse)
 }
 
 W_DECL_PLUGIN(Wintermute::Heartbeat::Plugin, WINTERMUTE_HEARTBEAT_VERSION)
-
