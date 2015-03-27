@@ -151,7 +151,7 @@ class Listener : W_DEF_SHAREABLE(Listener)
 public:
   W_DECL_PTR_TYPE(Listener)
   /**
-   * The known frequenices at which a Listener should be invoked.
+   * The known frequencies at which a Listener should be invoked.
    */
   enum Frequency
   {
@@ -182,7 +182,7 @@ public:
   explicit Listener(Callback callback) throw (std::invalid_argument);
 
   ///< Destructor.
-  virtual ~Listener();
+  ~Listener();
 
   /**
    * Invokes the stored Callback function with the provided Event pointer.
@@ -216,7 +216,7 @@ public:
   explicit Emitter(const Loop::Ptr& loop = Loop::primary());
 
   ///< Destructor.
-  virtual ~Emitter();
+  ~Emitter();
 
   /**
    * Listens for the named event to  invoke the provided callback.
@@ -271,33 +271,38 @@ class Emittable
 {
 public:
   /**
-   * Returns the underlying Emitter object used by this Emittable.
+   * Returns the underlying Emitter object used by this Emittable object.
    * @return A pointer to a Emitter object.
+   * @sa Wintermute::Events::Emitter
    */
   virtual Emitter::Ptr emitter() const = 0;
 
   ///< @sa Wintermute::Events::Emitter::listen
-  Listener::Ptr listenForEvent(const string & name, Listener::Callback func,
+  inline Listener::Ptr listenForEvent(const string & name, Listener::Callback func,
     const Listener::Frequency& freq = Listener::FrequencyEvery)
   {
+    assert(emitter());
     return emitter()->listen(name, func, freq);
   }
 
   ///< @sa Wintermute::Events::Emitter::stopListening
-  bool removeEventListener(const Listener::Ptr& listener)
+  inline bool removeEventListener(const Listener::Ptr& listener)
   {
+    assert(emitter());
     return emitter()->stopListening(listener);
   }
 
   ///< @sa Wintermute::Events::Emitter::listeners
-  Listener::List eventListeners(const string & eventName) const
+  inline Listener::List eventListeners(const string & eventName) const
   {
+    assert(emitter());
     return emitter()->listeners(eventName);
   }
 
   ///< @sa Wintermute::Events::Emitter::emit
-  void emitEvent(const Event::Ptr & event)
+  inline void emitEvent(const Event::Ptr & event)
   {
+    assert(emitter());
     emitter()->emit(event);
   }
 };
