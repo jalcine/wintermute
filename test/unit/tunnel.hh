@@ -32,6 +32,13 @@ public:
   {
   }
 
+  void testRaisesEvents()
+  {
+    /// TODO: Check for 'W_EVENT_TUNNEL_START'.
+    /// TODO: Check for 'W_EVENT_TUNNEL_STOP'.
+    /// TODO: Check for 'W_EVENT_TUNNEL_MESSAGE'.
+  }
+
   void testFindADispatcher(void)
   {
     Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
