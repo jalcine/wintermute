@@ -36,6 +36,7 @@
 using std::string;
 using std::make_shared;
 using std::to_string;
+using std::dynamic_pointer_cast;
 
 #define WINTERMUTE_VERSION              "@WINTERMUTE_VERSION@"
 #define WINTERMUTE_CONFIG_INCLUDE_DIR   "@WINTERMUTE_CONFIG_INCLUDE_DIR@"
@@ -43,6 +44,9 @@ using std::to_string;
 #define WINTERMUTE_DOMAIN               "in.wintermute"
 #define WINTERMUTE_ENV_PLUGIN_PATH      "WINTERMUTE_PLUGIN_PATH"
 #define WINTERMUTE_ENV_LOG_LEVEL        "WINTERMUTE_LOG_LEVEL"
+
+#define WINTERMUTE_EVENT_MODULE_ENABLE  "core.module.enable"
+#define WINTERMUTE_EVENT_MODULE_DISABLE "core.module.disable"
 
 #ifdef WINTERMUTE_EXPORT
 # define WINTERMUTE_EXPORT_PUBLIC  __attribute__ ((visibility ("default")))
@@ -60,27 +64,28 @@ using std::to_string;
 /// Defines inline instance-level methods to handle private instance data.
 #define W_DEF_PRIVATE(Class) \
   using _Prv = Class##Private; \
+  using _PrvPtr = SharedPtr<_Prv>; \
   friend _Prv; \
-  SharedPtr<_Prv> d_ptr = nullptr; \
-  inline _Prv* d_func() const { \
-    assert(d_ptr); \
-    return d_ptr.get(); \
+  _PrvPtr d_ptr = nullptr; \
+  inline _PrvPtr d_func() const { \
+    return Class::d_ptr; \
   } \
-  inline _Prv* d_func() { \
+  inline _PrvPtr d_func() { \
     assert(d_ptr); \
-    return d_ptr.get(); \
+    return Class::d_ptr; \
   }
 
 #define W_DEF_PRIVATE_PREDECL(_Class) \
   using _Prv = Class; \
-  SharedPtr<_Prv> d_ptr; \
-  inline _Prv* d_func() const { \
+  using _PrvPtr = SharedPtr<Class; \
+  _PrvPtr d_ptr; \
+  inline _PrvPtr d_func() const { \
     assert(d_ptr); \
-    return d_ptr.get(); \
+    return d_ptr; \
   } \
-  inline _Prv* d_func() { \
+  inline _PrvPtr d_func() { \
     assert(d_ptr); \
-    return d_ptr.get(); \
+    return d_ptr; \
   }
 
 
@@ -111,16 +116,16 @@ using std::to_string;
   }
 
 /// Provides a shortcut to grab private data for an object with private data.
-#define W_PRV(Class) Class##Private* const d = d_func();
-#define W_PRVP(_Class) _Class* const d = d_func();
+#define W_PRV(Class) SharedPtr<Class##Private> const d = d_func();
+#define W_PRVP(_Class) SharedPtr<_Class> const d = d_func();
 
 /// Provides a shortcut to grab private data for an static object with private data.
 #define W_SPRV(Class) \
   assert(Class::instance()); \
-  Class##Private* const d = Class::instance()->d_func();
+  SharedPtr<Class##Private> const d = Class::instance()->d_func();
 #define W_SPRVP(_Class, Class) \
   assert(Class::instance()); \
-  _Class* const d = Class::instance()->d_func();
+  SharedPtr<_Class> const d = Class::instance()->d_func();
 
 /// Provides a shortcut to grab public data for an object with public data.
 #define W_PUB(Class) Class* const q = q_func();
@@ -146,6 +151,7 @@ using std::to_string;
 /**
  * Defines the logic needed to handle a singleton.
  * @ingroup Singletons
+ * @todo Make this friendly to use with std::make_shared.
  */
 #define W_DEF_SINGLETON(Class) \
   private: \
@@ -153,8 +159,9 @@ using std::to_string;
   public: \
     static inline SharedPtr<Class> instance() { \
       if (!_instance) { \
-        _instance.reset(new Class); \
+        _instance.reset(new Class()); \
       } \
+      assert(_instance);\
       return _instance;  \
     }
 
@@ -163,7 +170,7 @@ using std::to_string;
  * @ingroup Singletons
  */
 #define W_DECLARE_SINGLETON(Class) \
-  SharedPtr<Class> Class::_instance(nullptr);
+  SharedPtr<Class> Class::_instance;
 
 /**
  * Helps with handling libuv errors.
