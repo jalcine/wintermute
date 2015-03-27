@@ -15,6 +15,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <wintermutecore/globals.hpp>
 #include <wintermutecore/module.hpp>
 #include <wintermutecore/tunnel.hpp>
 #include <wintermutecore/logging.hpp>
@@ -22,13 +23,14 @@
 #include <wintermutecore/call.hpp>
 #include <wintermutecore/library.hpp>
 #include <wintermutecore/events.hpp>
-#include <string>
 #include <cxxtest/TestSuite.h>
 #include "wintermutecore/event_loop.hh"
 #include "wintermutecore/plugin.hpp"
+#include "wintermutecore/plugin.hh"
 
-using std::string;
 using Wintermute::Plugin;
+
+#define KILL_TEST_TIMEOUT 2000
 
 // TODO: Compile a list of faux values.
 
@@ -93,6 +95,34 @@ Wintermute::Message craftRandomMessage()
   return Wintermute::Message(data, craftRandomDesignation(), craftRandomDesignation());
 }
 
+class SamplePlugin : public Wintermute::Plugin
+{
+public:
+  SamplePlugin(const string& newName = "sample")
+    : Wintermute::Plugin(newName)
+  {
+  }
+
+  ~SamplePlugin()
+  {
+  }
+
+  virtual bool startup() final { return true; }
+  virtual bool shutdown() final {  return true; }
+  virtual PluginType type() const final { return PluginType::PluginTypeService; };
+
+  void addToPool()
+  {
+    Plugin::Ptr pluginPtr = shared_from_this();
+    Wintermute::PluginPrivate::registerPlugin(pluginPtr);
+  }
+
+  void removeFromPool()
+  {
+    Wintermute::PluginPrivate::unregisterPlugin(name());
+  }
+};
+
 class SampleModule : public Wintermute::Module
 {
 public:
@@ -105,6 +135,12 @@ public:
     )
   {
     winfo("SampleModule: My name is " + (string) designation() + ".");
+  }
+
+  SampleModule(const Wintermute::Module::Designation& des) :
+    Module(des)
+  {
+    winfo("SampleModule: I'm pretending to be " + (string) des + ".");
   }
 
   virtual ~SampleModule() { }
