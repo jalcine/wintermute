@@ -20,6 +20,9 @@ self-driven hyper-connectivity of hardware and software. The whole purpose
 of this particular tree is to build a core library, a driver binary
 (more on that) and a few plugins to get the show started. Check out
 [this weblog post][post] to really understand the mission behind Wintermute.
+_Yes, this is yet another Internet of Things project._ But this isn't meant to
+be "web scale" or all of that. It's meant to work in a controlled environment
+under specific constraints (most devices running Linux, etc).
 
 # Building & Contributing
 Building, requirement and installation information all live in
