@@ -24,6 +24,8 @@
 #include <wintermutecore/events.hpp>
 
 #define W_EVENT_TUNNEL_MESSAGE "core.tunnel.message"
+#define W_EVENT_TUNNEL_STOP    "core.tunnel.stop"
+#define W_EVENT_TUNNEL_START   "core.tunnel.start"
 
 using std::list;
 
@@ -234,6 +236,6 @@ public:
       Direction direction;
   };
 };
-}
+} /* end namespace Wintermute */
 
 #endif

@@ -32,7 +32,7 @@ class TunnelPrivate
     typedef unordered_map<string, Tunnel::Dispatcher::Ptr> DispatcherMap;
     typedef unordered_map<string, Tunnel::Receiver::Ptr> ReceiverMap;
     explicit TunnelPrivate();
-    virtual ~TunnelPrivate();
+    ~TunnelPrivate();
 
     DispatcherMap dispatchers;
     ReceiverMap receivers;
