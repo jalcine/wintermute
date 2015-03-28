@@ -20,11 +20,12 @@
 
 using namespace Wintermute::Events;
 using std::for_each;
-using std::pair;
 
-Emitter::Emitter(const Loop::Ptr& providedLoop) : d_ptr(new EmitterPrivate)
+Emitter::Emitter(const Loop::Ptr& providedLoop) :
+  d_ptr(new EmitterPrivate)
 {
   W_PRV(Emitter);
+
   if (providedLoop)
   {
     d->loop = providedLoop;
@@ -37,6 +38,8 @@ Emitter::Emitter(const Loop::Ptr& providedLoop) : d_ptr(new EmitterPrivate)
 
 Emitter::~Emitter()
 {
+  W_PRV(Emitter);
+  d->listeners.clear();
 }
 
 Loop::Ptr Emitter::loop() const
@@ -48,11 +51,12 @@ Loop::Ptr Emitter::loop() const
 Listener::Ptr Emitter::listen(const string& eventName, Listener::Ptr& listener)
 {
   W_PRV(Emitter);
-  d->listeners.insert(make_pair(eventName, listener));
+  d->listeners.emplace(eventName, listener);
   return listener;
 }
 
-Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback cb, const Listener::Frequency& freq)
+Listener::Ptr Emitter::listen(const string& eventName, Listener::Callback cb,
+  const Listener::Frequency& freq)
 {
   Listener::Ptr listener = make_shared<Listener>(cb);
   listener->frequency = freq;
@@ -67,9 +71,10 @@ Listener::List Emitter::listeners(const string& eventName) const
   auto rangeOfElements = d->listeners.equal_range(eventName);
 
   for_each(rangeOfElements.first, rangeOfElements.second,
-    [&listenersFound](const pair<string, Listener::Ptr>& listenerFound)
+    [&listenersFound](const Listener::Map::value_type& listenerItr)
   {
-    listenersFound.push_back(listenerFound.second);
+    auto listenerFound = listenerItr.second;
+    listenersFound.push_back(listenerFound);
   });
 
   return listenersFound;
@@ -79,9 +84,10 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 {
   W_PRV(Emitter);
   auto listenerItr = find_if(begin(d->listeners), end(d->listeners),
-    [&listener](const pair<string, Listener::Ptr>& listenerPair)
+    [&listener](const Listener::Map::value_type& listenerPair)
   {
-    return (listenerPair.second == listener);
+    const auto obtainedListener = listenerPair.second;
+    return (obtainedListener == listener);
   });
 
   if (listenerItr != std::end(d->listeners))
@@ -96,17 +102,26 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 
 void Emitter::emit(const Event::Ptr& event)
 {
-  wdebug("Invoking " + event->name() + "...");
+  assert(event);
   Listener::List listenersForEvent = listeners(event->name());
-  for_each(begin(listenersForEvent), end(listenersForEvent),
-    [&](Listener::Ptr & listener)
-  {
-    assert(listener);
-    listener->invoke(event);
 
-    if (listener->frequency == Listener::FrequencyOnce)
+  if (!listenersForEvent.empty())
+  {
+    wdebug("Invoking " + event->name() + " with " +
+      to_string(listenersForEvent.size()) + " listeners ...");
+
+    auto invokeListenerFunc = [&](Listener::Ptr & listener)
     {
-      stopListening(listener);
-    }
-  });
+      assert(listener);
+      listener->invoke(event);
+
+      if (listener->frequency == Listener::FrequencyOnce)
+      {
+        stopListening(listener);
+      }
+    };
+
+    for_each(begin(listenersForEvent), end(listenersForEvent),
+      invokeListenerFunc);
+  }
 }
