@@ -23,6 +23,7 @@
 #include <functional>
 #include <wintermutecore/call.hpp>
 #include <wintermutecore/globals.hpp>
+#include <wintermutecore/events.hpp>
 #include <wintermutecore/util/serializable.hpp>
 
 using std::list;
@@ -48,9 +49,9 @@ class ModuleCallPrivate;
  * and invoke signals. They allow for the flexibility one would expect from
  * Wintermute.
  */
-class Module
+class Module : public Wintermute::Events::Emittable
 #ifndef DOXYGEN_SKIP
-  : W_DEF_SHAREABLE(Module)
+  , W_DEF_SHAREABLE(Module)
 #endif
 {
 public:
@@ -130,6 +131,8 @@ public:
   {
   private:
     explicit Pool();
+
+    using ModulePool = Module::Pool;
 
     W_DEF_PRIVATE(ModulePool);
 
@@ -222,6 +225,7 @@ public:
     public Wintermute::Call
   {
   private:
+    using ModuleCall = Module::Call;
     W_DEF_PRIVATE(ModuleCall)
     W_SERIALIZABLE(Call)
 
@@ -269,7 +273,10 @@ protected:
   virtual bool receiveMessage(const Message & message) const;
 
   /// Handles the act of sending out a message.
-  virtual bool sendMessage(const Message& message) const;
+  virtual bool sendMessage(const Message& message);
+
+private:
+  virtual Events::Emitter::Ptr emitter() const final;
 };
 }
 
