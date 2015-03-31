@@ -79,5 +79,6 @@ Loop::Ptr Loop::primary()
 {
   Loop::Ptr primaryLoop = make_shared<Loop>(true);
   assert(primaryLoop->isPrimary());
+  wdebug("Handle to primary loop obtained.");
   return primaryLoop;
 }
