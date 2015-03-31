@@ -42,6 +42,5 @@ void DesignationPrivate::clone(const SharedPtr<DesignationPrivate>& other)
 size_t DesignationPrivate::Hash::operator()(const Module::Designation& des) const
 {
   hash<string> hashStr_fn;
-
   return hashStr_fn((string) des);
 }
