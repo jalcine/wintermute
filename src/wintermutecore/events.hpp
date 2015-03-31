@@ -21,16 +21,21 @@
 #include <map>
 #include <list>
 
+#define W_EVENT_POLLED    "core.events.poll"
+#define W_EVENT_TIMEOUT   "core.events.timeout"
+#define W_EVENT_SIGNAL    "core.events.signal"
+
 namespace Wintermute
 {
 namespace Events
 {
-class LoopPrivate;
 class EventPrivate;
+class LoopPrivate;
 class ListenerPrivate;
 class EmitterPrivate;
 class PollerPrivate;
 class TimerPrivate;
+class SignalHandlerPrivate;
 
 /**
  * Serves as a basis for event loops in Wintermute.
@@ -52,6 +57,7 @@ protected:
 public:
   friend class Poller;
   friend class Timer;
+  friend class SignalHandlerPrivate;
   W_DECL_PTR_TYPE(Loop)
 
   /**
@@ -145,7 +151,7 @@ class Listener : W_DEF_SHAREABLE(Listener)
 public:
   W_DECL_PTR_TYPE(Listener)
   /**
-   * The known frequenices at which a Listener should be invoked.
+   * The known frequencies at which a Listener should be invoked.
    */
   enum Frequency
   {
@@ -176,7 +182,7 @@ public:
   explicit Listener(Callback callback) throw (std::invalid_argument);
 
   ///< Destructor.
-  virtual ~Listener();
+  ~Listener();
 
   /**
    * Invokes the stored Callback function with the provided Event pointer.
@@ -210,7 +216,7 @@ public:
   explicit Emitter(const Loop::Ptr& loop = Loop::primary());
 
   ///< Destructor.
-  virtual ~Emitter();
+  ~Emitter();
 
   /**
    * Listens for the named event to  invoke the provided callback.
@@ -265,32 +271,38 @@ class Emittable
 {
 public:
   /**
-   * Returns the underlying Emitter object used by this Emittable.
+   * Returns the underlying Emitter object used by this Emittable object.
    * @return A pointer to a Emitter object.
+   * @sa Wintermute::Events::Emitter
    */
   virtual Emitter::Ptr emitter() const = 0;
 
   ///< @sa Wintermute::Events::Emitter::listen
-  Listener::Ptr listenForEvent(const string & name, Listener::Callback func, const Listener::Frequency& freq = Listener::FrequencyEvery)
+  inline Listener::Ptr listenForEvent(const string & name, Listener::Callback func,
+    const Listener::Frequency& freq = Listener::FrequencyEvery)
   {
+    assert(emitter());
     return emitter()->listen(name, func, freq);
   }
 
   ///< @sa Wintermute::Events::Emitter::stopListening
-  bool removeEventListener(const Listener::Ptr& listener)
+  inline bool removeEventListener(const Listener::Ptr& listener)
   {
+    assert(emitter());
     return emitter()->stopListening(listener);
   }
 
   ///< @sa Wintermute::Events::Emitter::listeners
-  Listener::List eventListeners(const string & eventName) const
+  inline Listener::List eventListeners(const string & eventName) const
   {
+    assert(emitter());
     return emitter()->listeners(eventName);
   }
 
   ///< @sa Wintermute::Events::Emitter::emit
-  void emitEvent(const Event::Ptr & event)
+  inline void emitEvent(const Event::Ptr & event)
   {
+    assert(emitter());
     emitter()->emit(event);
   }
 };
@@ -304,7 +316,7 @@ public:
  *
  * [poll]: http://libuv.readthedocs.org/en/latest/handle.html#c.uv_fileno
  */
-class Poller : public Emittable 
+class Poller : public Emittable
 #ifndef DOXYGEN_SKIP
   , W_DEF_SHAREABLE(Poller)
 #endif
@@ -318,8 +330,8 @@ class Poller : public Emittable
      */
     enum PollDirection
     {
-      PollReadable = 0x1, ///< Emit events when we can read.
-      PollWritable = 0x2  ///< Emit events when we can write.
+      PollReadable = 1, ///< Emit events when we can read.
+      PollWritable = 2  ///< Emit events when we can write.
     } ;
 
     ///< Platform dependent implementation of the file descriptor type.
@@ -335,7 +347,8 @@ class Poller : public Emittable
      * @param[in] poll The polling directions to listen for.
      * @param[in] loopPtr The Loop on which to work on.
      */
-    explicit Poller(FileDescriptor fd, PollDirection poll = PollReadable,
+    explicit Poller(const FileDescriptor& fd,
+      const PollDirection& poll = PollReadable,
       const Loop::Ptr& loopPtr = Loop::primary());
 
     ///< Destructor.
@@ -356,6 +369,8 @@ class Poller : public Emittable
     ///< Stops the Poller.
     bool stop();
 
+    ///< Determines if the Poller is active.
+    bool isActive() const;
 };
 
 /**
@@ -370,7 +385,7 @@ class PollEvent : public Event
      * @param thePoller The poller to use.
      */
     PollEvent(Poller::Ptr& thePoller) :
-      Event("core.events.poll"),
+      Event(W_EVENT_POLLED),
       poller(thePoller) { }
 
     ///< Destructor.
@@ -411,7 +426,7 @@ class Timer : public Emittable
      * @param[in] uint64_t The timeout in which to emit TimerEvent objects.
      * @return TRUE if successful.
      */
-    bool start(const uint64_t timeout);
+    bool start(const uint64_t timeout = 0);
 
     ///< Stops this Timer.
     ///< @return TRUE if successful.
@@ -439,7 +454,7 @@ class TimerEvent : public Event
   public:
     ///< Constructor.
     TimerEvent(Timer::Ptr theTimer) :
-      Event("core.events.timeout"),
+      Event(W_EVENT_TIMEOUT),
       timer(theTimer) { }
 
     ///< Destructor.
@@ -449,7 +464,38 @@ class TimerEvent : public Event
     Timer::Ptr timer;
 };
 
+class SignalHandler : public Emittable
+#ifndef DOXYGEN_SKIP
+  , W_DEF_SHAREABLE(SignalHandler)
+#endif
+{
+  private:
+    W_DEF_PRIVATE(SignalHandler);
+  public:
+    W_DECL_PTR_TYPE(SignalHandler)
 
+    explicit SignalHandler(const int& signalNumber);
+    virtual ~SignalHandler();
+
+    ///< The signal handler's emitter.
+    virtual Emitter::Ptr emitter() const;
+
+    ///< The signal this handler is listening to.
+    int signal() const;
+
+    SignalHandler::Ptr signalHandler;
+};
+
+class SignalEvent : public Event
+{
+  public:
+    explicit SignalEvent(const SignalHandler::Ptr& handler) :
+      Event(W_EVENT_SIGNAL), signalHandler(handler) {}
+
+    virtual ~SignalEvent() { }
+
+    SignalHandler::Ptr signalHandler;
+};
 
 }
 }

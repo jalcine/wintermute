@@ -13,25 +13,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "logging.hpp"
 #include "events.hpp"
 #include "event_loop.hh"
 
 using namespace Wintermute::Events;
 
-Loop::Loop(const bool useDefault) : d_ptr(new LoopPrivate)
+Loop::Loop(const bool useDefault) : d_ptr(make_shared<LoopPrivate>())
 {
   W_PRV(Loop);
   useDefault ? d->useDefaultLoop() : d->createNewLoop();
-  assert(d->loop != NULL);
+  assert(d->loop);
+  d->loop->data = this;
+  wdebug("Crafted loop.");
 }
 
 Loop::~Loop()
 {
+  wdebug("Loop destroyed.");
 }
 
 bool Loop::isRunning() const
 {
   W_PRV(Loop);
+  assert(d->loop);
   const bool isActive = (uv_loop_alive(d->loop) > 0);
   return isActive;
 }
@@ -39,6 +44,7 @@ bool Loop::isRunning() const
 bool Loop::isPrimary() const
 {
   W_PRV(const Loop);
+  assert(d->loop);
   const bool isDefault = (uv_default_loop() == d->loop);
   return isDefault;
 }
@@ -46,20 +52,33 @@ bool Loop::isPrimary() const
 bool Loop::run()
 {
   W_PRV(Loop);
+  assert(d->loop);
+  wdebug("Running loop...");
   const int resultRun = uv_run(d->loop, UV_RUN_DEFAULT);
+  wdebug("Ran loop.");
   return resultRun == 0;
 }
 
 bool Loop::stop()
 {
   W_PRV(Loop);
-  const int resultRun = uv_loop_close(d->loop);
-  return resultRun == 0;
+  bool wasStopped = false;
+  wdebug("Stopping loop...");
+  uv_stop(d->loop);
+
+  wdebug("Loop stopped; closing loop...");
+  //const int resultRun = uv_loop_close(d->loop);
+  //W_CHECK_UV(resultRun, "uv_loop_close");
+  wasStopped = true;
+
+  wdebug("Loop closed.");
+  return wasStopped;
 }
 
 Loop::Ptr Loop::primary()
 {
   Loop::Ptr primaryLoop = make_shared<Loop>(true);
   assert(primaryLoop->isPrimary());
+  wdebug("Handle to primary loop obtained.");
   return primaryLoop;
 }

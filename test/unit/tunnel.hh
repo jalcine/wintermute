@@ -32,12 +32,20 @@ public:
   {
   }
 
+  void testRaisesEvents()
+  {
+    /// TODO: Check for 'W_EVENT_TUNNEL_START'.
+    /// TODO: Check for 'W_EVENT_TUNNEL_STOP'.
+    /// TODO: Check for 'W_EVENT_TUNNEL_MESSAGE'.
+  }
+
   void testFindADispatcher(void)
   {
     Tunnel::Dispatcher::Ptr dispatcherPtr(new SampleDispatcher);
     TS_ASSERT(Tunnel::registerDispatcher(dispatcherPtr));
     TS_ASSERT(Tunnel::knowsOfDispatcher("sample"));
     TS_ASSERT(Tunnel::unregisterDispatcher(dispatcherPtr));
+    TS_ASSERT(!Tunnel::unregisterDispatcher("foobarzilla"));
     TS_ASSERT(!Tunnel::knowsOfDispatcher("foobarzilla"));
   }
 
@@ -48,6 +56,7 @@ public:
     TS_ASSERT(Tunnel::registerReceiver(receiverPtr));
     TS_ASSERT(Tunnel::knowsOfReceiver("sample"));
     TS_ASSERT(Tunnel::unregisterReceiver(receiverPtr));
+    TS_ASSERT(!Tunnel::unregisterReceiver("foobarzilla"));
     TS_ASSERT(!Tunnel::knowsOfReceiver("foobarzilla"));
   }
 

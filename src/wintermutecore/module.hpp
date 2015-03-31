@@ -23,6 +23,7 @@
 #include <functional>
 #include <wintermutecore/call.hpp>
 #include <wintermutecore/globals.hpp>
+#include <wintermutecore/events.hpp>
 #include <wintermutecore/util/serializable.hpp>
 
 using std::list;
@@ -48,9 +49,9 @@ class ModuleCallPrivate;
  * and invoke signals. They allow for the flexibility one would expect from
  * Wintermute.
  */
-class Module 
+class Module : public Wintermute::Events::Emittable
 #ifndef DOXYGEN_SKIP
-  : W_DEF_SHAREABLE(Module)
+  , W_DEF_SHAREABLE(Module)
 #endif
 {
 public:
@@ -131,6 +132,8 @@ public:
   private:
     explicit Pool();
 
+    using ModulePool = Module::Pool;
+
     W_DEF_PRIVATE(ModulePool);
 
   protected:
@@ -145,7 +148,7 @@ public:
     bool add(Module::Ptr& module);
 
     /**
-     * Removes a module from the known list. 
+     * Removes a module from the known list.
      * @param designation The designation of the module in question.
      * @return A boolean value on the success of the removal of said Module.
      * @sa Wintermute::Module::Pool::add
@@ -222,6 +225,7 @@ public:
     public Wintermute::Call
   {
   private:
+    using ModuleCall = Module::Call;
     W_DEF_PRIVATE(ModuleCall)
     W_SERIALIZABLE(Call)
 
@@ -241,23 +245,23 @@ public:
   /// Obtains the designation of this Module.
   Designation designation() const;
 
+  /// Determines if this Module is enabled.
+  bool isEnabled() const;
+
+  /// Fetches the call in question.
+  Call::Ptr call(const string & callName) const;
+
   /// Adds this module to the pool.
   bool enable();
 
   /// Removes this module from the pool.
   bool disable();
 
-  /// Determines if this Module is enabled.
-  bool isEnabled();
-
   /// Adds a call to this Module.
   bool addCall(Module::Call::Ptr & callToAdd);
 
   /// Removes a call with the provided name.
   bool removeCall(const string & callName);
-
-  /// Fetches the call in question.
-  Call::Ptr call(const string & callName) const;
 
 protected:
   W_DEF_PRIVATE(Module)
@@ -269,7 +273,10 @@ protected:
   virtual bool receiveMessage(const Message & message) const;
 
   /// Handles the act of sending out a message.
-  virtual bool sendMessage(const Message & message) const;
+  virtual bool sendMessage(const Message& message);
+
+private:
+  virtual Events::Emitter::Ptr emitter() const final;
 };
 }
 

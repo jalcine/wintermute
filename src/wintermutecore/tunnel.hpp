@@ -24,6 +24,8 @@
 #include <wintermutecore/events.hpp>
 
 #define W_EVENT_TUNNEL_MESSAGE "core.tunnel.message"
+#define W_EVENT_TUNNEL_STOP    "core.tunnel.stop"
+#define W_EVENT_TUNNEL_START   "core.tunnel.start"
 
 using std::list;
 
@@ -31,8 +33,8 @@ namespace Wintermute
 {
 class Message;
 class TunnelPrivate;
-struct DispatcherPrivate;
-struct ReceiverPrivate;
+class DispatcherPrivate;
+class ReceiverPrivate;
 
 /**
  * @brief Handles the act of sending and receiving new messages.
@@ -84,6 +86,8 @@ public:
   {
   public:
     W_DECL_PTR_TYPE(Dispatcher)
+
+    /* Defines a list of Dispatcher objects. */
     typedef std::list<Dispatcher::Ptr> List;
 
     /* Public destructor. */
@@ -95,10 +99,15 @@ public:
     /* Sends out the provided message over the wire. */
     virtual bool send(const Message & message) = 0;
 
+    /* The emitter that this Dispatcher uses. */
     virtual Events::Emitter::Ptr emitter() const;
 
+    virtual void start() = 0;
+
+    virtual void stop() = 0;
+
   protected:
-    /* Protected constructor. */
+    /* Constructor. */
     explicit Dispatcher(const string & name);
 
   private:
@@ -113,10 +122,10 @@ public:
    * @sa Wintermute::Tunnel
    * @sa Wintermute::Message
    *
-   * `Receiver` classes are used by Wintermute to handle the act of obtaining
-   * a `Message` from any arbitrary format and converting it into a composite
-   * `Message` locally. This level of abstraction allows Wintermute to fetch a
-   * `Message` without any real concern from where or how the `Message`came
+   * Receiver classes are used by Wintermute to handle the act of obtaining
+   * a Message from any arbitrary format and converting it into a composite
+   * Message locally. This level of abstraction allows Wintermute to fetch a
+   * Message without any real concern from where or how the Message came
    * from or came to be, respectfully.
    *
    * @todo Look into adding ones that have some form of encryption.
@@ -135,16 +144,20 @@ public:
     // Public destructor.
     virtual ~Receiver();
 
-    /**
-     * Obtains the name of this Receiver.
-     */
+    /* Obtains the name of this Receiver. */
     string name() const;
 
-    ///< The Emitter object used by this Receiver.
+    /* The Emitter object used by this Receiver. */
     virtual Events::Emitter::Ptr emitter() const;
+
+    virtual void start() = 0;
+
+    virtual void stop() = 0;
 
   protected:
     explicit Receiver(const string & name);
+
+    void handleMessage(const Message& message);
 
   private:
     W_DEF_PRIVATE(Receiver)
@@ -155,6 +168,8 @@ public:
 
   // Unregisters a dispatcher into the Tunnel.
   static bool unregisterDispatcher(const Dispatcher::Ptr& dispatcher);
+
+  static bool unregisterDispatcher(const string& dispatcherName);
 
   // Removes all of the dispatchers from the Tunnel.
   static void clearAllDispatchers();
@@ -171,6 +186,8 @@ public:
   // Unregisters a receiver into the Tunnel.
   static bool unregisterReceiver(const Receiver::Ptr& receiver);
 
+  static bool unregisterReceiver(const string& receiverName);
+
   // Removes all of the receivers from the Tunnel.
   static void clearAllReceivers();
 
@@ -182,6 +199,10 @@ public:
 
   // Sends a message through the Tunnel through all dispatchers.
   static void sendMessage(const Message& message);
+
+  static void start();
+
+  static void stop();
 
   /**
    * Represents an event relating to a Message.
@@ -215,6 +236,6 @@ public:
       Direction direction;
   };
 };
-}
+} /* end namespace Wintermute */
 
 #endif

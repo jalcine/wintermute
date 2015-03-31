@@ -15,21 +15,29 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/library.hpp>
+#include <uv.h>
 #include <string>
+#include <unordered_map>
+#include <wintermutecore/library.hpp>
 
 using std::string;
 
 namespace Wintermute {
   class LibraryPrivate {
     public:
+      typedef uv_lib_t HandleType;
+      typedef SharedPtr<HandleType> HandlePtr;
+
       explicit LibraryPrivate();
       virtual ~LibraryPrivate();
-      typedef void* HandlePtr;
-      HandlePtr claimHandleForFilename(const string& filename, string& errorMessage);
-      bool freeHandle(string& errorMessage);
-      HandlePtr handlePtr;
+      bool claimHandle(const string& filename);
+      bool freeHandle();
+
+      HandlePtr handle;
       string filename;
       Library::LoadState loadState;
+
+    private:
+      static std::unordered_map<string, HandlePtr> libraryHandles;
   };
 }

@@ -49,6 +49,12 @@ public:
   /// Converts this serialized data into a map.
   operator Map() const;
 
+  /// Sets this object to the data stored in the stringified hash.
+  Serializable& operator =(const PlainType& jsonString);
+
+  /// Sets this object to the data stored in the hash.
+  Serializable& operator =(const Map& data);
+
   /**
    * Takes a map and makes it into to the plain data type.
    * @param data The key-value pairs used to craft said structure.

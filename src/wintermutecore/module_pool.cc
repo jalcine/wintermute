@@ -18,3 +18,13 @@
 #include "module_pool.hh"
 
 using Wintermute::ModulePoolPrivate;
+
+ModulePoolPrivate::ModulePoolPrivate()
+  : modules()
+{
+}
+
+ModulePoolPrivate::~ModulePoolPrivate()
+{
+  modules.clear();
+}

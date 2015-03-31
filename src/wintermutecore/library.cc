@@ -15,71 +15,59 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <dlfcn.h>
 #include "logging.hpp"
 #include "library.hpp"
 #include "library.hh"
 
 using Wintermute::Library;
 using Wintermute::LibraryPrivate;
+typedef std::unordered_map<string, LibraryPrivate::HandlePtr> LibraryHandleMap;
+
+LibraryHandleMap LibraryPrivate::libraryHandles = LibraryHandleMap();
 
 LibraryPrivate::LibraryPrivate() :
-  handlePtr(nullptr), filename(""), loadState(Library::LoadUndefined)
+  handle(nullptr), filename(""), loadState(Library::LoadUndefined)
 {
 }
 
-LibraryPrivate::HandlePtr LibraryPrivate::claimHandleForFilename(const string& filenameToLoad, string& errorMessage)
+bool LibraryPrivate::claimHandle(const string& filenameToLoad)
 {
-  wdebug("Claiming handle for library " + filenameToLoad + "...");
-  LibraryPrivate::HandlePtr handle = nullptr;
-
-  dlerror();
-  handle = dlopen(filenameToLoad.c_str(), RTLD_NOW | RTLD_GLOBAL );
-  const char* msg = dlerror();
-
-  if (!handle)
+  auto itr = LibraryPrivate::libraryHandles.find(filenameToLoad);
+  if (itr != LibraryPrivate::libraryHandles.end())
   {
-    if (msg)
-    {
-      errorMessage = msg;
-      werror("Failed to load library '" + filenameToLoad + "': " + errorMessage);
-    }
-    else
-    {
-      errorMessage = "Unknown error.";
-      wwarn("Failed to load library due to an unknown error; possibly file missing.");
-    }
-
-    return nullptr;
-  }
-
-  winfo("Handle loaded successfully.");
-  errorMessage = "";
-
-  return handle;
-}
-
-bool LibraryPrivate::freeHandle(string& errorMessage)
-{
-  dlerror();
-
-  if (handlePtr == nullptr)
-  {
-    wtrace("No pointer to a library is held.");
+    wdebug("Fetching existing library handle.");
+    handle = itr->second;
     return true;
   }
 
-  const int wasntSuccessful = dlclose(handlePtr);
-  if (wasntSuccessful)
+  LibraryPrivate::HandlePtr handlePtr = make_shared<LibraryPrivate::HandleType>();
+  const int handleOpened = uv_dlopen(filenameToLoad.c_str(), handlePtr.get());
+
+  if (handleOpened == 0)
   {
-    errorMessage = dlerror(); // We do this twice to prevent memory leaks.
+    auto pair = std::make_pair(filenameToLoad, handlePtr);
+    LibraryPrivate::libraryHandles.insert(pair);
+    handle = handlePtr;
+    return true;
   }
   else
   {
-    handlePtr = nullptr;
+    wdebug("Failed to load library: " + string(uv_dlerror(handlePtr.get())));
   }
 
-  return wasntSuccessful == 0;
+  handle = nullptr;
+  return false;
+}
+
+bool LibraryPrivate::freeHandle()
+{
+  if (handle)
+  {
+    uv_dlclose(handle.get());
+    LibraryPrivate::libraryHandles.erase(filename);
+  }
+
+  return true;
 }
 
 LibraryPrivate::~LibraryPrivate()

@@ -18,7 +18,6 @@
 #include <list>
 #include <string>
 #include <libgen.h>
-#include <dlfcn.h>
 #include "logging.hpp"
 #include "library.hpp"
 #include "library.hh"
@@ -35,7 +34,6 @@ list<string> collectFilePaths(const string& filePath)
   const string ourPathFromEnv = (envWintermutePluginPath) ? envWintermutePluginPath : "";
 
   list<string> prefixes;
-  // Compile a list of paths where this thing can be at.
   list<string> filePaths =
   {
     filePath,
@@ -102,38 +100,32 @@ Library::LoadState Library::load(const string& filenameToLoad)
 
   wdebug("Attempting to load library from the filename '" + filenameToLoad + "'...");
 
-  string errorMessage;
-  auto libraryHandlePtr = d->claimHandleForFilename(filenameToLoad, errorMessage);
+  const bool handleClaimed = d->claimHandle(filenameToLoad);
 
-  if (!libraryHandlePtr)
+  if (!handleClaimed)
   {
-    d->handlePtr = nullptr;
+    d->handle = nullptr;
     d->loadState = LoadNotLoaded;
-    werror("Failed to claim handle for library: " + errorMessage);
     return LoadNotLoaded;
   }
 
-  // Update the internals to reflect current state.
-  d->handlePtr = libraryHandlePtr;
   d->loadState = LoadIsLoaded;
   d->filename = filenameToLoad;
-
   return LoadIsLoaded;
 }
 
 Library::LoadState Library::unload()
 {
   W_PRV(Library);
-  string errorMessage;
-  const bool wasHandleFreed = d->freeHandle(errorMessage);
+  const bool wasHandleFreed = d->freeHandle();
 
   if (!wasHandleFreed)
   {
-    werror("Failed to free library handle for " + d->filename + ": " + errorMessage);
+    werror("Failed to free library handle for " + d->filename + ".");
     return LoadNotLoaded;
   }
 
-  //wwarn("Library handle unloaded for " + d->filename + ".");
+  wwarn("Library handle unloaded for " + d->filename + ".");
   d->filename = "";
   d->loadState = LoadNotLoaded;
   return LoadNotLoaded;
@@ -161,7 +153,6 @@ Library::Ptr Library::find(const string& libraryQuery)
   {
     wdebug("Using path " + path + "...");
     Library::Ptr sampleLibraryPtr = make_shared<Library>(path);
-    assert(sampleLibraryPtr);
     const bool wasLibraryLoaded = (sampleLibraryPtr->loadedStatus() == LoadIsLoaded);
     wdebug("Was library loaded from " + path + "? " + std::to_string(wasLibraryLoaded));
 
@@ -175,13 +166,12 @@ Library::Ptr Library::find(const string& libraryQuery)
   return libraryPtr;
 }
 
-Library::FunctionPtr Library::resolveFunction(const string& functionName) const
+Library::FunctionPtr Library::resolveFunction(const string& funcName) const
 {
   W_PRV(const Library);
-  Library::FunctionPtr functionPtr;
-  const char* errorMessage;
+  Library::FunctionPtr funcPtr;
 
-  wdebug("Resolving function " + functionName + " from " + d->filename);
+  wdebug("Resolving function " + funcName + " from " + d->filename + "...");
 
   if (d->loadState != LoadIsLoaded)
   {
@@ -189,30 +179,23 @@ Library::FunctionPtr Library::resolveFunction(const string& functionName) const
     return nullptr;
   }
 
-  if (functionName.empty())
+  if (funcName.empty())
   {
     wwarn("Cannot resolve a function with no name.");
     return nullptr;
   }
 
-  dlerror();
-  functionPtr = dlsym(d->handlePtr, functionName.c_str());
-  errorMessage = dlerror();
+  const int fcnResolved = uv_dlsym(d->handle.get(), funcName.c_str(), &funcPtr);
 
-  if (!functionPtr)
+  if (fcnResolved < 0)
   {
-    if (errorMessage != NULL)
-    {
-      wdebug("Failed to resolve function '" + functionName + " from " + d->filename + ": " + errorMessage);
-    }
-    else
-    {
-      wwarn("The function '" + functionName + "' was not found, empty reference obtained.");
-    }
+    const string errorMessage = uv_dlerror(d->handle.get());
+    wdebug("Failed to resolve function '" + funcName + " from " + d->filename
+      + ": " + errorMessage);
 
     return nullptr;
   }
 
-  wtrace("Obtained function handle for '" + functionName + "' from " + d->filename + ".");
-  return functionPtr;
+  wtrace("Obtained function for '" + funcName + "' from " + d->filename + ".");
+  return funcPtr;
 }

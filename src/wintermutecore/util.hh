@@ -26,6 +26,7 @@
 #include <string>
 #include <algorithm>
 #include <iterator>
+#include <uuid.h>
 
 using std::list;
 using std::regex;
@@ -33,11 +34,14 @@ using std::string;
 using std::copy;
 using std::sregex_token_iterator;
 using std::back_inserter;
+using std::begin;
+using std::end;
 
 namespace Wintermute
 {
 namespace Util
 {
+  // TODO: Document.
   inline list<string> split_string(const string& str, const regex& delim)
   {
     list<string> tokens;
@@ -46,6 +50,43 @@ namespace Util
            back_inserter(tokens) );
 
     return tokens;
+  }
+
+  // TODO: Document.
+  inline string join_string(const list<string>& tokens, const string& delim)
+  {
+    string resultingString;
+
+    if (!tokens.empty())
+    {
+      resultingString = tokens.front();
+
+      for_each(++begin(tokens), end(tokens), [&](const string& token)
+      {
+        resultingString += delim + token;
+      });
+    }
+
+    return resultingString;
+  }
+
+  /**
+   * @fn Wintermute::Util::generate_uuid
+   * @return A UUID as a string.
+   * Generates a UUID.
+   */
+  inline string generate_uuid()
+  {
+    uuid_t uuidObj;
+    uuid_generate_random(uuidObj);
+    string uuidStr;
+
+    for (auto i = 0; i <= 15; i++)
+    {
+      uuidStr += std::to_string(uuidObj[i]);
+    }
+
+    return uuidStr;
   }
 }
 }

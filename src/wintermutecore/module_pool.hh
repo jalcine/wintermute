@@ -28,6 +28,8 @@ class ModulePoolPrivate
 public:
   typedef unordered_map<Module::Designation, Module::Ptr, DesignationPrivate::Hash> Map;
   Map modules;
+
+  explicit ModulePoolPrivate();
+  ~ModulePoolPrivate();
 };
 }
-

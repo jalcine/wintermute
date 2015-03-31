@@ -17,16 +17,19 @@
 
 #include "event_listener.hh"
 #include "events.hpp"
+#include "logging.hpp"
 
 using namespace Wintermute::Events;
 
-Listener::Listener(Callback callback) throw (std::invalid_argument):
-  d_ptr(new ListenerPrivate)
+Listener::Listener(Callback callback) throw (std::invalid_argument) :
+  d_ptr(make_shared<ListenerPrivate>())
 {
+  d_ptr = make_shared<ListenerPrivate>();
   W_PRV(Listener);
+
   if (!callback)
   {
-    throw std::invalid_argument("Empty callback functions cannot be used by listeners.");
+    throw std::invalid_argument("Invalid callback functions provided.");
   }
 
   d->callback = callback;
@@ -42,6 +45,22 @@ void Listener::invoke(const Event::Ptr& event) throw (std::invalid_argument)
   {
     throw std::invalid_argument("An invalid Event pointer was provided.");
   }
+
   W_PRV(Listener);
-  d->callback(event);
+
+  if (d->callback)
+  {
+    wdebug("Invoking a callback for " + event->name() + "...");
+    d->callback(event);
+  }
+  else
+  {
+    wdebug("No callback set up for this listener. A potential bug?");
+  }
+
+  if (d->callback)
+  {
+    wdebug("Invoking callback for " + event->name() + "...");
+    d->callback(event);
+  }
 }

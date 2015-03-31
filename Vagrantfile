@@ -18,4 +18,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     s.path = "./test/bootstrap"
     s.args = "--before"
   end
+
+  config.vm.define "target" do | t |
+    t.vm.box = 'chef/ubuntu-13.04'
+  end
+
+  config.vm.define "travis" do | t |
+    t.vm.box = 'chef/ubuntu-12.04'
+  end
 end

@@ -4,6 +4,7 @@ build/*
 CTestConfig.cmake
 *.orig
 CTestConfig.cmake
-src/**/globals.hpp
-test/**/test_suite.hpp
+**/**/globals.hpp
+**/**/test_suite.hpp
 .vagrant/*
+**/wintermute.log

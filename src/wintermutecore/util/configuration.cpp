@@ -19,6 +19,7 @@
 */
 
 #include <cstring>
+#include "util.hh"
 #include "logging.hpp"
 #include "configuration.hh"
 #include "configuration.hpp"
@@ -28,6 +29,8 @@ using Wintermute::Util::Serializable;
 using Wintermute::Util::ConfigurationPrivate;
 using libconfig::Setting;
 using std::to_string;
+using Wintermute::Util::join_string;
+using Wintermute::Util::split_string;
 
 Configuration::Configuration(const string& name) :
   d_ptr(new ConfigurationPrivate)
@@ -112,6 +115,15 @@ bool Configuration::has(const string& key) const
   return d->config->exists(key);
 }
 
+list<string> Configuration::get(const string& key,
+  const list<string>& defaultValue) const
+{
+  const string theOriginalValue = get(key, string());
+  std::regex delim("[;]", std::regex::basic);
+  list<string> value = split_string(theOriginalValue, delim);
+  return defaultValue;
+}
+
 #define _W_CFG_SET_VALUE(Value, Key, Type) \
   W_PRV(Configuration); \
   Setting* cfg = d->addSetting(Key, Type); \
@@ -138,3 +150,10 @@ bool Configuration::set(const string& key, const float& value)
 {
   _W_CFG_SET_VALUE(value, key, Setting::TypeFloat);
 }
+
+bool Configuration::set(const string& key, const list<string>& value)
+{
+  const string finalString = join_string(value, ";");
+  return set(key, finalString);
+}
+>>>>>>> release/0.0.4

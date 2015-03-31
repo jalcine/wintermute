@@ -18,10 +18,12 @@
 #ifndef WINTERMUTE_PLUGIN_HPP
 #define WINTERMUTE_PLUGIN_HPP
 
+#include <list>
 #include <wintermutecore/globals.hpp>
 #include <wintermutecore/version.hpp>
 
 using std::string;
+using std::list;
 
 namespace Wintermute
 {
@@ -33,6 +35,7 @@ class WINTERMUTE_EXPORT_PUBLIC Plugin
   : W_DEF_SHAREABLE(Plugin)
 #endif
 {
+
 public:
   W_DEF_PRIVATE(Plugin)
   W_DECL_PTR_TYPE(Plugin)
@@ -67,6 +70,8 @@ public:
 
   /* Queries the existence of this plugin in this instance of Wintermute. */
   static bool hasPlugin(const string & pluginName);
+
+  static const list<string> all();
 
 protected:
   /* Default constructor. */

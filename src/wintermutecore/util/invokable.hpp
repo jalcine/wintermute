@@ -28,7 +28,7 @@ namespace Wintermute
 namespace Util
 {
 template<typename _Rt, typename... _Args>
-struct InvokablePrivate;
+class InvokablePrivate;
 
 /**
  * Represents the interface required to have an invokable object to Wintermute.
