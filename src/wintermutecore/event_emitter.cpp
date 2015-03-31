@@ -109,8 +109,6 @@ void Emitter::emit(const Event::Ptr& event)
   {
     wdebug("Invoking " + event->name() + " with " +
       to_string(listenersForEvent.size()) + " listeners ...");
-    assert(listener);
-    listener->invoke(event);
 
     auto invokeListenerFunc = [&](Listener::Ptr & listener)
     {
