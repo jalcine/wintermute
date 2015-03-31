@@ -19,27 +19,34 @@
 #ifndef WINTERMUTE_CORE_GLOBALS_HPP
 #define WINTERMUTE_CORE_GLOBALS_HPP
 
-#include "wintermute_export.hpp"
+#include <cxxabi.h>
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
-#include <cxxabi.h>
+#include <sstream>
 #include <initializer_list>
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <sys/types.h>
 #include <type_traits>
+#include <sys/types.h>
 #include <unistd.h>
+#include "wintermute_export.hpp"
 
 using std::string;
 using std::make_shared;
+using std::to_string;
+using std::dynamic_pointer_cast;
 
 #define WINTERMUTE_VERSION              "@WINTERMUTE_VERSION@"
 #define WINTERMUTE_CONFIG_INCLUDE_DIR   "@WINTERMUTE_CONFIG_INCLUDE_DIR@"
 #define WINTERMUTE_LOGGER_ROOT_NAME     "wntr"
+#define WINTERMUTE_DOMAIN               "in.wintermute"
 #define WINTERMUTE_ENV_PLUGIN_PATH      "WINTERMUTE_PLUGIN_PATH"
 #define WINTERMUTE_ENV_LOG_LEVEL        "WINTERMUTE_LOG_LEVEL"
+
+#define WINTERMUTE_EVENT_MODULE_ENABLE  "core.module.enable"
+#define WINTERMUTE_EVENT_MODULE_DISABLE "core.module.disable"
 
 #ifdef WINTERMUTE_EXPORT
 # define WINTERMUTE_EXPORT_PUBLIC  __attribute__ ((visibility ("default")))
@@ -57,16 +64,29 @@ using std::make_shared;
 /// Defines inline instance-level methods to handle private instance data.
 #define W_DEF_PRIVATE(Class) \
   using _Prv = Class##Private; \
+  using _PrvPtr = SharedPtr<_Prv>; \
   friend _Prv; \
-  SharedPtr<_Prv> d_ptr = nullptr; \
-  inline _Prv* d_func() const { return d_ptr.get(); } \
-  inline _Prv* d_func() { return d_ptr.get(); }
+  _PrvPtr d_ptr = nullptr; \
+  inline _PrvPtr d_func() const { \
+    return Class::d_ptr; \
+  } \
+  inline _PrvPtr d_func() { \
+    assert(d_ptr); \
+    return Class::d_ptr; \
+  }
 
 #define W_DEF_PRIVATE_PREDECL(_Class) \
-  using _Pub = Class; \
-  SharedPtr<_Pub> d_ptr; \
-  inline _Pub* d_func() const { return d_ptr.get(); } \
-  inline _Pub* d_func() { return d_ptr.get(); }
+  using _Prv = Class; \
+  using _PrvPtr = SharedPtr<Class; \
+  _PrvPtr d_ptr; \
+  inline _PrvPtr d_func() const { \
+    assert(d_ptr); \
+    return d_ptr; \
+  } \
+  inline _PrvPtr d_func() { \
+    assert(d_ptr); \
+    return d_ptr; \
+  }
 
 
 /// Defines inline instance-level methods to handle public instance data.
@@ -74,22 +94,38 @@ using std::make_shared;
   using _Pub = Class; \
   friend _Pub; \
   SharedPtr<_Pub> q_ptr; \
-  inline _Pub* q_func() const { return q_ptr.get(); } \
-  inline _Pub* q_func() { return q_ptr.get(); } \
+  inline _Pub* q_func() const { \
+    assert(q_ptr); \
+    return q_ptr.get(); \
+  } \
+  inline _Pub* q_func() { \
+    assert(q_ptr); \
+    return q_ptr.get(); \
+  }
 
 #define W_DEF_PUBLIC_PREDECL(_Class) \
   using _Pub = Class; \
   SharedPtr<_Pub> q_ptr; \
-  inline _Pub* q_func() const { return q_ptr.get(); } \
-  inline _Pub* q_func() { return q_ptr.get(); } \
+  inline _Pub* q_func() const { \
+    assert(q_ptr); \
+    return q_ptr.get(); \
+  } \
+  inline _Pub* q_func() { \
+    assert(q_ptr); \
+    return q_ptr.get(); \
+  }
 
 /// Provides a shortcut to grab private data for an object with private data.
-#define W_PRV(Class) Class##Private* const d = d_func();
-#define W_PRVP(_Class) _Class* const d = d_func();
+#define W_PRV(Class) SharedPtr<Class##Private> const d = d_func();
+#define W_PRVP(_Class) SharedPtr<_Class> const d = d_func();
 
 /// Provides a shortcut to grab private data for an static object with private data.
-#define W_SPRV(Class) Class##Private* const d = Class::instance()->d_func();
-#define W_SPRVP(_Class, Class) _Class* const d = Class::instance()->d_func();
+#define W_SPRV(Class) \
+  assert(Class::instance()); \
+  SharedPtr<Class##Private> const d = Class::instance()->d_func();
+#define W_SPRVP(_Class, Class) \
+  assert(Class::instance()); \
+  SharedPtr<_Class> const d = Class::instance()->d_func();
 
 /// Provides a shortcut to grab public data for an object with public data.
 #define W_PUB(Class) Class* const q = q_func();
@@ -115,6 +151,7 @@ using std::make_shared;
 /**
  * Defines the logic needed to handle a singleton.
  * @ingroup Singletons
+ * @todo Make this friendly to use with std::make_shared.
  */
 #define W_DEF_SINGLETON(Class) \
   private: \
@@ -122,17 +159,30 @@ using std::make_shared;
   public: \
     static inline SharedPtr<Class> instance() { \
       if (!_instance) { \
-        _instance.reset(new Class); \
+        _instance.reset(new Class()); \
       } \
+      assert(_instance);\
       return _instance;  \
     }
 
 /**
- * Declares the instance of the singleton as a null pointer 
+ * Declares the instance of the singleton as a null pointer
  * @ingroup Singletons
  */
 #define W_DECLARE_SINGLETON(Class) \
-  SharedPtr<Class> Class::_instance(nullptr);
+  SharedPtr<Class> Class::_instance;
+
+/**
+ * Helps with handling libuv errors.
+ */
+#define W_CHECK_UV(r, call)   \
+  if (r != 0) \
+  { \
+    std::ostringstream oStr; \
+    oStr << "[" << call << "] uverr: " << uv_err_name(r) << " - " << uv_strerror(r); \
+    werror(oStr.str()); \
+    abort();\
+  }
 
 // {{{ Platform-specific types
 

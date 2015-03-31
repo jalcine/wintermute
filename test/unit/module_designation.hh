@@ -28,7 +28,6 @@ public:
     Module::Designation des("local", "in.wintermute.test");
     TSM_ASSERT_EQUALS ( "Matches name()", des.name(), "local" );
     TSM_ASSERT_EQUALS ( "Matches domain()", des.domain(), "in.wintermute.test" );
-    //TSM_ASSERT_EQUALS ( "Matches pid()", des.pid(), getpid() );
   }
 
   void testConstructWithCustomPID(void)
@@ -36,7 +35,6 @@ public:
     Module::Designation des("local", "in.wintermute.test");
     TS_ASSERT_EQUALS ( des.name(), "local" );
     TS_ASSERT_EQUALS ( des.domain(), "in.wintermute.test" );
-    //TS_ASSERT_EQUALS ( des.pid(), 300 );
   }
 
   void testAttemptDeserialization(void)
@@ -47,7 +45,6 @@ public:
     TS_ASSERT ( !des.isNull() );
     TS_ASSERT_EQUALS ( des.name(), "wintermute" );
     TS_ASSERT_EQUALS ( des.domain(), "me.jalcine" );
-    //TS_ASSERT_EQUALS ( des.pid(), 300 );
     TS_ASSERT_EQUALS ( desBuilt, des );
   }
 
@@ -56,14 +53,12 @@ public:
     TS_ASSERT_EQUALS ( Module::Designation("foo", "bar"), Module::Designation("foo", "bar") );
     TS_ASSERT ( Module::Designation("foo", "foo") != Module::Designation("foo", "bar") );
     TS_ASSERT ( Module::Designation("baz", "bar") != Module::Designation("foo", "bar") );
-    //TS_ASSERT ( Module::Designation("foo", "bar") );
   }
 
   void testLocalByDefault(void)
   {
     Module::Designation des("foo", "bar.nation");
-    //TS_ASSERT_EQUALS ( des.pid(), getpid() );
-    //TS_ASSERT ( static_cast<std::string>(des).find(std::to_string(getpid())) != std::string::npos );
+    TS_ASSERT ( des.isLocal() );
   }
 
   void testIsActuallyNull(void)

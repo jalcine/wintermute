@@ -19,17 +19,26 @@
 #include "module.hpp"
 #include "message.hpp"
 #include "logging.hpp"
+#include "tunnel.hpp"
 
 using Wintermute::Module;
 using Wintermute::Call;
+using Wintermute::Tunnel;
 using Wintermute::ModulePrivate;
+using Wintermute::Events::Emitter;
+using Wintermute::Events::Event;
 using std::to_string;
-using std::dynamic_pointer_cast;
 
 Module::Module(const Module::Designation& aDesignation) :
   d_ptr(std::make_shared<ModulePrivate>(aDesignation))
 {
   wtrace("Module " + static_cast<string>(aDesignation) + " started.");
+}
+
+Emitter::Ptr Module::emitter() const
+{
+  W_PRV(const Module);
+  return d->emitter;
 }
 
 Module::Designation Module::designation() const
@@ -47,8 +56,15 @@ bool Module::enable()
   }
 
   wdebug("Module " + static_cast<string>(designation()) + " doesn't exist in the pool, adding..");
-  Module::Ptr modulePtr = std::make_shared<Module>(*this);
-  return Module::Pool::instance()->add(modulePtr);
+  Module::Ptr modulePtr = shared_from_this();
+  const bool moduleAdded = Module::Pool::instance()->add(modulePtr);
+  wdebug("Was module " + static_cast<string>(designation()) + " added into pool? " + to_string((int) moduleAdded));
+
+  assert(moduleAdded);
+  auto eventPtr = make_shared<Event>(WINTERMUTE_EVENT_MODULE_ENABLE);
+  emitEvent(eventPtr);
+
+  return moduleAdded;
 }
 
 bool Module::disable()
@@ -65,19 +81,29 @@ bool Module::disable()
   assert(wasRemoved);
   // TODO: Clean this up.
   wdebug ( "Removed " + static_cast<string>(theDesignation) + " from the pool.");
+
+  auto eventPtr = make_shared<Event>(WINTERMUTE_EVENT_MODULE_DISABLE);
+  emitEvent(eventPtr);
+
   return true; // It's not in the pool.
 }
 
-bool Module::isEnabled()
+bool Module::isEnabled() const
 {
   return Module::Pool::instance()->has(designation());
 }
 
-bool Module::sendMessage(const Message& message) const
+bool Module::sendMessage(const Message& message)
 {
-  assert ( !message.isEmpty() );
-  throw std::invalid_argument("This method has not been overridden.");
-  return false;
+  Message messageToSend = message;
+  if (messageToSend.sender() != designation())
+  {
+    messageToSend.setSender(designation());
+  }
+
+  assert ( !messageToSend.isEmpty() );
+  Tunnel::sendMessage(messageToSend);
+  return true;
 }
 
 bool Module::receiveMessage(const Message& message) const
@@ -142,4 +168,3 @@ Module::Call::Ptr Module::call(const string& nameOfCall) const
 Module::~Module()
 {
 }
-

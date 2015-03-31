@@ -19,46 +19,73 @@
 #include <wintermutecore/module.hpp>
 #include <algorithm>
 
-#define MAX_SIZE 10
-
 using Wintermute::Module;
 using std::begin;
 using std::end;
 using std::make_shared;
+using std::dynamic_pointer_cast;
 
 class ModulePoolTestSuite : public CxxTest::TestSuite
 {
 public:
-  void testFindingModule()
+  Module::Ptr modulePtr;
+  short count = 1;
+
+  void setUp()
   {
-    Module::Ptr modulePtr(new SampleModule);
-    TS_ASSERT ( modulePtr->enable() );
-    TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
-    TS_ASSERT ( modulePtr->disable() );
+    assert(Module::Pool::instance());
+    cout << endl << "============ SETUP ==============" << endl;
+    TS_ASSERT ( !modulePtr );
+    ++count;
+    modulePtr = make_shared<SampleModule>(count);
+    cout << endl << "============ END SETUP ==============" << endl;
   }
 
-  void testAddingModule()
+  void tearDown()
   {
-    Module::Ptr modulePtr(new SampleModule);
+    cout << endl << "============ TEARDOWN ==============" << endl;
+    modulePtr.reset();
+    modulePtr = nullptr;
+    cout << endl << "============ END TEARDOWN ==============" << endl;
+  }
+
+  void testFindModuleInPool()
+  {
+    Module::Designation des = modulePtr->designation();
+    TS_ASSERT ( !Module::Pool::instance()->has(des) );
+  }
+
+  void testAddModuleToPool()
+  {
+    Module::Ptr foundModulePtr = nullptr;
+    assert(!foundModulePtr);
+
     TS_ASSERT ( modulePtr->enable() );
     TS_ASSERT ( modulePtr->isEnabled() );
     TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
 
-    Module::Ptr foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
-    TS_ASSERT_EQUALS ( foundModulePtr->designation() , modulePtr->designation() );
+    foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
+    TS_ASSERT ( foundModulePtr );
+    TS_ASSERT_EQUALS ( foundModulePtr->designation(), modulePtr->designation() );
+    auto sampleModulePtr = dynamic_pointer_cast<SampleModule>(foundModulePtr);
+    TS_ASSERT ( sampleModulePtr );
     TS_ASSERT ( modulePtr->disable() );
   }
 
-  void testRemovingModule()
+  void testRemoveModuleFromPool()
   {
-    Module::Ptr modulePtr(new SampleModule);
+    Module::Ptr foundModulePtr;
+    Module::Designation des = modulePtr->designation();
+
     TS_ASSERT ( modulePtr->enable() );
     TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
     TS_ASSERT ( modulePtr->disable() );
+
     TS_ASSERT ( !modulePtr->isEnabled() );
     TS_ASSERT ( !Module::Pool::instance()->has(modulePtr->designation()) );
+    modulePtr.reset();
 
-    Module::Ptr foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
+    foundModulePtr = Module::Pool::instance()->find(des);
     TS_ASSERT ( !foundModulePtr );
   }
 };

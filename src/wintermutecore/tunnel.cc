@@ -15,12 +15,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "logging.hpp"
 #include "tunnel.hh"
 
 using Wintermute::TunnelPrivate;
+using Wintermute::Events::Emitter;
+using Wintermute::Events::Loop;
 
-TunnelPrivate::TunnelPrivate()
+TunnelPrivate::TunnelPrivate() :
+  dispatchers(),
+  receivers(),
+  emitter(nullptr)
 {
+  emitter = make_shared<Emitter>();
+  wdebug("Built up Tunnel's private data.");
 }
 
 TunnelPrivate::~TunnelPrivate()

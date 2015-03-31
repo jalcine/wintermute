@@ -25,13 +25,13 @@ namespace Events
 class LoopPrivate
 {
 public:
+  uv_loop_t* loop;
   LoopPrivate() : loop(NULL)
   {
   }
 
   void useDefaultLoop()
   {
-    // NOTE: Should we clear out 'loop' if it's already there?
     loop = uv_default_loop();
     assert(loop);
   }
@@ -48,8 +48,6 @@ public:
   {
     // TODO: Close the loop if it's active.
   }
-
-  uv_loop_t* loop;
 };
 }
 }

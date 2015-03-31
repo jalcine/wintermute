@@ -25,6 +25,15 @@ class ListenerPrivate
 {
 public:
   Listener::Callback callback;
+  explicit ListenerPrivate() :
+    callback(nullptr)
+  {
+  }
+
+  ~ListenerPrivate()
+  {
+    callback = Listener::Callback(nullptr);
+  }
 };
 }
 }

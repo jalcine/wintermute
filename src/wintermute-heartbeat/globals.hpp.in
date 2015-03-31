@@ -1,0 +1,50 @@
+/*
+    Wintermute - A foundation for intelligent computing.
+    Copyright (c) 2010 - 2015 by Jacky Alcine
+
+    Wintermute is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    Wintermute is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Library General Public License for more details.
+
+    You should have received a copy of the GNU Library General Public
+    License along with Wintermute; if not, write to the
+    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+    Boston, MA 02111-1307, USA.
+ */
+
+#ifndef WINTERMUTE_HEARTBEAT_GLOBALS_HPP_
+# define WINTERMUTE_HEARTBEAT_GLOBALS_HPP_
+
+#include <wintermutecore/globals.hpp>
+
+/**
+ * Defines the name of the heartbeat plugin.
+ * @todo Document.
+ * @def WINTERMUTE_HEARTBEAT_PLUGIN_NAME
+ */
+#define WINTERMUTE_HEARTBEAT_PLUGIN_NAME "wintermute-heartbeat"
+
+/**
+ * Defines the base domain to be used for module calls.
+ * @todo Document
+ * @def WINTERMUTE_HEARTBEAT_DOMAIN
+ */
+#define WINTERMUTE_HEARTBEAT_DOMAIN WINTERMUTE_DOMAIN
+#define WINTERMUTE_HEARTBEAT_MODULE "heartbeat"
+#define WINTERMUTE_HEARTBEAT_MODULE_PONGER WINTERMUTE_HEARTBEAT_MODULE".ponger"
+#define WINTERMUTE_HEARTBEAT_MODULE_PINGER WINTERMUTE_HEARTBEAT_MODULE".pinger"
+
+/**
+ * Defines the rate of message sending in milliseconds.
+ * @todo Document.
+ * @def WINTERMUTE_HEARTBEAT_INTERVAL
+ */
+#define WINTERMUTE_HEARTBEAT_INTERVAL 750
+
+#endif

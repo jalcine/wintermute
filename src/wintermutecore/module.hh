@@ -26,7 +26,9 @@ public:
   W_DEF_PUBLIC(Module);
   Module::Designation designation;
   Module::Call::Map calls;
+  Events::Emitter::Ptr emitter;
+
   explicit ModulePrivate(const Module::Designation& des);
-  virtual ~ModulePrivate();
+  ~ModulePrivate();
 };
 }

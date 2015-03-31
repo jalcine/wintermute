@@ -31,6 +31,16 @@ set(_srcs
   ./util/configuration.cpp
   ./util/configuration.cc
 
+  # == Event related
+  ./event_loop.cpp
+  ./event_emitter.cpp
+  ./event_object.cpp
+  ./event_listener.cpp
+  ./event_poller.cpp
+  ./event_timer.cpp
+  ./event_signal_handler.cpp
+  ./event_signal_handler.cc
+
   # == Plugin Related
   ./library.cc
   ./plugin.cc
@@ -61,14 +71,6 @@ set(_srcs
   ./module_designation.cpp
   ./module_pool.cpp
   ./module_call.cpp
-
-  # == Event related
-  ./event_loop.cpp
-  ./event_emitter.cpp
-  ./event_object.cpp
-  ./event_listener.cpp
-  ./event_poller.cpp
-  ./event_timer.cpp
   )
 
 # Set up sources.

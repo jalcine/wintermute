@@ -25,7 +25,7 @@
 
 namespace Wintermute
 {
-struct MethodPrivate;
+class MethodPrivate;
 /**
  * Represents a method invocation for a Module.
  * Methods are meant to represent a call that's sent over the wire. It
