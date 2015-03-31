@@ -18,21 +18,47 @@
     Boston, MA 02111-1307, USA.
  */
 
+#include <wintermutecore/logging.hpp>
 #include "ping_module.hpp"
+#include "globals.hpp"
+#include "messages.hpp"
 
 using Wintermute::Heartbeat::PingModule;
+using Wintermute::Heartbeat::PongMessage;
 using Wintermute::Module;
+using Wintermute::Events::Timer;
+using Wintermute::Events::Event;
+using std::placeholders::_1;
 
 PingModule::PingModule() :
   Module(Wintermute::Module::Designation(
     WINTERMUTE_HEARTBEAT_MODULE_PINGER,
     WINTERMUTE_HEARTBEAT_DOMAIN
-  ))
+  )),
+  timer(make_shared<Timer>())
 {
+  auto bindFunc = bind(&PingModule::onTimerElasped, *this, _1);
+  timer->setInterval(WINTERMUTE_HEARTBEAT_INTERVAL);
+  timer->listenForEvent(W_EVENT_TIMEOUT, bindFunc);
+
+  listenForEvent(WINTERMUTE_EVENT_MODULE_ENABLE,
+    [this](const Event::Ptr& event)
+  {
+    this->timer->start();
+  });
 }
 
 PingModule::~PingModule()
 {
+}
+
+void PingModule::onTimerElasped(const Event::Ptr& event)
+{
+  assert(event);
+  wdebug("Timer elasped; sending ping message.");
+  const auto msg = PingMessage::craft();
+  sendMessage(msg);
+  wdebug("Sent ping message.");
 }
 
 bool PingModule::sendMessage(const Message& message)

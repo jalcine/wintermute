@@ -68,12 +68,13 @@ Message PingMessage::craft()
 
   const auto pluginNamesStr = join_string(pluginNames, ",");
   const auto moduleNamesStr = join_string(moduleNames, ",");
-  wdebug(moduleNamesStr);
-  wdebug(to_string((int)moduleNames.size()));
-  wdebug(to_string((int)moduleList.size()));
 
-  msgData.insert(make_pair("modules", moduleNamesStr));
+  msgData.emplace("modules", moduleNamesStr);
   msgData.emplace("plugins", pluginNamesStr);
   msg.setPayload(msgData);
+  msg.setReceiver(Module::Designation(
+    WINTERMUTE_HEARTBEAT_MODULE_PONGER,
+    WINTERMUTE_HEARTBEAT_DOMAIN
+  ));
   return msg;
 }
