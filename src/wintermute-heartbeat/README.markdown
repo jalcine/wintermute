@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Heartbeats in Wintermute {#heartbeat}
 
 The heartbeat plugin serves as Wintermute's means of bringing awareness to the
