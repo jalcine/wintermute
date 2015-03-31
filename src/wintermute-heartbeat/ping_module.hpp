@@ -23,6 +23,7 @@
 
 #include "globals.hpp"
 #include <wintermutecore/module.hpp>
+#include <wintermutecore/events.hpp>
 
 namespace Wintermute
 {
@@ -33,15 +34,18 @@ class PingModule : public Wintermute::Module
 public:
   W_DECL_PTR_TYPE(PingModule)
 
+  Events::Timer::Ptr timer;
+  void onTimerElasped(const Events::Event::Ptr& );
+
   public:
     explicit PingModule();
     virtual ~PingModule();
 
   protected:
-    virtual bool sendMessage(const Message& message);
-    virtual bool receiveMessage(const Message& message) const;
+    virtual bool sendMessage(const Message& message) override;
+    virtual bool receiveMessage(const Message& message) const override;
 };
-}
-}
+} /* end namespace Heartbeat */
+} /* end namespace Wintermute */
 
 #endif
