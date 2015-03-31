@@ -89,6 +89,7 @@ using std::dynamic_pointer_cast;
   }
 
 
+
 /// Defines inline instance-level methods to handle public instance data.
 #define W_DEF_PUBLIC(Class) \
   using _Pub = Class; \
@@ -122,10 +123,10 @@ using std::dynamic_pointer_cast;
 /// Provides a shortcut to grab private data for an static object with private data.
 #define W_SPRV(Class) \
   assert(Class::instance()); \
-  SharedPtr<Class##Private> const d = Class::instance()->d_func();
+  Class##Private* const d = Class::instance()->d_func();
 #define W_SPRVP(_Class, Class) \
   assert(Class::instance()); \
-  SharedPtr<_Class> const d = Class::instance()->d_func();
+  _Class* const d = Class::instance()->d_func();
 
 /// Provides a shortcut to grab public data for an object with public data.
 #define W_PUB(Class) Class* const q = q_func();

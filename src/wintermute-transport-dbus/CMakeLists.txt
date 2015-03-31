@@ -17,15 +17,39 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-# == Root library.
-ADD_SUBDIRECTORY(wintermutecore)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+PROJECT(WintermuteTransportDBus CXX)
 
-# == Standalone Plugins
-ADD_SUBDIRECTORY(wintermute-daemon)
-ADD_SUBDIRECTORY(wintermute-heartbeat)
+INCLUDE(WintermutePlugin)
 
-# == Transports
-ADD_SUBDIRECTORY(wintermute-transport-dbus)
-ADD_SUBDIRECTORY(wintermute-transport-zeromq)
-#ADD_SUBDIRECTORY(wintermute-transport-http)
-#ADD_SUBDIRECTORY(wintermute-transport-gcm)
+SET(WINTERMUTE_DBUS_VERSION     0.0.1-dev)
+
+SET(_srcs
+  plugin.cpp
+  dispatcher.cpp
+  receiver.cpp
+  )
+
+CONFIGURE_FILE(globals.hpp.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp
+  @ONLY
+  )
+
+ADD_LIBRARY(transport-dbus
+  SHARED ${_srcs}
+  )
+
+TARGET_LINK_LIBRARIES(transport-dbus
+  )
+
+TARGET_INCLUDE_DIRECTORIES(transport-dbus
+)
+
+WINTERMUTE_PLUGIN_DECLARE(
+  NAME   transport-dbus
+  TARGET transport-dbus
+  )
+
+WINTERMUTE_PLUGIN_VALIDATE(TARGET transport-dbus)
+
+ADD_SUBDIRECTORY(test)

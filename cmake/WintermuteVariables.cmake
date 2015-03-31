@@ -74,6 +74,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
       -fprofile-arcs
       -ftest-coverage
       -gstabs+
+      -fabi-version=4
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG

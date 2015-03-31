@@ -39,6 +39,7 @@ W_DECLARE_SINGLETON(Tunnel)
 Tunnel::Tunnel() :
   d_ptr(make_shared<TunnelPrivate>())
 {
+  assert(d_ptr);
 }
 
 Tunnel::~Tunnel()
@@ -70,18 +71,6 @@ bool Tunnel::registerDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
   return !knowsOfDispatcher(dispatcher->name()) == false;
 }
 
-bool Tunnel::unregisterDispatcher(const Tunnel::Dispatcher::Ptr& dispatcher)
-{
-  W_SPRV(Tunnel);
-  if (dispatcher)
-  {
-    auto count = d->dispatchers.erase(dispatcher->name());
-    return count == 1;
-  }
-
-  return false;
-}
-
 bool Tunnel::unregisterDispatcher(const string& dispatcherName)
 {
   W_SPRV(Tunnel);
@@ -94,6 +83,19 @@ bool Tunnel::unregisterDispatcher(const string& dispatcherName)
   Tunnel::Dispatcher::Ptr dispatcherPtr;
   dispatcherPtr = d->dispatchers.find(dispatcherName)->second;
   assert(dispatcherPtr);
+  return unregisterDispatcher(dispatcherPtr);
+}
+
+bool Tunnel::unregisterDispatcher(const string& dispatcherName)
+{
+  W_SPRV(Tunnel);
+  auto itr = d->dispatchers.find(dispatcherName);
+  if (itr == std::end(d->dispatchers))
+  {
+    return false;
+  }
+
+  Tunnel::Dispatcher::Ptr dispatcherPtr = d->dispatchers.find(dispatcherName)->second;
   return unregisterDispatcher(dispatcherPtr);
 }
 
@@ -139,8 +141,7 @@ bool Tunnel::unregisterReceiver(const string& receiverName)
     return false;
   }
 
-  Tunnel::Receiver::Ptr receiverPtr;
-  receiverPtr = d->receivers.find(receiverName)->second;
+  Tunnel::Receiver::Ptr receiverPtr = d->receivers.find(receiverName)->second;
   return unregisterReceiver(receiverPtr);
 }
 
@@ -214,13 +215,8 @@ void Tunnel::start()
   };
 
   wdebug("Starting the Tunnel...");
-  for_each(begin(d->receivers), end(d->receivers), startReceiverFunc);
-  for_each(begin(d->dispatchers), end(d->dispatchers), startDispatcherFunc);
-
-  auto eventPtr = make_shared<Events::Event>(W_EVENT_TUNNEL_START);
-  assert(instance()->emitter());
-  instance()->emitEvent(eventPtr);
-
+  for_each(d->receivers.begin(), d->receivers.end(), startReceiverFunc);
+  for_each(d->dispatchers.begin(), d->dispatchers.end(), startDispatcherFunc);
   wdebug("Started the Tunnel.");
 }
 
@@ -229,7 +225,7 @@ void Tunnel::stop()
   auto d = Tunnel::_instance->d_func();
 
   auto stopDispatcherFunc =
-    [](TunnelPrivate::DispatcherMap::value_type& pair)
+    [](std::pair<const string, Tunnel::Dispatcher::Ptr> pair)
   {
     winfo("Stopping the " + pair.second->name() + " dispatcher...");
     assert(pair.second);
@@ -237,7 +233,7 @@ void Tunnel::stop()
     winfo("Stopped the " + pair.second->name() + " dispatcher.");
   };
   auto stopReceiverFunc =
-    [](TunnelPrivate::ReceiverMap::value_type& pair)
+    [](std::pair<const string, Tunnel::Receiver::Ptr> pair)
   {
     winfo("Stopping the " + pair.second->name() + " receiver...");
     assert(pair.second);
@@ -246,10 +242,7 @@ void Tunnel::stop()
   };
 
   wdebug("Stopping the Tunnel...");
-  for_each(begin(d->receivers), end(d->receivers), stopReceiverFunc);
-  for_each(begin(d->dispatchers), end(d->dispatchers), stopDispatcherFunc);
-
-  instance()->emitEvent(make_shared<Events::Event>(W_EVENT_TUNNEL_STOP));
-
+  for_each(d->dispatchers.begin(), d->dispatchers.end(), stopDispatcherFunc);
+  for_each(d->receivers.begin(), d->receivers.end(), stopReceiverFunc);
   wdebug("Stopped the Tunnel.");
 }

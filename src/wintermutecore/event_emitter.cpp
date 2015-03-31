@@ -102,7 +102,7 @@ bool Emitter::stopListening(const Listener::Ptr& listener)
 
 void Emitter::emit(const Event::Ptr& event)
 {
-  assert(event);
+  wdebug("Invoking " + event->name() + "...");
   Listener::List listenersForEvent = listeners(event->name());
 
   if (!listenersForEvent.empty())

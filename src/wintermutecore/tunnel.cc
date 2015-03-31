@@ -27,8 +27,7 @@ TunnelPrivate::TunnelPrivate() :
   receivers(),
   emitter(nullptr)
 {
-  emitter = make_shared<Emitter>();
-  wdebug("Built up Tunnel's private data.");
+  emitter = make_shared<Emitter>(Loop::primary());
 }
 
 TunnelPrivate::~TunnelPrivate()
