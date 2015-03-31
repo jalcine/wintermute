@@ -75,6 +75,7 @@ public:
   void testRemoveModuleFromPool()
   {
     Module::Ptr foundModulePtr;
+    Module::Designation des = modulePtr->designation();
 
     TS_ASSERT ( modulePtr->enable() );
     TS_ASSERT ( Module::Pool::instance()->has(modulePtr->designation()) );
@@ -82,8 +83,9 @@ public:
 
     TS_ASSERT ( !modulePtr->isEnabled() );
     TS_ASSERT ( !Module::Pool::instance()->has(modulePtr->designation()) );
+    modulePtr.reset();
 
-    foundModulePtr = Module::Pool::instance()->find(modulePtr->designation());
+    foundModulePtr = Module::Pool::instance()->find(des);
     TS_ASSERT ( !foundModulePtr );
   }
 };
