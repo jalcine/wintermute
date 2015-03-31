@@ -29,7 +29,6 @@ using Wintermute::Tunnel;
 using Wintermute::Plugin;
 using std::dynamic_pointer_cast;
 
-#define KILL_TEST_TIMEOUT 200
 #define KILL_COUNT        40
 
 class TestZMQReceiver : public Wintermute::ZMQReceiver
@@ -43,7 +42,7 @@ class TestZMQReceiver : public Wintermute::ZMQReceiver
       wdebug("Spun up a sample ZeroMQ receiver.");
     }
 
-    virtual ~TestZMQReceiver()
+    ~TestZMQReceiver() override
     {
       wdebug("Spun down a sample ZeroMQ receiver.");
     }
