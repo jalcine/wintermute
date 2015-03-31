@@ -30,12 +30,13 @@ namespace Heartbeat
 {
 class PongModule : public Wintermute::Module
 {
-public:
-  W_DECL_PTR_TYPE(PongModule)
+  Events::Timer::Ptr timer;
+  void onTimerElasped(const Events::Event::Ptr& );
 
   public:
+    W_DECL_PTR_TYPE(PongModule)
     explicit PongModule();
-    virtual ~PongModule();
+    ~PongModule() override;
     string uuid;
     void regenerateUuid();
 

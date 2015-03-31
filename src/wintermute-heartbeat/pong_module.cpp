@@ -21,22 +21,47 @@
 #include <wintermutecore/logging.hpp>
 #include <wintermutecore/util.hh>
 #include "pong_module.hpp"
+#include "messages.hpp"
 
 using Wintermute::Heartbeat::PongModule;
 using Wintermute::Module;
 using Wintermute::Util::generate_uuid;
+using Wintermute::Events::Timer;
+using Wintermute::Events::Event;
+using std::placeholders::_1;
+using Wintermute::Heartbeat::PongMessage;
 
 PongModule::PongModule() :
   Module(Wintermute::Module::Designation(
     WINTERMUTE_HEARTBEAT_MODULE_PONGER,
     WINTERMUTE_HEARTBEAT_DOMAIN
-  )), uuid()
+  )),
+  timer(make_shared<Timer>()),
+  uuid()
 {
   regenerateUuid();
+  auto bindFunc = bind(&PongModule::onTimerElasped, *this, _1);
+  timer->setInterval(WINTERMUTE_HEARTBEAT_INTERVAL);
+  timer->listenForEvent(W_EVENT_TIMEOUT, bindFunc);
+
+  listenForEvent(WINTERMUTE_EVENT_MODULE_ENABLE,
+    [this](const Event::Ptr& event)
+  {
+    this->timer->start();
+  });
 }
 
 PongModule::~PongModule()
 {
+}
+
+void PongModule::onTimerElasped(const Event::Ptr& event)
+{
+  assert(event);
+  wdebug("Timer elasped; sending pong message.");
+  const auto msg = PongMessage::craft();
+  sendMessage(msg);
+  wdebug("Sent pong message.");
 }
 
 void PongModule::regenerateUuid()
