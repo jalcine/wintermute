@@ -64,6 +64,10 @@ Message PongMessage::craft()
   Message::HashType msgData;
   msgData.emplace("uuid", uuid);
   msg.setPayload(msgData);
+  msg.setReceiver(Module::Designation(
+    WINTERMUTE_HEARTBEAT_MODULE_PINGER,
+    WINTERMUTE_HEARTBEAT_DOMAIN
+  ));
 
   return msg;
 }
