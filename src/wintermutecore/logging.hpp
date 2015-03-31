@@ -33,10 +33,15 @@ namespace Wintermute
  * without much discomfort to the code base.
  */
 class Logging
+#ifdef DOXYGEN_SKIP
+  : W_DEF_SHARABLE(Logging)
+#endif
 {
   explicit Logging();
 public:
-  virtual ~Logging();
+  W_DEF_SINGLETON(Logging);
+
+  ~Logging();
   /** Levels at which Wintermute is capable of reporting its log messages. */
   enum Level
   {
@@ -71,8 +76,6 @@ public:
   void trace(const string& message, const string& name);
 
   static void cleanup();
-
-  W_DEF_SINGLETON(Logging);
 };
 }
 
