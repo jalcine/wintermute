@@ -32,7 +32,8 @@ bootstrap_build() {
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
   sudo apt-get install -qq lcov
-  sudo apt-get remove -qq g++-4.6
+  sudo apt-get install -qq pkg-config
+  sudo apt-get install -qq cmake
   sudo apt-get install -qq g++-4.9 clang-3.5
   sudo apt-get install -qq libzmq3-dev libzmqpp-dev
 
@@ -40,7 +41,6 @@ bootstrap_build() {
   install_cmake
 
   echo -en "\nDone installing dependencies.\n"
-
 }
 
 install_cmake() {

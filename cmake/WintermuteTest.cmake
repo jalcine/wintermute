@@ -39,7 +39,6 @@ SET(_wntr_test_tpl
 
 SET(CXXTEST_TESTGEN_ARGS
   --template ${_wntr_test_tpl}
-  --runner=ErrorPrinter
   )
 
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
