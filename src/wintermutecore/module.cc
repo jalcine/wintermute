@@ -19,10 +19,13 @@
 #include "logging.hpp"
 
 using Wintermute::ModulePrivate;
+using Wintermute::Events::Emitter;
 
 ModulePrivate::ModulePrivate(const Module::Designation& des) :
-  designation(des)
+  designation(des),
+  emitter(nullptr)
 {
+  emitter = make_shared<Emitter>();
   calls.clear();
 }
 
@@ -30,4 +33,5 @@ ModulePrivate::~ModulePrivate()
 {
   wdebug("Flushing out calls for " + static_cast<string>(designation) + "...");
   calls.clear();
+  wdebug("Cleared calls for " + static_cast<string>(designation) + ".");
 }
