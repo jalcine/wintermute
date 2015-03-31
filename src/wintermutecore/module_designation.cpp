@@ -103,6 +103,11 @@ Serializable::Map Module::Designation::serialize() const
   return theMap;
 }
 
+bool Module::Designation::isLocal() const
+{
+  return true;
+}
+
 Module::Designation::~Designation()
 {
 }
