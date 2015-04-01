@@ -19,9 +19,9 @@
  */
 
 #include <algorithm>
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/method.hpp>
-#include <wintermutecore/util/configuration.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/method.hpp>
+#include <wintermute-core/util/configuration.hpp>
 #include "plugin.hpp"
 #include "plugin.hh"
 
