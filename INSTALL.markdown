@@ -6,6 +6,7 @@ already existing on your machine:
   * [json-cpp][] 0.6.0
   * [log4cxx] 0.10.0
   * [libuv][] 0.10.20
+  * [libuuid][] 2.25.1
 
 For testing, you'll need a few more dependencies. Check the [testing
 prerequisites](./TESTING.markdown#install) about that.
@@ -44,3 +45,4 @@ cd /vagrant
 [log4cxx]: http://logging.apache.org/log4cxx/index.html
 [vagrant]: https://vagrantup.com
 [libuv]: https://github.com/libuv/libuv
+[libuuid]: http://linux.die.net/man/3/libuuid
