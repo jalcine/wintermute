@@ -21,7 +21,7 @@
 #ifndef WINTERMUTE_DAEMON_PLUGIN_HH_
 #define WINTERMUTE_DAEMON_PLUGIN_HH_
 
-#include <wintermutecore/util/configuration.hpp>
+#include <wintermute-core/util/configuration.hpp>
 #include "globals.hpp"
 #include "module.hpp"
 

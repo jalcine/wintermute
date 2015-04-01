@@ -18,10 +18,10 @@
    Boston, MA 02111-1307, USA.
    */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/plugin.hpp>
-#include <wintermutecore/method.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/plugin.hpp>
+#include <wintermute-core/method.hpp>
 #include "plugin.hh"
 
 using Wintermute::Plugin;
