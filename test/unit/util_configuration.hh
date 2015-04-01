@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 #include <vector>
-#include "wintermutecore/util/configuration.hpp"
+#include "wintermute-core/util/configuration.hpp"
 #include "test_suite.hpp"
 
 using std::string;

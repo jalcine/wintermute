@@ -15,19 +15,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/module.hpp>
-#include <wintermutecore/tunnel.hpp>
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/message.hpp>
-#include <wintermutecore/call.hpp>
-#include <wintermutecore/library.hpp>
-#include <wintermutecore/events.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/module.hpp>
+#include <wintermute-core/tunnel.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/message.hpp>
+#include <wintermute-core/call.hpp>
+#include <wintermute-core/library.hpp>
+#include <wintermute-core/events.hpp>
+#include "wintermute-core/event_loop.hh"
+#include "wintermute-core/plugin.hpp"
+#include "wintermute-core/plugin.hh"
 #include <string>
 #include <cxxtest/TestSuite.h>
-#include "wintermutecore/event_loop.hh"
-#include "wintermutecore/plugin.hpp"
-#include "wintermutecore/plugin.hh"
 
 using Wintermute::Plugin;
 

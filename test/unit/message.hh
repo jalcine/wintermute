@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include <wintermutecore/message.hpp>
+#include <wintermute-core/message.hpp>
 #include <cxxtest/TestSuite.h>
 
 using Wintermute::Message;

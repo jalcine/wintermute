@@ -16,9 +16,9 @@
  */
 
 #include "test_suite.hpp"
-#include "wintermutecore/method.hpp"
-#include "wintermutecore/message.hpp"
-#include "wintermutecore/util/serializable.hpp"
+#include "wintermute-core/method.hpp"
+#include "wintermute-core/message.hpp"
+#include "wintermute-core/util/serializable.hpp"
 
 using Wintermute::Logging;
 using Wintermute::Method;
