@@ -28,6 +28,7 @@ bootstrap_build() {
   sudo apt-get install -qq libjsoncpp-dev
   sudo apt-get install -qq liblog4cxx10-dev
   sudo apt-get install -qq libconfig++-dev
+  sudo apt-get install -qq libuuid-dev
   sudo apt-get install -qq doxygen
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
@@ -50,8 +51,8 @@ install_cmake() {
   tar -xvzf cmake-2.8.12.tar.gz
   cd cmake-2.8.12
   sh autogen.sh
-  ./configure --prefix=/usr
-  make
+  ./configure
+  make -j2
   sudo make install
 }
 
@@ -62,37 +63,47 @@ install_libuv() {
   git checkout v1.2.1;
   cd ~/libuv;
   sh autogen.sh;
-  ./configure --prefix=/usr;
-  make;
+  ./configure;
+  make -j2;
   sudo make install;
 }
 
+if [[ $CXX == "gcc" ]]; then
+  export CXX="$(which g++-4.9)"
+fi
+
+export CTEST_PARALLEL_LEVEL=2
+export GCOV=$(which gcov)
+
 case $1 in
   "--before" )
-    bootstrap_build || exit 8
+    bootstrap_build || exit 16
     ;;
   "--generate" )
-    if [[ $CXX == "gcc" ]]; then
-      export CXX="$(which g++-4.9)"
-    fi
 
-    cmake . -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    cmake . -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 32
     ;;
   "--cmake" )
     install_cmake
     ;;
   "--generate-vagrant" )
     mkdir build; cd build
-    cmake /vagrant -DCMAKE_CXX_COMPILER=$(which g++-4.9) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    cmake /vagrant -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=OFF || exit 32
     ;;
   "--run" )
-    make all || exit 1
-    make ExperimentalTest || exit 2
-    make ExperimentalMemCheck
-    make ExperimentalCoverage
+    make clean || exit 1
+    make Continuous || exit 2
+    ;;
+  "--run-nightly" )
+    make clean || exit 1
+    make Nightly || exit 2
+    ;;
+  "--run-test" )
+    make clean || exit 1
+    make Experimental || exit 2
     ;;
   "--post" )
-    coveralls --gcov $(which gcov) --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
+    coveralls --gcov $GCOV --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
     ;;
   *)
     echo -en <<HELP
