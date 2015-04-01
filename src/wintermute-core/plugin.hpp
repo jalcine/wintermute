@@ -19,8 +19,8 @@
 #define WINTERMUTE_PLUGIN_HPP
 
 #include <list>
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/version.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/version.hpp>
 
 using std::string;
 using std::list;

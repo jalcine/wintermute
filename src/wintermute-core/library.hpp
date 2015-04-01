@@ -18,7 +18,7 @@
 #ifndef WINTERMUTE_LIBRARY_HPP
 #define WINTERMUTE_LIBRARY_HPP
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 namespace Wintermute
 {

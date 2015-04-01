@@ -21,8 +21,8 @@
 #ifndef WINTERMUTE_CORE_UTIL_CONFIGURATION_HPP_
 # define WINTERMUTE_CORE_UTIL_CONFIGURATION_HPP_
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/util/serializable.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/util/serializable.hpp>
 #include <list>
 
 using std::list;

@@ -19,8 +19,8 @@
 # define WINTERMUTE_CORE_METHOD_HH
 
 #include <string>
-#include <wintermutecore/util/serializable.hpp>
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/util/serializable.hpp>
+#include <wintermute-core/module.hpp>
 
 using std::string;
 using Wintermute::Util::Serializable;

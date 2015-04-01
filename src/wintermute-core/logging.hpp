@@ -19,7 +19,7 @@
 # define WINTERMUTE_CORE_LOGGING_HPP
 
 #include <string>
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 using std::string;
 
