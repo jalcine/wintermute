@@ -49,7 +49,6 @@ MACRO(wintermute_plugin_declare)
   if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
     set(_include_dirs
       ${CMAKE_SOURCE_DIR}/src
-      ${CMAKE_BINARY_DIR}/src/wintermutecore
       )
   else()
     set(_include_dirs ${WINTERMUTE_INCLUDE_DIR})
