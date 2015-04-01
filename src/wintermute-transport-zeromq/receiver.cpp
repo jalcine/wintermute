@@ -21,8 +21,8 @@
 #include <string>
 #include <algorithm>
 #include <limits>
-#include <wintermutecore/util/serializable.hpp>
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/util/serializable.hpp>
+#include <wintermute-core/logging.hpp>
 #include "globals.hpp"
 #include "receiver.hpp"
 
