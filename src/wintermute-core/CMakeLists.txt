@@ -76,9 +76,10 @@ SET(_srcs
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
+# Construct target.
 ADD_LIBRARY(wintermute-core SHARED ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core)
-WINTERMUTE_LINK_LIBRARIES(wintermute-core gcov)
+WINTERMUTE_LINK_LIBRARIES(wintermute-core)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
