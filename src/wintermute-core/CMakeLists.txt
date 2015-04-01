@@ -19,9 +19,9 @@
 ###############################################################################
 PROJECT(WintermuteCore CXX)
 
-include(WintermuteMacros)
+INCLUDE(WintermuteMacros)
 
-set(_srcs
+SET(_srcs
   # == Natives
   ./logging.cpp
   ./version.cpp
@@ -90,7 +90,7 @@ SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
   VERSION       ${WINTERMUTE_VERSION}
   )
 
-file(GLOB _extra_doc_files
+FILE(GLOB _extra_doc_files
   "${CMAKE_SOURCE_DIR}/doc/wintermute-core/*.markdown")
 
 DOXYGEN_GENERATE_DOCUMENTATION(
@@ -106,7 +106,8 @@ DOXYGEN_GENERATE_DOCUMENTATION(
 
 # Define symbols for deprecation.
 GENERATE_EXPORT_HEADER(wintermute-core
-  PREFIX_NAME WNTR
-  EXPORT_MACRO_NAME WINTERMUTE_EXPORT
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/wintermute_export.hpp
+  BASE_NAME WINTERMUTE
+  NO_EXPORT_MACRO_NAME WINTERMUTE_EXPORT_PRIVATE
+  EXPORT_MACRO_NAME    WINTERMUTE_EXPORT_PUBLIC
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/export.hh
   )
