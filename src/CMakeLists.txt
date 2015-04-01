@@ -18,7 +18,7 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 # == Root library.
-ADD_SUBDIRECTORY(wintermutecore)
+ADD_SUBDIRECTORY(wintermute-core)
 
 # == Standalone Plugins
 ADD_SUBDIRECTORY(wintermute-daemon)
