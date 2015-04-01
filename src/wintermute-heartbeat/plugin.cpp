@@ -19,8 +19,8 @@
  */
 
 #include <algorithm>
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/tunnel.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/tunnel.hpp>
 #include "plugin.hh"
 #include "plugin.hpp"
 #include "module.hpp"

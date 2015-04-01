@@ -20,7 +20,7 @@
 
 #include "messages.hpp"
 #include "pong_module.hpp"
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/logging.hpp>
 
 using std::dynamic_pointer_cast;
 using Wintermute::Message;
