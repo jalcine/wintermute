@@ -17,7 +17,7 @@
 
 #include <string>
 #include <algorithm>
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/logging.hpp>
 #include "globals.hpp"
 #include "dispatcher.hpp"
 

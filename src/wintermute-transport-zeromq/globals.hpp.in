@@ -19,7 +19,7 @@
 #ifndef WINTERMUTE_ZMQ_GLOBALS_HPP
 #define WINTERMUTE_ZMQ_GLOBALS_HPP
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 #define WINTERMUTE_ZMQ_PLUGIN_NAME "ZMQ"
 #define WINTERMUTE_ZMQ_TUNNEL_NAME "zmq"
