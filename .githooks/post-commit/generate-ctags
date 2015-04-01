@@ -26,15 +26,13 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-TOPLEVELGITDIR=`git rev-parse --show-toplevel`
-
 case "${1}" in
-    --about )
-        echo "Check bash shell scripts for syntax errors."
-        ;;
-    * )
-        echo "[ctags] Generating tags for repository..."
-        PWD=$TOPLEVELGITDIR ctags -R -f $TOPLEVELGITDIR/.git/tags $TOPLEVELGITDIR/* 
-        echo "[ctags] Tags generated."
-        ;;
+  --about )
+    echo "Generates ctags for the files in this repository."
+    ;;
+  * )
+    echo "[ctags] Generating tags for repository..."
+    ctags -f .git/tags `git ls-files`
+    echo "[ctags] Tags generated for `(git ls-files | wc -l)` files to .git/tags."
+    ;;
 esac
