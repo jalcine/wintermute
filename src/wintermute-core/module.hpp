@@ -21,10 +21,10 @@
 #include <string>
 #include <list>
 #include <functional>
-#include <wintermutecore/call.hpp>
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/events.hpp>
-#include <wintermutecore/util/serializable.hpp>
+#include <wintermute-core/call.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/events.hpp>
+#include <wintermute-core/util/serializable.hpp>
 
 using std::list;
 using std::string;

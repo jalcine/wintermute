@@ -13,7 +13,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 namespace Wintermute
 {

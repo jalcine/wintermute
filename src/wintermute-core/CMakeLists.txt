@@ -91,7 +91,7 @@ SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
   )
 
 file(GLOB _extra_doc_files
-  "${CMAKE_SOURCE_DIR}/doc/wintermutecore/*.markdown")
+  "${CMAKE_SOURCE_DIR}/doc/wintermute-core/*.markdown")
 
 DOXYGEN_GENERATE_DOCUMENTATION(
   TARGET           wintermute-core
@@ -99,7 +99,7 @@ DOXYGEN_GENERATE_DOCUMENTATION(
   PROJECT_NAME     Wintermute
   PROJECT_BRIEF    "Wintermute's Core Library"
   PROJECT_VERSION  ${WINTERMUTE_VERSION}
-  MAIN_DOC_PAGE    ${CMAKE_SOURCE_DIR}/doc/wintermutecore/Main.markdown
+  MAIN_DOC_PAGE    ${CMAKE_SOURCE_DIR}/doc/wintermute-core/Main.markdown
   SOURCE_DIR       ${CMAKE_CURRENT_SOURCE_DIR}
   EXTRA_DOC_FILES  ${_extra_doc_files}
 )
