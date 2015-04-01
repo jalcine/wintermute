@@ -31,7 +31,7 @@
 #include <type_traits>
 #include <sys/types.h>
 #include <unistd.h>
-#include "wintermute_export.hpp"
+#include "wintermute-core/export.hh"
 
 using std::string;
 using std::make_shared;
@@ -60,14 +60,6 @@ using std::dynamic_pointer_cast;
 
 #define WINTERMUTE_EVENT_MODULE_ENABLE  "core.module.enable"
 #define WINTERMUTE_EVENT_MODULE_DISABLE "core.module.disable"
-
-#ifdef WINTERMUTE_EXPORT
-# define WINTERMUTE_EXPORT_PUBLIC  __attribute__ ((visibility ("default")))
-# define WINTERMUTE_EXPORT_PRIVATE __attribute__ ((visibility ("hidden")))
-#else
-# define WINTERMUTE_EXPORT_PUBLIC
-# define WINTERMUTE_EXPORT_PRIVATE
-#endif
 
 #define UniquePtr  ::std::unique_ptr
 #define SharedPtr  ::std::shared_ptr
