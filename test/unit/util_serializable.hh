@@ -15,7 +15,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "wintermutecore/util/serializable.hpp"
+#include "wintermute-core/util/serializable.hpp"
 #include <cxxtest/TestSuite.h>
 
 using std::string;

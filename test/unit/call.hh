@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include "wintermutecore/call.hpp"
+#include "wintermute-core/call.hpp"
 
 using Wintermute::Logging;
 using Wintermute::Call;

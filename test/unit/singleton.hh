@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 class SingletonClass
 {

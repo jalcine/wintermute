@@ -16,7 +16,7 @@
  */
 
 #define WINTER_SAMPLE 1
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/logging.hpp>
 #include "test_suite.hpp"
 #include "wintermute_sample.hh"
 

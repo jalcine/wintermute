@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include "test_suite.hpp"
-#include "wintermutecore/events.hpp"
+#include "wintermute-core/events.hpp"
 
 using std::end;
 using std::find;
