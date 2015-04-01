@@ -17,8 +17,8 @@
 
 #include <stdlib.h>
 #include "test_suite.hpp"
-#include "wintermutecore/logging.hpp"
-#include "wintermutecore/library.hpp"
+#include "wintermute-core/logging.hpp"
+#include "wintermute-core/library.hpp"
 
 using Wintermute::Logging;
 using Wintermute::Library;

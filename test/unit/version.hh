@@ -16,8 +16,8 @@
  */
 
 #include "test_suite.hpp"
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/version.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/version.hpp>
 
 using Wintermute::Logging;
 using Wintermute::Version;
