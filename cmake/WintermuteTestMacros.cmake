@@ -41,7 +41,6 @@ if (DEFINED WINTERMUTE_IS_SOURCE_BUILD)
   set(WINTERMUTE_TEST_INCLUDE_DIRS
     ${WINTERMUTE_TEST_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/src/wintermutecore
     ${CMAKE_SOURCE_DIR}/test/include
   )
 else()
@@ -56,7 +55,7 @@ MACRO(wintermute_add_test _prefix _name _hdr)
   CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
   WINTERMUTE_LINK_LIBRARIES(${_target})
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-  TARGET_LINK_LIBRARIES(${_target} wintermute gcov)
+  TARGET_LINK_LIBRARIES(${_target} wintermute-core gcov)
   TARGET_INCLUDE_DIRECTORIES(${_target} PUBLIC ${WINTERMUTE_TEST_INCLUDE_DIRS})
-  TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC NDEBUG)
+  TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC DEBUG)
 ENDMACRO(wintermute_add_test)
