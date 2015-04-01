@@ -76,16 +76,16 @@ set(_srcs
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
-ADD_LIBRARY(wintermute SHARED ${_srcs})
-WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute)
-WINTERMUTE_LINK_LIBRARIES(wintermute gcov)
+ADD_LIBRARY(wintermute-core SHARED ${_srcs})
+WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core)
+WINTERMUTE_LINK_LIBRARIES(wintermute-core gcov)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
   ${CMAKE_CURRENT_BINARY_DIR}
   )
 
-SET_TARGET_PROPERTIES(wintermute PROPERTIES
+SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
   DEFINE_SYMBOL WINTERMUTE_EXPORT
   VERSION       ${WINTERMUTE_VERSION}
   )
@@ -94,10 +94,10 @@ file(GLOB _extra_doc_files
   "${CMAKE_SOURCE_DIR}/doc/wintermutecore/*.markdown")
 
 DOXYGEN_GENERATE_DOCUMENTATION(
-  TARGET           wintermute
-  BUILD_AFTER      wintermute
+  TARGET           wintermute-core
+  BUILD_AFTER      wintermute-core
   PROJECT_NAME     Wintermute
-  PROJECT_BRIEF    "Wintermute's core library"
+  PROJECT_BRIEF    "Wintermute's Core Library"
   PROJECT_VERSION  ${WINTERMUTE_VERSION}
   MAIN_DOC_PAGE    ${CMAKE_SOURCE_DIR}/doc/wintermutecore/Main.markdown
   SOURCE_DIR       ${CMAKE_CURRENT_SOURCE_DIR}
@@ -105,7 +105,7 @@ DOXYGEN_GENERATE_DOCUMENTATION(
 )
 
 # Define symbols for deprecation.
-GENERATE_EXPORT_HEADER(wintermute
+GENERATE_EXPORT_HEADER(wintermute-core
   PREFIX_NAME WNTR
   EXPORT_MACRO_NAME WINTERMUTE_EXPORT
   EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/wintermute_export.hpp
