@@ -18,13 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-include(WintermuteSourceBuild
+INCLUDE(WintermuteSourceBuild
   OPTIONAL
   RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
   )
 
-include(WintermuteTest)
-include(WintermuteVariables)
+INCLUDE(WintermuteTest)
+INCLUDE(WintermuteVariables)
 
 MACRO(wintermute_plugin_declare)
   SET(options
@@ -39,22 +39,21 @@ MACRO(wintermute_plugin_declare)
   CMAKE_PARSE_ARGUMENTS(_wpd "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  wintermute_add_target_properties(${_wpd_TARGET})
-  target_link_libraries(${_wpd_TARGET}
-    wintermute)
+  WINTERMUTE_ADD_TARGET_PROPERTIES(${_wpd_TARGET})
+  TARGET_LINK_LIBRARIES(${_wpd_TARGET} wintermute-core)
 
-  set(_include_dirs )
-  set(_libs )
+  SET(_include_dirs )
+  SET(_libs )
 
-  if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
-    set(_include_dirs
+  IF (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
+    SET(_include_dirs
       ${CMAKE_SOURCE_DIR}/src
       )
-  else()
-    set(_include_dirs ${WINTERMUTE_INCLUDE_DIR})
-  endif()
+  ELSE()
+    SET(_include_dirs ${WINTERMUTE_INCLUDE_DIR})
+  ENDIF()
 
-  target_include_directories(${_wpd_TARGET} BEFORE
+  TARGET_INCLUDE_DIRECTORIES(${_wpd_TARGET} BEFORE
     PUBLIC ${_include_dirs})
 ENDMACRO(wintermute_plugin_declare)
 
@@ -78,6 +77,7 @@ MACRO(wintermute_plugin_validate)
   IF (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
     SET(_test_driver_file "${CMAKE_SOURCE_DIR}/cmake/plugin_driver.hh.in")
   ELSE()
+    # TODO: Handle installed jazz.
   ENDIF()
 
   GET_TARGET_PROPERTY(_wpv_file ${_wpv_TARGET} LOCATION)
@@ -105,6 +105,5 @@ MACRO(wintermute_plugin_add_test)
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   WINTERMUTE_ADD_TEST("plugin-${_wpat_PREFIX}" ${_wpat_NAME} ${_wpat_HEADER})
-  TARGET_LINK_LIBRARIES("plugin-${_wpat_PREFIX}-${_wpat_NAME}"
-    ${_wpat_TARGET})
+  TARGET_LINK_LIBRARIES("plugin-${_wpat_PREFIX}-${_wpat_NAME}" ${_wpat_TARGET})
 ENDMACRO(wintermute_plugin_add_test)
