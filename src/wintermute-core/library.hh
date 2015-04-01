@@ -18,7 +18,7 @@
 #include <uv.h>
 #include <string>
 #include <unordered_map>
-#include <wintermutecore/library.hpp>
+#include <wintermute-core/library.hpp>
 
 using std::string;
 

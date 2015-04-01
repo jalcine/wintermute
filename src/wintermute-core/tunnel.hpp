@@ -19,9 +19,9 @@
 #define WINTERMUTE_CORE_TUNNEL_HPP
 
 #include <list>
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/message.hpp>
-#include <wintermutecore/events.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/message.hpp>
+#include <wintermute-core/events.hpp>
 
 #define W_EVENT_TUNNEL_MESSAGE "core.tunnel.message"
 #define W_EVENT_TUNNEL_STOP    "core.tunnel.stop"

@@ -21,9 +21,9 @@
 #include <string>
 #include <list>
 #include <unordered_map>
-#include <wintermutecore/util/serializable.hpp>
-#include <wintermutecore/util/invokable.hpp>
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/util/serializable.hpp>
+#include <wintermute-core/util/invokable.hpp>
+#include <wintermute-core/globals.hpp>
 
 using std::list;
 using std::unordered_map;
