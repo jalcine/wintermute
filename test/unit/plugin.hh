@@ -25,7 +25,7 @@ using Wintermute::Plugin;
 Plugin::Ptr fetchWorkingPlugin()
 {
   setenv(WINTERMUTE_ENV_PLUGIN_PATH, string(TEST_BASE_DIR "/fixtures").c_str(), 1);
-  Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_NAME));
+  Plugin::Ptr pluginPtr(Plugin::find(SAMPLE_PLUGIN_SIMPLE_NAME));
   unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
   TSM_ASSERT ( "Plugin allocated.", pluginPtr );
   return pluginPtr;

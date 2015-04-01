@@ -18,11 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-include(WintermuteTest)
+INCLUDE(WintermuteTest)
 
-wintermute_define_plugin(
+# TODO: Create dynamic fixture library to drop into tests.
+
+WINTERMUTE_DEFINE_PLUGIN(
   TARGET
-    wintermutesample
+    wintermute-sample-plugin
   SOURCES
     ./wintermute_sample.cc
   INCLUDE_DIRECTORIES
