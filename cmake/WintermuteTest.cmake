@@ -50,7 +50,6 @@ if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
     ${CMAKE_SOURCE_DIR}/test
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_BINARY_DIR}/src/wintermutecore
     ${WINTERMUTE_TEST_INCLUDE_DIRS}
     )
 else()
