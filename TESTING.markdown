@@ -7,6 +7,20 @@ existing software. The test harness used by Wintermute is [CxxTest][] and
 [CTest][] is used to drive the whole test suite (via `make test`). Coverage
 support is handled by `gcov` and memory checking is handled by `valgrind`.
 
+## Recommended Testing Targets
+
+Thanks to `ctest`, testing can include coverage as well as memory leak
+detection. After obtaining your sources and configuring the project for the
+first time, you can set everything up for the first time by invoking
+
+```
+$ make Experimental
+```
+
+Of course, if you want to build a specific target, you can do so, but for
+full project testing, this serves as a meta target to handle testing and the
+other class of tests for the project.
+
 ## Wintermute's Fixture Library {#testing-fixture-lib}
 
 Wintermute has a fixture library `wintermute-fixtures` that
