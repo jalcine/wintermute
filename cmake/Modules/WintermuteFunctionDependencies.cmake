@@ -26,3 +26,6 @@ else()
 endif()
 
 include(CheckFunctionExists)
+
+# TODO: Scan code for system-specific functions and check here for their
+# existence.
