@@ -8,3 +8,4 @@ CTestConfig.cmake
 **/**/test_suite.hpp
 .vagrant/*
 **/wintermute.log
+src/wintermute-core/export.hh
