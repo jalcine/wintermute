@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include "wintermutecore/tunnel.hpp"
+#include "wintermute-core/tunnel.hpp"
 
 using std::string;
 using Wintermute::Module;

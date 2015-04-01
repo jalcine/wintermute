@@ -19,10 +19,10 @@
    */
 
 #include "messages.hpp"
-#include <wintermutecore/module.hpp>
-#include <wintermutecore/plugin.hpp>
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/util.hh>
+#include <wintermute-core/module.hpp>
+#include <wintermute-core/plugin.hpp>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/util.hh>
 #include <algorithm>
 
 using Wintermute::Message;

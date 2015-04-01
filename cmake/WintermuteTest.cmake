@@ -50,7 +50,6 @@ if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
     ${CMAKE_SOURCE_DIR}/test
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_BINARY_DIR}/src/wintermutecore
     ${WINTERMUTE_TEST_INCLUDE_DIRS}
     )
 else()
@@ -70,14 +69,14 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/CTestConfig.cmake.in
   @ONLY)
 
 # Use Valgrind for memory checking.
-set(CMAKE_MEMORYCHECK_COMMAND valgrind)
-set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+SET(CMAKE_MEMORYCHECK_COMMAND valgrind)
+SET(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
   "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
 
-set(MEMORYCHECK_COMMAND
+SET(MEMORYCHECK_COMMAND
   "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
 
-SEPARATE_ARGUMENTS(MEMCHECK_COMMAND)
+SEPARATE_ARGUMENTS(MEMORYCHECK_COMMAND)
 
 #== Handle work if we're in CI mode.
 OPTION(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)

@@ -11,20 +11,9 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with Wintermute; if not, write to the
- * ree Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/events.hpp>
-
-namespace Wintermute
-{
-class DispatcherPrivate
-{
-public:
-  string name;
-  Events::Emitter::Ptr emitter;
-};
-}
-
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/logging.hpp>

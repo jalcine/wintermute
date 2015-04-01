@@ -15,15 +15,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/events.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/events.hpp>
 
 namespace Wintermute
 {
-class ReceiverPrivate
+class DispatcherPrivate
 {
 public:
   string name;
   Events::Emitter::Ptr emitter;
 };
 }
+

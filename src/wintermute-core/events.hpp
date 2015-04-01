@@ -17,7 +17,7 @@
 #ifndef WINTERMUTE_CORE_EVENTS_HPP
 # define WINTERMUTE_CORE_EVENTS_HPP
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 #include <map>
 #include <list>
 

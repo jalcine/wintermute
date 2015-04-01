@@ -11,32 +11,19 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with Wintermute; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * ree Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef WINTERMUTE_CORE_METHOD_HH
-# define WINTERMUTE_CORE_METHOD_HH
-
-#include <string>
-#include <wintermutecore/util/serializable.hpp>
-#include <wintermutecore/module.hpp>
-
-using std::string;
-using Wintermute::Util::Serializable;
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/events.hpp>
 
 namespace Wintermute
 {
-class MethodPrivate
+class ReceiverPrivate
 {
 public:
-  string callName;
-  Module::Designation originatingModule;
-  Module::Designation destinationModule;
-  Serializable::Map arguments;
+  string name;
+  Events::Emitter::Ptr emitter;
 };
 }
-
-#endif
-
-

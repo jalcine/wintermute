@@ -21,8 +21,8 @@
 #ifndef WINTERMUTE_HEARTBEAT_MESSAGES_HPP_
 # define WINTERMUTE_HEARTBEAT_MESSAGES_HPP_
 
-#include <wintermutecore/message.hpp>
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/message.hpp>
+#include <wintermute-core/module.hpp>
 #include "module.hpp"
 #include "globals.hpp"
 

@@ -17,8 +17,8 @@
 
 #include <stdlib.h>
 #include "test_suite.hpp"
-#include "wintermutecore/logging.hpp"
-#include "wintermutecore/library.hpp"
+#include "wintermute-core/logging.hpp"
+#include "wintermute-core/library.hpp"
 
 using Wintermute::Logging;
 using Wintermute::Library;
@@ -119,7 +119,7 @@ public:
     setenv(WINTERMUTE_ENV_PLUGIN_PATH,
       string(TEST_BASE_DIR "/../lib").c_str(), 1);
 
-    libraryPtr = Library::find(SAMPLE_PLUGIN_NAME);
+    libraryPtr = Library::find(SAMPLE_PLUGIN_SIMPLE_NAME);
 
     TSM_ASSERT (
       "Library pointer allocated.",

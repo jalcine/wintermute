@@ -15,5 +15,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/logging.hpp>
+#ifndef WINTERMUTE_CORE_METHOD_HH
+# define WINTERMUTE_CORE_METHOD_HH
+
+#include <string>
+#include <wintermute-core/util/serializable.hpp>
+#include <wintermute-core/module.hpp>
+
+using std::string;
+using Wintermute::Util::Serializable;
+
+namespace Wintermute
+{
+class MethodPrivate
+{
+public:
+  string callName;
+  Module::Designation originatingModule;
+  Module::Designation destinationModule;
+  Serializable::Map arguments;
+};
+}
+
+#endif
+
+

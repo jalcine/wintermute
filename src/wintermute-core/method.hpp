@@ -19,9 +19,9 @@
 # define WINTERMUTE_CORE_METHOD_CALL_HPP
 
 #include <functional>
-#include <wintermutecore/module.hpp>
-#include <wintermutecore/util/serializable.hpp>
-#include <wintermutecore/util/invokable.hpp>
+#include <wintermute-core/module.hpp>
+#include <wintermute-core/util/serializable.hpp>
+#include <wintermute-core/util/invokable.hpp>
 
 namespace Wintermute
 {

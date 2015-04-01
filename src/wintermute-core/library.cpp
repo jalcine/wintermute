@@ -40,11 +40,13 @@ list<string> collectFilePaths(const string& filePath)
     filePath + ".so",
     "lib" + filePath + ".so",
     "libwintermute" + filePath + ".so",
+    "libwintermute-" + filePath + ".so",
 
     baseFilePath,
     baseFilePath + ".so",
     "lib" + baseFilePath + ".so",
     "libwintermute" + baseFilePath + ".so",
+    "libwintermute-" + baseFilePath + ".so",
   };
   list<string> originalPaths = filePaths;
 

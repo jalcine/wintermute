@@ -18,8 +18,8 @@
     Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/util.hh>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/util.hh>
 #include "pong_module.hpp"
 #include "messages.hpp"
 

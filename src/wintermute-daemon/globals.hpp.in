@@ -21,7 +21,7 @@
 #ifndef WINTERMUTE_DAEMON_GLOBALS_HPP_
 # define WINTERMUTE_DAEMON_GLOBALS_HPP_
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 #define WINTERMUTE_DAEMON_PLUGIN_NAME "DAEMON"
 #define WINTERMUTE_DAEMON_DOMAIN WINTERMUTE_DOMAIN

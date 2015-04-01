@@ -21,7 +21,7 @@
 #include <string>
 #include <functional>
 #include <stdexcept>
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 namespace Wintermute
 {
