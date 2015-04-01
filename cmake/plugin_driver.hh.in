@@ -16,7 +16,7 @@
  */
 
 #include <cxxtest/TestSuite.h>
-#include <wintermutecore/plugin.hpp>
+#include <wintermute-core/plugin.hpp>
 #include "test_suite.hpp"
 
 #define PLUGIN_TEST_PATH "@_wpv_file@"
