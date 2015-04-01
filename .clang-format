@@ -1,6 +1,6 @@
 ---
-# BasedOnStyle:  Mozilla
 Language:        Cpp
+# BasedOnStyle:  Mozilla
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 4
 AlignEscapedNewlinesLeft: false
@@ -26,6 +26,8 @@ IndentFunctionDeclarationAfterType: false
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: true
 NamespaceIndentation: None
+ObjCSpaceAfterProperty: true
+ObjCSpaceBeforeProtocolList: false
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
 PenaltyBreakString: 1000
@@ -35,9 +37,9 @@ PenaltyReturnTypeOnItsOwnLine: 200
 PointerAlignment: Left
 SpacesBeforeTrailingComments: 1
 Cpp11BracedListStyle: false
-Standard:        Cpp14
+Standard:        Cpp11
 IndentWidth:     2
-TabWidth:        4
+TabWidth:        8
 UseTab:          Never
 BreakBeforeBraces: Attach
 SpacesInParentheses: false
@@ -48,7 +50,7 @@ SpacesInContainerLiterals: true
 SpaceBeforeAssignmentOperators: true
 ContinuationIndentWidth: 4
 CommentPragmas:  '^ IWYU pragma:'
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, for_each ]
+ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 SpaceBeforeParens: ControlStatements
 DisableFormat:   false
 ...
