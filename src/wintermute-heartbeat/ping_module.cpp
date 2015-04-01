@@ -18,7 +18,7 @@
     Boston, MA 02111-1307, USA.
  */
 
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/logging.hpp>
 #include "ping_module.hpp"
 #include "globals.hpp"
 #include "messages.hpp"

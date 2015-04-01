@@ -20,8 +20,8 @@
 
 #include "module.hpp"
 #include "module.hh"
-#include <wintermutecore/logging.hpp>
-#include <wintermutecore/util.hh>
+#include <wintermute-core/logging.hpp>
+#include <wintermute-core/util.hh>
 
 using Wintermute::Module;
 using HeartbeatModule = Wintermute::Heartbeat::Module;

@@ -21,7 +21,7 @@
 #ifndef WINTERMUTE_HEARTBEAT_MODULE_HPP_
 # define WINTERMUTE_HEARTBEAT_MODULE_HPP_
 
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/module.hpp>
 #include "globals.hpp"
 
 namespace Wintermute

@@ -22,7 +22,7 @@
 # define WINTERMUTE_HEARTBEAT_PONG_MODULE_HPP_
 
 #include "globals.hpp"
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/module.hpp>
 
 namespace Wintermute
 {

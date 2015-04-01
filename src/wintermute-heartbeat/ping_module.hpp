@@ -22,8 +22,8 @@
 # define WINTERMUTE_HEARTBEAT_PING_MODULE_HPP_
 
 #include "globals.hpp"
-#include <wintermutecore/module.hpp>
-#include <wintermutecore/events.hpp>
+#include <wintermute-core/module.hpp>
+#include <wintermute-core/events.hpp>
 
 namespace Wintermute
 {
