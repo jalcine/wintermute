@@ -19,13 +19,20 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-INCLUDE(Dart)
-INCLUDE(FindCxxTest)
+INCLUDE(CTest)
 INCLUDE(WintermuteTestMacros)
 
-INCLUDE(WintermuteSourceBuild
-  OPTIONAL
-  RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
+if (BUILD_TESTING)
+  INCLUDE(Dart)
+  INCLUDE(FindCxxTest)
+  IF (NOT CXXTEST_FOUND)
+    MESSAGE(ERROR "We need CxxTest for the test suite.")
+    RETURN()
+  ENDIF()
+ENDIF()
+
+SET(CXXTEST_TESTGEN_ARGS
+  --runner=XUnitPrinter --have-eh --have-std
   )
 
 IF (NOT CXXTEST_FOUND)
@@ -34,7 +41,7 @@ IF (NOT CXXTEST_FOUND)
 ENDIF()
 
 SET(_wntr_test_tpl
-  ${CMAKE_SOURCE_DIR}/cmake/test_template.cpp
+  ${WINTERMUTE_CMAKE_DIR}/Templates/test_runner.cpp.in
   )
 
 SET(CXXTEST_TESTGEN_ARGS
@@ -44,20 +51,10 @@ SET(CXXTEST_TESTGEN_ARGS
 SET(WINTERMUTE_TEST_INCLUDE_DIRS
   ${CXXTEST_INCLUDE_DIR})
 
-if (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
-  SET(WINTERMUTE_TEST_INCLUDE_DIRS
-    ${CMAKE_SOURCE_DIR}/test/include
-    ${CMAKE_SOURCE_DIR}/test
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/src
-    ${WINTERMUTE_TEST_INCLUDE_DIRS}
-    )
-else()
-  SET(WINTERMUTE_TEST_INCLUDE_DIRS
-    ${WINTERMUTE_TEST_INCLUDE_DIRS}
-    ${WINTERMUTE_TEST_INCLUDE_DIR}
-    )
-endif()
+SET(WINTERMUTE_TEST_INCLUDE_DIRS
+  ${WINTERMUTE_TEST_INCLUDE_DIRS}
+  ${WINTERMUTE_TEST_INCLUDE_DIR}
+  )
 
 # TODO: Make this source-specific
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in

@@ -17,11 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-if (NOT DEFINED _wntr_deps)
-  set(_wntr_deps ON)
-else()
-  return()
-endif()
 
 ## ===========================================================================
 ## === ** PACKAGES ** ===
@@ -32,10 +27,10 @@ endif()
 INCLUDE(FindPkgConfig)
 INCLUDE(WintermuteVariables)
 
-PKG_SEARCH_MODULE(JsonCpp jsoncpp REQUIRED)
-PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
-PKG_SEARCH_MODULE(LibUv libuv REQUIRED)
-PKG_SEARCH_MODULE(Uuid uuid REQUIRED)
+PKG_CHECK_MODULES(JsonCpp jsoncpp REQUIRED)
+PKG_CHECK_MODULES(Log4Cxx liblog4cxx REQUIRED)
+PKG_CHECK_MODULES(LibUv libuv REQUIRED)
+PKG_CHECK_MODULES(Uuid uuid REQUIRED)
 PKG_CHECK_MODULES(LibConfig libconfig++ REQUIRED)
 
 # == Exported variables
@@ -71,16 +66,12 @@ list(APPEND WINTERMUTE_LINK_FLAGS
   ${Uuid_LDFLAGS}
   )
 
-# == Versioning
-set(WINTERMUTE_VERSION_MAJOR 0)
-set(WINTERMUTE_VERSION_MINOR 0)
-set(WINTERMUTE_VERSION_PATCH 0)
-set(WINTERMUTE_VERSION_RC    dev)
-
 # == Add to the required varibles to improve searching.
 set(CMAKE_REQUIRED_INCLUDES ${WINTERMUTE_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_INCLUDE_FLAGS})
 
+# TODO: Move flags to independent module.
+# TODO: Move headers to independent module.
 ## }}}
 ## ===========================================================================
 ## ==== ** FLAGS ** ===

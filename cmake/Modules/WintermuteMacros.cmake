@@ -17,13 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-if (NOT DEFINED _wntr_mcrs)
-  set(_wntr_mcrs ON)
-else()
-  return()
-endif()
-
-include(WintermuteVariables)
 include(WintermuteDependencies)
 include(CMakeParseArguments)
 
@@ -35,12 +28,12 @@ include(CMakeParseArguments)
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
   # Add inclusion directories to target.
-  TARGET_INCLUDE_DIRECTORIES(${_target} PUBLIC
-    ${WINTERMUTE_INCLUDE_DIRS})
   TARGET_COMPILE_OPTIONS(${_target} PUBLIC
     ${WINTERMUTE_COMPILE_FLAGS})
   TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC
     ${WINTERMUTE_COMPILE_DEFINITIONS})
+  TARGET_INCLUDE_DIRECTORIES(${_target} BEFORE PUBLIC
+    ${WINTERMUTE_INCLUDE_DIRS})
 
   set(_ld_flags_raw "${WINTERMUTE_LINK_FLAGS}")
   string(REPLACE ";" "  " _ld_flags "${_ld_flags_raw}")
@@ -62,13 +55,13 @@ ENDMACRO(wintermute_add_target_properties)
 #== Links TARGET with the libraries Wintermute would need in order to operate.
 #==============================================================================
 MACRO(wintermute_link_libraries _target)
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_link_libraries(${_target}
-      ${WINTERMUTE_TEST_LIBRARIES})
-  endif()
+  IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    TARGET_LINK_LIBRARIES(${_target}
+      debug ${WINTERMUTE_TEST_LIBRARIES})
+  ENDIF()
 
-  target_link_libraries(${_target}
-    ${WINTERMUTE_LIBRARIES})
+  #TARGET_LINK_LIBRARIES(${_target}
+    #general ${WINTERMUTE_LIBRARIES})
 ENDMACRO(wintermute_link_libraries _target)
 
 #==============================================================================
@@ -78,16 +71,16 @@ ENDMACRO(wintermute_link_libraries _target)
 #== @param INCLUDE_DIRECTORIES The extra includes for this plugin.
 #== @param LIBRARIES The extra libraries for this plugin.
 #==============================================================================
-macro(wintermute_define_plugin)
-  set(options )
-  set(oneValueArgs TARGET)
-  set(nValueArgs SOURCES INCLUDE_DIRECTORIES)
+#macro(wintermute_define_plugin)
+  #set(options )
+  #set(oneValueArgs TARGET)
+  #set(nValueArgs SOURCES INCLUDE_DIRECTORIES)
 
-  cmake_parse_arguments(wdp "${options}" "${oneValueArgs}" "${nValueArgs}" ${ARGN})
+  #cmake_parse_arguments(wdp "${options}" "${oneValueArgs}" "${nValueArgs}" ${ARGN})
 
-  add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
-  target_link_libraries(${wdp_TARGET} wintermute-core ${wdp_LIBRARIES})
-  target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
-  wintermute_link_libraries(${wdp_TARGET})
-  wintermute_add_target_properties(${wdp_TARGET})
-endmacro(wintermute_define_plugin)
+  #add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
+  #target_link_libraries(${wdp_TARGET} wintermute-core ${wdp_LIBRARIES})
+  #target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
+  #wintermute_link_libraries(${wdp_TARGET})
+  #wintermute_add_target_properties(${wdp_TARGET})
+#endmacro(wintermute_define_plugin)

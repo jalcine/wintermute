@@ -17,11 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-INCLUDE(WintermuteSourceBuild
-  OPTIONAL
-  RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
-  )
-
 INCLUDE(CTest)
 
 if (BUILD_TESTING)
@@ -37,25 +32,11 @@ SET(CXXTEST_TESTGEN_ARGS
   --runner=XUnitPrinter --have-eh --have-std
   )
 
-if (DEFINED WINTERMUTE_IS_SOURCE_BUILD)
-  set(WINTERMUTE_TEST_INCLUDE_DIRS
-    ${WINTERMUTE_TEST_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/test/include
-  )
-else()
-  set(WINTERMUTE_TEST_INCLUDE_DIRS
-    ${WINTERMUTE_TEST_INCLUDE_DIRS}
-    ${WINTERMUTE_INCLUDE_DIR}
-  )
-endif()
-
 MACRO(wintermute_add_test _prefix _name _hdr)
   SET(_target ${_prefix}-${_name})
   CXXTEST_ADD_TEST(${_target} ${_target}_test.cc ${_hdr})
   WINTERMUTE_LINK_LIBRARIES(${_target})
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_target})
-  TARGET_LINK_LIBRARIES(${_target} wintermute-core gcov)
+  TARGET_LINK_LIBRARIES(${_target} wintermute-core)
   TARGET_INCLUDE_DIRECTORIES(${_target} PUBLIC ${WINTERMUTE_TEST_INCLUDE_DIRS})
-  TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC DEBUG)
 ENDMACRO(wintermute_add_test)

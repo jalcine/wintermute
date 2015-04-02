@@ -17,12 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-if (NOT DEFINED _wntr_vars)
-  set(_wntr_vars ON)
-else()
-  return()
-endif()
-
 SET(WINTERMUTE_COMPILE_FLAGS
   -Werror=unused
   -Wpedantic
@@ -47,6 +41,7 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -Wunused-parameter
   -Wunused-variable
   -Wwrite-strings
+  -Werror=unused
   -ggdb3
   )
 
@@ -91,5 +86,3 @@ else()
     --std=c++14
   )
 endif()
-
-include(WintermuteVersion)
