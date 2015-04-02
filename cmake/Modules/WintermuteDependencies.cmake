@@ -68,7 +68,7 @@ list(APPEND WINTERMUTE_LINK_FLAGS
 
 # == Add to the required varibles to improve searching.
 set(CMAKE_REQUIRED_INCLUDES ${WINTERMUTE_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_INCLUDE_FLAGS})
+set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_LINK_FLAGS} ${WINTERMUTE_COMPILE_FLAGS})
 
 # TODO: Move flags to independent module.
 # TODO: Move headers to independent module.
