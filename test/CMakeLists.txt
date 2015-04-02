@@ -20,6 +20,7 @@
 PROJECT(WintermuteTest)
 
 INCLUDE(WintermuteTest)
+INCLUDE(WintermuteDependencies)
 
 ADD_SUBDIRECTORY(fixtures)
 ADD_SUBDIRECTORY(unit)
