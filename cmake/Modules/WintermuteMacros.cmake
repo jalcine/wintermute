@@ -60,27 +60,6 @@ MACRO(wintermute_link_libraries _target)
       debug ${WINTERMUTE_TEST_LIBRARIES})
   ENDIF()
 
-  #TARGET_LINK_LIBRARIES(${_target}
-    #general ${WINTERMUTE_LIBRARIES})
+  TARGET_LINK_LIBRARIES(${_target}
+    general ${WINTERMUTE_LIBRARIES})
 ENDMACRO(wintermute_link_libraries _target)
-
-#==============================================================================
-#== @macro wintermute_define_plugin
-#== @param TARGET The target of the plugin.
-#== @param SOURCES The sources for this plugin.
-#== @param INCLUDE_DIRECTORIES The extra includes for this plugin.
-#== @param LIBRARIES The extra libraries for this plugin.
-#==============================================================================
-#macro(wintermute_define_plugin)
-  #set(options )
-  #set(oneValueArgs TARGET)
-  #set(nValueArgs SOURCES INCLUDE_DIRECTORIES)
-
-  #cmake_parse_arguments(wdp "${options}" "${oneValueArgs}" "${nValueArgs}" ${ARGN})
-
-  #add_library(${wdp_TARGET} SHARED ${wdp_SOURCES})
-  #target_link_libraries(${wdp_TARGET} wintermute-core ${wdp_LIBRARIES})
-  #target_include_directories(${wdp_TARGET} PUBLIC ${wdp_INCLUDE_DIRECTORIES})
-  #wintermute_link_libraries(${wdp_TARGET})
-  #wintermute_add_target_properties(${wdp_TARGET})
-#endmacro(wintermute_define_plugin)
