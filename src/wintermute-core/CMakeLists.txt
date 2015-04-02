@@ -19,7 +19,10 @@
 ###############################################################################
 PROJECT(WintermuteCore CXX)
 
+INCLUDE(GenerateExportHeader)
+INCLUDE(WintermuteVersion)
 INCLUDE(WintermuteMacros)
+INCLUDE(WintermuteDocumentation)
 
 SET(_srcs
   # == Natives
@@ -78,6 +81,7 @@ CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
 # Construct target.
 ADD_LIBRARY(wintermute-core SHARED ${_srcs})
+ADD_LIBRARY(wintermute-core-static STATIC ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core)
 WINTERMUTE_LINK_LIBRARIES(wintermute-core)
 
