@@ -81,20 +81,18 @@ CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
 # Construct target.
 ADD_LIBRARY(wintermute-core SHARED ${_srcs})
-ADD_LIBRARY(wintermute-core-static STATIC ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core)
 WINTERMUTE_LINK_LIBRARIES(wintermute-core)
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
   ${CMAKE_CURRENT_BINARY_DIR}
   )
-
 SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
   DEFINE_SYMBOL WINTERMUTE_EXPORT
   VERSION       ${WINTERMUTE_VERSION}
   )
 
+# Generate documentation.
 FILE(GLOB _extra_doc_files
   "${CMAKE_SOURCE_DIR}/doc/wintermute-core/*.markdown")
 
@@ -109,7 +107,7 @@ DOXYGEN_GENERATE_DOCUMENTATION(
   EXTRA_DOC_FILES  ${_extra_doc_files}
 )
 
-# Define symbols for deprecation.
+# Define symbols for deprecation and exporting.
 GENERATE_EXPORT_HEADER(wintermute-core
   BASE_NAME WINTERMUTE
   NO_EXPORT_MACRO_NAME WINTERMUTE_EXPORT_PRIVATE
