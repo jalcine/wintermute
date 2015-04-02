@@ -29,5 +29,3 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # == Allow this project to use the modules we've provided.
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Modules")
-
-# == TODO: Generate 'UseWintermute.cmake'.
