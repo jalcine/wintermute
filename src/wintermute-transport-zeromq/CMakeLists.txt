@@ -20,7 +20,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 PROJECT(WintermtueTransportZeroMQ CXX)
 
-include(WintermutePlugin)
+INCLUDE(WintermutePlugin)
 FIND_PACKAGE(ZeroMQCXX REQUIRED)
 
 SET(WINTERMUTE_ZMQ_VERSION     0.0.1-dev)
