@@ -38,8 +38,10 @@ MACRO(wintermute_plugin_declare)
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_wpd_TARGET})
   TARGET_LINK_LIBRARIES(${_wpd_TARGET} wintermute-core)
 
-  SET(_include_dirs ${_wpd_INCLUDE_DIRECTORIES})
-  SET(_libs )
+  SET(_include_dirs
+    ${_wpd_INCLUDE_DIRECTORIES}
+    ${WINTERMUTE_INCLUDE_DIRS}
+    ${WINTERMUTE_SOURCE_INCLUDE_DIRS})
 
   # TODO: Handle extra inclusion directories via WintermuteSourceBuild.
 
