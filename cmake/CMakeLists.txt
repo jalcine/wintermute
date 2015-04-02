@@ -32,7 +32,10 @@ set(CMAKE_MODULE_PATH
   ${CMAKE_MODULE_PATH}/
   ${CMAKE_SOURCE_DIR}/cmake/Modules/
   ${CMAKE_SOURCE_DIR}/cmake/Modules/Internal/
+  ${CMAKE_SOURCE_DIR}/cmake/Templates/
+  ${CMAKE_SOURCE_DIR}/cmake/Templates/Internal/
   CACHE INTERNAL "Include paths."
   )
 
 INCLUDE(WintermuteSourceBuild)
+INCLUDE(CMakeProvideUninstallTarget)
