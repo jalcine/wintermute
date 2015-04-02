@@ -17,20 +17,6 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-INCLUDE(CTest)
-
-if (BUILD_TESTING)
-  INCLUDE(Dart)
-  INCLUDE(FindCxxTest)
-  IF (NOT CXXTEST_FOUND)
-    MESSAGE(ERROR "We need CxxTest for the test suite.")
-    RETURN()
-  ENDIF()
-ENDIF()
-
-SET(CXXTEST_TESTGEN_ARGS
-  --runner=XUnitPrinter --have-eh --have-std
-  )
 
 MACRO(wintermute_add_test _prefix _name _hdr)
   SET(_target ${_prefix}-${_name})
