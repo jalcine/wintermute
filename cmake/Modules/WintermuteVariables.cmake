@@ -25,23 +25,26 @@ SET(WINTERMUTE_COMPILE_FLAGS
   -Wctor-dtor-privacy
   -Wenum-compare
   -fmessage-length=0
+  -Wnon-virtual-dtor
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -O0
-  -g3
   -Wextra
-  -Wno-conversion-null
-  -Wno-deprecated
-  -Wno-system-headers
-  -Wno-unused-parameter
   -Woverloaded-virtual
+  -Wno-deprecated
+  -Wswitch-default
+  -Wno-unused-parameter
+  -Wold-style-cast
+  -Wswitch-enum
+  -Wno-conversion-null
+  -Wno-system-headers
   -Wshadow
   -Wunused-function
   -Wunused-parameter
   -Wunused-variable
   -Wwrite-strings
-  -Werror=unused
+  -Woverloaded-virtual
   -ggdb3
   )
 
@@ -68,12 +71,21 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
       -fprofile-arcs
       -ftest-coverage
-      -gstabs+
+      #-gstabs+
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
     )
   endif()
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME STREQUAL Linux)
+  set(CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+  set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+  set(CMAKE_MODULE_LINKER_FLAGS
+    "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
@@ -85,4 +97,8 @@ else()
   list(APPEND WINTERMUTE_COMPILE_FLAGS
     --std=c++14
   )
+endif()
+
+if (NOT DEFINED WINTERMUTE_SOURCE_INCLUDE_DIRS)
+  set(WINTERMUTE_SOURCE_INCLUDE_DIRS "")
 endif()
