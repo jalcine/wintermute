@@ -1,4 +1,6 @@
-# vim: set ts=2 sts=2 sw=2 fdm=indent
+# - Utilities for generating documentation with Doxygen.
+#
+# TODO: Document.
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -21,13 +23,13 @@ INCLUDE(CMakeParseArguments)
 OPTION(GENERATE_DOCUMENTATION OFF "Generate documentation using Doxygen.")
 
 IF (GENERATE_DOCUMENTATION EQUAL OFF)
-  return()
+  RETURN()
 ENDIF()
 
 FIND_PACKAGE(Doxygen 1.7 REQUIRED)
 
 IF (NOT DOXYGEN_FOUND)
-  MESSAGE("Cannot generate documentation, Doxygen not found.")
+  MESSAGE(FATAL_ERROR "Cannot generate documentation, Doxygen not found.")
 ENDIF()
 
 # Look for dot for graphing.
@@ -36,7 +38,8 @@ IF (NOT DOXYGEN_DOT_FOUND OR NOT DOXYGEN_DOT_EXECUTABLE)
     DOC "Graphviz application for drawing graphs.")
 
   IF (DOT_PROGRAM-NOTFOUND)
-    MESSAGE("Cannot find Graphviz; no graphs will be drawn in documentation.")
+    MESSAGE(WARNING
+      "Cannot find Graphviz; no graphs will be drawn in documentation.")
     set(DOT_PROGRAM "")
   ELSE()
     SET(DOXYGEN_DOT_EXECUTABLE ${DOT_PROGRAM})
@@ -68,44 +71,44 @@ MACRO(doxygen_generate_documentation)
   CMAKE_PARSE_ARGUMENTS(_doxy "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  set(_docfiles ${_doxy_EXTRA_DOC_FILES})
-  set(_doxy_friendly_files )
+  SET(_docfiles ${_doxy_EXTRA_DOC_FILES})
+  SET(_doxy_friendly_files )
 
-  foreach(_docfile ${_docfiles})
-    set(_docfile "\"${_docfile}\"")
-    set(_doxy_friendly_files "${_doxy_friendly_files}${_docfile} \\\n")
-  endforeach()
+  FOREACH(_docfile ${_docfiles})
+    SET(_docfile "\"${_docfile}\"")
+    SET(_doxy_friendly_files "${_doxy_friendly_files}${_docfile} \\\n")
+  ENDFOREACH()
 
-  set(_doxy_EXTRA_DOC_FILES ${_doxy_friendly_files})
+  SET(_doxy_EXTRA_DOC_FILES ${_doxy_friendly_files})
 
   SET(_doxy_working_dir
     "${CMAKE_BINARY_DIR}/docs/${_doxy_TARGET}")
   SET(_doxy_working_layout_dir
     "${CMAKE_BINARY_DIR}/docs-layout/${_doxy_TARGET}")
 
-  file(MAKE_DIRECTORY ${_doxy_working_dir})
-  file(MAKE_DIRECTORY ${_doxy_working_layout_dir})
+  FILE(MAKE_DIRECTORY ${_doxy_working_dir})
+  FILE(MAKE_DIRECTORY ${_doxy_working_layout_dir})
 
   SET(_doxy_log_file
     "${CMAKE_BINARY_DIR}/${_doxy_TARGET}.doxygen.log")
 
-  set(_files_for_doxygen
+  SET(_files_for_doxygen
     layout/header.html
     layout/footer.html
     layout/page.css
     layout/layout.xml
     )
 
-  foreach(_file ${_files_for_doxygen})
-    CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/doc/${_file}"
+  FOREACH(_file ${_files_for_doxygen})
+    CONFIGURE_FILE("${WINTERMUTE_CMAKE_DIR}/Templates/doc/${_file}"
       "${_doxy_working_layout_dir}/doc/${_file}" @ONLY)
-  endforeach()
+  ENDFOREACH()
 
   SET(_doxy_config_path
     "${_doxy_working_layout_dir}/cmake/${_doxy_TARGET}.dox")
 
   CONFIGURE_FILE(
-    "${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in"
+    "${WINTERMUTE_CMAKE_DIR}/Templates/Doxyfile.in"
     "${_doxy_config_path}" @ONLY)
 
   SET(_doxy_args "${_doxy_config_path}")
@@ -116,5 +119,5 @@ MACRO(doxygen_generate_documentation)
     WORKING_DIRECTORY ${_doxy_working_dir}
   )
 
-  add_dependencies(docs "${_doxy_TARGET}-docs")
+  ADD_DEPENDENCIES(docs "${_doxy_TARGET}-docs")
 ENDMACRO(doxygen_generate_documentation)

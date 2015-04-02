@@ -17,17 +17,10 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-if (NOT DEFINED _wntr_ver)
-  set(_wntr_ver ON)
-else()
-  return()
-endif()
-
 set(WINTERMUTE_VERSION_MAJOR 0)
 set(WINTERMUTE_VERSION_MINOR 0)
 set(WINTERMUTE_VERSION_PATCH 1)
-set(WINTERMUTE_VERSION_RC "dev")
+set(WINTERMUTE_VERSION_RC dev)
 set(WINTERMUTE_VERSION
-  ${WINTERMUTE_VERSION_MAJOR}.${WINTERMUTE_VERSION_MINOR}.${WINTERMUTE_VERSION_PATCH}-${WINTERMUTE_VERSION_RC})
-
-message(STATUS "Wintermute ${WINTERMUTE_VERSION} is being built.")
+  ${WINTERMUTE_VERSION_MAJOR}.${WINTERMUTE_VERSION_MINOR}.${WINTERMUTE_VERSION_PATCH}-${WINTERMUTE_VERSION_RC}
+  )

@@ -17,14 +17,9 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-
-INCLUDE(WintermuteSourceBuild
-  OPTIONAL
-  RESULT_VARIABLE WINTERMUTE_IS_SOURCE_BUILD
-  )
-
 INCLUDE(WintermuteTest)
 INCLUDE(WintermuteVariables)
+INCLUDE(WintermuteMacros)
 
 MACRO(wintermute_plugin_declare)
   SET(options
@@ -34,6 +29,7 @@ MACRO(wintermute_plugin_declare)
     TARGET
     )
   SET(multiValueArgs
+    INCLUDE_DIRECTORIES
     )
 
   CMAKE_PARSE_ARGUMENTS(_wpd "${options}"
@@ -42,16 +38,10 @@ MACRO(wintermute_plugin_declare)
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_wpd_TARGET})
   TARGET_LINK_LIBRARIES(${_wpd_TARGET} wintermute-core)
 
-  SET(_include_dirs )
+  SET(_include_dirs ${_wpd_INCLUDE_DIRECTORIES})
   SET(_libs )
 
-  IF (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
-    SET(_include_dirs
-      ${CMAKE_SOURCE_DIR}/src
-      )
-  ELSE()
-    SET(_include_dirs ${WINTERMUTE_INCLUDE_DIR})
-  ENDIF()
+  # TODO: Handle extra inclusion directories via WintermuteSourceBuild.
 
   TARGET_INCLUDE_DIRECTORIES(${_wpd_TARGET} BEFORE
     PUBLIC ${_include_dirs})
@@ -72,13 +62,8 @@ MACRO(wintermute_plugin_validate)
 
   SET(_plugin_driver_file
     "${CMAKE_CURRENT_BINARY_DIR}/${_wpv_TARGET}-validator.hh")
-  SET(_test_driver_file )
-
-  IF (EXISTS ${WINTERMUTE_IS_SOURCE_BUILD})
-    SET(_test_driver_file "${CMAKE_SOURCE_DIR}/cmake/plugin_driver.hh.in")
-  ELSE()
-    # TODO: Handle installed jazz.
-  ENDIF()
+  SET(_test_driver_file
+    "${WINTERMUTE_CMAKE_DIR}/Templates/plugin_driver.hh.in")
 
   GET_TARGET_PROPERTY(_wpv_file ${_wpv_TARGET} LOCATION)
 
