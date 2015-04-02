@@ -19,10 +19,10 @@
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-if (NOT _wntr_srcbld)
-  set(_wntr_srcbld ON PARENT_SCOPE)
-  message(STATUS "Source build of Wintermute; localizing necessary components.")
-else()
-  return()
-endif()
-
+SET(WINTERMUTE_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake" PARENT_SCOPE)
+SET(WINTERMUTE_TEST_INCLUDE_DIRS
+  ${CMAKE_SOURCE_DIR}/test/include
+  ${CMAKE_SOURCE_DIR}/test
+  ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_BINARY_DIR}/src
+  CACHE INTERNAL "Damn.")
