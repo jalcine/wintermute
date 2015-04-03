@@ -50,7 +50,10 @@ class SignalHandlerPrivate;
  */
 // TODO: Add support for UV_RUN_ONCE.
 // TODO: Add support for UV_RUN_NOWAIT.
-class Loop : W_DEF_SHAREABLE(Loop)
+class Loop
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Loop)
+#endif
 {
 protected:
   W_DEF_PRIVATE(Loop)
@@ -111,7 +114,10 @@ public:
  * in Wintermute should base itself upon this class in an attempt to provide a
  * solid hierarchy for event handling.
  */
-class Event : W_DEF_SHAREABLE(Event)
+class Event
+#ifndef DOXYGEN_SKIP
+: W_DEF_SHAREABLE(Event)
+#endif
 {
   W_DEF_PRIVATE(Event);
 public:
@@ -145,7 +151,10 @@ public:
  * so that one can use a Events::Emitter knowing a function is being hit for
  * each listener.
  */
-class Listener : W_DEF_SHAREABLE(Listener)
+class Listener
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Listener)
+#endif
 {
   W_DEF_PRIVATE(Listener);
 public:
@@ -203,7 +212,10 @@ public:
  * named Event objects and stores them for later invocation when deemed
  * appropriately calling in the loop.
  */
-class Emitter : W_DEF_SHAREABLE(Emitter)
+class Emitter
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Emitter)
+#endif
 {
 private:
   W_DEF_PRIVATE(Emitter)
@@ -389,7 +401,7 @@ class PollEvent : public Event
       poller(thePoller) { }
 
     ///< Destructor.
-    virtual ~PollEvent() { }
+    ~PollEvent() override { }
 
     ///< The Poller that emitted this Event.
     Poller::Ptr poller;
@@ -497,6 +509,6 @@ class SignalEvent : public Event
     SignalHandler::Ptr signalHandler;
 };
 
-}
-}
+} /* end namespace Events */
+} /* end namespace Wintermute */
 #endif

@@ -33,8 +33,8 @@ namespace Wintermute
  * without much discomfort to the code base.
  */
 class Logging
-#ifdef DOXYGEN_SKIP
-  : W_DEF_SHARABLE(Logging)
+#ifndef DOXYGEN_SKIP
+  : W_DEF_SHAREABLE(Logging)
 #endif
 {
   explicit Logging();
@@ -77,7 +77,7 @@ public:
 
   static void cleanup();
 };
-}
+} /* end namespace Wintermute */
 
 /**
  * Obtains a handle to the singleton instance of Wintermute's log abstraction.
