@@ -19,6 +19,7 @@
 ###############################################################################
 include(WintermuteDependencies)
 include(CMakeParseArguments)
+include(UseWintermute)
 
 #==============================================================================
 #== @macro wintermute_add_target_properties
