@@ -48,6 +48,7 @@ CONFIGURE_FILE(
 
 INCLUDE(WintermuteSourceBuild)
 INCLUDE(CMakeProvideUninstallTarget)
+INCLUDE(UseWintermute)
 
 # == Install modules
 #INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Modules
