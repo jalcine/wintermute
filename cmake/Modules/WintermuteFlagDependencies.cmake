@@ -1,4 +1,4 @@
-# vim: set ts=2 sts=2 sw=2 fdm=indent
+# vim: set ts=2 sts=2 sw=2 fdm=marker
 ###############################################################################
 # Author: Jacky Alciné <me@jalcine.me>
 #
@@ -17,12 +17,14 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+INCLUDE(CheckCXXCompilerFlag)
 
-if (NOT DEFINED _wntr_func_deps)
-  set(_wntr_func_deps ON)
-else()
-  return()
-endif()
-
-include(CheckFunctionExists)
+IF (CMAKE_BUILD_TYPE STREQUAL Debug)
+  CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
+  IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
+    MESSAGE(WARNING
+      '-ftemplate-backtrace-limit' is not supported.
+      Stack unwinding of templated functions will be packed.
+    )
+  ENDIF()
+ENDIF()
