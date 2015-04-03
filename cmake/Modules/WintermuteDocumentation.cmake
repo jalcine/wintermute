@@ -20,6 +20,8 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 INCLUDE(CMakeParseArguments)
+INCLUDE(GNUInstallDirs)
+
 OPTION(GENERATE_DOCUMENTATION OFF "Generate documentation using Doxygen.")
 
 IF (GENERATE_DOCUMENTATION EQUAL OFF)
@@ -71,6 +73,11 @@ MACRO(doxygen_generate_documentation)
   CMAKE_PARSE_ARGUMENTS(_doxy "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+  GET_TARGET_PROPERTY(_doxy_compile_options_raw ${_doxy_TARGET}
+    COMPILE_OPTIONS)
+  string(REPLACE ";" " " _doxy_compile_options
+    "${_doxy_compile_options_raw}")
+
   SET(_docfiles ${_doxy_EXTRA_DOC_FILES})
   SET(_doxy_friendly_files )
 
@@ -120,4 +127,18 @@ MACRO(doxygen_generate_documentation)
   )
 
   ADD_DEPENDENCIES(docs "${_doxy_TARGET}-docs")
+
+  INSTALL(DIRECTORY ${_doxy_working_dir}/html/
+    DESTINATION ${WINTERMUTE_DOCS_DIR}/${_doxy_TARGET}-html
+    COMPONENT development
+    CONFIGURATIONS Debug
+  )
+
+  INSTALL(DIRECTORY ${_doxy_working_dir}/man/man3/
+    DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/man/man3
+    COMPONENT development
+    CONFIGURATIONS Debug
+    FILES_MATCHING
+      PATTERN "Wintermute*.3"
+  )
 ENDMACRO(doxygen_generate_documentation)
