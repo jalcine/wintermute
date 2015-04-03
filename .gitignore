@@ -9,3 +9,4 @@ CTestConfig.cmake
 .vagrant/*
 **/wintermute.log
 src/wintermute-core/export.hh
+cmake/Modules/Internal/UseWintermute.cmake
