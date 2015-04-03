@@ -76,6 +76,26 @@ SET(_srcs
   ./module_call.cpp
   )
 
+set(_hdrs
+  ./export.hh
+  ./globals.hpp
+  ./util.hh
+  ./util/configuration.hpp
+  ./util/serializable.hpp
+  ./version.hpp
+  ./logging.hpp
+
+  ./events.hpp
+  ./call.hpp
+  ./message.hpp
+  ./method.hpp
+  ./module.hpp
+  ./tunnel.hpp
+
+  ./library.hpp
+  ./plugin.hpp
+  )
+
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
@@ -109,8 +129,15 @@ DOXYGEN_GENERATE_DOCUMENTATION(
 
 # Define symbols for deprecation and exporting.
 GENERATE_EXPORT_HEADER(wintermute-core
-  BASE_NAME WINTERMUTE
+  BASE_NAME            WINTERMUTE
   NO_EXPORT_MACRO_NAME WINTERMUTE_EXPORT_PRIVATE
   EXPORT_MACRO_NAME    WINTERMUTE_EXPORT_PUBLIC
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/export.hh
-  )
+  EXPORT_FILE_NAME     ${CMAKE_CURRENT_SOURCE_DIR}/export.hh
+)
+
+# Install the library.
+WINTERMUTE_INSTALL_TARGET(
+  TARGET     wintermute-core
+  HEADER_DIR core
+  HEADERS    ${_hdrs}
+)
