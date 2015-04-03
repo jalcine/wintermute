@@ -27,7 +27,6 @@ include(CMakeParseArguments)
 #== includes things that can vary on an environmental level as well.
 #==============================================================================
 MACRO(wintermute_add_target_properties _target)
-  # Add inclusion directories to target.
   TARGET_COMPILE_OPTIONS(${_target} PUBLIC
     ${WINTERMUTE_COMPILE_FLAGS})
   TARGET_COMPILE_DEFINITIONS(${_target} PUBLIC
@@ -36,7 +35,7 @@ MACRO(wintermute_add_target_properties _target)
     ${WINTERMUTE_INCLUDE_DIRS})
 
   set(_ld_flags_raw "${WINTERMUTE_LINK_FLAGS}")
-  string(REPLACE ";" "  " _ld_flags "${_ld_flags_raw}")
+  string(REPLACE ";" " " _ld_flags "${_ld_flags_raw}")
   SET_TARGET_PROPERTIES(${_target} PROPERTIES
     LINK_FLAGS "${_ld_flags}"
     )
@@ -63,3 +62,31 @@ MACRO(wintermute_link_libraries _target)
   TARGET_LINK_LIBRARIES(${_target}
     general ${WINTERMUTE_LIBRARIES})
 ENDMACRO(wintermute_link_libraries _target)
+
+MACRO(wintermute_install_target)
+  SET(options
+    )
+  SET(oneValueArgs
+    TARGET
+    HEADER_DIR
+    )
+  SET(multiValueArgs
+    HEADERS
+    )
+
+  CMAKE_PARSE_ARGUMENTS(_wit "${options}"
+    "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  install(TARGETS "${_wit_TARGET}"
+    LIBRARY DESTINATION ${WINTERMUTE_LIBRARY_DIR}
+    ARCHIVE DESTINATION ${WINTERMUTE_LIBRARY_DIR}
+    RUNTIME DESTINATION ${WINTERMUTE_BINARY_DIR}
+    COMPONENT runtime
+  )
+
+  # TODO: Preserve directory structure.
+  install(FILES ${_wit_HEADERS}
+    DESTINATION ${WINTERMUTE_INCLUDE_DIR}/${_wit_HEADER_DIR}
+    COMPONENT development
+  )
+ENDMACRO(wintermute_install_target)
