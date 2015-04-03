@@ -26,6 +26,7 @@ MACRO(wintermute_plugin_declare)
     )
   SET(oneValueArgs
     NAME
+    VERSION
     TARGET
     )
   SET(multiValueArgs
@@ -37,6 +38,13 @@ MACRO(wintermute_plugin_declare)
 
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_wpd_TARGET})
   TARGET_LINK_LIBRARIES(${_wpd_TARGET} wintermute-core)
+  if (DEFINED _wpd_VERSION)
+    SET_TARGET_PROPERTIES(${_wpd_TARGET}
+      PROPERTIES
+        VERSION ${_wpd_VERSION}
+        SO_VERSION ${_wpd_VERSION}
+    )
+  endif()
 
   SET(_include_dirs
     ${_wpd_INCLUDE_DIRECTORIES}
@@ -47,6 +55,10 @@ MACRO(wintermute_plugin_declare)
 
   TARGET_INCLUDE_DIRECTORIES(${_wpd_TARGET} BEFORE
     PUBLIC ${_include_dirs})
+
+  WINTERMUTE_INSTALL_TARGET(
+    TARGET ${_wpd_TARGET}
+  )
 ENDMACRO(wintermute_plugin_declare)
 
 # TODO: Configure the test driver source file to work for the provided Plugin.
