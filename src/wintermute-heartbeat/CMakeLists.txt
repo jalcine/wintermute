@@ -47,6 +47,7 @@ ADD_LIBRARY(wintermute-heartbeat
 WINTERMUTE_PLUGIN_DECLARE(
   NAME   heartbeat
   TARGET wintermute-heartbeat
+  VERSION ${WINTERMUTE_HEARTBEAT_VERSION}
   )
 
 WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-heartbeat)
