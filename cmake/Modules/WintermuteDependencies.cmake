@@ -18,11 +18,6 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-## ===========================================================================
-## === ** PACKAGES ** ===
-## ===========================================================================
-## {{{
-
 # = Look up package-level dependencies.
 INCLUDE(FindPkgConfig)
 INCLUDE(WintermuteVariables)
@@ -70,21 +65,6 @@ list(APPEND WINTERMUTE_LINK_FLAGS
 set(CMAKE_REQUIRED_INCLUDES ${WINTERMUTE_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_FLAGS ${WINTERMUTE_LINK_FLAGS} ${WINTERMUTE_COMPILE_FLAGS})
 
-# TODO: Move flags to independent module.
-# TODO: Move headers to independent module.
-## }}}
-## ===========================================================================
-## ==== ** FLAGS ** ===
-## ===========================================================================
-## {{{
-INCLUDE(CheckCXXCompilerFlag)
-IF (CMAKE_BUILD_TYPE STREQUAL Debug)
-  CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
-  IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
-    MESSAGE(WARNING
-      '-ftemplate-backtrace-limit' is not supported.
-      Stack unwinding of templated functions will be packed.
-    )
-  ENDIF()
-ENDIF()
-## }}}
+# == Extra inclusion.
+include(WintermuteFunctionDependencies)
+include(WintermuteFlagDependencies)
