@@ -35,8 +35,6 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -Wno-deprecated
   -Wswitch-default
   -Wno-unused-parameter
-  -Wold-style-cast
-  -Wswitch-enum
   -Wno-conversion-null
   -Wno-system-headers
   -Wshadow
