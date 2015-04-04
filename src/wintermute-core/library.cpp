@@ -74,9 +74,11 @@ Library::Library() : d_ptr(new LibraryPrivate)
   wdebug("Allocated an instance of a library.");
 }
 
-Library::Library(const string& preloadedFilename) : d_ptr(new LibraryPrivate)
+Library::Library(const string& preloadedFilename) :
+  d_ptr(make_shared<LibraryPrivate>())
 {
-  wdebug("Allocated an instance of a library; pre-loading library " + preloadedFilename + "...");
+  wdebug("Allocated an instance of a library; pre-loading library " +
+      preloadedFilename + "...");
   load(preloadedFilename);
 }
 
@@ -84,7 +86,8 @@ Library::~Library()
 {
   if (loadedStatus() == LoadIsLoaded)
   {
-    wdebug("Destroying this library for " + filename() + ", so unloading symbols first...");
+    wdebug("Destroying this library for " + filename() +
+        ", so unloading symbols first...");
     unload();
   }
 
@@ -100,7 +103,8 @@ Library::LoadState Library::load(const string& filenameToLoad)
     return LoadUndefined;
   }
 
-  wdebug("Attempting to load library from the filename '" + filenameToLoad + "'...");
+  wdebug("Attempting to load library from the filename '" +
+      filenameToLoad + "'...");
 
   const bool handleClaimed = d->claimHandle(filenameToLoad);
 
