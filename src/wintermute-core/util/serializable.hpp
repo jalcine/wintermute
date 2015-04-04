@@ -68,6 +68,8 @@ public:
   /// Takes a map and makes it into a deserializable string.
   static Serializable::Map fromString(const std::string& res);
 
+  virtual ~Serializable();
+
 protected:
 
   /// Populates this serializable data with the provided map.

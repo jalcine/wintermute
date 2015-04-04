@@ -48,7 +48,7 @@ public:
   };
 
   /* Default destructor. */
-  ~Plugin();
+  virtual ~Plugin();
 
   /* Obtains the name of the plugin. */
   string name() const;
