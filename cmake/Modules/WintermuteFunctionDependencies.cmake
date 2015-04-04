@@ -26,3 +26,7 @@ else()
 endif()
 
 include(CheckFunctionExists)
+
+CHECK_FUNCTION_EXISTS(basename CFE_basename)
+CHECK_FUNCTION_EXISTS(getenv CFE_getenv)
+CHECK_FUNCTION_EXISTS(setenv CFE_setenv)
