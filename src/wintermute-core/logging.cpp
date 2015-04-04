@@ -69,6 +69,7 @@ Logging::Logging()
   rootLogger->addAppender(fileAppenderPtr);
 
   info("Started logging session at " + get_current_time_as_string(), "root");
+  info(string("Wintermute " WINTERMUTE_VERSION " from " WINTERMUTE_BUILD_HOST), "root");
 
 #ifdef WINTERMUTE_DEBUG
   setLevel(Logging::Level::Trace);
