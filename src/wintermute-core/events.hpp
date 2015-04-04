@@ -282,6 +282,8 @@ public:
 class Emittable
 {
 public:
+  virtual ~Emittable() { }
+
   /**
    * Returns the underlying Emitter object used by this Emittable object.
    * @return A pointer to a Emitter object.

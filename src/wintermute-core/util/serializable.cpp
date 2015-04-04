@@ -35,6 +35,10 @@ Serializable::Serializable(const string& jsonString)
   // deserialization method?
 }
 
+Serializable::~Serializable()
+{
+}
+
 string Serializable::toString(const Serializable::Map& data)
 {
   Json::Value mappedJson;
