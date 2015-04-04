@@ -37,24 +37,24 @@ CONFIGURE_FILE(globals.hpp.in
   @ONLY
   )
 
-ADD_LIBRARY(transport-zmq
+ADD_LIBRARY(wintermute-transport-zmq
   SHARED ${_srcs}
   )
 
-TARGET_LINK_LIBRARIES(transport-zmq
+TARGET_LINK_LIBRARIES(wintermute-transport-zmq
   ${ZEROMQ_LIBS} zmqpp zmq
   )
 
-TARGET_INCLUDE_DIRECTORIES(transport-zmq
+TARGET_INCLUDE_DIRECTORIES(wintermute-transport-zmq
   PUBLIC ${ZEROMQ_INCLUDE_DIRS}
 )
 
 WINTERMUTE_PLUGIN_DECLARE(
-  NAME   transport-zmq
-  TARGET transport-zmq
+  NAME   wintermute-transport-zmq
+  TARGET wintermute-transport-zmq
   VERSION ${WINTERMUTE_ZMQ_VERSION}
   )
 
-WINTERMUTE_PLUGIN_VALIDATE(TARGET transport-zmq)
+WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-transport-zmq)
 
 ADD_SUBDIRECTORY(test)
