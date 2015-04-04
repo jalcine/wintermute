@@ -22,7 +22,6 @@
 #include <wintermute-core/globals.hpp>
 #include <wintermute-core/version.hpp>
 
-using std::string;
 using std::list;
 
 namespace Wintermute
@@ -47,9 +46,6 @@ public:
     PluginTypeService   = 0x200,
   };
 
-  /* Default destructor. */
-  virtual ~Plugin();
-
   /* Obtains the name of the plugin. */
   string name() const;
 
@@ -72,6 +68,8 @@ public:
   static bool hasPlugin(const string & pluginName);
 
   static const list<string> all();
+
+  ~Plugin();
 
 protected:
   /* Default constructor. */
