@@ -149,7 +149,6 @@ WINTERMUTE_INSTALL_TARGET(
   HEADER_DIR core
   HEADERS    ${_hdrs}
 )
-
 WINTERMUTE_INSTALL_TARGET(
   TARGET     wintermute-core-static
 )
