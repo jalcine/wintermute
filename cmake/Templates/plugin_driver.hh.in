@@ -19,8 +19,6 @@
 #include <wintermute-core/plugin.hpp>
 #include "test_suite.hpp"
 
-#define PLUGIN_TEST_PATH "@_wpv_file@"
-
 using Wintermute::Plugin;
 
 class PluginVerifyTestSuite : public CxxTest::TestSuite
@@ -28,7 +26,7 @@ class PluginVerifyTestSuite : public CxxTest::TestSuite
 public:
   void testWorkWithPlugin()
   {
-    Plugin::Ptr pluginPtr = Plugin::find(PLUGIN_TEST_PATH);
+    Plugin::Ptr pluginPtr = Plugin::find(PLUGIN_PATH);
     TSM_ASSERT ( "Plugin was loaded from disk.", pluginPtr );
     TSM_ASSERT ( "Plugin was released from memory.", Plugin::release(pluginPtr->name()) );
   }
