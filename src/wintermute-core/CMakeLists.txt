@@ -99,15 +99,23 @@ set(_hdrs
 # Set up sources.
 CONFIGURE_FILE(./globals.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/globals.hpp @ONLY)
 
-# Construct target.
+# Construct target for static and shared libraries.
 ADD_LIBRARY(wintermute-core SHARED ${_srcs})
 WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core)
 WINTERMUTE_LINK_LIBRARIES(wintermute-core)
+SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
+  DEFINE_SYMBOL WINTERMUTE_EXPORT
+  VERSION       ${WINTERMUTE_VERSION}
+  )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
   ${CMAKE_CURRENT_BINARY_DIR}
   )
-SET_TARGET_PROPERTIES(wintermute-core PROPERTIES
+
+ADD_LIBRARY(wintermute-core-static STATIC ${_srcs})
+WINTERMUTE_ADD_TARGET_PROPERTIES(wintermute-core-static)
+WINTERMUTE_LINK_LIBRARIES(wintermute-core-static)
+SET_TARGET_PROPERTIES(wintermute-core-static PROPERTIES
   DEFINE_SYMBOL WINTERMUTE_EXPORT
   VERSION       ${WINTERMUTE_VERSION}
   )
@@ -135,9 +143,13 @@ GENERATE_EXPORT_HEADER(wintermute-core
   EXPORT_FILE_NAME     ${CMAKE_CURRENT_SOURCE_DIR}/export.hh
 )
 
-# Install the library.
+# Install the libraries.
 WINTERMUTE_INSTALL_TARGET(
   TARGET     wintermute-core
   HEADER_DIR core
   HEADERS    ${_hdrs}
+)
+
+WINTERMUTE_INSTALL_TARGET(
+  TARGET     wintermute-core-static
 )
