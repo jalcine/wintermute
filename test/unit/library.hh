@@ -31,10 +31,7 @@ public:
   void tearDown()
   {
     unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
-    if (!libraryPtr)
-    {
-      libraryPtr = nullptr;
-    }
+    libraryPtr = nullptr;
   }
 
   void setUp()
@@ -44,10 +41,7 @@ public:
       TS_ASSERT ( libraryPtr->unload() );
     }
 
-    if (!libraryPtr)
-    {
-      libraryPtr = nullptr;
-    }
+    libraryPtr = nullptr;
   }
 
   Library::Ptr fetchWorkingLibrary(const string& thePath = SAMPLE_PLUGIN_PATH)
@@ -145,7 +139,7 @@ public:
   {
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, TEST_BASE_DIR, 1);
 
-    libraryPtr = Library::find("fixtures/" SAMPLE_PLUGIN_FILE_NAME);
+    libraryPtr = Library::find("lib/" SAMPLE_PLUGIN_FILE_NAME);
 
     TSM_ASSERT ( "Library pointer allocated with full file path.",
       libraryPtr );
@@ -183,7 +177,7 @@ public:
       !okFunctionPtr );
   }
 
-  void NOtestResolveFunctionFromLibrary()
+  void testResolveFunctionFromLibrary()
   {
     libraryPtr = fetchWorkingLibrary();
     Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("w_sample_test");
