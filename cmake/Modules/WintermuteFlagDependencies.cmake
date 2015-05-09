@@ -23,8 +23,8 @@ IF (CMAKE_BUILD_TYPE STREQUAL Debug)
   CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
   IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
     MESSAGE(WARNING
-      '-ftemplate-backtrace-limit' is not supported.
-      Stack unwinding of templated functions will be packed.
+      "'-ftemplate-backtrace-limit' is not supported. "
+      "Stack unwinding of templated functions will be packed."
     )
   ENDIF()
 ENDIF()
