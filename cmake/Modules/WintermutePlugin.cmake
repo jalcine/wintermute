@@ -79,13 +79,13 @@ MACRO(wintermute_plugin_validate)
   SET(_test_driver_file
     "${WINTERMUTE_CMAKE_DIR}/Templates/plugin_driver.hh.in")
 
-  GET_TARGET_PROPERTY(_wpv_file ${_wpv_TARGET} LOCATION)
-
   CONFIGURE_FILE(${_test_driver_file}
     ${_plugin_driver_file}
     @ONLY)
 
   WINTERMUTE_ADD_TEST(plugin-verify ${_wpv_TARGET} ${_plugin_driver_file})
+  TARGET_COMPILE_DEFINITIONS("plugin-verify-${_wpv_TARGET}" PUBLIC
+    PLUGIN_PATH="$<TARGET_FILE:${_wpv_TARGET}>")
 ENDMACRO(wintermute_plugin_validate)
 
 MACRO(wintermute_plugin_add_test)
