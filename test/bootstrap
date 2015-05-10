@@ -28,7 +28,7 @@ bootstrap_build() {
   sudo apt-get install -qq libjsoncpp-dev
   sudo apt-get install -qq liblog4cxx10-dev
   sudo apt-get install -qq libconfig++-dev
-  sudo apt-get install -qq libuuid-dev
+  sudo apt-get install -qq uuid-dev
   sudo apt-get install -qq doxygen
   sudo apt-get install -qq cxxtest
   sudo apt-get install -qq valgrind
