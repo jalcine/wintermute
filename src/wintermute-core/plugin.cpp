@@ -198,6 +198,7 @@ bool Plugin::release(const string& pluginName)
     wdebug("Plugin " + name + " successfully freed.");
   }
 
+  winfo("Unregistering plugin " + pluginName + " from pool..");
   PluginPrivate::unregisterPlugin(pluginName);
   winfo("Plugin " + name + " unloaded.");
 

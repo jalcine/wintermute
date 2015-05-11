@@ -19,6 +19,8 @@
 #define WINTERMUTE_TEST_SUITE_HPP
 
 #define TEST_BASE_DIR "@CMAKE_BINARY_DIR@/test"
+#define TEST_LIB_DIR "@CMAKE_BINARY_DIR@/lib"
+#define TEST_BIN_DIR "@CMAKE_BINARY_DIR@/bin"
 #define SAMPLE_PLUGIN_NAME "sample"
 #define SAMPLE_PLUGIN_SIMPLE_NAME "sample-plugin"
 
