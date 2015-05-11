@@ -12,9 +12,7 @@
   shell: |
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-3.5 10;
     update-alternatives --set c++ /usr/bin/clang++-3.5;
-  when:
-    - compiler_family == "clang"
-    - compiler_install_clang.changed == true
+  when: compiler_family == "clang" and compiler_install_clang.changed == true
 
 - name: compilers | Install gcc
   apt: >
@@ -25,11 +23,10 @@
   with_items:
     - g++-4.9
     - gcc-4.9
+    - libgcc-4.9-dev
 
 - name: compilers | Set g++-4.9 as the default C++ compiler.
   shell: |
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10;
     update-alternatives --set g++ /usr/bin/g++-4.9;
-  when:
-    - compiler_family == "gcc"
-    - compiler_install_gcc.changed == true
+  when: compiler_family == "gcc" and compiler_install_gcc.changed == true
