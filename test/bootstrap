@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+bootstrap_build() {
+  sudo apt-get install ansible -qq
+  ansible-playbook --extra-vars="compiler_family=${CXX} hosts=localhost" site.yml
+}
+
+generate_build() {
+  if [[ $CXX == "gcc" ]]; then
+    local _CXX="$(which g++)"
+  else
+    local _CXX="$(which clang)"
+  fi
+
+  cmake $1 -DCMAKE_CXX_COMPILER="${_CXX}" \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_VERBOSE_MAKEFILE=ON \
+          -DCI_BUILD=$2 || exit 32
+}
+
+
+# Force CTest to run tests in parallel.
+export CTEST_PARALLEL_LEVEL=2
+
+# Use the provided `gcov` path.
+export GCOV=$(which gcov)
+
+case "$1" in
+  "--before" )
+    bootstrap_build || exit 16
+    ;;
+  "--generate" )
+    generate_build . on
+    ;;
+  "--generate-vagrant" )
+    mkdir build; cd build
+    generate_build /vagrant off
+    ;;
+  "--run" )
+    make clean || exit 1
+    make Continuous || exit 2
+    ;;
+  "--run-nightly" )
+    make clean || exit 1
+    make Nightly || exit 2
+    ;;
+  "--run-test" )
+    make clean || exit 1
+    make Experimental || exit 2
+    ;;
+  "--post" )
+    coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"
+    ;;
+  * )
+    echo -en <<HELP
+test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
+
+  --before              Installs the necessary packages.
+  --generate            Configures the project using CMake.
+  --generate-vagrant    Configures the project using CMake under a Vagrant-like
+                        environment.
+  --run                 Builds and tests Wintermute.
+  --post                Runs post-testing actions (works only on Travis.CI).
+  --help                HELLO!
+HELP
+    ;;
+esac

@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provision :ansible do |a|
-    a.verbose = 'vvvv'
+    a.verbose = 'v'
     a.playbook = 'ansible/site.yml'
     a.extra_vars = {
       ansible_ssh_user: :vagrant,
