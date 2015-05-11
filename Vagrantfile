@@ -3,7 +3,6 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = 'chef/ubuntu-14.04'
   config.vm.box_check_update = true
   config.ssh.forward_agent = true
 
@@ -15,14 +14,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider :virtualbox do |vb|
     vb.gui = false
-    vb.customize ['modifyvm', :id, '--memory', 1024]
-    vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-    vb.customize ['modifyvm', :id, '--natdnsproxy1', 'on']
+    vb.memory = 1500 # 1.5 GiB
   end
 
-  config.vm.provision :shell do |s|
-    s.path = './test/bootstrap'
-    s.args = '--before'
+  config.vm.provision :ansible do |a|
+    a.verbose = 'vvvv'
+    a.playbook = 'ansible/site.yml'
+    a.extra_vars = {
+      ansible_ssh_user: :vagrant,
+      compiler_family: ENV['CC'] || 'gcc',
+      hosts: 'localhost'
+    }
   end
 
   config.vm.define :target do |t|
