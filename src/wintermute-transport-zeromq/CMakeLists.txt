@@ -23,6 +23,11 @@ PROJECT(WintermtueTransportZeroMQ CXX)
 INCLUDE(WintermutePlugin)
 FIND_PACKAGE(ZeroMQCXX REQUIRED)
 
+if (NOT ZEROMQCXX_FOUND)
+  message(STATUS "ZeroMQ not found; not building extension.")
+  return()
+endif()
+
 SET(WINTERMUTE_ZMQ_VERSION     0.0.1-dev)
 SET(WINTERMUTE_ZMQ_IPC_ADDRESS /tmp/wintermute.sock)
 
