@@ -1,0 +1,53 @@
+---
+- name: Check if we've already installed libuv.
+  stat: >
+    path=/usr/local/lib/libuv.so.1
+  register: libuv_lib
+
+- name: Check if we've downloaded the tarball for libuv already.
+  stat: >
+    path=/tmp/libuv-{{uv_version}}.tar.gz
+  register: libuv_tarball
+  when: libuv_lib.stat.exists == false
+
+- name: Download tarball for libuv.
+  get_url: >
+    url="https://github.com/libuv/libuv/archive/v{{uv_version}}.tar.gz"
+    dest=/tmp/libuv-{{uv_version}}.tar.gz
+  when:  libuv_lib.stat.exists == false and libuv_tarball.stat.exists == false
+
+- name: Check if the tarball's been extracted already.
+  stat: >
+    path=/tmp/libuv-{{uv_version}}
+  register: libuv_extracted
+  when: libuv_lib.stat.exists == false
+
+- name: Extract the tarball.
+  command: tar -xzf /tmp/libuv-{{uv_version}}.tar.gz
+  args:
+    chdir: /tmp
+  when: libuv_lib.stat.exists == false and libuv_extracted.stat.exists == false
+
+- name: Preconfigure libuv for the local environment.
+  command: ./autogen.sh
+  args:
+    chdir: /tmp/libuv-{{uv_version}}
+  when: libuv_lib.stat.exists == false
+
+- name: Configure libuv for the local environment.
+  command: ./configure --prefix=/usr/local
+  args:
+    chdir: /tmp/libuv-{{uv_version}}
+  when: libuv_lib.stat.exists == false
+
+- name: Compile libuv.
+  command: make
+  args:
+    chdir: /tmp/libuv-{{uv_version}}
+  when: libuv_lib.stat.exists == false
+
+- name: Install libuv.
+  command: make install
+  args:
+    chdir: /tmp/libuv-{{uv_version}}
+  when: libuv_lib.stat.exists == false

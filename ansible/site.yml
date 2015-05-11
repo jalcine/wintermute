@@ -1,0 +1,10 @@
+---
+- hosts: all
+  gather_facts: True
+  sudo: True
+  vars_files:
+    - vars/site.yml
+
+  roles:
+    - packages
+    - compilers

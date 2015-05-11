@@ -1,80 +1,23 @@
 #!/usr/bin/env bash
 
 bootstrap_build() {
-  echo -en "Running tests on $(uname -a)."
-
-  sudo apt-get update -qq
-
-  echo -en "\n[build]: fetching PPAs....\n"
-  sudo apt-get install python-software-properties software-properties-common -qq > /dev/null
-  wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-  sudo apt-add-repository ppa:dhart/ppa -y > /dev/null
-  sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y > /dev/null
-  sudo apt-add-repository ppa:kubuntu-ppa/beta -y > /dev/null
-  sudo add-apt-repository ppa:h-rayflood/llvm -y > /dev/null
-
-  echo -en "\n[build]: updating system...\n"
-  sudo apt-get update -qq > /dev/null
-
-  echo -en "\n[build]: installing packages...\n"
-  sudo apt-get install -qq libtool automake autconf bison git > /dev/null
-  sudo apt-get install -qq pkg-config > /dev/null
-  sudo apt-get install -qq python-pip python > /dev/null
-
-  sudo pip install cpp-coveralls --upgrade
-
-  # Install dependencies.
-  echo -en "\n[build]: installing dependencies...\n"
-  sudo apt-get install -qq libjsoncpp-dev > /dev/null
-  sudo apt-get install -qq liblog4cxx10-dev > /dev/null
-  sudo apt-get install -qq libconfig++-dev > /dev/null
-  sudo apt-get install -qq uuid-dev > /dev/null
-  sudo apt-get install -qq doxygen > /dev/null
-  sudo apt-get install -qq cxxtest > /dev/null
-  sudo apt-get install -qq valgrind > /dev/null
-  sudo apt-get install -qq lcov > /dev/null
-  sudo apt-get install -qq pkg-config > /dev/null
-  sudo apt-get remove  -qq g++* > /dev/null
-  sudo apt-get install -qq g++-4.9 clang-3.5 > /dev/null
-  sudo apt-get install -qq libzmq3-dev libzmqpp-dev > /dev/null
-
-  install_libuv
-  install_cmake
-
-  echo -en "\nDone installing dependencies.\n"
-
+  sudo apt-get install ansible -qq
+  ansible-playbook --extra-vars="compiler_family=${CXX} hosts=localhost" site.yml
 }
 
-install_cmake() {
-  echo -en "\nBuilding cmake...\n";
-  sudo apt-get build-dep -qq cmake;
-  cd "$(mktemp -d)";
-  wget -nv http://www.cmake.org/files/v2.8/cmake-2.8.12.tar.gz
-  tar -xzf cmake-2.8.12.tar.gz
-  cd cmake-2.8.12
-  ./configure --prefix=/usr/local > /tmp/cmake-build.log;
-  make -j2 >> /tmp/cmake-build.log
-  sudo make install > /tmp/cmake-install.log
+generate_build() {
+  if [[ $CXX == "gcc" ]]; then
+    local _CXX="$(which g++)"
+  else
+    local _CXX="$(which clang)"
+  fi
+
+  cmake $1 -DCMAKE_CXX_COMPILER="${_CXX}" \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_VERBOSE_MAKEFILE=ON \
+          -DCI_BUILD=$2 || exit 32
 }
 
-install_libuv() {
-  echo -en "\nBuilding libuv...\n";
-  cd "$(mktemp -d)";
-  sudo apt-get install git libtool autoconf automake -qq;
-  git clone git://github.com/libuv/libuv -q -b 'v1.5.0' --depth=1 libuv;
-  cd libuv;
-  sh autogen.sh;
-  ./configure --prefix=/usr/local > /tmp/libuv-build.log;
-  make -j >> /tmp/libuv-build.log;
-  sudo make install > /tmp/libuv-install.log;
-}
-
-# Determine if Clang or GNU C++ is being used.
-if [[ $CXX == "gcc" ]]; then
-  export CXX="$(which g++)"
-else
-  export CXX="$(which clang)"
-fi
 
 # Force CTest to run tests in parallel.
 export CTEST_PARALLEL_LEVEL=2
@@ -87,14 +30,11 @@ case "$1" in
     bootstrap_build || exit 16
     ;;
   "--generate" )
-    cmake . -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 32
-    ;;
-  "--cmake" )
-    install_cmake
+    generate_build . on
     ;;
   "--generate-vagrant" )
     mkdir build; cd build
-    cmake /vagrant -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=OFF || exit 32
+    generate_build /vagrant off
     ;;
   "--run" )
     make clean || exit 1
@@ -111,7 +51,7 @@ case "$1" in
   "--post" )
     coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"
     ;;
-  *)
+  * )
     echo -en <<HELP
 test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
 
