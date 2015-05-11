@@ -21,6 +21,7 @@ INCLUDE(CheckCXXCompilerFlag)
 
 IF (CMAKE_BUILD_TYPE STREQUAL Debug)
   CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
+  CHECK_CXX_COMPILER_FLAG(-Wpendatic CHKFLG_WARNING_PEDANTIC)
   IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
     MESSAGE(WARNING
       "'-ftemplate-backtrace-limit' is not supported. "

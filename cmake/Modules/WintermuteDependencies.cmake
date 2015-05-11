@@ -22,11 +22,11 @@
 INCLUDE(FindPkgConfig)
 INCLUDE(WintermuteVariables)
 
-PKG_CHECK_MODULES(JsonCpp jsoncpp REQUIRED)
-PKG_CHECK_MODULES(Log4Cxx liblog4cxx REQUIRED)
-PKG_CHECK_MODULES(LibUv libuv REQUIRED)
-PKG_CHECK_MODULES(Uuid uuid REQUIRED)
-PKG_CHECK_MODULES(LibConfig libconfig++ REQUIRED)
+PKG_SEARCH_MODULE(JsonCpp jsoncpp>=0.6.0 jsoncpp<=0.7.0 REQUIRED)
+PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
+PKG_SEARCH_MODULE(LibUv libuv>=1.4 libuv<=1.5 REQUIRED)
+PKG_SEARCH_MODULE(Uuid uuid>=2 uuid<=3 REQUIRED)
+PKG_SEARCH_MODULE(LibConfig libconfig++>=1.4.0 libconfig++<=1.5.0 REQUIRED)
 
 # == Exported variables
 set(WINTERMUTE_INCLUDE_DIRS
