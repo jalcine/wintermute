@@ -2,11 +2,11 @@
 
 bootstrap_build() {
   sudo apt-get install ansible -qq
-  ansible-playbook --extra-vars="compiler_family=${CXX} hosts=localhost" site.yml
+  ansible-playbook --extra-vars="compiler_family=${CXX}" site.yml
 }
 
 generate_build() {
-  if [[ $CXX == "gcc" ]]; then
+  if [[ $CXX == "g++" ]]; then
     local _CXX="$(which g++)"
   else
     local _CXX="$(which clang)"
