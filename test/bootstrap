@@ -10,20 +10,14 @@ bootstrap_build() {
   fi
 
   hostname | sudo tee /etc/ansible/hosts > /dev/null
-  ansible-playbook -c local --extra-vars="compiler_family=${CXX:'gcc'}" ${ansible_path}
+  ansible-playbook -c local --extra-vars="compiler_family=${CXX:gcc}" ${ansible_path}
 }
 
 generate_build() {
-  if [[ $CXX == "g++" ]]; then
-    local _CXX="$(which g++)"
-  else
-    local _CXX="$(which clang)"
-  fi
-
-  cmake $1 -DCMAKE_CXX_COMPILER="${_CXX}" \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_VERBOSE_MAKEFILE=ON \
-          -DCI_BUILD=$2 || exit 32
+  cmake -DCMAKE_CXX_COMPILER="/usr/bin/c++" \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_VERBOSE_MAKEFILE=ON \
+        -DCI_BUILD=$2 $1 || exit 32
 }
 
 
@@ -41,10 +35,16 @@ case "$1" in
     generate_build . on
     ;;
   "--generate-vagrant" )
+    cd ~vagrant;
     mkdir build; cd build
     generate_build /vagrant off
     ;;
   "--run" )
+    make clean || exit 1
+    make Experimental || exit 2
+    ;;
+  "--run-vagrant" )
+    cd ~vagrant/build;
     make clean || exit 1
     make Experimental || exit 2
     ;;
