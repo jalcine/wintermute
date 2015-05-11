@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
 bootstrap_build() {
-  sudo apt-get install ansible -qq
-  ansible-playbook --extra-vars="compiler_family=${CXX}" site.yml
+  sudo apt-get install python-pycurl ansible -qq
+
+  local ansible_path="~/jalcine/wintermute/ansible/site.yml"
+
+  if [ $USER == "vagrant" ]; then
+    local ansible_path="/vagrant/ansible/site.yml"
+  fi
+
+  hostname | sudo tee /etc/ansible/hosts > /dev/null
+  ansible-playbook -c local --extra-vars="compiler_family=${CXX:'gcc'}" ${ansible_path}
 }
 
 generate_build() {
@@ -38,30 +46,9 @@ case "$1" in
     ;;
   "--run" )
     make clean || exit 1
-    make Continuous || exit 2
-    ;;
-  "--run-nightly" )
-    make clean || exit 1
-    make Nightly || exit 2
-    ;;
-  "--run-test" )
-    make clean || exit 1
     make Experimental || exit 2
     ;;
   "--post" )
     coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"
-    ;;
-  * )
-    echo -en <<HELP
-test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
-
-  --before              Installs the necessary packages.
-  --generate            Configures the project using CMake.
-  --generate-vagrant    Configures the project using CMake under a Vagrant-like
-                        environment.
-  --run                 Builds and tests Wintermute.
-  --post                Runs post-testing actions (works only on Travis.CI).
-  --help                HELLO!
-HELP
     ;;
 esac
