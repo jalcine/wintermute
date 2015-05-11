@@ -117,7 +117,7 @@ Setting* ConfigurationPrivate::addSetting(const string& key, const Setting::Type
       else
       {
         wdebug("Look up key " + token);
-        cfg = &((*cfg)[token]);
+        cfg = &((*cfg)[token.c_str()]);
       }
 
       if (cfg->getPath() == key)
