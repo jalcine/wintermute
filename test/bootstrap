@@ -1,29 +1,58 @@
 #!/usr/bin/env bash
 
+printf "export LD_LIBRARY_PATH='/usr/local:/usr';\n" >> ~/.bashrc;
+
 bootstrap_build() {
   sudo apt-get install python-pycurl ansible -qq
 
   local ansible_path="jalcine/wintermute/ansible/site.yml"
 
-  if [ $USER == "vagrant" ]; then
+  if [ "$USER" == "vagrant" ]; then
     local ansible_path="/vagrant/ansible/site.yml"
   else
-    if [ $TRAVIS == true ]; then
+    if [ "$TRAVIS" == true ]; then
       sudo apt-get install aptitude -qq
       local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml"
     fi
   fi
 
   hostname | sudo tee /etc/ansible/hosts > /dev/null
-  echo -en "\n[bootstrap] Building for '$CC' toolchain...\n";
-  ansible-playbook -c local --extra-vars="compiler_family=${CC:gcc}" ${ansible_path}
+  echo -en "\n[bootstrap] Building for '${CC:gcc}' toolchain...\n";
+  ansible-playbook -c local --extra-vars="compiler_family=${CC:gcc}" \
+    "${ansible_path}"
+}
+
+dump_log() {
+  if [ "$TRAVIS" == true ]; then
+    cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*LastBuild*.log")";
+  else
+    cat "$(find ~vagrant/build -type f -name "*LastBuild*.log")";
+  fi
+}
+
+run_build() {
+  make all test;
+  local _exit=$?;
+  echo -en "[test] Testing exited with code ${_exit}.\n";
+  if [ $_exit -gt 0 ]; then
+    dump_log;
+    exit $_exit;
+  else
+    exit 0;
+  fi
 }
 
 generate_build() {
-  cmake -DCMAKE_CXX_COMPILER="/usr/bin/c++" \
-        -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_VERBOSE_MAKEFILE=ON \
-        -DCI_BUILD=$2 $1 || exit 32
+  local _compiler=$(which g++);
+
+  if [ "${CC}" == "clang" ]; then
+    _compiler=$(which clang-3.5);
+  fi
+
+  CC=gcc CXX=${_compiler} cmake \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_VERBOSE_MAKEFILE=ON \
+    -DCI_BUILD="$2" "$1" || exit 32
 }
 
 
@@ -42,17 +71,23 @@ case "$1" in
     ;;
   "--generate-vagrant" )
     cd ~vagrant;
-    mkdir build; cd build
+    rm build -rf;
+    mkdir build 2> /dev/null; cd build
     generate_build /vagrant off
     ;;
   "--run" )
-    make clean || exit 1
-    make Experimental || exit 2
+    run_build
     ;;
   "--run-vagrant" )
     cd ~vagrant/build;
-    make clean || exit 1
-    make Experimental || exit 2
+    run_build
+    ;;
+  "--dump-log" )
+    dump_log
+    ;;
+  "--vagrant" )
+    /vagrant/test/bootstrap --generate-vagrant
+    /vagrant/test/bootstrap --run-vagrant
     ;;
   "--post" )
     coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"

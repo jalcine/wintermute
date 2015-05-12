@@ -22,6 +22,6 @@
   apt_repository: >
     repo="{{ item }}"
   with_items:
-    - 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main'
-    - 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main'
+    - 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+    - 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
   when: compiler_family == "clang"
