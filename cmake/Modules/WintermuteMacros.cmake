@@ -58,7 +58,7 @@ ENDMACRO(wintermute_add_target_properties)
 #== Links TARGET with the libraries Wintermute would need in order to operate.
 #==============================================================================
 MACRO(wintermute_link_libraries _target)
-  IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  IF (CMAKE_BUILD_TYPE STREQUAL "Debug" AND WINTERMUTE_TEST_LIBRARIES)
     TARGET_LINK_LIBRARIES(${_target}
       debug ${WINTERMUTE_TEST_LIBRARIES})
   ENDIF()
