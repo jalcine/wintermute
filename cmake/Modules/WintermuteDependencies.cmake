@@ -25,7 +25,6 @@ INCLUDE(WintermuteVariables)
 PKG_SEARCH_MODULE(JsonCpp jsoncpp>=0.6.0 jsoncpp<=0.7.0 REQUIRED)
 PKG_SEARCH_MODULE(Log4Cxx liblog4cxx REQUIRED)
 PKG_SEARCH_MODULE(LibUv libuv>=1.4 libuv<=1.5 REQUIRED)
-PKG_SEARCH_MODULE(Uuid uuid>=2 uuid<=3 REQUIRED)
 PKG_SEARCH_MODULE(LibConfig libconfig++>=1.4.0 libconfig++<=1.5.0 REQUIRED)
 
 # == Exported variables
@@ -34,7 +33,6 @@ set(WINTERMUTE_INCLUDE_DIRS
   ${Log4Cxx_INCLUDE_DIRS}
   ${LibUv_INCLUDE_DIRS}
   ${LibConfig_INCLUDE_DIRS}
-  ${Uuid_INCLUDE_DIRS}
   )
 
 set(WINTERMUTE_LIBRARIES
@@ -42,7 +40,6 @@ set(WINTERMUTE_LIBRARIES
   ${Log4Cxx_LIBRARIES}
   ${LibUv_LIBRARIES}
   ${LibConfig_LIBRARIES}
-  ${Uuid_LIBRARIES}
   )
 
 list(APPEND WINTERMUTE_COMPILE_FLAGS
@@ -50,7 +47,6 @@ list(APPEND WINTERMUTE_COMPILE_FLAGS
   ${Log4Cxx_CFLAGS}
   ${LibUv_CFLAGS}
   ${LibConfig_CLAGS}
-  ${Uuid_CFLAGS}
   )
 
 list(APPEND WINTERMUTE_LINK_FLAGS
@@ -58,7 +54,6 @@ list(APPEND WINTERMUTE_LINK_FLAGS
   ${Log4Cxx_LDFLAGS}
   ${LibUv_LDFLAGS}
   ${LibConfig_LDFLAGS}
-  ${Uuid_LDFLAGS}
   )
 
 # == Add to the required varibles to improve searching.

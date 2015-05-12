@@ -47,11 +47,19 @@ SET(WINTERMUTE_COMPILE_FLAGS_DEBUG
   -Wunused-variable
   -Wwrite-strings
   -Woverloaded-virtual
-  -ggdb3
   )
 
 SET(WINTERMUTE_COMPILE_FLAGS_RELEASE
   -O2
+  )
+
+set(WINTERMUTE_LINK_FLAGS
+  )
+
+set(WINTERMUTE_LINK_FLAGS_DEBUG
+  )
+
+set(WINTERMUTE_LINK_FLAGS_RELEASE
   )
 
 set(WINTERMUTE_COMPILE_FLAGS ${WINTERMUTE_COMPILE_FLAGS})
@@ -73,9 +81,13 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
       -fprofile-arcs
       -ftest-coverage
-      #-gstabs+
+      -ggdb3
+      -gstabs+
     )
-  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  list(APPEND WINTERMUTE_LINK_FLAGS_DEBUG
+      -fprofile-arcs
+    )
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     list(APPEND WINTERMUTE_COMPILE_FLAGS_DEBUG
     )
   endif()
