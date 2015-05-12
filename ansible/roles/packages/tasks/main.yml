@@ -6,13 +6,9 @@
     update_cache=yes
     cache_valid_time=14400
 
-- name: Upgrade system packages.
-  apt: >
-    upgrade=yes
-
 - name: Install base tooling and Git.
   apt: >
-    state=present
+    state=latest
     name={{ item }}
   with_items:
     - libtool
@@ -22,6 +18,10 @@
     - pkg-config
     - git
     - python-pip
+    - binutils
+    - libboost-program-options-dev
+
+- include: compilers.yml tags=packages,compilers,gcc,clang
 
 - name: Install 'coveralls' client package.
   pip: >
@@ -32,25 +32,17 @@
 
 - name: Install dependencies for Wintermute.
   apt: >
-    state=present
+    state=latest
     name={{ item }}
   with_items:
     - libjsoncpp-dev
     - liblog4cxx10-dev
-    - libconfig*-dev
-    - uuid-dev
-    - libzmq-dev
-
-# We're going to build and install ZeroMQ ourselves because the version we're
-# going to build with doesn't exist on Precise.
-# TODO: Flesh out build setup for libzmq.
-# TODO: Flesh out build setup for zmqpp.
-#- include: zeromq.yml   tags=packages,zeromq
+    - libzmq3-dev
 
 - name: Install test and documenation dependencies for Wintermute
   sudo: True
   apt: >
-    state=present
+    state=latest
     name={{ item }}
   with_items:
     - doxygen
@@ -61,3 +53,4 @@
 - include: cmake.yml      tags=packages,cmake
 - include: uv.yml         tags=packages,uv
 - include: libconfig.yml  tags=packages,libconfig
+- include: zmqpp.yml      tags=packages,zmq,zmqpp
