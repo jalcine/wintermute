@@ -6,12 +6,12 @@
   when: compiler_family == "clang"
   register: compiler_install_clang
   with_items:
-    - clang-3.5
+    - clang-3.6
 
-- name: compilers | Set clang++-3.5 as the default C++ compiler.
+- name: compilers | Set clang++-3.6 as the default C++ compiler.
   shell: |
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-3.5 10;
-    update-alternatives --set c++ /usr/bin/clang++-3.5;
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-3.6 10;
+    update-alternatives --set c++ /usr/bin/clang++-3.6;
   when: compiler_family == "clang" and compiler_install_clang.changed == true
 
 - name: compilers | Install gcc

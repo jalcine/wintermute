@@ -1,17 +1,16 @@
 ---
-- name: Add Kubuntu PPA for latest CMake.
-  apt_repository: >
-    repo='ppa:kubuntu-ppa/beta'
-
 - name: Add David Hart's PPA for cxxtest.
   apt_repository: >
     repo='ppa:dhart/ppa'
 
+- name: Add Chris Lea's PPA for zmq.
+  apt_repository: >
+    repo='ppa:chris-lea/zeromq'
+
 - name: Add Ubuntu restricted toolchain when we're using GCC.
   apt_repository: >
     repo='ppa:ubuntu-toolchain-r/test'
-  when:
-    - compiler_family == "gcc"
+  when: compiler_family == "gcc"
 
 - name: Add LLVM PPA key when we're using Clang.
   apt_key: >
@@ -21,7 +20,7 @@
 
 - name: Add LLVM PPA when we're using Clang.
   apt_repository: >
-    repo={{ item }}
+    repo="{{ item }}"
   with_items:
     - 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main'
     - 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main'

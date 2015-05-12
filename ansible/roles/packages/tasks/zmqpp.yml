@@ -1,0 +1,41 @@
+---
+- name: Check if we've already installed ZeroMQ for C++.
+  stat: >
+    path=/usr/local/lib/libzmqpp.so
+  register: zmqpp_lib
+
+- name: Check if we've downloaded the tarball for ZeroMQ for C++ already.
+  stat: >
+    path="/tmp/zmqpp.tar.gz"
+  register: zmqpp_tarball
+  when: zmqpp_lib.stat.exists == false
+
+- name: Download tarball for ZeroMQ for C++.
+  get_url: >
+    url="https://github.com/zeromq/zmqpp/archive/develop.tar.gz"
+    dest="/tmp/zmqpp.tar.gz"
+  when: zmqpp_lib.stat.exists == false and zmqpp_tarball.stat.exists == false
+
+- name: Check if the tarball's been extracted already.
+  stat: >
+    path="/tmp/zmqpp-develop"
+  register: zmqpp_extracted
+  when: zmqpp_lib.stat.exists == false
+
+- name: Extract the tarball.
+  command: "tar -xzf /tmp/zmqpp.tar.gz"
+  args:
+    chdir: /tmp
+  when: zmqpp_lib.stat.exists == false and zmqpp_extracted.stat.exists == false
+
+- name: Configure ZeroMQ for C++.
+  shell: mkdir build && cd build && cmake ..
+  args:
+    chdir: "/tmp/zmqpp-develop"
+  when: zmqpp_lib.stat.exists == false
+
+- name: Build ZeroMQ for C++.
+  command: make zmqpp install
+  args:
+    chdir: "/tmp/zmqpp-develop"
+  when: zmqpp_lib.stat.exists == false
