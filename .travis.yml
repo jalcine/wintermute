@@ -1,12 +1,4 @@
 language: cpp
-cache:
-  apt: true
-  pip: true
-  directories:
-    - /tmp/cmake-*.tar.gz
-    - /tmp/libuv-*.tar.gz
-    - /tmp/libconfig-*.tar.gz
-    - /tmp/zmqpp.tar.gz
 compiler:
   - gcc
   - clang

@@ -89,6 +89,13 @@ case "$1" in
     /vagrant/test/bootstrap --generate-vagrant
     /vagrant/test/bootstrap --run-vagrant
     ;;
+  "--dump-log" )
+    if [ "$TRAVIS" == true ]; then
+      cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*LastBuild*.log")";
+    else
+      cat "$(find ~vagrant/build -type f -name "*LastBuild*.log")";
+    fi
+    ;;
   "--post" )
     coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"
     ;;
