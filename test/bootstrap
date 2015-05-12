@@ -9,12 +9,14 @@ bootstrap_build() {
     local ansible_path="/vagrant/ansible/site.yml"
   else
     if [ $TRAVIS == true ]; then
+      sudo apt-get install aptitude -qq
       local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml"
     fi
   fi
 
   hostname | sudo tee /etc/ansible/hosts > /dev/null
-  ansible-playbook -c local --extra-vars="compiler_family=${CXX:gcc}" ${ansible_path}
+  echo -en "\n[bootstrap] Building for '$CC' toolchain...\n";
+  ansible-playbook -c local --extra-vars="compiler_family=${CC:gcc}" ${ansible_path}
 }
 
 generate_build() {
