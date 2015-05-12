@@ -26,6 +26,7 @@ endmacro(add_a_unit_test)
 configure_file(sample.cfg.in sample.cfg @ONLY)
 
 # == Define the root tests.
+add_a_unit_test(util)
 add_a_unit_test(util_serializable)
 add_a_unit_test(util_configuration)
 add_a_unit_test(singleton)
