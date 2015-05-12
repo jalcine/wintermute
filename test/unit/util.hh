@@ -23,6 +23,7 @@
 #include "test_suite.hpp"
 
 using std::string;
+using std::regex;
 
 class UtilTestSuite : public CxxTest::TestSuite
 {
@@ -76,7 +77,7 @@ public:
   void testSplitStringWithMultipleDeliminators()
   {
     const string originalString = "this is funky";
-    const auto delim = std::regex("[:space:]", std::regex::basic);
+    const auto delim = regex("[ ]", regex::basic);
     const auto obtainedValue =
       Wintermute::Util::split_string(originalString, delim);
 
@@ -89,7 +90,7 @@ public:
   void testSplitStringWithNoDeliminators()
   {
     const string originalString = "computer";
-    const auto delim = std::regex("[:space:]", std::regex::basic);
+    const auto delim = regex("[ ]", regex::basic);
     const auto obtainedValue =
       Wintermute::Util::split_string(originalString, delim);
 

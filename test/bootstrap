@@ -3,10 +3,14 @@
 bootstrap_build() {
   sudo apt-get install python-pycurl ansible -qq
 
-  local ansible_path="~/jalcine/wintermute/ansible/site.yml"
+  local ansible_path="jalcine/wintermute/ansible/site.yml"
 
   if [ $USER == "vagrant" ]; then
     local ansible_path="/vagrant/ansible/site.yml"
+  else
+    if [ $TRAVIS == true ]; then
+      local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml"
+    fi
   fi
 
   hostname | sudo tee /etc/ansible/hosts > /dev/null
