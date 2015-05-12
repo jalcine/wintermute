@@ -6,7 +6,7 @@
 # modify it under the terms of the GNU Library General Public
 # License as published by the Free Software Foundation; either
 # version 3 of the License, or (at your option) any later version.
-#
+
 # Wintermute is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -36,6 +36,9 @@ MACRO(wintermute_add_target_properties _target)
     ${WINTERMUTE_INCLUDE_DIRS})
 
   set(_ld_flags_raw "${WINTERMUTE_LINK_FLAGS}")
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(_ld_flags_raw "${WINTERMUTE_LINK_FLAGS};${WINTERMUTE_LINK_FLAGS_DEBUG}")
+  endif()
   string(REPLACE ";" " " _ld_flags "${_ld_flags_raw}")
   SET_TARGET_PROPERTIES(${_target} PROPERTIES
     LINK_FLAGS "${_ld_flags}"
