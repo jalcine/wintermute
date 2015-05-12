@@ -21,12 +21,12 @@
 #ifndef WINTERMUTE_CORE_UTIL_HH_
 # define WINTERMUTE_CORE_UTIL_HH_
 
+#include <cstdlib>
 #include <list>
 #include <regex>
 #include <string>
 #include <algorithm>
 #include <iterator>
-#include <uuid.h>
 
 using std::list;
 using std::regex;
@@ -74,18 +74,12 @@ namespace Util
    * @fn Wintermute::Util::generate_uuid
    * @return A UUID as a string.
    * Generates a UUID.
+   * @TODO: Make this generate pure UUIDs, as opposed to a random number.
    */
   inline string generate_uuid()
   {
-    uuid_t uuidObj;
-    uuid_generate_random(uuidObj);
-    string uuidStr;
-
-    for (auto i = 0; i <= 15; i++)
-    {
-      uuidStr += std::to_string(uuidObj[i]);
-    }
-
+    const int randomNumber = rand();
+    const string uuidStr = std::to_string(randomNumber);
     return uuidStr;
   }
 }
