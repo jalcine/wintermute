@@ -22,16 +22,4 @@ INCLUDE(CheckCXXCompilerFlag)
 IF (CMAKE_BUILD_TYPE STREQUAL Debug)
   CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
   CHECK_CXX_COMPILER_FLAG(-Wpedantic CHKFLG_WARNING_PEDANTIC)
-  IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
-    MESSAGE(STATUS
-      "'-ftemplate-backtrace-limit' is not supported. "
-      "Stack unwinding of templated functions will be packed."
-    )
-  ENDIF()
-  IF(NOT CHKFLG_WARNING_PEDANTIC)
-    MESSAGE(STATUS
-      "'-Wpedantic is not supported; less (potentially important) warnings will"
-      "not appear."
-    )
-  ENDIF()
 ENDIF()

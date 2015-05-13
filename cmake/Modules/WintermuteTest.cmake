@@ -35,7 +35,7 @@ if (BUILD_TESTING)
 ENDIF()
 
 SET(CXXTEST_TESTGEN_ARGS
-  --runner=XUnitPrinter --have-eh --have-std
+  --have-eh --have-std
   )
 
 IF (NOT CXXTEST_FOUND)
