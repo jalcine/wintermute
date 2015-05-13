@@ -17,21 +17,9 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
-INCLUDE(CheckCXXCompilerFlag)
 
-IF (CMAKE_BUILD_TYPE STREQUAL Debug)
-  CHECK_CXX_COMPILER_FLAG(-ftemplate-backtrace-limit=0 CHKFLG_TEMPLATE_BT_LIMIT)
-  CHECK_CXX_COMPILER_FLAG(-Wpedantic CHKFLG_WARNING_PEDANTIC)
-  IF(NOT CHKFLG_TEMPLATE_BT_LIMIT)
-    MESSAGE(STATUS
-      "'-ftemplate-backtrace-limit' is not supported. "
-      "Stack unwinding of templated functions will be packed."
-    )
-  ENDIF()
-  IF(NOT CHKFLG_WARNING_PEDANTIC)
-    MESSAGE(STATUS
-      "'-Wpedantic is not supported; less (potentially important) warnings will"
-      "not appear."
-    )
-  ENDIF()
-ENDIF()
+INCLUDE(ProcessorCount)
+
+SET(CMAKE_VERBOSE_MAKEFILE ON PARENT_SCOPE)
+SET(CMAKE_BUILD_TYPE Debug PARENT_SCOPE)
+SET(CI_BUILD_DEFINED ON PARENT_SCOPE)

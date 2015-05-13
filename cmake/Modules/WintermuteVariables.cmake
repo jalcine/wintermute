@@ -25,7 +25,6 @@ SET(WINTERMUTE_COMPILE_FLAGS
   -Wctor-dtor-privacy
   -Wenum-compare
   -fmessage-length=0
-  -Wnon-virtual-dtor
   )
 
 IF (NOT CHKFLG_WARNING_PEDANTIC)
