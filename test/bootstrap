@@ -1,26 +1,61 @@
 #!/usr/bin/env bash
 
-bootstrap_build() {
-  sudo apt-get install python-pycurl ansible -qq
+# Force CTest to run tests in parallel.
 
-  local ansible_path="jalcine/wintermute/ansible/site.yml"
+# Use the provided `gcov` path.
+
+make_vagrant_build_dir()
+{
+  cd ~vagrant;
+  rm build -rf;
+  mkdir -p build;
+}
+
+ansible_path() {
+  local ansible_path="";
 
   if [ "$USER" == "vagrant" ]; then
-    local ansible_path="/vagrant/ansible/site.yml"
+    local ansible_path="/vagrant/ansible/site.yml";
   else
     if [ "$TRAVIS" == true ]; then
-      sudo apt-get install aptitude -qq
-      local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml"
+      sudo apt-get install aptitude -qq;
+      local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml";
     fi
   fi
 
-  echo "export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib" \
-    | sudo tee /etc/profile.d/local_lib.sh
+  printf $ansible_path;
+}
 
-  hostname | sudo tee /etc/ansible/hosts > /dev/null
-  echo -en "\n[bootstrap] Building for '${CC:gcc}' toolchain...\n";
-  ansible-playbook -c local --extra-vars="compiler_family=${CC:gcc}" \
-    "${ansible_path}"
+send_coveralls_payload() {
+  export GCOV=$(which gcov);
+  coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src \
+    --exclude test -t "${COVERALLS_TOKEN}";
+}
+
+preset_library_path() {
+  if [ ! -r /etc/profile.d/local_lib.sh ]; then
+    echo "export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib" | sudo tee \
+      /etc/profile.d/local_lib.sh > /dev/null;
+    sudo chmod o+rx /etc/profile.d/local_lib.sh;
+  fi
+
+  source /etc/profile.d/local_lib.sh;
+}
+
+bootstrap_build() {
+  if [ ! -x ansible-playbook ]; then
+    sudo apt-get install python-pycurl ansible -qq;
+  fi
+
+  local _cc=${CC};
+  [ -z ${_cc} ] && _cc="gcc";
+
+  preset_library_path;
+
+  hostname | sudo tee /etc/ansible/hosts > /dev/null;
+  echo -en "\n[bootstrap] Building for '${_cc}' toolchain from $(ansible_path)...\n";
+  ansible-playbook -c local --extra-vars="compiler_family=${_cc}" \
+    "$(ansible_path)";
 }
 
 dump_log() {
@@ -32,6 +67,8 @@ dump_log() {
 }
 
 run_build() {
+  export CTEST_PARALLEL_LEVEL=2;
+  preset_library_path;
   make -j2 all;
   make -e test;
   local _exit=$?;
@@ -56,12 +93,6 @@ generate_build() {
 }
 
 
-# Force CTest to run tests in parallel.
-export CTEST_PARALLEL_LEVEL=2
-
-# Use the provided `gcov` path.
-export GCOV=$(which gcov)
-
 case "$1" in
   "--before" )
     bootstrap_build || exit 16
@@ -70,17 +101,14 @@ case "$1" in
     generate_build .
     ;;
   "--generate-vagrant" )
-    cd ~vagrant;
-    rm build -rf;
-    mkdir build 2> /dev/null; cd build
+    make_vagrant_build_dir
     generate_build /vagrant
     ;;
   "--run" )
     run_build
     ;;
   "--run-vagrant" )
-    cd ~vagrant/build;
-    run_build
+    PWD=~vagrant/build run_build;
     ;;
   "--dump-log" )
     dump_log
@@ -97,6 +125,6 @@ case "$1" in
     fi
     ;;
   "--post" )
-    coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src --exclude test -t "${COVERALLS_TOKEN}"
+    send_coveralls_payload;
     ;;
 esac
