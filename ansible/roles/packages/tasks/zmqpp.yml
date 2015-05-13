@@ -29,13 +29,13 @@
   when: zmqpp_lib.stat.exists == false and zmqpp_extracted.stat.exists == false
 
 - name: Configure ZeroMQ for C++.
-  shell: mkdir build && cd build && cmake ..
+  shell: mkdir -p build && cd build && cmake ..
   args:
     chdir: "/tmp/zmqpp-develop"
   when: zmqpp_lib.stat.exists == false
 
 - name: Build ZeroMQ for C++.
-  command: make zmqpp install
+  command: make -j4 all install
   args:
     chdir: "/tmp/zmqpp-develop"
   when: zmqpp_lib.stat.exists == false

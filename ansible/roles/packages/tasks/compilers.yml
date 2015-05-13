@@ -12,17 +12,15 @@
   apt: >
     name={{ item }}
     state=present
-  when: compiler_family == "gcc"
   register: compiler_install_gcc
   with_items:
     - g++-4.9
     - gcc-4.9
     - libgcc-4.9-dev
 
-- name: compilers | Set g++-4.9 as the default C++ compiler.
+- name: compilers | Set g++-4.9 as the compiler for g++.
   shell: |
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10;
     update-alternatives --set g++ /usr/bin/g++-4.9;
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10;
     update-alternatives --set gcc /usr/bin/gcc-4.9;
-  when: compiler_family == "gcc" and compiler_install_gcc.changed == true

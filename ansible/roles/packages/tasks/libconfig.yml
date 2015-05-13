@@ -45,7 +45,7 @@
   when: libconfig_lib.stat.exists == false
 
 - name: Compile libconfig.
-  command: make
+  command: make -j4
   args:
     chdir: /tmp/libconfig-f034214e1b7a7d20321fc9d5f007f6e5b21c6a76
   when: libconfig_lib.stat.exists == false

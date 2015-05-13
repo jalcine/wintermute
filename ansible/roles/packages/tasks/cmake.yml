@@ -35,7 +35,7 @@
   when: cmake_exec.stat.exists == false
 
 - name: Compile CMake.
-  command: make
+  command: make -j4
   args:
     chdir: "/tmp/cmake-{{cmake_version}}"
   when: cmake_exec.stat.exists == false

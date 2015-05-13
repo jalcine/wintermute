@@ -41,7 +41,7 @@
   when: libuv_lib.stat.exists == false
 
 - name: Compile libuv.
-  command: make
+  command: make -j4
   args:
     chdir: /tmp/libuv-{{uv_version}}
   when: libuv_lib.stat.exists == false
