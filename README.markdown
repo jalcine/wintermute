@@ -9,9 +9,11 @@
 > William Gibson, [Neuromancer (1984)][neuromancer].
 
 **Progress**:
+
 [![Stories Ready to be Worked On][waffle_ready_img]][waffleio] [![Stories Being Worked On][waffle_work_img]][waffleio] [![Throughput Graph][issuegraph]][issuelink]
 
 **Coverage & Build**:
+
 `develop`: [![Build Status][travisdevelop_img]][build_stat] [![Coverage Status][coverallsdevelop_img]][cover_stat]
 
 `master`:  [![Build Status][travismaster_img]][build_stat] [![Coverage Status][coverallsmaster_img]][cover_stat]
