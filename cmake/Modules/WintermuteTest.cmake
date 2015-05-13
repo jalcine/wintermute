@@ -22,6 +22,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 INCLUDE(CTest)
 INCLUDE(WintermuteTestMacros)
 
+#== Handle work if we're in CI mode.
+OPTION(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
+
 if (BUILD_TESTING)
   INCLUDE(Dart)
   INCLUDE(FindCxxTest)
@@ -70,10 +73,6 @@ SET(MEMORYCHECK_COMMAND
 
 SEPARATE_ARGUMENTS(MEMORYCHECK_COMMAND)
 
-#== Handle work if we're in CI mode.
-OPTION(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
-
 IF(CI_BUILD)
-  MESSAGE(STATUS "CI build enabled; all warnings have been elevated to errors.")
-  ADD_DEFINITIONS(-Werror)
+  INCLUDE(WintermuteCI)
 ENDIF()
