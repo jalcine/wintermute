@@ -10,7 +10,9 @@
 
 **Progress**:
 
-[![Stories Ready to be Worked On][waffle_ready_img]][waffleio] [![Stories Being Worked On][waffle_work_img]][waffleio] [![Throughput Graph][issuegraph]][issuelink]
+[![Stories Ready to be Worked On][waffle_ready_img]][waffleio] [![Stories Being Worked On][waffle_work_img]][waffleio]
+
+[![Throughput Graph][issuegraph]][issuelink]
 
 **Coverage & Build**:
 
