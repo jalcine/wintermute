@@ -1,0 +1,52 @@
+---
+- name: Check if we've already installed ZeroMQ.
+  stat: >
+    path=/usr/local/lib/libzmq.so
+  register: libzmq_lib
+
+- name: Check if we've downloaded the tarball for ZeroMQ already.
+  stat: >
+    path="/tmp/zeromq-{{zmq_version}}.tar.gz"
+  register: libzmq_tarball
+  when: libzmq_lib.stat.exists == false
+
+- name: Download tarball for ZeroMQ.
+  get_url: >
+    url="http://download.zeromq.org/zeromq-{{zmq_version}}-rc1.tar.gz"
+    dest="/tmp/zeromq-{{zmq_version}}.tar.gz"
+  when: libzmq_lib.stat.exists == false and libzmq_tarball.stat.exists == false
+
+- name: Check if the tarball's been extracted already.
+  stat: >
+    path="/tmp/zeromq-{{zmq_version}}"
+  register: libzmq_extracted
+  when: libzmq_lib.stat.exists == false
+
+- name: Extract the tarball.
+  command: tar -xzf /tmp/zeromq-{{zmq_version}}.tar.gz
+  args:
+    chdir: /tmp
+    creates: /tmp/zeromq-{{zmq_version}}
+  when: libzmq_lib.stat.exists == false and libzmq_extracted.stat.exists == false
+
+- name: Configure ZeroMQ.
+  shell: |
+    ./autogen.sh;
+    ./configure --prefix=/usr/local;
+  args:
+    chdir: "/tmp/zeromq-{{zmq_version}}"
+  when: libzmq_lib.stat.exists == false
+
+- name: Build ZeroMQ.
+  command: make -j4 all
+  args:
+    chdir: "/tmp/zeromq-{{zmq_version}}"
+  when: libzmq_lib.stat.exists == false
+
+- name: Install ZeroMQ.
+  command: make install
+  args:
+    chdir: "/tmp/zeromq-{{zmq_version}}"
+  when: libzmq_lib.stat.exists == false
+
+- include: zmqpp.yml      tags=packages,zmq,zmqpp

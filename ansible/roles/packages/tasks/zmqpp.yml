@@ -23,13 +23,13 @@
   when: zmqpp_lib.stat.exists == false
 
 - name: Extract the tarball.
-  command: "tar -xzf /tmp/zmqpp.tar.gz"
+  command: tar -xzf /tmp/zmqpp.tar.gz
   args:
     chdir: /tmp
   when: zmqpp_lib.stat.exists == false and zmqpp_extracted.stat.exists == false
 
 - name: Configure ZeroMQ for C++.
-  shell: mkdir -p build && cd build && cmake ..
+  shell: cmake .
   args:
     chdir: "/tmp/zmqpp-develop"
   when: zmqpp_lib.stat.exists == false

@@ -3,14 +3,13 @@
   apt_repository: >
     repo='ppa:dhart/ppa'
 
-- name: Add Chris Lea's PPA for zmq.
+- name: Add Kubuntu's Backports PPA for cmake.
   apt_repository: >
-    repo='ppa:chris-lea/zeromq'
+    repo='ppa:kubuntu-ppa/backports'
 
-- name: Add Ubuntu restricted toolchain when we're using GCC.
+- name: Add Ubuntu restricted toolchain.
   apt_repository: >
     repo='ppa:ubuntu-toolchain-r/test'
-  when: compiler_family == "gcc"
 
 - name: Add LLVM PPA key when we're using Clang.
   apt_key: >

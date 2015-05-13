@@ -8,7 +8,7 @@
 
 - name: Install base tooling and Git.
   apt: >
-    state=latest
+    state=present
     name={{ item }}
   with_items:
     - libtool
@@ -32,12 +32,12 @@
 
 - name: Install dependencies for Wintermute.
   apt: >
-    state=latest
+    state=present
     name={{ item }}
   with_items:
     - libjsoncpp-dev
     - liblog4cxx10-dev
-    - libzmq3-dev
+    - cmake
 
 - name: Install test and documenation dependencies for Wintermute
   sudo: True
@@ -50,7 +50,6 @@
     - valgrind
     - lcov
 
-- include: cmake.yml      tags=packages,cmake
 - include: uv.yml         tags=packages,uv
 - include: libconfig.yml  tags=packages,libconfig
-- include: zmqpp.yml      tags=packages,zmq,zmqpp
+- include: libzmq.yml     tags=packages,zmq
