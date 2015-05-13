@@ -13,6 +13,7 @@
 
 **Coverage & Build**:
 `develop`: [![Build Status][travisdevelop_img]][build_stat] [![Coverage Status][coverallsdevelop_img]][cover_stat]
+
 `master`:  [![Build Status][travismaster_img]][build_stat] [![Coverage Status][coverallsmaster_img]][cover_stat]
 
 # Synopsis
