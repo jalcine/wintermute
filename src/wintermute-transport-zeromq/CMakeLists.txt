@@ -46,12 +46,10 @@ ADD_LIBRARY(wintermute-transport-zmq
   SHARED ${_srcs}
   )
 
-TARGET_LINK_LIBRARIES(wintermute-transport-zmq
-  ${ZEROMQ_LIBS} zmqpp zmq
-  )
+TARGET_LINK_LIBRARIES(wintermute-transport-zmq ${ZEROMQCXX_LIBRARIES})
 
 TARGET_INCLUDE_DIRECTORIES(wintermute-transport-zmq
-  PUBLIC ${ZEROMQ_INCLUDE_DIRS}
+  PUBLIC ${ZEROMQCXX_INCLUDE_DIRS}
 )
 
 WINTERMUTE_PLUGIN_DECLARE(
