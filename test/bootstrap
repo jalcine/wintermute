@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-printf "export LD_LIBRARY_PATH='/usr/local:/usr';\n" >> ~/.bashrc;
-
 bootstrap_build() {
   sudo apt-get install python-pycurl ansible -qq
 
@@ -16,6 +14,9 @@ bootstrap_build() {
     fi
   fi
 
+  echo "export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib" \
+    | sudo tee /etc/profile.d/local_lib.sh
+
   hostname | sudo tee /etc/ansible/hosts > /dev/null
   echo -en "\n[bootstrap] Building for '${CC:gcc}' toolchain...\n";
   ansible-playbook -c local --extra-vars="compiler_family=${CC:gcc}" \
@@ -24,14 +25,15 @@ bootstrap_build() {
 
 dump_log() {
   if [ "$TRAVIS" == true ]; then
-    cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*LastBuild*.log")";
+    cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*Last*.log")";
   else
-    cat "$(find ~vagrant/build -type f -name "*LastBuild*.log")";
+    cat "$(find ~vagrant/build -type f -name "*Last*.log")";
   fi
 }
 
 run_build() {
-  make all test;
+  make -j2 all;
+  make -e test;
   local _exit=$?;
   echo -en "[test] Testing exited with code ${_exit}.\n";
   if [ $_exit -gt 0 ]; then
@@ -50,9 +52,7 @@ generate_build() {
   fi
 
   CC=gcc CXX=${_compiler} cmake \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_VERBOSE_MAKEFILE=ON \
-    -DCI_BUILD="$2" "$1" || exit 32
+    -DCI_BUILD=ON "$1" || exit 32
 }
 
 
@@ -67,13 +67,13 @@ case "$1" in
     bootstrap_build || exit 16
     ;;
   "--generate" )
-    generate_build . on
+    generate_build .
     ;;
   "--generate-vagrant" )
     cd ~vagrant;
     rm build -rf;
     mkdir build 2> /dev/null; cd build
-    generate_build /vagrant off
+    generate_build /vagrant
     ;;
   "--run" )
     run_build
