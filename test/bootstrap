@@ -28,8 +28,8 @@ ansible_path() {
 
 send_coveralls_payload() {
   export GCOV=$(which gcov);
-  cpp-coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src \
-    --exclude test -t "${COVERALLS_TOKEN}";
+  cpp-coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . \
+    --include /vagrant --include . -t "${COVERALLS_TOKEN}";
 }
 
 preset_library_path() {
