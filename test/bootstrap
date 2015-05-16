@@ -108,7 +108,7 @@ case "$1" in
     run_build
     ;;
   "--run-vagrant" )
-    PWD=~vagrant/build run_build;
+    PWD=/home/vagrant/build run_build;
     ;;
   "--dump-log" )
     dump_log
