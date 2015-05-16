@@ -37,19 +37,19 @@
   with_items:
     - libjsoncpp-dev
     - liblog4cxx10-dev
-    - cmake
 
 - name: Install test and documenation dependencies for Wintermute
   sudo: True
   apt: >
-    state=latest
+    state=present
     name={{ item }}
   with_items:
     - doxygen
     - cxxtest
     - valgrind
     - lcov
-
+    - cmake=2.8.12.2-0ubuntu1~ubuntu12.04.1~ppa2
+ 
 - include: uv.yml         tags=packages,uv
 - include: libconfig.yml  tags=packages,libconfig
 - include: libzmq.yml     tags=packages,zmq
