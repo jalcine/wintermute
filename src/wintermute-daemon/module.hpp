@@ -21,7 +21,7 @@
 #ifndef WINTERMUTE_DAEMON_MODULE_HPP_
 #define WINTERMUTE_DAEMON_MODULE_HPP_
 
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/module.hpp>
 
 namespace Wintermute
 {

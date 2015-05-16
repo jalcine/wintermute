@@ -18,8 +18,8 @@
 #ifndef WINTERMUTE_ZMQ_RECEIVER_HPP_
 # define WINTERMUTE_ZMQ_RECEIVER_HPP_
 
-#include <wintermutecore/tunnel.hpp>
-#include <wintermutecore/events.hpp>
+#include <wintermute-core/tunnel.hpp>
+#include <wintermute-core/events.hpp>
 #include <zmqpp/zmqpp.hpp>
 
 namespace Wintermute

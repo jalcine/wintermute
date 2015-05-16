@@ -19,8 +19,8 @@
  */
 
 #include <string>
-#include <wintermutecore/events.hpp>
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/events.hpp>
+#include <wintermute-core/module.hpp>
 #include "module.hpp"
 
 using std::string;

@@ -17,14 +17,20 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 ###############################################################################
+PROJECT(WintermuteTestFixtures)
+INCLUDE(WintermutePlugin)
 
-include(WintermuteTest)
+# TODO: Create dynamic fixture library to drop into tests.
 
-wintermute_define_plugin(
+set(_srcs
+  ./wintermute_sample.cc
+)
+
+ADD_LIBRARY(wintermute-sample-plugin SHARED ${_srcs})
+
+WINTERMUTE_PLUGIN_DECLARE(
   TARGET
-    wintermutesample
-  SOURCES
-    ./wintermute_sample.cc
+    wintermute-sample-plugin
   INCLUDE_DIRECTORIES
     ${WINTERMUTE_TEST_INCLUDE_DIRS}
   )

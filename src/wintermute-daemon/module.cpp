@@ -18,9 +18,9 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include <wintermutecore/globals.hpp>
-#include <wintermutecore/method.hpp>
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/globals.hpp>
+#include <wintermute-core/method.hpp>
+#include <wintermute-core/logging.hpp>
 #include "module.hpp"
 #include "module.hh"
 

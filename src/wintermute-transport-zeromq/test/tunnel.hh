@@ -19,9 +19,9 @@
 #include "../globals.hpp"
 #include "../plugin.hpp"
 #include "../receiver.hpp"
-#include <wintermutecore/tunnel.hpp>
-#include <wintermutecore/plugin.hpp>
-#include <wintermutecore/logging.hpp>
+#include <wintermute-core/tunnel.hpp>
+#include <wintermute-core/plugin.hpp>
+#include <wintermute-core/logging.hpp>
 
 using Wintermute::Logging;
 using Wintermute::Plugin;

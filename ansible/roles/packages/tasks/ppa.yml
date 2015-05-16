@@ -1,0 +1,26 @@
+---
+- name: Add David Hart's PPA for cxxtest.
+  apt_repository: >
+    repo='ppa:dhart/ppa'
+
+- name: Add Kubuntu's Backports PPA for cmake.
+  apt_repository: >
+    repo='ppa:kubuntu-ppa/backports'
+
+- name: Add Ubuntu restricted toolchain.
+  apt_repository: >
+    repo='ppa:ubuntu-toolchain-r/test'
+
+- name: Add LLVM PPA key when we're using Clang.
+  apt_key: >
+    url=http://llvm.org/apt/llvm-snapshot.gpg.key
+    state=present
+  when: compiler_family == "clang"
+
+- name: Add LLVM PPA when we're using Clang.
+  apt_repository: >
+    repo="{{ item }}"
+  with_items:
+    - 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+    - 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+  when: compiler_family == "clang"

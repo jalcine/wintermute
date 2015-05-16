@@ -21,7 +21,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 WINTERMUTE_PLUGIN_ADD_TEST(
   PREFIX unit-zmq
-  TARGET transport-zmq
+  TARGET wintermute-transport-zmq
   NAME tunnel
   HEADER ${CMAKE_CURRENT_SOURCE_DIR}/tunnel.hh
   )

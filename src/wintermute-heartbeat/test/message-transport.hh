@@ -18,8 +18,8 @@
 #include "test_suite.hpp"
 #include "../globals.hpp"
 #include "../messages.hpp"
-#include <wintermutecore/events.hpp>
-#include <wintermutecore/tunnel.hpp>
+#include <wintermute-core/events.hpp>
+#include <wintermute-core/tunnel.hpp>
 
 using Wintermute::Events::Timer;
 using Wintermute::Events::Event;

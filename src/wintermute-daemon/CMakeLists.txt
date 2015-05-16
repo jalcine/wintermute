@@ -44,6 +44,7 @@ ADD_LIBRARY(wintermute-daemon
 WINTERMUTE_PLUGIN_DECLARE(
   NAME   daemon
   TARGET wintermute-daemon
+  VERSION ${WINTERMUTE_DAEMON_VERSION}
   )
 
 WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-daemon)

@@ -2,7 +2,11 @@ language: cpp
 compiler:
   - gcc
   - clang
-
+branches:
+  - only:
+      - master
+      - develop
+      - /^feature-.*$/
 before_install:
   - test/bootstrap --before
 before_script:
@@ -11,13 +15,12 @@ script:
   - test/bootstrap --run
 after_success:
   - test/bootstrap --post
-
 notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/a01dbbba8dcad4b82db8
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: always
   slack:
     secure: cjpZPOmM9uJNyOTd09fTcT7cMoghjOc4Qiu3hThU8XhkAJ5rkUZWaXKGpiSoCM1+7t9MM3DtnFa91KNOSPPjb+OoJNrr54+RNbLUT16OIYxzynbPSQxYWJ4osqrpoLImerSjW3JQsgKsj+eWTp442OkizJsxFkAsBmPIOAh1NsA=

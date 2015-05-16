@@ -1,0 +1,55 @@
+---
+- include: ppa.yml tags=ppa,packages
+
+- name: Update system package cache.
+  apt: >
+    update_cache=yes
+    cache_valid_time=14400
+
+- name: Install base tooling and Git.
+  apt: >
+    state=present
+    name={{ item }}
+  with_items:
+    - libtool
+    - automake
+    - autoconf
+    - bison
+    - pkg-config
+    - git
+    - python-pip
+    - binutils
+    - libboost-program-options-dev
+
+- include: compilers.yml tags=packages,compilers,gcc,clang
+
+- name: Install 'coveralls' client package.
+  pip: >
+    name={{ item }}
+    state=present
+  with_items:
+    - cpp-coveralls
+
+- name: Install dependencies for Wintermute.
+  apt: >
+    state=present
+    name={{ item }}
+  with_items:
+    - libjsoncpp-dev
+    - liblog4cxx10-dev
+
+- name: Install test and documenation dependencies for Wintermute
+  sudo: True
+  apt: >
+    state=present
+    name={{ item }}
+  with_items:
+    - doxygen
+    - cxxtest
+    - valgrind
+    - lcov
+    - cmake=2.8.12.2-0ubuntu1~ubuntu12.04.1~ppa2
+ 
+- include: uv.yml         tags=packages,uv
+- include: libconfig.yml  tags=packages,libconfig
+- include: libzmq.yml     tags=packages,zmq

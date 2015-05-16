@@ -20,8 +20,8 @@
 #include "../pong_module.hpp"
 #include "../ping_module.hpp"
 #include "../globals.hpp"
-#include <wintermutecore/util.hh>
-#include <wintermutecore/module.hpp>
+#include <wintermute-core/util.hh>
+#include <wintermute-core/module.hpp>
 
 using std::vector;
 using std::pair;

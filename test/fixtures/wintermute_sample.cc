@@ -15,8 +15,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#define WINTER_SAMPLE 1
-#include <wintermutecore/logging.hpp>
+#define WINTERMUTE_TEST_SAMPLE 1
+#include <wintermute-core/logging.hpp>
 #include "test_suite.hpp"
 #include "wintermute_sample.hh"
 

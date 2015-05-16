@@ -1,0 +1,57 @@
+---
+- name: Add build dependencies.
+  command: apt-get build-dep libconfig -y --force-yes
+
+- name: Check if we've already installed libconfig.
+  stat: >
+    path=/usr/local/lib/libconfig++.so.9
+  register: libconfig_lib
+
+- name: Check if we've downloaded the tarball for libconfig already.
+  stat: >
+    path=/tmp/libconfig.tar.gz
+  register: libconfig_tarball
+  when: libconfig_lib.stat.exists == false
+
+- name: Download tarball for libconfig.
+  get_url: >
+    url="https://github.com/hyperrealm/libconfig/archive/f034214e1b7a7d20321fc9d5f007f6e5b21c6a76.tar.gz"
+    dest=/tmp/libconfig.tar.gz
+  when:  libconfig_lib.stat.exists == false and libconfig_tarball.stat.exists == false
+
+- name: Check if the tarball's been extracted already.
+  stat: >
+    path=/tmp/libconfig
+  register: libconfig_extracted
+  when: libconfig_lib.stat.exists == false
+
+- name: Extract the tarball.
+  command: tar -xzf libconfig.tar.gz
+  args:
+    chdir: /tmp
+  when: libconfig_lib.stat.exists == false and libconfig_extracted.stat.exists == false
+
+- name: Preconfigure libconfig for the local environment.
+  shell: |
+    autoreconf -v -W none -f;
+  args:
+    chdir: /tmp/libconfig-f034214e1b7a7d20321fc9d5f007f6e5b21c6a76
+  when: libconfig_lib.stat.exists == false
+
+- name: Configure libconfig for the local environment.
+  command: ./configure --prefix=/usr/local
+  args:
+    chdir: /tmp/libconfig-f034214e1b7a7d20321fc9d5f007f6e5b21c6a76
+  when: libconfig_lib.stat.exists == false
+
+- name: Compile libconfig.
+  command: make -j4
+  args:
+    chdir: /tmp/libconfig-f034214e1b7a7d20321fc9d5f007f6e5b21c6a76
+  when: libconfig_lib.stat.exists == false
+
+- name: Install libconfig.
+  command: make install
+  args:
+    chdir: /tmp/libconfig-f034214e1b7a7d20321fc9d5f007f6e5b21c6a76
+  when: libconfig_lib.stat.exists == false

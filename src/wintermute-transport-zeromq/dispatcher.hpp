@@ -18,7 +18,7 @@
 #ifndef WINTERMUTE_ZMQ_DISPATCHER_HPP_
 # define WINTERMUTE_ZMQ_DISPATCHER_HPP_
 
-#include <wintermutecore/tunnel.hpp>
+#include <wintermute-core/tunnel.hpp>
 #include <zmqpp/zmqpp.hpp>
 #include "globals.hpp"
 

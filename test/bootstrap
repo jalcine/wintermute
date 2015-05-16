@@ -1,110 +1,130 @@
 #!/usr/bin/env bash
 
+# Force CTest to run tests in parallel.
+
+# Use the provided `gcov` path.
+
+make_vagrant_build_dir()
+{
+  cd ~vagrant;
+  rm build -rf;
+  mkdir -p build;
+}
+
+ansible_path() {
+  local ansible_path="";
+
+  if [ "$USER" == "vagrant" ]; then
+    local ansible_path="/vagrant/ansible/site.yml";
+  else
+    if [ "$TRAVIS" == true ]; then
+      sudo apt-get install aptitude -qq;
+      local ansible_path="$TRAVIS_BUILD_DIR/ansible/site.yml";
+    fi
+  fi
+
+  printf $ansible_path;
+}
+
+send_coveralls_payload() {
+  export GCOV=$(which gcov);
+  cpp-coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . \
+    --include /vagrant --include . -t "${COVERALLS_TOKEN}";
+}
+
+preset_library_path() {
+  if [ ! -r /etc/profile.d/local_lib.sh ]; then
+    echo "export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib" | sudo tee \
+      /etc/profile.d/local_lib.sh > /dev/null;
+    sudo chmod o+rx /etc/profile.d/local_lib.sh;
+  fi
+
+  source /etc/profile.d/local_lib.sh;
+}
+
 bootstrap_build() {
-  echo -en "Running tests on $(uname -a)."
+  if [ ! -x ansible-playbook ]; then
+    sudo apt-get install python-pycurl ansible -qq;
+  fi
 
-  sudo apt-get update -qq
+  local _cc=${CC};
+  [ -z ${_cc} ] && _cc="gcc";
 
-  echo -en "\n[build]: fetching PPAs....\n"
-  sudo apt-get install python-software-properties software-properties-common -qq
-  wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
-  sudo apt-add-repository ppa:dhart/ppa -y
-  sudo apt-add-repository ppa:ubuntu-toolchain-r/test -y
-  sudo apt-add-repository ppa:kubuntu-ppa/beta -y
-  sudo add-apt-repository ppa:h-rayflood/llvm -y
+  preset_library_path;
 
-  echo -en "\n[build]: updating system...\n"
-  sudo apt-get update -qq
-
-  echo -en "\n[build]: installing packages...\n"
-  sudo apt-get install -qq libtool automake autconf bison
-  sudo apt-get install -qq pkg-config
-  sudo apt-get install -qq python-pip python
-
-  sudo pip install cpp-coveralls --upgrade
-
-  # Install dependencies.
-  echo -en "\n[build]: installing dependencies...\n"
-  sudo apt-get install -qq libjsoncpp-dev
-  sudo apt-get install -qq liblog4cxx10-dev
-  sudo apt-get install -qq libconfig++-dev
-  sudo apt-get install -qq doxygen
-  sudo apt-get install -qq cxxtest
-  sudo apt-get install -qq valgrind
-  sudo apt-get install -qq lcov
-  sudo apt-get install -qq pkg-config
-  sudo apt-get install -qq cmake
-  sudo apt-get install -qq g++-4.9 clang-3.5
-  sudo apt-get install -qq libzmq3-dev libzmqpp-dev
-
-  install_libuv
-  install_cmake
-
-  echo -en "\nDone installing dependencies.\n"
+  hostname | sudo tee /etc/ansible/hosts > /dev/null;
+  echo -en "\n[bootstrap] Building for '${_cc}' toolchain from $(ansible_path)...\n";
+  ansible-playbook -c local --extra-vars="compiler_family=${_cc}" \
+    "$(ansible_path)";
 }
 
-install_cmake() {
-  sudo apt-get build-dep -qq cmake;
-  cd $(mktemp -d);
-  wget http://www.cmake.org/files/v2.8/cmake-2.8.12.tar.gz
-  tar -xvzf cmake-2.8.12.tar.gz
-  cd cmake-2.8.12
-  sh autogen.sh
-  ./configure --prefix=/usr
-  make
-  sudo make install
+dump_log() {
+  if [ "$TRAVIS" == true ]; then
+    cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*Last*.log")";
+  else
+    cat "$(find ~vagrant/build -type f -name "*Last*.log")";
+  fi
 }
 
-install_libuv() {
-  sudo apt-get install git libtool autoconf automake -qq;
-
-  git clone git://github.com/libuv/libuv ~/libuv;
-  git checkout v1.2.1;
-  cd ~/libuv;
-  sh autogen.sh;
-  ./configure --prefix=/usr;
-  make;
-  sudo make install;
+run_build() {
+  export CTEST_PARALLEL_LEVEL=2;
+  preset_library_path;
+  make -j2 all;
+  make -e test;
+  local _exit=$?;
+  echo -en "[test] Testing exited with code ${_exit}.\n";
+  if [ $_exit -gt 0 ]; then
+    dump_log;
+    exit $_exit;
+  else
+    exit 0;
+  fi
 }
 
-case $1 in
+generate_build() {
+  local _compiler=$(which g++);
+
+  if [ "${CC}" == "clang" ]; then
+    _compiler=$(which clang-3.5);
+  fi
+
+  CC=gcc CXX=${_compiler} cmake \
+    -DCI_BUILD=ON "$1" || exit 32
+}
+
+
+case "$1" in
   "--before" )
-    bootstrap_build || exit 8
+    bootstrap_build || exit 16
     ;;
   "--generate" )
-    if [[ $CXX == "gcc" ]]; then
-      export CXX="$(which g++-4.9)"
-    fi
-
-    cmake . -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
-    ;;
-  "--cmake" )
-    install_cmake
+    generate_build .
     ;;
   "--generate-vagrant" )
-    mkdir build; cd build
-    cmake /vagrant -DCMAKE_CXX_COMPILER=$(which g++-4.9) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON -DCI_BUILD=ON || exit 4
+    make_vagrant_build_dir
+    generate_build /vagrant
     ;;
   "--run" )
-    make all || exit 1
-    make ExperimentalTest || exit 2
-    make ExperimentalMemCheck
-    make ExperimentalCoverage
+    run_build
+    ;;
+  "--run-vagrant" )
+    PWD=/home/vagrant/build run_build;
+    ;;
+  "--dump-log" )
+    dump_log
+    ;;
+  "--vagrant" )
+    /vagrant/test/bootstrap --generate-vagrant
+    /vagrant/test/bootstrap --run-vagrant
+    ;;
+  "--dump-log" )
+    if [ "$TRAVIS" == true ]; then
+      cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*LastBuild*.log")";
+    else
+      cat "$(find ~vagrant/build -type f -name "*LastBuild*.log")";
+    fi
     ;;
   "--post" )
-    coveralls --gcov $(which gcov) --gcov-options "\-lcfd" -r . --include src --exclude test -t $COVERALLS_TOKEN
-    ;;
-  *)
-    echo -en <<HELP
-test/bootstrap -- Sets up your Ubuntu environment for Wintermute testing.
-
-  --before              Installs the necessary packages.
-  --generate            Configures the project using CMake.
-  --generate-vagrant    Configures the project using CMake under a Vagrant-like
-                        environment.
-  --run                 Builds and tests Wintermute.
-  --post                Runs post-testing actions (works only on Travis.CI).
-  --help                HELLO!
-HELP
+    send_coveralls_payload;
     ;;
 esac

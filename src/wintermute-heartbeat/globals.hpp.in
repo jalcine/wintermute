@@ -21,7 +21,7 @@
 #ifndef WINTERMUTE_HEARTBEAT_GLOBALS_HPP_
 # define WINTERMUTE_HEARTBEAT_GLOBALS_HPP_
 
-#include <wintermutecore/globals.hpp>
+#include <wintermute-core/globals.hpp>
 
 /**
  * Defines the name of the heartbeat plugin.

@@ -17,8 +17,8 @@
 
 #include <stdlib.h>
 #include "test_suite.hpp"
-#include "wintermutecore/logging.hpp"
-#include "wintermutecore/library.hpp"
+#include "wintermute-core/logging.hpp"
+#include "wintermute-core/library.hpp"
 
 using Wintermute::Logging;
 using Wintermute::Library;
@@ -31,10 +31,7 @@ public:
   void tearDown()
   {
     unsetenv(WINTERMUTE_ENV_PLUGIN_PATH);
-    if (!libraryPtr)
-    {
-      libraryPtr = nullptr;
-    }
+    libraryPtr = nullptr;
   }
 
   void setUp()
@@ -44,10 +41,7 @@ public:
       TS_ASSERT ( libraryPtr->unload() );
     }
 
-    if (!libraryPtr)
-    {
-      libraryPtr = nullptr;
-    }
+    libraryPtr = nullptr;
   }
 
   Library::Ptr fetchWorkingLibrary(const string& thePath = SAMPLE_PLUGIN_PATH)
@@ -62,8 +56,11 @@ public:
     TSM_ASSERT_EQUALS (
       "Library loads successfully.",
       libraryPtr->loadedStatus(),
-      Library::LoadIsLoaded
-    );
+      Library::LoadIsLoaded );
+
+    TSM_ASSERT_EQUALS ( "Library reports provided file name.",
+      libraryPtr->filename(),
+      thePath );
 
     return libraryPtr;
   }
@@ -99,14 +96,13 @@ public:
 
   void testUnloadingLibrary()
   {
-    Library::Ptr aLibraryPtr =
-      std::make_shared<Library>(SAMPLE_PLUGIN_PATH);
+    Library::Ptr aLibraryPtr = fetchWorkingLibrary();
 
     TSM_ASSERT_EQUALS ( "Library unloaded successfully.",
       aLibraryPtr->unload(),
       Library::LoadNotLoaded );
 
-    TSM_ASSERT_EQUALS ( "Library status == LoadNotLoaded",
+    TSM_ASSERT_EQUALS ( "Library status = LoadNotLoaded",
       aLibraryPtr->loadedStatus(),
       Library::LoadNotLoaded );
 
@@ -119,7 +115,7 @@ public:
     setenv(WINTERMUTE_ENV_PLUGIN_PATH,
       string(TEST_BASE_DIR "/../lib").c_str(), 1);
 
-    libraryPtr = Library::find(SAMPLE_PLUGIN_NAME);
+    libraryPtr = Library::find(SAMPLE_PLUGIN_SIMPLE_NAME);
 
     TSM_ASSERT (
       "Library pointer allocated.",
@@ -143,7 +139,7 @@ public:
   {
     setenv(WINTERMUTE_ENV_PLUGIN_PATH, TEST_BASE_DIR, 1);
 
-    libraryPtr = Library::find("fixtures/" SAMPLE_PLUGIN_FILE_NAME);
+    libraryPtr = Library::find("lib/" SAMPLE_PLUGIN_FILE_NAME);
 
     TSM_ASSERT ( "Library pointer allocated with full file path.",
       libraryPtr );
@@ -181,7 +177,7 @@ public:
       !okFunctionPtr );
   }
 
-  void NOtestResolveFunctionFromLibrary()
+  void testResolveFunctionFromLibrary()
   {
     libraryPtr = fetchWorkingLibrary();
     Library::FunctionPtr okFunctionPtr = libraryPtr->resolveFunction("w_sample_test");

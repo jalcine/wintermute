@@ -18,15 +18,13 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-PROJECT(Wintermute)
 
-# Add our CMake files into the mix.
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-INCLUDE(defaults)
-
-# Enable testing.
+# == Enable testing. The way CTest works, this has to be invoked from the
+# topmost CMakeLists.txt file.
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+# == Include the subcomponents of the project.
+ADD_SUBDIRECTORY(cmake)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)

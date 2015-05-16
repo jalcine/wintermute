@@ -20,11 +20,16 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 PROJECT(WintermtueTransportZeroMQ CXX)
 
-include(WintermutePlugin)
+INCLUDE(WintermutePlugin)
 FIND_PACKAGE(ZeroMQCXX REQUIRED)
 
+if (NOT ZEROMQCXX_FOUND)
+  message(STATUS "ZeroMQ not found; not building extension.")
+  return()
+endif()
+
 SET(WINTERMUTE_ZMQ_VERSION     0.0.1-dev)
-SET(WINTERMUTE_ZMQ_IPC_ADDRESS ${CMAKE_CURRENT_BINARY_DIR}/wintermute.sock)
+SET(WINTERMUTE_ZMQ_IPC_ADDRESS /tmp/wintermute.sock)
 
 SET(_srcs
   plugin.cpp
@@ -37,23 +42,22 @@ CONFIGURE_FILE(globals.hpp.in
   @ONLY
   )
 
-ADD_LIBRARY(transport-zmq
+ADD_LIBRARY(wintermute-transport-zmq
   SHARED ${_srcs}
   )
 
-TARGET_LINK_LIBRARIES(transport-zmq
-  ${ZEROMQ_LIBS} zmqpp zmq
-  )
+TARGET_LINK_LIBRARIES(wintermute-transport-zmq ${ZEROMQCXX_LIBRARIES})
 
-TARGET_INCLUDE_DIRECTORIES(transport-zmq
-  PUBLIC ${ZEROMQ_INCLUDE_DIRS}
+TARGET_INCLUDE_DIRECTORIES(wintermute-transport-zmq
+  PUBLIC ${ZEROMQCXX_INCLUDE_DIRS}
 )
 
 WINTERMUTE_PLUGIN_DECLARE(
-  NAME   transport-zmq
-  TARGET transport-zmq
+  NAME   wintermute-transport-zmq
+  TARGET wintermute-transport-zmq
+  VERSION ${WINTERMUTE_ZMQ_VERSION}
   )
 
-WINTERMUTE_PLUGIN_VALIDATE(TARGET transport-zmq)
+WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-transport-zmq)
 
 ADD_SUBDIRECTORY(test)

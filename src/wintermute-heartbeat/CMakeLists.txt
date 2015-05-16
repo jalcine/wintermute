@@ -21,9 +21,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 PROJECT(WintermuteHeartbeat CXX)
 
 INCLUDE(WintermutePlugin)
-INCLUDE(FindPkgConfig)
-
-PKG_SEARCH_MODULE(UUID uuid)
 
 SET(WINTERMUTE_HEARTBEAT_VERSION 0.0.1-dev)
 
@@ -50,6 +47,7 @@ ADD_LIBRARY(wintermute-heartbeat
 WINTERMUTE_PLUGIN_DECLARE(
   NAME   heartbeat
   TARGET wintermute-heartbeat
+  VERSION ${WINTERMUTE_HEARTBEAT_VERSION}
   )
 
 WINTERMUTE_PLUGIN_VALIDATE(TARGET wintermute-heartbeat)

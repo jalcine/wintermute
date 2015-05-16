@@ -16,7 +16,7 @@
  */
 
 #include "test_suite.hpp"
-#include "wintermutecore/events.hpp"
+#include "wintermute-core/events.hpp"
 
 using Wintermute::Events::Event;
 using Wintermute::Events::Loop;
