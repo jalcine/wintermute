@@ -156,4 +156,3 @@ bool Configuration::set(const string& key, const list<string>& value)
   const string finalString = join_string(value, ";");
   return set(key, finalString);
 }
->>>>>>> release/0.0.4
