@@ -24,3 +24,8 @@
     update-alternatives --set g++ /usr/bin/g++-4.9;
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10;
     update-alternatives --set gcc /usr/bin/gcc-4.9;
+
+- name: compilers | Set proper coverage tool for GNU tools.
+  shell: |
+    update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 90;
+    update-alternatives --set gcov /usr/bin/gcov-4.9;
