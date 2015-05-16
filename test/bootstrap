@@ -28,7 +28,7 @@ ansible_path() {
 
 send_coveralls_payload() {
   export GCOV=$(which gcov);
-  coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src \
+  cpp-coveralls --gcov "${GCOV}" --gcov-options "\-lcfd" -r . --include src \
     --exclude test -t "${COVERALLS_TOKEN}";
 }
 

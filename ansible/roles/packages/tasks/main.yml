@@ -28,7 +28,7 @@
     name={{ item }}
     state=present
   with_items:
-    - coveralls
+    - cpp-coveralls
 
 - name: Install dependencies for Wintermute.
   apt: >
