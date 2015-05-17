@@ -28,3 +28,7 @@ INCLUDE(CTest)
 ADD_SUBDIRECTORY(cmake)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
+
+# == Print out some build information.
+INCLUDE(WintermuteVersion)
+message(STATUS "Building Wintermute ${WINTERMUTE_VERSION}...")
