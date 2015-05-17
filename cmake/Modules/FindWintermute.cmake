@@ -18,17 +18,15 @@
 # Boston, MA 02111-1307, USA.
 ###############################################################################
 
-set(WINTERMUTE_CMAKE_DIR
-  "${WINTERMUTE_INSTALL_PREFIX}/@CMAKE_INSTALL_DATAROOTDIR@/cmake-@CMAKE_MAJOR_VERSION@-@CMAKE_MINOR_VERSION@")
-
-list(APPEND CMAKE_MODULE_PATH ${WINTERMUTE_CMAKE_DIR})
-
-include(UseWintermute)
+include(${CMAKE_CURRENT_LIST_DIR}/UseWintermute.cmake OPTIONAL)
 
 if(NOT WINTERMUTE_FOUND)
-  message(FATAL "Wintermute was not found.")
+  message(FATAL_ERROR "Wintermute was not found at '${CMAKE_CURRENT_LIST_DIR}'.")
 else()
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Internal)
   include(WintermuteVariables)
   include(WintermuteDependencies)
   include(WintermuteVersion)
+  include(WintermuteMacros)
+  message(STATUS "Wintermute development enabled.")
 endif()
