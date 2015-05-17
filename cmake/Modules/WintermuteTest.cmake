@@ -21,6 +21,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 INCLUDE(CTest)
 INCLUDE(WintermuteTestMacros)
+INCLUDE(UseWintermute)
 
 #== Handle work if we're in CI mode.
 OPTION(CI_BUILD "CI build.  Extra compilation flags will be set." OFF)
@@ -43,9 +44,7 @@ IF (NOT CXXTEST_FOUND)
   RETURN()
 ENDIF()
 
-SET(_wntr_test_tpl
-  ${WINTERMUTE_CMAKE_DIR}/Templates/test_runner.cpp.in
-  )
+SET(_wntr_test_tpl ${WINTERMUTE_CMAKE_TEMPLATE_DIR}/test_runner.cpp.in)
 
 SET(CXXTEST_TESTGEN_ARGS
   --template ${_wntr_test_tpl}
@@ -54,14 +53,15 @@ SET(CXXTEST_TESTGEN_ARGS
 LIST(APPEND WINTERMUTE_TEST_INCLUDE_DIRS
   ${CXXTEST_INCLUDE_DIR})
 
-# TODO: Make this source-specific
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_suite.hpp
-  @ONLY)
+if (WINTERMUTE_SOURCE_BUILD)
+  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_suite.hpp
+    @ONLY)
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/CTestConfig.cmake.in
-  ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
-  @ONLY)
+  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/CTestConfig.cmake.in
+    ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
+    @ONLY)
+endif()
 
 # Use Valgrind for memory checking.
 SET(CMAKE_MEMORYCHECK_COMMAND valgrind)

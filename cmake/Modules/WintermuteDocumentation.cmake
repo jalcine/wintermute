@@ -22,9 +22,13 @@
 INCLUDE(CMakeParseArguments)
 INCLUDE(GNUInstallDirs)
 
-OPTION(GENERATE_DOCUMENTATION OFF "Generate documentation using Doxygen.")
+# == Query if documentation should be generated.
+OPTION(GENERATE_DOCUMENTATION ON "Generate documentation using Doxygen.")
 
-IF (GENERATE_DOCUMENTATION EQUAL OFF)
+IF (NOT GENERATE_DOCUMENTATION)
+  macro(doxygen_generate_documentation)
+  endmacro()
+  MESSAGE(STATUS "Not generating documentation.")
   RETURN()
 ENDIF()
 
@@ -34,7 +38,7 @@ IF (NOT DOXYGEN_FOUND)
   MESSAGE(FATAL_ERROR "Cannot generate documentation, Doxygen not found.")
 ENDIF()
 
-# Look for dot for graphing.
+# == Look for dot for graphing.
 IF (NOT DOXYGEN_DOT_FOUND OR NOT DOXYGEN_DOT_EXECUTABLE)
   FIND_PROGRAM(DOT_PROGRAM dot
     DOC "Graphviz application for drawing graphs.")
@@ -129,7 +133,7 @@ MACRO(doxygen_generate_documentation)
   ADD_DEPENDENCIES(docs "${_doxy_TARGET}-docs")
 
   INSTALL(DIRECTORY ${_doxy_working_dir}/html/
-    DESTINATION ${WINTERMUTE_DOCS_DIR}/${_doxy_TARGET}-html
+    DESTINATION ${WINTERMUTE_DOCS_DIR}/${_doxy_TARGET}
     COMPONENT development
     CONFIGURATIONS Debug
   )
