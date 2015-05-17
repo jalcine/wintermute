@@ -29,6 +29,7 @@ set(_srcs
 ADD_LIBRARY(wintermute-sample-plugin SHARED ${_srcs})
 
 WINTERMUTE_PLUGIN_DECLARE(
+  AUTO_INSTALL OFF
   TARGET
     wintermute-sample-plugin
   INCLUDE_DIRECTORIES

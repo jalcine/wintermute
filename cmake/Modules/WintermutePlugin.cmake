@@ -20,7 +20,9 @@
 INCLUDE(WintermuteTest)
 INCLUDE(WintermuteVariables)
 INCLUDE(WintermuteMacros)
+INCLUDE(UseWintermute)
 
+# TODO: Handle extra inclusion directories via WintermuteSourceBuild.
 MACRO(wintermute_plugin_declare)
   SET(options
     )
@@ -28,6 +30,7 @@ MACRO(wintermute_plugin_declare)
     NAME
     VERSION
     TARGET
+    AUTO_INSTALL
     )
   SET(multiValueArgs
     INCLUDE_DIRECTORIES
@@ -35,6 +38,10 @@ MACRO(wintermute_plugin_declare)
 
   CMAKE_PARSE_ARGUMENTS(_wpd "${options}"
     "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT _wpd_AUTO_INSTALL)
+    set(_wpd_AUTO_INSTALL ON)
+  endif()
 
   WINTERMUTE_ADD_TARGET_PROPERTIES(${_wpd_TARGET})
   TARGET_LINK_LIBRARIES(${_wpd_TARGET} wintermute-core)
@@ -48,17 +55,20 @@ MACRO(wintermute_plugin_declare)
 
   SET(_include_dirs
     ${_wpd_INCLUDE_DIRECTORIES}
-    ${WINTERMUTE_INCLUDE_DIRS}
-    ${WINTERMUTE_SOURCE_INCLUDE_DIRS})
+    ${WINTERMUTE_INCLUDE_DIRS})
 
-  # TODO: Handle extra inclusion directories via WintermuteSourceBuild.
+  if (WINTERMUTE_SOURCE_INCLUDE_DIRS)
+    list(APPEND _include_dirs ${WINTERMUTE_SOURCE_INCLUDE_DIRS})
+  endif()
 
   TARGET_INCLUDE_DIRECTORIES(${_wpd_TARGET} BEFORE
     PUBLIC ${_include_dirs})
 
-  WINTERMUTE_INSTALL_TARGET(
-    TARGET ${_wpd_TARGET}
-  )
+  IF (_wpd_AUTO_INSTALL)
+    WINTERMUTE_INSTALL_TARGET(
+      TARGET ${_wpd_TARGET}
+    )
+ENDIF()
 ENDMACRO(wintermute_plugin_declare)
 
 # TODO: Configure the test driver source file to work for the provided Plugin.
