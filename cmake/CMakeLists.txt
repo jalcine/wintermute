@@ -40,18 +40,20 @@ set(CMAKE_MODULE_PATH
   CACHE INTERNAL "Include paths."
   )
 
-# == Generate 'UseWintermute.cmake'
+# == Generate 'UseWintermute.cmake'.
 CONFIGURE_FILE(
   ${CMAKE_CURRENT_SOURCE_DIR}/Templates/Internal/UseWintermute.cmake.in
   ${CMAKE_CURRENT_SOURCE_DIR}/Modules/UseWintermute.cmake
   @ONLY)
 
 INCLUDE(CMakeProvideUninstallTarget)
-INCLUDE(WintermuteSourceBuild)
+INCLUDE(UseWintermute)
 
 # == Install modules and templates.
 file(GLOB _modules Modules/*.cmake)
 file(GLOB _templates Templates/*.in)
+
+message(STATUS ${WINTERMUTE_INSTALL_CMAKE_MODULE_DIR})
 
 INSTALL(FILES ${_modules}
   DESTINATION ${WINTERMUTE_INSTALL_CMAKE_MODULE_DIR}

@@ -35,43 +35,35 @@ if (BUILD_TESTING)
   ENDIF()
 ENDIF()
 
-SET(CXXTEST_TESTGEN_ARGS
-  --have-eh --have-std
-  )
-
-IF (NOT CXXTEST_FOUND)
-  MESSAGE(ERROR "We need CxxTest for the test suite.")
-  RETURN()
-ENDIF()
-
+#== Define the template file to use.
 SET(_wntr_test_tpl ${WINTERMUTE_CMAKE_TEMPLATE_DIR}/test_runner.cpp.in)
 
+#== Define options for CxxTest.
 SET(CXXTEST_TESTGEN_ARGS
+  --have-eh --have-std
   --template ${_wntr_test_tpl}
   )
 
 LIST(APPEND WINTERMUTE_TEST_INCLUDE_DIRS
   ${CXXTEST_INCLUDE_DIR})
 
-if (WINTERMUTE_SOURCE_BUILD)
-  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_suite.hpp
-    @ONLY)
+#== Use Valgrind for memory checking.
+SET(CMAKE_MEMORYCHECK_COMMAND valgrind)
+SET(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+  "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
+SET(MEMORYCHECK_COMMAND
+  "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+SEPARATE_ARGUMENTS(MEMORYCHECK_COMMAND)
 
+#== Conditionally build necessary test files.
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/include/test_suite.hpp.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_suite.hpp
+  @ONLY)
+if (WINTERMUTE_SOURCE_BUILD)
   CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/test/CTestConfig.cmake.in
     ${CMAKE_SOURCE_DIR}/CTestConfig.cmake
     @ONLY)
 endif()
-
-# Use Valgrind for memory checking.
-SET(CMAKE_MEMORYCHECK_COMMAND valgrind)
-SET(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
-  "--error-exitcode=1 --leak-check=full --show-reachable=yes --track-origins=yes -q")
-
-SET(MEMORYCHECK_COMMAND
-  "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
-
-SEPARATE_ARGUMENTS(MEMORYCHECK_COMMAND)
 
 IF(CI_BUILD)
   INCLUDE(WintermuteCI)
