@@ -47,6 +47,7 @@ CONFIGURE_FILE(
   @ONLY)
 
 INCLUDE(CMakeProvideUninstallTarget)
+INCLUDE(WintermuteSourceBuild)
 
 # == Install modules and templates.
 file(GLOB _modules Modules/*.cmake)
