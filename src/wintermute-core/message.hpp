@@ -71,6 +71,8 @@ public:
 
   Module::Designation receiver() const;
 
+  string timestamp() const;
+
   void setSender(const Module::Designation& newSender);
 
   void setReceiver(const Module::Designation& newReceiver);

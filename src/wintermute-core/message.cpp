@@ -16,6 +16,9 @@
  */
 
 #include <algorithm>
+#include <sstream>
+#include <iomanip>
+#include <chrono>
 #include "message.hh"
 #include "message.hpp"
 #include "logging.hpp"
@@ -24,6 +27,8 @@ using Wintermute::Message;
 using Wintermute::Module;
 using Wintermute::MessagePrivate;
 using Wintermute::Util::Serializable;
+using std::chrono::system_clock;
+using std::gmtime;
 
 Message::Message(const Message::HashType& data,
   const Module::Designation& aReceiver,
@@ -60,20 +65,30 @@ Message Message::clone() const
 
 Message::HashType Message::payload() const
 {
-  W_PRV(Message);
+  W_PRV(const Message);
   return d->data;
 }
 
 Module::Designation Message::sender() const
 {
-  W_PRV(Message);
+  W_PRV(const Message);
   return d->sender;
 }
 
 Module::Designation Message::receiver() const
 {
-  W_PRV(Message);
+  W_PRV(const Message);
   return d->receiver;
+}
+
+string Message::timestamp() const
+{
+  W_PRV(const Message);
+  const auto timestampTimeT = system_clock::to_time_t(d->timestamp);
+  string strTime = std::ctime(&timestampTimeT);
+  strTime.pop_back();
+  strTime += string(" UTC");
+  return strTime;
 }
 
 void Message::setSender(const Module::Designation& newSender)
@@ -113,6 +128,7 @@ Serializable::Map Message::serialize() const
   serializedMessage.insert(std::make_pair("sender", sender()));
   serializedMessage.insert(std::make_pair("receiver", receiver()));
   serializedMessage.insert(std::make_pair("payload", payloadString));
+  serializedMessage.insert(std::make_pair("timestamp", timestamp()));
   return serializedMessage;
 }
 
@@ -121,9 +137,11 @@ void Message::deserialize(const Serializable::Map& data)
   const string payloadString = data.at("payload");
   const string senderString = data.at("sender");
   const string receiverString = data.at("receiver");
+  const string timeStampString = data.at("timestamp");
   assert(!payloadString.empty());
   assert(!senderString.empty());
   assert(!receiverString.empty());
+  assert(!timeStampString.empty());
 
   const Serializable::Map payloadMap = Serializable::fromString(payloadString);
   assert(!payloadMap.empty());
