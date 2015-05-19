@@ -16,11 +16,15 @@
  */
 
 #include "test_suite.hpp"
+#include <chrono>
+#include <wintermute-core/util/serializable.hpp>
 #include <wintermute-core/message.hpp>
 #include <cxxtest/TestSuite.h>
 
+using Wintermute::Util::Serializable;
 using Wintermute::Message;
 using Wintermute::Module;
+using std::make_pair;
 
 class MessageTestSuite : public CxxTest::TestSuite
 {
@@ -54,9 +58,7 @@ public:
 
   void testSchemaCheck(void)
   {
-    const auto timestamp = std::chrono::system_clock::now();
-    const auto ctimestamp = std::chrono::system_clock::to_time_t(timestamp);
-    const string timestampString = ctime(&ctimestamp);
+    const string timestampString = getCurrentTimeString();
     Module::Designation sender("input", "in.wintermute.test");
     Module::Designation receiver("output", "in.wintermute.test");
     Message::HashType data;

@@ -31,7 +31,7 @@ public:
   Message::HashType data;
   Module::Designation sender;
   Module::Designation receiver;
-  std::time_t timestamp;
+  std::chrono::system_clock::time_point timestamp;
 
   void clone(const SharedPtr<MessagePrivate>& d);
   bool isEmpty() const;

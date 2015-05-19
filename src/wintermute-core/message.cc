@@ -24,13 +24,13 @@ using Wintermute::Message;
 using Wintermute::Module;
 using Wintermute::MessagePrivate;
 using Wintermute::Util::Serializable;
-using std::chrono::high_resolution_clock;
+using std::chrono::system_clock;
 
 MessagePrivate::MessagePrivate() :
   data(Message::HashType()),
   sender(),
   receiver(),
-  timestamp(time(nullptr))
+  timestamp(system_clock::now())
 {
 }
 
@@ -47,5 +47,5 @@ bool MessagePrivate::isEmpty() const
   /// TODO This needs a better check. If anything, check only if the sender AND
   //payload are empty/null.
   return !sender.isNull() && !receiver.isNull() &&
-         !data.empty() && timestamp != 0;
+         !data.empty() && timestamp != system_clock::time_point();
 }
