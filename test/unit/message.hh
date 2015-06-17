@@ -85,5 +85,7 @@ public:
     const string obtainedTimestring = message.timestamp();
 
     TS_ASSERT ( obtainedTimestring.find("UTC") != 0 );
+    TS_ASSERT_EQUALS ( obtainedTimestring.find("UTC"),
+        obtainedTimestring.length() - 3 );
   }
 };
