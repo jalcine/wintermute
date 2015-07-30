@@ -16,15 +16,28 @@
  */
 
 #include "test_suite.hpp"
+#include <chrono>
+#include <wintermute-core/util/serializable.hpp>
 #include <wintermute-core/message.hpp>
 #include <cxxtest/TestSuite.h>
 
+using Wintermute::Util::Serializable;
 using Wintermute::Message;
 using Wintermute::Module;
+using std::make_pair;
 
 class MessageTestSuite : public CxxTest::TestSuite
 {
 public:
+  string getCurrentTimeString() const
+  {
+    const time_t curTime = time(nullptr);
+    string strTime = asctime(std::gmtime(&curTime));
+    strTime.pop_back();
+    strTime += " UTC";
+    return strTime;
+  }
+
   void testClone(void)
   {
     Message::HashType data;
@@ -45,15 +58,34 @@ public:
 
   void testSchemaCheck(void)
   {
+    const string timestampString = getCurrentTimeString();
     Module::Designation sender("input", "in.wintermute.test");
     Module::Designation receiver("output", "in.wintermute.test");
     Message::HashType data;
     data.insert(std::make_pair("foo", std::to_string(100)));
 
-    Message message(data, receiver, sender);
+    Serializable::Map messageMap;
+    messageMap.insert(make_pair("sender", sender));
+    messageMap.insert(make_pair("receiver", receiver));
+    messageMap.insert(make_pair("payload", Serializable::toString(data)));
+    messageMap.insert(make_pair("timestamp", timestampString));
+
+    Message message;
+    message = messageMap;
 
     TS_ASSERT_EQUALS ( message.sender() , sender );
     TS_ASSERT_EQUALS ( message.receiver() , receiver );
     TS_ASSERT_EQUALS ( message.payload() , data );
+    TS_ASSERT_EQUALS ( message.timestamp(), timestampString );
+  }
+
+  void testEnsureThatTimestampIsUtc()
+  {
+    Message message = craftRandomMessage();
+    const string obtainedTimestring = message.timestamp();
+
+    TS_ASSERT ( obtainedTimestring.find("UTC") != 0 );
+    TS_ASSERT_EQUALS ( obtainedTimestring.find("UTC"),
+        obtainedTimestring.length() - 3 );
   }
 };

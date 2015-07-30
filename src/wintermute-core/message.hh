@@ -18,6 +18,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <chrono>
 #include "message.hpp"
 #include "module.hpp"
 
@@ -30,6 +31,7 @@ public:
   Message::HashType data;
   Module::Designation sender;
   Module::Designation receiver;
+  std::chrono::system_clock::time_point timestamp;
 
   void clone(const SharedPtr<MessagePrivate>& d);
   bool isEmpty() const;

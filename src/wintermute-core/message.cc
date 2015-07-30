@@ -24,8 +24,13 @@ using Wintermute::Message;
 using Wintermute::Module;
 using Wintermute::MessagePrivate;
 using Wintermute::Util::Serializable;
+using std::chrono::system_clock;
 
-MessagePrivate::MessagePrivate() : data(Message::HashType())
+MessagePrivate::MessagePrivate() :
+  data(Message::HashType()),
+  sender(),
+  receiver(),
+  timestamp(system_clock::now())
 {
 }
 
@@ -34,11 +39,13 @@ void MessagePrivate::clone(const SharedPtr<MessagePrivate>& d)
   this->data = d->data;
   this->sender = d->sender;
   this->receiver = d->receiver;
+  this->timestamp = d->timestamp;
 }
 
 bool MessagePrivate::isEmpty() const
 {
   /// TODO This needs a better check. If anything, check only if the sender AND
   //payload are empty/null.
-  return !sender.isNull() && !receiver.isNull() && !data.empty();
+  return !sender.isNull() && !receiver.isNull() &&
+         !data.empty() && timestamp != system_clock::time_point();
 }

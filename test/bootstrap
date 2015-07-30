@@ -6,9 +6,8 @@
 
 make_vagrant_build_dir()
 {
-  cd ~vagrant;
-  rm build -rf;
-  mkdir -p build;
+  rm /vagrant/build -rf;
+  mkdir -p /vagrant/build;
 }
 
 ansible_path() {
@@ -62,12 +61,13 @@ dump_log() {
   if [ "$TRAVIS" == true ]; then
     cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*Last*.log")";
   else
-    cat "$(find ~vagrant/build -type f -name "*Last*.log")";
+    cat "$(find /vagrant -type f -name "*Last*.log")";
   fi
 }
 
 run_build() {
   export CTEST_PARALLEL_LEVEL=2;
+  echo $PWD;
   preset_library_path;
   make -j2 all;
   make -e test;
@@ -88,8 +88,7 @@ generate_build() {
     _compiler=$(which clang-3.5);
   fi
 
-  CC=gcc CXX=${_compiler} cmake \
-    -DCI_BUILD=ON "$1" || exit 32
+  CC=gcc CXX=${_compiler} cmake -DCI_BUILD=ON "$1" || exit 32
 }
 
 
@@ -102,18 +101,19 @@ case "$1" in
     ;;
   "--generate-vagrant" )
     make_vagrant_build_dir
-    generate_build /vagrant
+    generate_build "/vagrant"
     ;;
   "--run" )
     run_build
     ;;
   "--run-vagrant" )
-    PWD=/home/vagrant/build run_build;
+    PWD=/vagrant/build run_build;
     ;;
   "--dump-log" )
     dump_log
     ;;
   "--vagrant" )
+    preset_library_path;
     /vagrant/test/bootstrap --generate-vagrant
     /vagrant/test/bootstrap --run-vagrant
     ;;
@@ -121,7 +121,7 @@ case "$1" in
     if [ "$TRAVIS" == true ]; then
       cat "$(find "$TRAVIS_BUILD_DIR" -type f -name "*LastBuild*.log")";
     else
-      cat "$(find ~vagrant/build -type f -name "*LastBuild*.log")";
+      cat "$(find /vagrant -type f -name "*LastBuild*.log")";
     fi
     ;;
   "--post" )
