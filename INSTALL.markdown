@@ -4,7 +4,7 @@ In order to build Wintermute, you'll need the following libraries and programs
 already existing on your machine:
 
   * [json-cpp][] 0.6.0
-  * [log4cxx] 0.10.0
+  * [log4cxx][] 0.10.0
   * [libuv][] 0.10.20
   * [libuuid][] 2.25.1
 
