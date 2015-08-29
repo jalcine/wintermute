@@ -10,3 +10,13 @@ CTestConfig.cmake
 **/wintermute.log
 src/wintermute-core/export.hh
 cmake/Modules/UseWintermute.cmake
+# Created by https://www.gitignore.io/api/vim
+
+### Vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
