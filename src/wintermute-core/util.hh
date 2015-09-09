@@ -86,7 +86,7 @@ namespace Util
   /**
    * @fn
    */
-  inline string get_global_tmpdir()
+  inline string get_tmpdir()
   {
     const string envName = "TMPDIR";
 #ifdef CFE_secure_getenv
