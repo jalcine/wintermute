@@ -1,15 +1,16 @@
 ---
 - name: Add David Hart's PPA for cxxtest.
   apt_repository: >
-    repo='ppa:dhart/ppa'
+    repo="ppa:dhart/ppa"
+  when: ansible_distribution_release == "precise"
 
 - name: Add Kubuntu's Backports PPA for cmake.
   apt_repository: >
-    repo='ppa:kubuntu-ppa/backports'
+    repo="ppa:kubuntu-ppa/backports"
 
 - name: Add Ubuntu restricted toolchain.
   apt_repository: >
-    repo='ppa:ubuntu-toolchain-r/test'
+    repo="ppa:ubuntu-toolchain-r/test"
 
 - name: Add LLVM PPA key when we're using Clang.
   apt_key: >
@@ -21,6 +22,6 @@
   apt_repository: >
     repo="{{ item }}"
   with_items:
-    - 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
-    - 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+    - "deb http://llvm.org/apt/{{ansible_distribution_release}}/ llvm-toolchain-{{ansible_distribution_release}}-3.5 main"
+    - "deb-src http://llvm.org/apt/{{ansible_distribution_release}}/ llvm-toolchain-{{ansible_distribution_release}}-3.5 main"
   when: compiler_family == "clang"
