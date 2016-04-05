@@ -4,6 +4,9 @@ name = "wintermute"
 version = "0.1.0"
 authors = ["Jacky Alciné <yo@jacky.wtf>"]
 
+[dependencies]
+libc = "0.2.9"
+
 [lib]
 name = "wintermute"
 crate_type = ["dylib"]
