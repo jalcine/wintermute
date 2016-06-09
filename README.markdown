@@ -21,14 +21,10 @@
 `master`:  [![Build Status][travismaster_img]][build_stat] [![Coverage Status][coverallsmaster_img]][cover_stat]
 
 # Synopsis
-Wintermute's a software project that intends to be a launching pad into
-self-driven hyper-connectivity of hardware and software. The whole purpose
-of this particular tree is to build a core library, a driver binary
-(more on that) and a few plugins to get the show started. Check out
-[this weblog post][post] to really understand the mission behind Wintermute.
-_Yes, this is yet another Internet of Things project._ But this isn't meant to
-be "web scale" or all of that. It's meant to work in a controlled environment
-under specific constraints (most devices running Linux, etc).
+Wintermute's a software project inspired by a few books, movies and projects
+that I (Jacky Alciné) aim to have as an actor for multiple devices and
+platforms. I've written about [my ambitions for Wintermute][post] to give an
+grandiose vision to the project.
 
 # Building & Contributing
 Building, requirement and installation information all live in
@@ -39,6 +35,16 @@ This project is [Vagrant][] enabled.
 
 **This is alpha software, so alpha that it does nothing.** But in due time, my
 friend.
+
+# Platform Support
+
+Currently, this is being built and tested on Ubuntu 16.04 64-bit. I haven't a
+plan to target other platforms as of yet but this is intended to have support
+for:
+
+  * Raspberry Pi Debian
+  * Android 5.0
+  * vanilla Debian 8
 
 # TODO
 
