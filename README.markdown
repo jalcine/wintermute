@@ -47,7 +47,7 @@ friend.
   + [x] plugin loading infrastructure
   + [x] versioning support
 
-[post]: http://jalcine.me/weblog/ambitions-wintermute/
+[post]: https://jacky.wtf/weblog/ambitions-wintermute/
 [build_stat]: https://travis-ci.org/jalcine/wintermute?branch=develop
 [cover_stat]: https://coveralls.io/r/jalcine/wintermute?branch=develop
 [waffleio]: http://waffle.io/jalcine/wintermute
