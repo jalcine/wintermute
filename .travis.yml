@@ -1,20 +1,18 @@
-language: cpp
-compiler:
-  - gcc
-  - clang
+language: rust
+rust:
+  - 1.0.0
+  - 1.1.0
+  - beta
+  - nightly
+  - stable
+matrix:
+    allow_failures:
+      rust: nightly
 branches:
   - only:
       - master
       - develop
       - /^feature-.*$/
-before_install:
-  - test/bootstrap --before
-before_script:
-  - test/bootstrap --generate
-script:
-  - test/bootstrap --run
-after_success:
-  - test/bootstrap --post
 notifications:
   webhooks:
     urls:

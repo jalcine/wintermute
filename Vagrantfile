@@ -28,10 +28,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define :target do |t|
-    t.vm.box = 'chef/ubuntu-13.04'
+    t.vm.box = 'ubuntu/trusty64'
   end
 
   config.vm.define :travis do |t|
-    t.vm.box = 'chef/ubuntu-12.04'
+    t.vm.box = 'ubuntu/precise64'
   end
 end
