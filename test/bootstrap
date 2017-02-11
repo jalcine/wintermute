@@ -97,23 +97,25 @@ case "$1" in
     bootstrap_build || exit 16
     ;;
   "--generate" )
-    generate_build .
+    mkdir -p build
+    generate_build . "build"
     ;;
   "--generate-vagrant" )
     make_vagrant_build_dir
-    generate_build "/vagrant"
+    cd /vagrant/build
+    generate_build ..
     ;;
   "--run" )
     run_build
     ;;
   "--run-vagrant" )
-    PWD=/vagrant/build run_build;
+    cd /vagrant/build
+    run_build;
     ;;
   "--dump-log" )
     dump_log
     ;;
   "--vagrant" )
-    preset_library_path;
     /vagrant/test/bootstrap --generate-vagrant
     /vagrant/test/bootstrap --run-vagrant
     ;;

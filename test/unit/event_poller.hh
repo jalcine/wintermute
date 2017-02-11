@@ -16,22 +16,21 @@
  */
 
 #include <cstdio>
-#include <chrono>
-#include <ctime>
 #include "test_suite.hpp"
 #include "wintermute-core/events.hpp"
+#include "wintermute-core/logging.hpp"
 
 using Wintermute::Events::Event;
 using Wintermute::Events::Loop;
 using Wintermute::Events::Poller;
 using std::dynamic_pointer_cast;
+using std::chrono::system_clock;
 
 SharedPtr<uv_pipe_t> open_local_socket_for_test(uv_loop_t* loopPtr)
 {
-  auto nowTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-  string nowStr = ctime(&nowTime);
-  string pathToSocket = TEST_BASE_DIR "/wintermute-test-" + nowStr + ".sock\0";
+  string pathToSocket = TEST_BASE_DIR "/wintermute-test.sock";
   SharedPtr<uv_pipe_t> pipePtr = make_shared<uv_pipe_t>();
+  winfo ( "Opening socket at " + pathToSocket );
   W_CHECK_UV(uv_pipe_init(loopPtr, pipePtr.get(), 0), "uv_pipe_init");
   W_CHECK_UV(uv_pipe_bind(pipePtr.get(), pathToSocket.c_str() ), "uv_pipe_bind");
   return pipePtr;

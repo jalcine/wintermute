@@ -99,4 +99,14 @@ public:
         list<string>({ "computer" })
     );
   }
+
+  void testObtainsTempDir()
+  {
+    const string expectedValue(getenv("TMPDIR"));
+    const string obtainedValue = Wintermute::Util::get_tmpdir();
+    TS_ASSERT_EQUALS (
+      expectedValue,
+      obtainedValue
+    ):
+  }
 };

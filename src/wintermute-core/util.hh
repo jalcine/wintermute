@@ -82,6 +82,21 @@ namespace Util
     const string uuidStr = std::to_string(randomNumber);
     return uuidStr;
   }
+
+  /**
+   * @fn
+   */
+  inline string get_tmpdir()
+  {
+    const string envName = "TMPDIR";
+#ifdef CFE_secure_getenv
+    const string envValue = secure_getenv(envName.c_str());
+#else
+    const string envValue = getenv(envName.c_str());
+#endif
+
+    return envValue;
+  }
 }
 }
 
